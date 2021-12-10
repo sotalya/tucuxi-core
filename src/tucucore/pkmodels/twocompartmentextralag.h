@@ -10,8 +10,22 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class TwoCompartmentExtraLagExponentials : int { Alpha, Beta, Ka, AlphaPost, BetaPost, KaPost };
-enum class TwoCompartmentExtraLagCompartments : int { First, Second, Third };
+enum class TwoCompartmentExtraLagExponentials : int
+{
+    Alpha,
+    Beta,
+    Ka,
+    AlphaPost,
+    BetaPost,
+    KaPost
+};
+
+enum class TwoCompartmentExtraLagCompartments : int
+{
+    First,
+    Second,
+    Third
+};
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the two compartment extra algorithm
@@ -31,24 +45,41 @@ public:
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
-    void computeExponentials(Eigen::VectorXd& _times) override;
-    bool computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
-    bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
-    bool compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2, Eigen::VectorXd& _concentrations3);
 
-    Value m_D;	/// Quantity of drug
+    void computeExponentials(Eigen::VectorXd& _times) override;
+
+    bool computeConcentrations(
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) override;
+
+    bool computeConcentration(
+            const Value& _atTime,
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) override;
+
+    bool compute(
+            const Residuals& _inResiduals,
+            Eigen::VectorXd& _concentrations1,
+            Eigen::VectorXd& _concentrations2,
+            Eigen::VectorXd& _concentrations3);
+
+    Value m_D;  /// Quantity of drug
     Value m_F;  /// bioavailability
-    Value m_V1;  /// Volume1
+    Value m_V1; /// Volume1
     Value m_Ka; /// Absorption rate constant
     Value m_Ke; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
-    Value m_K12; /// Q/V1
-    Value m_K21; /// Q/V2
-    Value m_Tlag; /// Lag time (in hours)
-    Value m_RootK; /// sqrt(sumK*sumK - 4*K21*Ke)
-    Value m_Alpha; /// (sumK + root)/2
-    Value m_Beta; /// (sumK - root)/2
-    Value m_Int; /// Interval (hours)
-    Eigen::Index m_nbPoints; /// number measure points during interval
+    Value m_K12;              /// Q/V1
+    Value m_K21;              /// Q/V2
+    Value m_Tlag;             /// Lag time (in hours)
+    Value m_RootK;            /// sqrt(sumK*sumK - 4*K21*Ke)
+    Value m_Alpha;            /// (sumK + root)/2
+    Value m_Beta;             /// (sumK - root)/2
+    Value m_Int;              /// Interval (hours)
+    Eigen::Index m_nbPoints;  /// number measure points during interval
     Eigen::Index m_nbPoints0; /// Number of points during lag time
     Eigen::Index m_nbPoints1; /// Number of points after lag time
 

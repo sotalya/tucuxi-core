@@ -6,16 +6,19 @@
 #include <Eigen/LU>
 
 #include "tucucore/pkmodels/rkonecompartmentgammaextra.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
 
-RK4OneCompartmentGammaExtraMicro::RK4OneCompartmentGammaExtraMicro() : IntakeIntervalCalculatorRK4Base<1, RK4OneCompartmentGammaExtraMicro> (new PertinentTimesCalculatorStandard())
+RK4OneCompartmentGammaExtraMicro::RK4OneCompartmentGammaExtraMicro()
+    : IntakeIntervalCalculatorRK4Base<1, RK4OneCompartmentGammaExtraMicro>(new PertinentTimesCalculatorStandard())
 {
 }
 
-bool RK4OneCompartmentGammaExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool RK4OneCompartmentGammaExtraMicro::checkInputs(
+        const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
         return false;
@@ -43,11 +46,10 @@ bool RK4OneCompartmentGammaExtraMicro::checkInputs(const IntakeEvent& _intakeEve
 }
 
 
-RK4OneCompartmentGammaExtraMacro::RK4OneCompartmentGammaExtraMacro() : RK4OneCompartmentGammaExtraMicro()
-{
-}
+RK4OneCompartmentGammaExtraMacro::RK4OneCompartmentGammaExtraMacro() : RK4OneCompartmentGammaExtraMicro() {}
 
-bool RK4OneCompartmentGammaExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool RK4OneCompartmentGammaExtraMacro::checkInputs(
+        const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
         return false;
@@ -75,7 +77,5 @@ bool RK4OneCompartmentGammaExtraMacro::checkInputs(const IntakeEvent& _intakeEve
     return bOK;
 }
 
-}
-}
-
-
+} // namespace Core
+} // namespace Tucuxi

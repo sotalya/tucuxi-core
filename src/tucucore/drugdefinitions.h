@@ -3,8 +3,8 @@
 
 #include "tucucommon/unit.h"
 
-#include "tucucore/operation.h"
 #include "tucucore/definitions.h"
+#include "tucucore/operation.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -22,13 +22,28 @@ class ActiveMoietyId
 public:
     explicit ActiveMoietyId(std::string _s) : m_s(std::move(_s)) {}
     explicit ActiveMoietyId(const char* _s) : m_s(_s) {}
-    size_t size() const { return m_s.size();}
-    bool empty() const { return m_s.empty();}
+    size_t size() const
+    {
+        return m_s.size();
+    }
+    bool empty() const
+    {
+        return m_s.empty();
+    }
 
-    std::string toString() const { return m_s; }
+    std::string toString() const
+    {
+        return m_s;
+    }
 
-    inline bool operator==(const ActiveMoietyId& _other) const { return this->m_s == _other.m_s;}
-    inline bool operator<(const ActiveMoietyId& _other) const { return this->m_s < _other.m_s;}
+    inline bool operator==(const ActiveMoietyId& _other) const
+    {
+        return this->m_s == _other.m_s;
+    }
+    inline bool operator<(const ActiveMoietyId& _other) const
+    {
+        return this->m_s < _other.m_s;
+    }
 
 protected:
     std::string m_s;
@@ -49,42 +64,52 @@ public:
     /// \param _value Default value.
     /// \param _operation Operation associated with the parameter.
     /// The operation has a default value of nullptr
-    PopulationValue(const std::string &_id, const Value _value, Operation *_operation = nullptr) :
-        m_id(_id),
-        m_value(_value),
-        m_operation(_operation)
-    {}
+    PopulationValue(const std::string& _id, const Value _value, Operation* _operation = nullptr)
+        : m_id(_id), m_value(_value), m_operation(_operation)
+    {
+    }
 
     /// \brief Create a population value with a fixed value.
     /// \param _value Default value.
     /// The value is not operable
-    PopulationValue(const Value _value) :
-        m_id(""),
-        m_value(_value),
-        m_operation(nullptr)
-    {}
+    PopulationValue(const Value _value) : m_id(""), m_value(_value), m_operation(nullptr) {}
 
-    virtual ~PopulationValue() { }
+    virtual ~PopulationValue() {}
 
     /// \brief Return the identifier of the value.
     /// \return Value's identifier.
-    std::string getId() const { return m_id;}
+    std::string getId() const
+    {
+        return m_id;
+    }
 
     /// \brief Get the operation associated with the value.
     /// \return Reference to the operation associated with the value.
-    virtual Operation &getOperation() const { return *m_operation;}
+    virtual Operation& getOperation() const
+    {
+        return *m_operation;
+    }
 
     /// \brief Get the value.
     /// \return Returns the value.
-    Value getValue() const { return m_value; }
+    Value getValue() const
+    {
+        return m_value;
+    }
 
     /// \brief Set the value.
     /// \param _value Value to set.
-    void setValue(const Value _value) { m_value = _value; }
+    void setValue(const Value _value)
+    {
+        m_value = _value;
+    }
 
     /// \brief Get if the value is computed via an operation or is a fixed value.
     /// \return True if the value is a result of an operation, false otherwise.
-    bool isComputed() const { return m_operation != nullptr; }
+    bool isComputed() const
+    {
+        return m_operation != nullptr;
+    }
 
 
 protected:
@@ -97,22 +122,24 @@ template<typename DefinitionClass>
 class IndividualValue
 {
 public:
-    IndividualValue(const DefinitionClass &_definition) :
-        m_definition(_definition)
-    {    }
+    IndividualValue(const DefinitionClass& _definition) : m_definition(_definition) {}
 
-    virtual ~IndividualValue() { }
+    virtual ~IndividualValue() {}
 
-    const DefinitionClass & getDefinition() const { return m_definition;}
+    const DefinitionClass& getDefinition() const
+    {
+        return m_definition;
+    }
 
 protected:
-
-    const DefinitionClass &m_definition;
+    const DefinitionClass& m_definition;
 
     /// \brief Get the operation associated with the value.
     /// \return Reference to the operation associated with the value.
-    virtual Operation& getOperation() const { return m_definition.getOperation(); }
-
+    virtual Operation& getOperation() const
+    {
+        return m_definition.getOperation();
+    }
 };
 
 } // namespace Core

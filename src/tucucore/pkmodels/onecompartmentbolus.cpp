@@ -4,8 +4,10 @@
 
 #include <Eigen/Dense>
 
-#include "tucucommon/loggerhelper.h"
 #include "tucucore/pkmodels/onecompartmentbolus.h"
+
+#include "tucucommon/loggerhelper.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
@@ -15,7 +17,8 @@ namespace Core {
 #define DEBUG
 #endif
 
-OneCompartmentBolusMicro::OneCompartmentBolusMicro() : IntakeIntervalCalculatorBase<1, OneCompartmentBolusExponentials> (new PertinentTimesCalculatorStandard())
+OneCompartmentBolusMicro::OneCompartmentBolusMicro()
+    : IntakeIntervalCalculatorBase<1, OneCompartmentBolusExponentials>(new PertinentTimesCalculatorStandard())
 {
 }
 
@@ -26,10 +29,10 @@ std::vector<std::string> OneCompartmentBolusMicro::getParametersId()
 
 bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkCondition(_parameters.size() >= 2, "The number of parameters should be equal to 2.")) {
+    if (!checkCondition(_parameters.size() >= 2, "The number of parameters should be equal to 2.")) {
         return false;
     }
-    
+
     m_D = _intakeEvent.getDose();
     m_V = _parameters.getValue(ParameterId::V);
     m_Ke = _parameters.getValue(ParameterId::Ke);
@@ -64,7 +67,11 @@ void OneCompartmentBolusMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool OneCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentBolusMicro::computeConcentrations(
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
@@ -80,12 +87,16 @@ bool OneCompartmentBolusMicro::computeConcentrations(const Residuals& _inResidua
     _concentrations[firstCompartment].assign(concentrations.data(), concentrations.data() + concentrations.size());
     // Only one compartment is existed.
     TMP_UNUSED_PARAMETER(_isAll);
-    
+
     return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
 }
 
-bool OneCompartmentBolusMicro::computeConcentration(const Value& _atTime, const Residuals&
-_inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentBolusMicro::computeConcentration(
+        const Value& _atTime,
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     TMP_UNUSED_PARAMETER(_atTime);
 
@@ -101,7 +112,7 @@ _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residua
     _concentrations[firstCompartment].push_back(concentrations[atTime]);
     // Only one compartment is existed.
     TMP_UNUSED_PARAMETER(_isAll);
-    
+
     // interval=0 means that it is the last cycle, so final residual = 0
     if (m_Int == 0) {
         concentrations[atEndInterval] = 0;
@@ -109,13 +120,11 @@ _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residua
 
     // Return final residual (computation with m_Int (interval))
     _outResiduals[firstCompartment] = concentrations[atEndInterval];
-    
+
     return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
 }
 
-OneCompartmentBolusMacro::OneCompartmentBolusMacro() : OneCompartmentBolusMicro()
-{
-}
+OneCompartmentBolusMacro::OneCompartmentBolusMacro() : OneCompartmentBolusMicro() {}
 
 
 std::vector<std::string> OneCompartmentBolusMacro::getParametersId()
@@ -160,5 +169,5 @@ bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
 
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

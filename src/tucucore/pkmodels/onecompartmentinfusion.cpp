@@ -2,12 +2,15 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include <Eigen/Dense>
-#include <math.h>
 #include <algorithm>
+#include <math.h>
+
+#include <Eigen/Dense>
+
+#include "tucucore/pkmodels/onecompartmentinfusion.h"
 
 #include "tucucommon/loggerhelper.h"
-#include "tucucore/pkmodels/onecompartmentinfusion.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
@@ -17,7 +20,8 @@ namespace Core {
 #define DEBUG
 #endif
 
-OneCompartmentInfusionMicro::OneCompartmentInfusionMicro() : IntakeIntervalCalculatorBase<1, OneCompartmentInfusionExponentials> (new PertinentTimesCalculatorInfusion())
+OneCompartmentInfusionMicro::OneCompartmentInfusionMicro()
+    : IntakeIntervalCalculatorBase<1, OneCompartmentInfusionExponentials>(new PertinentTimesCalculatorInfusion())
 {
 }
 
@@ -69,16 +73,23 @@ void OneCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool OneCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentInfusionMicro::computeConcentrations(
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     int forcesize;
     if (m_nbPoints == 2) {
-        forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
+        forcesize = static_cast<int>(std::min(
+                ceil(m_Tinf / m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
     }
     else {
-        forcesize = std::min(static_cast<int>(m_nbPoints), std::max(2, static_cast<int>((m_Tinf / m_Int) * static_cast<double>(m_nbPoints))));
+        forcesize = std::min(
+                static_cast<int>(m_nbPoints),
+                std::max(2, static_cast<int>((m_Tinf / m_Int) * static_cast<double>(m_nbPoints))));
     }
 
     // Calculate concentrations
@@ -88,14 +99,19 @@ bool OneCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResi
     _outResiduals[firstCompartment] = concentrations[m_nbPoints - 1];
 
     // Return concentraions of first compartment
-    _concentrations[firstCompartment].assign(concentrations.data(), concentrations.data() + concentrations.size());	
+    _concentrations[firstCompartment].assign(concentrations.data(), concentrations.data() + concentrations.size());
     // Only one compartment is existed.
     TMP_UNUSED_PARAMETER(_isAll);
 
     return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
 }
 
-bool OneCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool OneCompartmentInfusionMicro::computeConcentration(
+        const Value& _atTime,
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
@@ -111,7 +127,7 @@ bool OneCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
     // Calculate concentrations
     compute(_inResiduals, forcesize, concentrations);
 
-    // return concentrations of first compartment 
+    // return concentrations of first compartment
     // (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations[atTime]);
     // Only one compartment is existed.
@@ -124,13 +140,11 @@ bool OneCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
 
     // Return final residual (computation with m_Int (interval))
     _outResiduals[firstCompartment] = concentrations[atEndInterval];
-    
+
     return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
 }
 
-OneCompartmentInfusionMacro::OneCompartmentInfusionMacro() : OneCompartmentInfusionMicro()
-{
-}
+OneCompartmentInfusionMacro::OneCompartmentInfusionMacro() : OneCompartmentInfusionMicro() {}
 
 std::vector<std::string> OneCompartmentInfusionMacro::getParametersId()
 {
@@ -176,5 +190,5 @@ bool OneCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
 }
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

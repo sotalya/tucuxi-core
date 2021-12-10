@@ -4,8 +4,10 @@
 
 #include <Eigen/Dense>
 
-#include "tucucommon/loggerhelper.h"
 #include "tucucore/pkmodels/twocompartmentinfusion.h"
+
+#include "tucucommon/loggerhelper.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
@@ -15,7 +17,8 @@ namespace Core {
 #define DEBUG
 #endif
 
-TwoCompartmentInfusionMicro::TwoCompartmentInfusionMicro() : IntakeIntervalCalculatorBase<2, TwoCompartmentInfusionExponentials> (new PertinentTimesCalculatorInfusion())
+TwoCompartmentInfusionMicro::TwoCompartmentInfusionMicro()
+    : IntakeIntervalCalculatorBase<2, TwoCompartmentInfusionExponentials>(new PertinentTimesCalculatorInfusion())
 {
 }
 
@@ -39,12 +42,12 @@ bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_SumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((m_SumK * m_SumK) - (4 * m_K21 * m_Ke));
     m_Divider = m_RootK * (-m_SumK + m_RootK) * (m_SumK + m_RootK);
-    m_Alpha = (m_SumK + m_RootK)/2;
-    m_Beta = (m_SumK - m_RootK)/2;
+    m_Alpha = (m_SumK + m_RootK) / 2;
+    m_Beta = (m_SumK - m_RootK) / 2;
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
     m_Int = (_intakeEvent.getInterval()).toHours();
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
-    
+
 #ifdef DEBUG
     Tucuxi::Common::LoggerHelper logHelper;
 
@@ -90,22 +93,29 @@ void TwoCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 
     Eigen::VectorXd times(_times.size());
     times = _times - m_Tinf * Eigen::VectorXd::Ones(_times.size());
-    setExponentials(Exponentials::AlphaPostInf,  (-m_Alpha * times).array().exp());
+    setExponentials(Exponentials::AlphaPostInf, (-m_Alpha * times).array().exp());
     setExponentials(Exponentials::BetaPostInf, (-m_Beta * times).array().exp());
 }
 
 
-bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentInfusionMicro::computeConcentrations(
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
     int forcesize;
     if (m_nbPoints == 2) {
-        forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
+        forcesize = static_cast<int>(std::min(
+                ceil(m_Tinf / m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
     }
     else {
-        forcesize = std::min(static_cast<int>(m_nbPoints), std::max(2, static_cast<int>((m_Tinf / m_Int) * static_cast<double>(m_nbPoints))));
+        forcesize = std::min(
+                static_cast<int>(m_nbPoints),
+                std::max(2, static_cast<int>((m_Tinf / m_Int) * static_cast<double>(m_nbPoints))));
     }
 
     // Compute concentrations
@@ -118,7 +128,8 @@ bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResi
     // Return concentrations of comp1
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
     if (_isAll == true) {
-	_concentrations[secondCompartment].assign(concentrations2.data(), concentrations2.data() + concentrations2.size());	
+        _concentrations[secondCompartment].assign(
+                concentrations2.data(), concentrations2.data() + concentrations2.size());
     }
 
     // Check output
@@ -129,7 +140,12 @@ bool TwoCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResi
 }
 
 
-bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentInfusionMicro::computeConcentration(
+        const Value& _atTime,
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
@@ -236,7 +252,7 @@ bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
 
 #else
     if (_atTime <= m_Tinf) {
-	    forcesize = 1;
+        forcesize = 1;
     }
 
     // Compute concentrations
@@ -245,9 +261,9 @@ bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
     // Return concentraions (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
     if (_isAll == true) {
-	_concentrations[secondCompartment].push_back(concentrations2[atTime]);
+        _concentrations[secondCompartment].push_back(concentrations2[atTime]);
     }
-    
+
     // Return final residual of comp1 and comp2
     _outResiduals[firstCompartment] = concentrations1[atEndInterval];
     _outResiduals[secondCompartment] = concentrations2[atEndInterval];
@@ -260,8 +276,7 @@ bool TwoCompartmentInfusionMicro::computeConcentration(const Value& _atTime, con
     return bOK;
 }
 
-TwoCompartmentInfusionMacro::TwoCompartmentInfusionMacro()
-= default;
+TwoCompartmentInfusionMacro::TwoCompartmentInfusionMacro() = default;
 
 std::vector<std::string> TwoCompartmentInfusionMacro::getParametersId()
 {
@@ -285,12 +300,12 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_SumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((m_SumK * m_SumK) - (4 * m_K21 * m_Ke));
     m_Divider = m_RootK * (-m_SumK + m_RootK) * (m_SumK + m_RootK);
-    m_Alpha = (m_SumK + m_RootK)/2;
-    m_Beta = (m_SumK - m_RootK)/2;
+    m_Alpha = (m_SumK + m_RootK) / 2;
+    m_Beta = (m_SumK - m_RootK) / 2;
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
     m_Int = (_intakeEvent.getInterval()).toHours();
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
-    
+
 #ifdef DEBUG
     Tucuxi::Common::LoggerHelper logHelper;
 
@@ -327,6 +342,5 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     return bOK;
 }
 
-}
-}
-
+} // namespace Core
+} // namespace Tucuxi

@@ -9,16 +9,16 @@
 #include <memory>
 #include <vector>
 
-#include "tucucore/definitions.h"
-#include "tucucore/intakeevent.h"
-#include "tucucore/drugmodel/formulationandroute.h"
-
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
 #include "tucucommon/timeofday.h"
 
-using Tucuxi::Common::DateTime; // NOLINT(google-global-names-in-headers)
-using Tucuxi::Common::Duration; // NOLINT(google-global-names-in-headers)
+#include "tucucore/definitions.h"
+#include "tucucore/drugmodel/formulationandroute.h"
+#include "tucucore/intakeevent.h"
+
+using Tucuxi::Common::DateTime;  // NOLINT(google-global-names-in-headers)
+using Tucuxi::Common::Duration;  // NOLINT(google-global-names-in-headers)
 using Tucuxi::Common::TimeOfDay; // NOLINT(google-global-names-in-headers)
 
 using namespace std::chrono_literals; // NOLINT(google-global-names-in-headers)
@@ -29,7 +29,8 @@ namespace Core {
 
 class IntakeExtractor;
 
-enum class ExtractionOption {
+enum class ExtractionOption
+{
     /// Use the interval for the very last intake, use min(end date, interval) for all others
     EndOfCycle = 0,
 
@@ -44,16 +45,23 @@ enum class ExtractionOption {
 
 /// \brief Implement the extract and clone operations for Dosage subclasses.
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define DOSAGE_UTILS(BaseClassName, ClassName) \
-    friend IntakeExtractor; \
-    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, const TucuUnit &_toUnit, IntakeSeries &_series, ExtractionOption _option) const override; \
-    std::unique_ptr<BaseClassName> clone() const override \
-    { \
+#define DOSAGE_UTILS(BaseClassName, ClassName)                       \
+    friend IntakeExtractor;                                          \
+    int extract(                                                     \
+            IntakeExtractor& _extractor,                             \
+            const DateTime& _start,                                  \
+            const DateTime& _end,                                    \
+            double _nbPointsPerHour,                                 \
+            const TucuUnit& _toUnit,                                 \
+            IntakeSeries& _series,                                   \
+            ExtractionOption _option) const override;                \
+    std::unique_ptr<BaseClassName> clone() const override            \
+    {                                                                \
         return std::unique_ptr<BaseClassName>(new ClassName(*this)); \
-    } \
-    std::unique_ptr<Dosage> cloneDosage() const override \
-    { \
-        return clone(); \
+    }                                                                \
+    std::unique_ptr<Dosage> cloneDosage() const override             \
+    {                                                                \
+        return clone();                                              \
     }
 
 
@@ -66,7 +74,6 @@ enum class ExtractionOption {
 class Dosage
 {
 public:
-
     virtual ~Dosage() {}
 
     /// \brief Extract drugs' intake in a given time interval (visitor pattern).
@@ -86,7 +93,14 @@ public:
     /// whole set of calls)
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
     /// \see IntakeExtractor::extract()
-    virtual int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end, double _nbPointsPerHour, const TucuUnit &_toUnit, IntakeSeries &_series, ExtractionOption _option) const = 0;
+    virtual int extract(
+            IntakeExtractor& _extractor,
+            const DateTime& _start,
+            const DateTime& _end,
+            double _nbPointsPerHour,
+            const TucuUnit& _toUnit,
+            IntakeSeries& _series,
+            ExtractionOption _option) const = 0;
 
     /// \brief Return a pointer to a clone of the correct subclass.
     /// \return Pointer to a new object of subclass' type.
@@ -113,7 +127,6 @@ public:
 class DosageUnbounded : public Dosage
 {
 public:
-
     ~DosageUnbounded() override {}
 
     /// \brief Return a pointer to a clone of the correct subclass.
@@ -130,12 +143,19 @@ public:
 
     ~DosageBounded() override {}
 
-    int extract(IntakeExtractor &_extractor, const DateTime &_start, const DateTime &_end,double _nbPointsPerHour, const TucuUnit &_toUnit, IntakeSeries &_series, ExtractionOption _option) const override;
+    int extract(
+            IntakeExtractor& _extractor,
+            const DateTime& _start,
+            const DateTime& _end,
+            double _nbPointsPerHour,
+            const TucuUnit& _toUnit,
+            IntakeSeries& _series,
+            ExtractionOption _option) const override;
 
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the interval.
     /// \return Time of the first intake.
-    virtual DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const = 0;
+    virtual DateTime getFirstIntakeInterval(const DateTime& _intervalStart) const = 0;
 
     /// \brief Get the time step between two bounded dosages.
     /// This time step could represent the time interval between two weekly doses (in that case, a week), or the time
@@ -161,7 +181,7 @@ class DosageLoop : public DosageUnbounded
 public:
     /// \brief Construct a dosage loop from a bounded dosage.
     /// \param _dosage Dosage to add to the loop.
-    DosageLoop(const DosageBounded &_dosage)
+    DosageLoop(const DosageBounded& _dosage)
     {
         m_dosage = _dosage.clone();
     }
@@ -169,7 +189,7 @@ public:
 
     /// \brief Copy-construct a dosage loop.
     /// \param _other Dosage loop to clone.
-    DosageLoop(const DosageLoop &_other) : DosageUnbounded(_other)
+    DosageLoop(const DosageLoop& _other) : DosageUnbounded(_other)
     {
         m_dosage = _other.m_dosage->clone();
     }
@@ -186,7 +206,8 @@ public:
         return m_dosage->getFormulationAndRouteList();
     }
 
-    const DosageBounded * getDosage() const {
+    const DosageBounded* getDosage() const
+    {
         return m_dosage.get();
     }
 
@@ -209,25 +230,23 @@ protected:
 class DosageSteadyState : public DosageLoop
 {
 public:
-
     /// \brief Construct a dosage loop from a bounded dosage.
     /// \param _dosage Dosage to add to the loop.
-    DosageSteadyState(const DosageBounded &_dosage, DateTime _lastDoseTime) : DosageLoop (_dosage), m_lastDoseTime(_lastDoseTime)
+    DosageSteadyState(const DosageBounded& _dosage, DateTime _lastDoseTime)
+        : DosageLoop(_dosage), m_lastDoseTime(_lastDoseTime)
     {
     }
 
     /// \brief Copy-construct a dosage loop.
     /// \param _other Dosage loop to clone.
-    DosageSteadyState(const DosageSteadyState &_other) : DosageLoop (_other), m_lastDoseTime(_other.m_lastDoseTime)
-    {
-    }
+    DosageSteadyState(const DosageSteadyState& _other) : DosageLoop(_other), m_lastDoseTime(_other.m_lastDoseTime) {}
 
     ~DosageSteadyState() override {}
 
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the first element of the sequence.
     /// \return Time of the first intake immediately following _intervalStart.
-    DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const
+    DateTime getFirstIntakeInterval(const DateTime& _intervalStart) const
     {
 
         double intervalInSeconds = static_cast<double>(m_dosage->getTimeStep().toSeconds());
@@ -237,7 +256,8 @@ public:
         // nbIntervals rounds the number of intervals to reach _intervalStart from the last dose
         int nbIntervals = static_cast<int>(intervalToFromLastDose / intervalInSeconds);
 
-        DateTime start = m_lastDoseTime - Duration(std::chrono::seconds(static_cast<int>(intervalInSeconds * nbIntervals)));
+        DateTime start =
+                m_lastDoseTime - Duration(std::chrono::seconds(static_cast<int>(intervalInSeconds * nbIntervals)));
         if (start < _intervalStart) {
             start = start + m_dosage->getTimeStep();
         }
@@ -254,7 +274,6 @@ public:
 
 private:
     DateTime m_lastDoseTime;
-
 };
 
 /// \ingroup TucuCore
@@ -265,7 +284,7 @@ public:
     /// \brief Construct a repeated dosage starting from a dosage and the number of times it is repeated.
     /// \param _dosage Dosage to repeat.
     /// \param _nbTimes Number of times the dosage has to be repeated.
-    DosageRepeat(const DosageBounded &_dosage, const unsigned int _nbTimes)
+    DosageRepeat(const DosageBounded& _dosage, const unsigned int _nbTimes)
     {
         m_dosage = _dosage.clone();
         m_nbTimes = _nbTimes;
@@ -273,7 +292,7 @@ public:
 
     /// \brief Copy-construct a dosage repetition.
     /// \param _other Dosage repetition to clone.
-    DosageRepeat(const DosageRepeat &_other) : DosageBounded(_other)
+    DosageRepeat(const DosageRepeat& _other) : DosageBounded(_other)
     {
         m_dosage = _other.m_dosage->clone();
         m_nbTimes = _other.m_nbTimes;
@@ -303,17 +322,19 @@ public:
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the repeated sequence.
     /// \return Time of the first intake.
-    DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const override
+    DateTime getFirstIntakeInterval(const DateTime& _intervalStart) const override
     {
         return m_dosage->getFirstIntakeInterval(_intervalStart);
     }
 
-    const DosageBounded * getDosage() const {
+    const DosageBounded* getDosage() const
+    {
         return m_dosage.get();
     }
 
-    unsigned int getNbTimes() const {
-        return  m_nbTimes;
+    unsigned int getNbTimes() const
+    {
+        return m_nbTimes;
     }
 
 private:
@@ -332,16 +353,16 @@ class DosageSequence : public DosageBounded
 public:
     /// \brief Create a dosage sequence taking at least a dosage (this prevents having an empty sequence).
     /// \param _dosage Dosage to add.
-    DosageSequence(const DosageBounded &_dosage)
+    DosageSequence(const DosageBounded& _dosage)
     {
         m_dosages.emplace_back(_dosage.clone());
     }
 
     /// \brief Copy-construct a dosage sequence.
     /// \param _other Dosage sequence to clone.
-    DosageSequence(const DosageSequence &_other) : DosageBounded(_other)
+    DosageSequence(const DosageSequence& _other) : DosageBounded(_other)
     {
-        for (auto&& dosage: _other.m_dosages) {
+        for (auto&& dosage : _other.m_dosages) {
             m_dosages.emplace_back(dosage->clone());
         }
     }
@@ -350,7 +371,7 @@ public:
 
     /// \brief Add a dosage to the sequence.
     /// \param _dosage Dosage to add.
-    void addDosage(const DosageBounded &_dosage)
+    void addDosage(const DosageBounded& _dosage)
     {
         m_dosages.emplace_back(_dosage.clone());
     }
@@ -358,7 +379,8 @@ public:
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
         if (m_dosages.empty()) {
-            return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
+            return FormulationAndRoute(
+                    Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
         }
         return m_dosages.back()->getLastFormulationAndRoute();
     }
@@ -367,7 +389,7 @@ public:
     {
         std::vector<FormulationAndRoute> result;
 
-        for (const auto & dosage : m_dosages) {
+        for (const auto& dosage : m_dosages) {
             std::vector<FormulationAndRoute> d = dosage->getFormulationAndRouteList();
             result = mergeFormulationAndRouteList(result, d);
         }
@@ -390,12 +412,13 @@ public:
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the first element of the sequence (it is ordered).
     /// \return Time of the first intake.
-    DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const override
+    DateTime getFirstIntakeInterval(const DateTime& _intervalStart) const override
     {
         return (m_dosages[0])->getFirstIntakeInterval(_intervalStart);
     }
 
-    const DosageBoundedList&  getDosageList() const {
+    const DosageBoundedList& getDosageList() const
+    {
         return m_dosages;
     }
 
@@ -419,7 +442,7 @@ public:
     /// sequence).
     /// \param _dosage Dosage to add.
     /// \param _offset Offset of the dosage.
-    ParallelDosageSequence(const DosageBounded &_dosage, const Duration &_offset)
+    ParallelDosageSequence(const DosageBounded& _dosage, const Duration& _offset)
     {
         m_dosages.emplace_back(_dosage.clone());
         m_offsets.emplace_back(_offset);
@@ -428,12 +451,12 @@ public:
 
     /// \brief Copy-construct a parallel dosage sequence.
     /// \param _other Dosage sequence to clone.
-    ParallelDosageSequence(const ParallelDosageSequence &_other) : DosageBounded(_other)
+    ParallelDosageSequence(const ParallelDosageSequence& _other) : DosageBounded(_other)
     {
-        for (auto&& dosage: _other.m_dosages) {
+        for (auto&& dosage : _other.m_dosages) {
             m_dosages.emplace_back(dosage->clone());
         }
-        for (auto& offset: _other.m_offsets) {
+        for (auto& offset : _other.m_offsets) {
             m_offsets.emplace_back(offset);
         }
     }
@@ -443,7 +466,7 @@ public:
     /// \brief Add a dosage to the sequence, along with its offset with respect to the beginnning of the sequence.
     /// \param _dosage Dosage to add.
     /// \param _offset Offset of the dosage.
-    void addDosage(const DosageBounded &_dosage, const Duration &_offset)
+    void addDosage(const DosageBounded& _dosage, const Duration& _offset)
     {
         m_dosages.emplace_back(_dosage.clone());
         m_offsets.emplace_back(_offset);
@@ -452,7 +475,8 @@ public:
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
         if (m_dosages.empty()) {
-            return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
+            return FormulationAndRoute(
+                    Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
         }
         return m_dosages.back()->getLastFormulationAndRoute();
     }
@@ -461,7 +485,7 @@ public:
     {
         std::vector<FormulationAndRoute> result;
 
-        for (const auto & dosage : m_dosages) {
+        for (const auto& dosage : m_dosages) {
             std::vector<FormulationAndRoute> d = dosage->getFormulationAndRouteList();
             result = mergeFormulationAndRouteList(result, d);
         }
@@ -490,17 +514,19 @@ public:
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the first element of the sequence.
     /// \return Time of the first intake in the ordered list.
-    DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const override
+    DateTime getFirstIntakeInterval(const DateTime& _intervalStart) const override
     {
         // We consider that a ParallelSequence starts immediately
         return _intervalStart;
     }
 
-    const DosageBoundedList&  getDosageList() const{
+    const DosageBoundedList& getDosageList() const
+    {
         return m_dosages;
     }
 
-    const TimeOffsetList& getOffsetsList() const{
+    const TimeOffsetList& getOffsetsList() const
+    {
         return m_offsets;
     }
 
@@ -523,11 +549,12 @@ public:
     /// \param _infusionTime Duration in case of an infusion.
     /// \pre _dose >= 0
     /// \pre IF _routeOfAdministration == AbsorptionModel::Infusion THEN (!_infusionTime.isEmpty() && _infusionTime > 0)
-    SingleDose(const DoseValue &_dose,
-               const TucuUnit &_doseUnit,
-               const FormulationAndRoute &_routeOfAdministration,
-               const Duration &_infusionTime) :
-        m_routeOfAdministration(_routeOfAdministration)
+    SingleDose(
+            const DoseValue& _dose,
+            const TucuUnit& _doseUnit,
+            const FormulationAndRoute& _routeOfAdministration,
+            const Duration& _infusionTime)
+        : m_routeOfAdministration(_routeOfAdministration)
     {
         if (_dose < 0) {
             throw std::invalid_argument("Dose value = " + std::to_string(_dose) + " is invalid (must be >= 0).");
@@ -536,9 +563,9 @@ public:
             throw std::invalid_argument("Infusion time for INFUSION is invalid (must be >= 0).");
         }
         // Let's tolerate infusion time 0
-//        if (_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion && _infusionTime.isEmpty()) {
-//            throw std::invalid_argument("Route of administration is INFUSION, but empty infusion time specified.");
-//        }
+        //        if (_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion && _infusionTime.isEmpty()) {
+        //            throw std::invalid_argument("Route of administration is INFUSION, but empty infusion time specified.");
+        //        }
         m_dose = _dose;
         m_doseUnit = _doseUnit;
         m_infusionTime = _infusionTime;
@@ -546,7 +573,7 @@ public:
 
     /// \brief Empty destructor, used to make the class abstract (and thus force the instantiation of subclasses).
     // virtual ~SingleDose() = 0;
-    ~SingleDose() override {};
+    ~SingleDose() override{};
 
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
@@ -603,11 +630,12 @@ public:
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _interval Interval between two doses.
     /// \pre !_interval.isEmpty() && _interval > 0
-    LastingDose(const DoseValue &_dose,
-                const TucuUnit &_doseUnit,
-                const FormulationAndRoute &_routeOfAdministration,
-                const Duration &_infusionTime,
-                const Duration &_interval)
+    LastingDose(
+            const DoseValue& _dose,
+            const TucuUnit& _doseUnit,
+            const FormulationAndRoute& _routeOfAdministration,
+            const Duration& _infusionTime,
+            const Duration& _interval)
         : SingleDose(_dose, _doseUnit, _routeOfAdministration, _infusionTime)
     {
         if (_interval.isEmpty()) {
@@ -624,7 +652,7 @@ public:
 
     /// \brief Copy-construct a dosage repetition.
     /// \param _other Dosage repetition to clone.
-    LastingDose(const LastingDose &_other) : SingleDose (_other)
+    LastingDose(const LastingDose& _other) : SingleDose(_other)
     {
         m_interval = _other.m_interval;
     }
@@ -641,7 +669,7 @@ public:
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the interval.
     /// \return Time of the first intake.
-    DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const override
+    DateTime getFirstIntakeInterval(const DateTime& _intervalStart) const override
     {
         return _intervalStart;
     }
@@ -661,11 +689,12 @@ public:
     /// \param _route Route of administration.
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _timeOfDay Time of the day when the dose is administered.
-    DailyDose(const DoseValue &_dose,
-              const TucuUnit &_doseUnit,
-              const FormulationAndRoute &_routeOfAdministration,
-              const Duration &_infusionTime,
-              const TimeOfDay &_timeOfDay)
+    DailyDose(
+            const DoseValue& _dose,
+            const TucuUnit& _doseUnit,
+            const FormulationAndRoute& _routeOfAdministration,
+            const Duration& _infusionTime,
+            const TimeOfDay& _timeOfDay)
         : SingleDose(_dose, _doseUnit, _routeOfAdministration, _infusionTime)
     {
         m_timeOfDay = _timeOfDay;
@@ -685,7 +714,7 @@ public:
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the interval.
     /// \return Time of the first intake.
-    DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const override
+    DateTime getFirstIntakeInterval(const DateTime& _intervalStart) const override
     {
         DateTime intakeTime = _intervalStart;
         // The hour is fixed
@@ -725,12 +754,13 @@ public:
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _timeOfDay Time of the day when the dose is administered.
     /// \param _dayOfWeek Day of the week the dose has to be administered.
-    WeeklyDose(const DoseValue &_dose,
-               const TucuUnit &_doseUnit,
-               const FormulationAndRoute &_routeOfAdministration,
-               const Duration &_infusionTime,
-               const TimeOfDay &_timeOfDay,
-               const DayOfWeek &_dayOfWeek)
+    WeeklyDose(
+            const DoseValue& _dose,
+            const TucuUnit& _doseUnit,
+            const FormulationAndRoute& _routeOfAdministration,
+            const Duration& _infusionTime,
+            const TimeOfDay& _timeOfDay,
+            const DayOfWeek& _dayOfWeek)
         : DailyDose(_dose, _doseUnit, _routeOfAdministration, _infusionTime, _timeOfDay), m_dayOfWeek(_dayOfWeek)
     {
         if (!_dayOfWeek.ok()) {
@@ -752,7 +782,7 @@ public:
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the interval.
     /// \return Time of the first intake.
-    DateTime getFirstIntakeInterval(const DateTime &_intervalStart) const override
+    DateTime getFirstIntakeInterval(const DateTime& _intervalStart) const override
     {
         // Really ugly cast required by the library to extract the day of week from the date
         // dayofweek can be cast to unsigned int, so we need the two successive casts
@@ -764,8 +794,8 @@ public:
             // The intake was supposed to be some days before, we have to advance by the days that are missing to
             // encompass a full week time
             dayDiff = 7 + dayDiff;
-
-        } else if (dayDiff == 0 && _intervalStart.getTimeOfDay() > m_timeOfDay) {
+        }
+        else if (dayDiff == 0 && _intervalStart.getTimeOfDay() > m_timeOfDay) {
             // We just missed the intake, we have to advance by one week
             dayDiff = 7;
         }
@@ -811,7 +841,8 @@ public:
     /// \pre !_startDate.isUndefined()
     /// \post m_startDate == _startDate
     /// \post _endDate.isUndefined()
-    DosageTimeRange(const DateTime &_startDate, const Dosage &_dosage) : m_startDate(_startDate), m_endDate(DateTime::undefinedDateTime())
+    DosageTimeRange(const DateTime& _startDate, const Dosage& _dosage)
+        : m_startDate(_startDate), m_endDate(DateTime::undefinedDateTime())
     {
         if (_startDate.isUndefined()) {
             throw std::invalid_argument("Undefined start date for a time range specified.");
@@ -822,7 +853,7 @@ public:
 
     /// \brief Copy-construct a time range.
     /// \param _other Time range to clone.
-    DosageTimeRange(const DosageTimeRange &_other) : m_startDate(_other.m_startDate), m_endDate(_other.m_endDate)
+    DosageTimeRange(const DosageTimeRange& _other) : m_startDate(_other.m_startDate), m_endDate(_other.m_endDate)
     {
         m_dosage = _other.m_dosage->cloneDosage();
         m_addedIntakes = _other.m_addedIntakes;
@@ -836,7 +867,7 @@ public:
     /// \pre !_startDate.isUndefined()
     /// \post m_startDate == _startDate
     /// \post m_endDate == _endDate
-    DosageTimeRange(const DateTime& _startDate, const DateTime& _endDate, const Dosage &_dosage)
+    DosageTimeRange(const DateTime& _startDate, const DateTime& _endDate, const Dosage& _dosage)
         : m_startDate(_startDate), m_endDate(_endDate)
     {
         m_dosage = _dosage.cloneDosage();
@@ -855,7 +886,7 @@ public:
     /// \param _intake Intake to either mark as skipped or add (if unplanned).
     /// \param _operation Operation to perform
     /// \return 0 if the change has been successfully recorded, -1 otherwise.
-    int addIntakeChange(const IntakeEvent &_intake, const ScheduledIntakeOp &_operation)
+    int addIntakeChange(const IntakeEvent& _intake, const ScheduledIntakeOp& _operation)
     {
         switch (_operation) {
         case ScheduledIntakeOp::Skip:
@@ -889,15 +920,16 @@ public:
     /// \param _timeRange Time range to check.
     /// \param _timeRangeList List of time ranges to compare against.
     /// \return true if the given time range overlaps with at least one time range of the list, false otherwise.
-    friend bool timeRangesOverlap(const DosageTimeRange &_timeRange, const DosageTimeRangeList &_timeRangeList);
+    friend bool timeRangesOverlap(const DosageTimeRange& _timeRange, const DosageTimeRangeList& _timeRangeList);
 
     /// \brief Check if two time ranges overlap.
     /// \param _first First time range to check.
     /// \param _second Second time range to check.
     /// \return true if the two time ranges overlap, false otherwise.
-    friend bool timeRangesOverlap(const DosageTimeRange &_first, const DosageTimeRange &_second);
+    friend bool timeRangesOverlap(const DosageTimeRange& _first, const DosageTimeRange& _second);
 
-    const Dosage* getDosage() const {
+    const Dosage* getDosage() const
+    {
         return m_dosage.get();
     }
 
@@ -923,14 +955,14 @@ class DosageHistory
 
 public:
     /// \brief Create a new empty dosage history.
-    DosageHistory() { }
+    DosageHistory() {}
 
     ///
     /// \brief DosageHistory copy constructor
     /// \param obj original DosageHistory object
     ///
     /// TODO : A test for this function needs to be written
-    DosageHistory( const DosageHistory &_obj)
+    DosageHistory(const DosageHistory& _obj)
     {
         for (const auto& timeRange : _obj.m_history) {
             this->addTimeRange(*timeRange);
@@ -942,7 +974,7 @@ public:
     /// \param obj original DosageHistory object
     ///
     /// TODO : A test for this function needs to be written
-    DosageHistory( const DosageHistory &&_obj) noexcept
+    DosageHistory(const DosageHistory&& _obj) noexcept
     {
         for (const auto& timeRange : _obj.m_history) {
             this->addTimeRange(*timeRange);
@@ -977,7 +1009,7 @@ public:
 
     /// \brief Add a time range to the history.
     /// \param _timeRange Time range to add.
-    void addTimeRange(const DosageTimeRange &_timeRange)
+    void addTimeRange(const DosageTimeRange& _timeRange)
     {
         m_history.emplace_back(new DosageTimeRange(_timeRange));
     }
@@ -1003,13 +1035,14 @@ public:
     /// replace them by the new one in case of overlapping.
     /// TODO : A test for this function needs to be written
     ///
-    void mergeDosage(const DosageTimeRange *_newDosage);
+    void mergeDosage(const DosageTimeRange* _newDosage);
 
     FormulationAndRoute getLastFormulationAndRoute() const;
 
     std::vector<FormulationAndRoute> getFormulationAndRouteList() const;
 
-    const DosageTimeRangeList& getDosageTimeRanges() const {
+    const DosageTimeRangeList& getDosageTimeRanges() const
+    {
         return m_history;
     }
 

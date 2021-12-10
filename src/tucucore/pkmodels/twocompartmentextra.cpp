@@ -5,12 +5,14 @@
 #include <Eigen/Dense>
 
 #include "tucucore/pkmodels/twocompartmentextra.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
 
-TwoCompartmentExtraMicro::TwoCompartmentExtraMicro() : IntakeIntervalCalculatorBase<3, TwoCompartmentExtraExponentials> (new PertinentTimesCalculatorStandard())
+TwoCompartmentExtraMicro::TwoCompartmentExtraMicro()
+    : IntakeIntervalCalculatorBase<3, TwoCompartmentExtraExponentials>(new PertinentTimesCalculatorStandard())
 {
 }
 
@@ -35,8 +37,8 @@ bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
-    m_Alpha = (sumK + m_RootK)/2;
-    m_Beta = (sumK - m_RootK)/2;
+    m_Alpha = (sumK + m_RootK) / 2;
+    m_Beta = (sumK - m_RootK) / 2;
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -57,7 +59,7 @@ bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 }
 
 
-void TwoCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times) 
+void TwoCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times)
 {
     setExponentials(Exponentials::Alpha, (-m_Alpha * _times).array().exp());
     setExponentials(Exponentials::Beta, (-m_Beta * _times).array().exp());
@@ -65,7 +67,11 @@ void TwoCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool TwoCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentExtraMicro::computeConcentrations(
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Eigen::VectorXd concentrations2, concentrations3;
@@ -93,7 +99,12 @@ bool TwoCompartmentExtraMicro::computeConcentrations(const Residuals& _inResidua
     return bOK;
 }
 
-bool TwoCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentExtraMicro::computeConcentration(
+        const Value& _atTime,
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Eigen::VectorXd concentrations2, concentrations3;
@@ -132,9 +143,7 @@ bool TwoCompartmentExtraMicro::computeConcentration(const Value& _atTime, const 
     return bOK;
 }
 
-TwoCompartmentExtraMacro::TwoCompartmentExtraMacro() : TwoCompartmentExtraMicro()
-{
-}
+TwoCompartmentExtraMacro::TwoCompartmentExtraMacro() : TwoCompartmentExtraMicro() {}
 
 std::vector<std::string> TwoCompartmentExtraMacro::getParametersId()
 {
@@ -143,10 +152,10 @@ std::vector<std::string> TwoCompartmentExtraMacro::getParametersId()
 
 bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
         return false;
     }
-    
+
     m_D = _intakeEvent.getDose();
     Value cl = _parameters.getValue(ParameterId::CL);
     Value q = _parameters.getValue(ParameterId::Q);
@@ -159,8 +168,8 @@ bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_K21 = q / v2;
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
-    m_Alpha = (sumK + m_RootK)/2;
-    m_Beta = (sumK - m_RootK)/2;
+    m_Alpha = (sumK + m_RootK) / 2;
+    m_Beta = (sumK - m_RootK) / 2;
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -181,6 +190,5 @@ bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     return true;
 }
 
-}
-}
-
+} // namespace Core
+} // namespace Tucuxi

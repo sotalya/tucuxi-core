@@ -4,6 +4,7 @@
 */
 
 #include "tucucore/drugmodel/drugmodel.h"
+
 #include "tucucore/covariateevent.h"
 
 namespace Tucuxi {
@@ -15,8 +16,9 @@ void ParameterDefinitionIterator::build()
 
     // Depending on the constructor invoked, we build the list of absorption parameters
     if (!m_fullFormulationAndRoutes.empty()) {
-        for (const auto & f : m_fullFormulationAndRoutes) {
-            const ParameterSetDefinition* parameter = m_model.getAbsorptionParameters(m_analyteGroupId, f->getFormulationAndRoute());
+        for (const auto& f : m_fullFormulationAndRoutes) {
+            const ParameterSetDefinition* parameter =
+                    m_model.getAbsorptionParameters(m_analyteGroupId, f->getFormulationAndRoute());
             if (parameter != nullptr) {
                 m_absorptionParameters.push_back(parameter);
                 m_total += parameter->getNbParameters();
@@ -24,7 +26,7 @@ void ParameterDefinitionIterator::build()
         }
     }
     else if (!m_formulationAndRoutes.empty()) {
-        for (const auto & f : m_formulationAndRoutes) {
+        for (const auto& f : m_formulationAndRoutes) {
             const ParameterSetDefinition* parameter = m_model.getAbsorptionParameters(m_analyteGroupId, f);
             if (parameter != nullptr) {
                 m_absorptionParameters.push_back(parameter);
@@ -33,7 +35,8 @@ void ParameterDefinitionIterator::build()
         }
     }
     else {
-        const ParameterSetDefinition* parameter = m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);
+        const ParameterSetDefinition* parameter =
+                m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);
         if (parameter != nullptr) {
             m_absorptionParameters.push_back(parameter);
             m_total += parameter->getNbParameters();
@@ -47,26 +50,30 @@ void ParameterDefinitionIterator::build()
 
 
     // Add the absorption parameters
-    for(const auto & params : m_absorptionParameters) {
-        for (size_t i = 0;i < params->getNbParameters(); i++) {
+    for (const auto& params : m_absorptionParameters) {
+        for (size_t i = 0; i < params->getNbParameters(); i++) {
             m_parametersVector.push_back({params->getParameter(i)->getId(), params->getParameter(i)->isVariable()});
         }
     }
 
     // Add the elimination parameters
-    for (size_t i = 0;i < dispositionParameters->getNbParameters(); i++) {
-        m_parametersVector.push_back({dispositionParameters->getParameter(i)->getId(), dispositionParameters->getParameter(i)->isVariable()});
+    for (size_t i = 0; i < dispositionParameters->getNbParameters(); i++) {
+        m_parametersVector.push_back(
+                {dispositionParameters->getParameter(i)->getId(),
+                 dispositionParameters->getParameter(i)->isVariable()});
     }
 
     // We sort alphabetically the parameter Ids
-    std::sort(m_parametersVector.begin(), m_parametersVector.end(), [&] (const ParameterInfo& v1, const ParameterInfo& v2) {
-        if (v1.isVariable && !v2.isVariable)
-            return true;
-        if (!v1.isVariable && v2.isVariable)
-            return false;
-        return v1.id < v2.id;
-    });
-
+    std::sort(
+            m_parametersVector.begin(),
+            m_parametersVector.end(),
+            [&](const ParameterInfo& v1, const ParameterInfo& v2) {
+                if (v1.isVariable && !v2.isVariable)
+                    return true;
+                if (!v1.isVariable && v2.isVariable)
+                    return false;
+                return v1.id < v2.id;
+            });
 }
 
 bool ParameterDefinitionIterator::isDone() const
@@ -81,8 +88,8 @@ const ParameterDefinition* ParameterDefinitionIterator::operator*()
     std::string curId = m_parametersVector[m_index].id;
 
     // Iterate over the absorption parameters to find the parameter Id
-    for(const auto & parameterSet : m_absorptionParameters) {
-        for (size_t i = 0;i < parameterSet->getNbParameters(); i++) {
+    for (const auto& parameterSet : m_absorptionParameters) {
+        for (size_t i = 0; i < parameterSet->getNbParameters(); i++) {
             if (parameterSet->getParameter(i)->getId() == curId)
                 return parameterSet->getParameter(i);
         }
@@ -91,7 +98,7 @@ const ParameterDefinition* ParameterDefinitionIterator::operator*()
     // Iterate over the disposition parameters to find the parameter Id
     const ParameterSetDefinition* dispositionParameters = m_model.getDispositionParameters(m_analyteGroupId);
 
-    for (size_t i = 0;i < dispositionParameters->getNbParameters(); i++) {
+    for (size_t i = 0; i < dispositionParameters->getNbParameters(); i++) {
         if (dispositionParameters->getParameter(i)->getId() == curId)
             return dispositionParameters->getParameter(i);
     }
@@ -133,7 +140,7 @@ const CovariateDefinitions& DrugModel::getCovariates() const
 
 bool DrugModel::hasDoseCovariate() const
 {
-    for (const auto &covariate : m_covariates) {
+    for (const auto& covariate : m_covariates) {
         if (covariate->getType() == CovariateType::Dose) {
             return true;
         }
@@ -142,9 +149,9 @@ bool DrugModel::hasDoseCovariate() const
 }
 
 
-CovariateDefinition *DrugModel::getDoseCovariate() const
+CovariateDefinition* DrugModel::getDoseCovariate() const
 {
-    for (const auto &covariate : m_covariates) {
+    for (const auto& covariate : m_covariates) {
         if (covariate->getType() == CovariateType::Dose) {
             return covariate.get();
         }
@@ -186,5 +193,5 @@ void DrugModel::addAnalyteSet(std::unique_ptr<AnalyteSet> _analyteSet)
 
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

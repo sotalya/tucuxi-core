@@ -5,17 +5,16 @@
 namespace Tucuxi {
 namespace Core {
 
-IntakeIntervalCalculatorAnalytical::~IntakeIntervalCalculatorAnalytical()
-= default;
+IntakeIntervalCalculatorAnalytical::~IntakeIntervalCalculatorAnalytical() = default;
 
 ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
         std::vector<Concentrations>& _concentrations,
-        TimeOffsets & _times,
+        TimeOffsets& _times,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,
         bool _isAll,
-        Residuals & _outResiduals,
+        Residuals& _outResiduals,
         const bool _isDensityConstant)
 {
     if (m_firstCalculation) {
@@ -30,8 +29,7 @@ ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
     }
     TMP_UNUSED_PARAMETER(_isDensityConstant);
     m_loggingErrors = false;
-    if (!checkInputs(_intakeEvent, _parameters))
-    {
+    if (!checkInputs(_intakeEvent, _parameters)) {
         m_loggingErrors = true;
         return ComputingStatus::BadParameters;
     }
@@ -52,7 +50,7 @@ ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
     m_pertinentTimesCalculator->calculateTimes(_intakeEvent, static_cast<Eigen::Index>(nbPoints), times);
 
     // Can we reuse cached exponentials?
-    if (!m_cache.get(_intakeEvent.getInterval(), _parameters, nbPoints, m_precomputedExponentials))	{
+    if (!m_cache.get(_intakeEvent.getInterval(), _parameters, nbPoints, m_precomputedExponentials)) {
         computeExponentials(times);
         m_cache.set(_intakeEvent.getInterval(), _parameters, nbPoints, m_precomputedExponentials);
     }
@@ -69,13 +67,13 @@ ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
 
 
 ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakeSinglePoint(
-    std::vector<Concentrations>& _concentrations,
-    const IntakeEvent& _intakeEvent,
-    const ParameterSetEvent& _parameters,
-    const Residuals& _inResiduals,
-    const Value& _atTime,
-    bool _isAll,
-    Residuals& _outResiduals)
+        std::vector<Concentrations>& _concentrations,
+        const IntakeEvent& _intakeEvent,
+        const ParameterSetEvent& _parameters,
+        const Residuals& _inResiduals,
+        const Value& _atTime,
+        bool _isAll,
+        Residuals& _outResiduals)
 {
     if (m_firstCalculation) {
         m_firstCalculation = false;

@@ -10,8 +10,15 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class OneCompartmentBolusExponentials : int { Ke };
-enum class OneCompartmentBolusCompartments : int { First };
+enum class OneCompartmentBolusExponentials : int
+{
+    Ke
+};
+
+enum class OneCompartmentBolusCompartments : int
+{
+    First
+};
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment bolus algorithm
@@ -32,23 +39,36 @@ public:
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+
     void computeExponentials(Eigen::VectorXd& _times) override;
-    bool computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
-    bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override;
+
+    bool computeConcentrations(
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) override;
+
+    bool computeConcentration(
+            const Value& _atTime,
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) override;
+
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations);
 
-    Value m_D;	/// Quantity of drug
-    Value m_V;	/// Volume of the compartment
+    Value m_D;  /// Quantity of drug
+    Value m_V;  /// Volume of the compartment
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
     Eigen::Index m_nbPoints; /// Number measure points during interval
-    Value m_Int; /// Interval (hours)
+    Value m_Int;             /// Interval (hours)
 
 private:
     typedef OneCompartmentBolusCompartments Compartments;
 };
 
 inline void OneCompartmentBolusMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations)
-{    
+{
     _concentrations = (m_D / m_V + _inResiduals[0]) * exponentials(Exponentials::Ke);
 }
 

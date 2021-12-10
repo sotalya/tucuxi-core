@@ -9,11 +9,10 @@
 namespace Tucuxi {
 namespace Core {
 
-DrugTreatment::DrugTreatment()
-= default;
+DrugTreatment::DrugTreatment() = default;
 
 
-const DosageHistory &DrugTreatment::getDosageHistory() const
+const DosageHistory& DrugTreatment::getDosageHistory() const
 {
     return m_dosageHistory;
 }
@@ -71,5 +70,5 @@ void DrugTreatment::addSample(std::unique_ptr<Sample> _sample)
 }
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

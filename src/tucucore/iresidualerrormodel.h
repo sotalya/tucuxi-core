@@ -6,8 +6,9 @@
 #define TUCUXI_CORE_IRESIDUALERRORMODEL_H
 
 
-#include "tucucore/definitions.h"
 #include "tucucommon/general.h"
+
+#include "tucucore/definitions.h"
 #include "tucucore/drugdefinitions.h"
 
 namespace Tucuxi {
@@ -16,7 +17,8 @@ namespace Core {
 ///
 /// \brief The currently implemented error models
 ///
-enum class ResidualErrorType {
+enum class ResidualErrorType
+{
     PROPORTIONAL,
     EXPONENTIAL,
     ADDITIVE,
@@ -35,7 +37,6 @@ enum class ResidualErrorType {
 class IResidualErrorModel
 {
 public:
-
     /// \brief virtual destructor
     virtual ~IResidualErrorModel() {}
 
@@ -47,13 +48,13 @@ public:
     /// \param _concentration The concentration to be modified.
     /// \param _eps The vector of epsilons
     /// This method supports a vector of epsilons and is responsible to modify the concentration.
-    virtual void applyEpsToValue(Concentration &_concentration, const Deviations &_eps) const = 0;
+    virtual void applyEpsToValue(Concentration& _concentration, const Deviations& _eps) const = 0;
 
     /// \brief Applies the epsilons to a set of concentrations
     /// \param _concentrations The set of concentrations.
     /// \param _eps The vector of epsilons
     /// This method supports a vector of epsilons and is responsible to modify the concentrations.
-    virtual void applyEpsToArray(Concentrations &_concentrations, const Deviations &_eps) const = 0;
+    virtual void applyEpsToArray(Concentrations& _concentrations, const Deviations& _eps) const = 0;
 
     /// \brief Calculates the likelihood of an observed value compared to an expected
     /// \param _expected Expected value
@@ -64,7 +65,6 @@ public:
     /// \brief Returns the number of epsilons requested by a specific implementation
     /// \return The number of epsilons requested by applyEpsToArray
     virtual size_t nbEpsilons() const = 0;
-
 };
 
 

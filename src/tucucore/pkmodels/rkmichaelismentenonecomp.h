@@ -7,7 +7,11 @@ namespace Tucuxi {
 namespace Core {
 
 
-enum class RkMichaelisMentenOneCompCompartments : int { First = 0, Second };
+enum class RkMichaelisMentenOneCompCompartments : int
+{
+    First = 0,
+    Second
+};
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm
@@ -22,7 +26,7 @@ public:
     /// \return The list of required PK parameters Ids
     static std::vector<std::string> getParametersId();
 
-    inline void derive(double _t, const std::vector<double> &_c, std::vector<double>& _dcdt)
+    inline void derive(double _t, const std::vector<double>& _c, std::vector<double>& _dcdt)
     {
         FINAL_UNUSED_PARAMETER(_t);
         _dcdt[0] = m_Ka * _c[1] - m_Vmax * _c[0] / (m_Km + _c[0]);
@@ -36,8 +40,7 @@ public:
     }
 
 protected:
-
-    Value m_D;	/// Quantity of drug
+    Value m_D;  /// Quantity of drug
     Value m_F;  /// bioavailability
     Value m_Ka; /// Absorption rate constant
     Value m_V;  /// Volume of the compartment
@@ -69,12 +72,11 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    void initConcentrations (const Residuals& _inResiduals, std::vector<double> &_concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1] + m_D / m_V * m_F;
     }
-
 };
 
 /// \ingroup TucuCore
@@ -94,12 +96,11 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    void initConcentrations (const Residuals& _inResiduals, std::vector<double> &_concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0] + m_D / m_V * m_F;
         _concentrations[1] = _inResiduals[1];
     }
-
 };
 
 /// \ingroup TucuCore
@@ -119,12 +120,11 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    void initConcentrations (const Residuals& _inResiduals, std::vector<double> &_concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1];
     }
-
 };
 
 

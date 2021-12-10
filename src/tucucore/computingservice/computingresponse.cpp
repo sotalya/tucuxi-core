@@ -11,11 +11,8 @@ namespace Tucuxi {
 namespace Core {
 
 
-ComputingResponse::ComputingResponse(RequestResponseId _id) :
-    m_id(std::move(_id))
-{
+ComputingResponse::ComputingResponse(RequestResponseId _id) : m_id(std::move(_id)) {}
 
-}
 RequestResponseId ComputingResponse::getId() const
 {
     return m_id;
@@ -48,11 +45,7 @@ ComputingStatus ComputingResponse::getComputingStatus() const
 }
 
 
-ComputedData::ComputedData(RequestResponseId _id) :
-    m_id(std::move(_id))
-{
-
-}
+ComputedData::ComputedData(RequestResponseId _id) : m_id(std::move(_id)) {}
 
 ComputedData::~ComputedData() = default;
 
@@ -61,5 +54,5 @@ RequestResponseId ComputedData::getId() const
     return m_id;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

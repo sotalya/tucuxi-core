@@ -1,11 +1,13 @@
 #include "rkmichaelismententwocomp.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
 
 
-RkMichaelisMentenTwoComp::RkMichaelisMentenTwoComp() : IntakeIntervalCalculatorRK4Base<3, RkMichaelisMentenTwoComp> (new PertinentTimesCalculatorStandard())
+RkMichaelisMentenTwoComp::RkMichaelisMentenTwoComp()
+    : IntakeIntervalCalculatorRK4Base<3, RkMichaelisMentenTwoComp>(new PertinentTimesCalculatorStandard())
 {
     m_Tinf = 0.0;
     m_Tlag = 0.0;
@@ -24,7 +26,8 @@ std::vector<std::string> RkMichaelisMentenTwoCompExtraMicro::getParametersId()
     return {"V1", "Km", "Vmax", "K12", "K21", "F", "Ka"};
 }
 
-bool RkMichaelisMentenTwoCompExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool RkMichaelisMentenTwoCompExtraMicro::checkInputs(
+        const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 7, "The number of parameters should be equal to 7.")) {
         return false;
@@ -71,7 +74,8 @@ std::vector<std::string> RkMichaelisMentenTwoCompExtraLagMicro::getParametersId(
     return {"V1", "Km", "Vmax", "K12", "K21", "F", "Ka", "Tlag"};
 }
 
-bool RkMichaelisMentenTwoCompExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool RkMichaelisMentenTwoCompExtraLagMicro::checkInputs(
+        const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 8, "The number of parameters should be equal to 8.")) {
         return false;
@@ -122,7 +126,8 @@ std::vector<std::string> RkMichaelisMentenTwoCompBolusMicro::getParametersId()
     return {"V1", "Km", "Vmax", "K12", "K21"};
 }
 
-bool RkMichaelisMentenTwoCompBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool RkMichaelisMentenTwoCompBolusMicro::checkInputs(
+        const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
         return false;
@@ -169,7 +174,8 @@ std::vector<std::string> RkMichaelisMentenTwoCompInfusionMicro::getParametersId(
     return {"V1", "Km", "Vmax", "K12", "K21"};
 }
 
-bool RkMichaelisMentenTwoCompInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool RkMichaelisMentenTwoCompInfusionMicro::checkInputs(
+        const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
         return false;
@@ -226,10 +232,7 @@ bool RkMichaelisMentenTwoCompInfusionMicro::checkInputs(const IntakeEvent& _inta
 
 
 
-RkMichaelisMentenTwoCompExtraMacro::RkMichaelisMentenTwoCompExtraMacro()
-{
-
-}
+RkMichaelisMentenTwoCompExtraMacro::RkMichaelisMentenTwoCompExtraMacro() {}
 
 
 
@@ -238,7 +241,8 @@ std::vector<std::string> RkMichaelisMentenTwoCompExtraMacro::getParametersId()
     return {"V1", "Km", "Vmax", "V2", "Q", "F", "Ka"};
 }
 
-bool RkMichaelisMentenTwoCompExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool RkMichaelisMentenTwoCompExtraMacro::checkInputs(
+        const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 7, "The number of parameters should be equal to 7.")) {
         return false;
@@ -275,16 +279,15 @@ bool RkMichaelisMentenTwoCompExtraMacro::checkInputs(const IntakeEvent& _intakeE
 }
 
 
-RkMichaelisMentenTwoCompExtraLagMacro::RkMichaelisMentenTwoCompExtraLagMacro()
-{
-}
+RkMichaelisMentenTwoCompExtraLagMacro::RkMichaelisMentenTwoCompExtraLagMacro() {}
 
 std::vector<std::string> RkMichaelisMentenTwoCompExtraLagMacro::getParametersId()
 {
     return {"V1", "Km", "Vmax", "V2", "Q", "F", "Ka", "Tlag"};
 }
 
-bool RkMichaelisMentenTwoCompExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool RkMichaelisMentenTwoCompExtraLagMacro::checkInputs(
+        const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 8, "The number of parameters should be equal to 8.")) {
         return false;
@@ -322,16 +325,15 @@ bool RkMichaelisMentenTwoCompExtraLagMacro::checkInputs(const IntakeEvent& _inta
 }
 
 
-RkMichaelisMentenTwoCompBolusMacro::RkMichaelisMentenTwoCompBolusMacro()
-{
-}
+RkMichaelisMentenTwoCompBolusMacro::RkMichaelisMentenTwoCompBolusMacro() {}
 
 std::vector<std::string> RkMichaelisMentenTwoCompBolusMacro::getParametersId()
 {
     return {"V1", "Km", "Vmax", "V2", "Q"};
 }
 
-bool RkMichaelisMentenTwoCompBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool RkMichaelisMentenTwoCompBolusMacro::checkInputs(
+        const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
         return false;
@@ -380,17 +382,15 @@ bool RkMichaelisMentenTwoCompBolusMacro::checkInputs(const IntakeEvent& _intakeE
 
 
 
-RkMichaelisMentenTwoCompInfusionMacro::RkMichaelisMentenTwoCompInfusionMacro()
-{
-
-}
+RkMichaelisMentenTwoCompInfusionMacro::RkMichaelisMentenTwoCompInfusionMacro() {}
 
 std::vector<std::string> RkMichaelisMentenTwoCompInfusionMacro::getParametersId()
 {
     return {"V1", "Km", "Vmax", "V2", "Q"};
 }
 
-bool RkMichaelisMentenTwoCompInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool RkMichaelisMentenTwoCompInfusionMacro::checkInputs(
+        const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
         return false;

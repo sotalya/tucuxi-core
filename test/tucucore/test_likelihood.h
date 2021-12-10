@@ -8,32 +8,30 @@
 #include <iostream>
 #include <memory>
 
-#include "fructose/fructose.h"
-
 #include "tucucommon/duration.h"
 
+#include "tucucore/concentrationcalculator.h"
+#include "tucucore/drugmodel/formulationandroute.h"
+#include "tucucore/intakeevent.h"
+#include "tucucore/likelihood.h"
 #include "tucucore/pkmodels/onecompartmentbolus.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
-#include "tucucore/pkmodels/onecompartmentinfusion.h"
 #include "tucucore/pkmodels/onecompartmentextralag.h"
-#include "tucucore/pkmodels/twocompartmentbolus.h"
-#include "tucucore/pkmodels/twocompartmentextra.h"
-#include "tucucore/pkmodels/twocompartmentinfusion.h"
-#include "tucucore/pkmodels/twocompartmentextralag.h"
-#include "tucucore/pkmodels/threecompartmentbolus.h"
-#include "tucucore/pkmodels/threecompartmentextra.h"
-#include "pkmodels/constanteliminationbolus.h"
-
+#include "tucucore/pkmodels/onecompartmentinfusion.h"
 #include "tucucore/pkmodels/rkonecompartmentextra.h"
 #include "tucucore/pkmodels/rkonecompartmentgammaextra.h"
 #include "tucucore/pkmodels/rktwocompartmenterlang.h"
 #include "tucucore/pkmodels/rktwocompartmentextralag.h"
-
-#include "tucucore/drugmodel/formulationandroute.h"
-#include "tucucore/intakeevent.h"
-#include "tucucore/likelihood.h"
+#include "tucucore/pkmodels/threecompartmentbolus.h"
+#include "tucucore/pkmodels/threecompartmentextra.h"
+#include "tucucore/pkmodels/twocompartmentbolus.h"
+#include "tucucore/pkmodels/twocompartmentextra.h"
+#include "tucucore/pkmodels/twocompartmentextralag.h"
+#include "tucucore/pkmodels/twocompartmentinfusion.h"
 #include "tucucore/residualerrormodel.h"
-#include "tucucore/concentrationcalculator.h"
+
+#include "fructose/fructose.h"
+#include "pkmodels/constanteliminationbolus.h"
 
 using namespace Tucuxi::Core;
 using namespace std::chrono_literals;
@@ -42,15 +40,13 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
 {
     static const int CYCLE_SIZE = 251;
 
-    TestLikelihood() { }
+    TestLikelihood() {}
 
 
     FormulationAndRoute getBolusFormulationAndRoute()
     {
         return FormulationAndRoute(
-                Formulation::Test,
-                AdministrationRoute::IntravenousBolus,
-                AbsorptionModel::Intravascular);
+                Formulation::Test, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
     }
 
     ///
@@ -64,26 +60,30 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
     IntakeSeries buildIntakeSeries()
     {
         IntakeSeries intakes;
-        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
-                                      Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
-                             Duration(),
-                             DoseValue(200.0),
-                             TucuUnit("mg"),
-                             Duration(std::chrono::hours(24)),
-                             getBolusFormulationAndRoute(),
-                             getBolusFormulationAndRoute().getAbsorptionModel(),
-                             Duration(std::chrono::minutes(20)),
-                             static_cast<int>(CYCLE_SIZE));
-        intakes.emplace_back(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(7)),
-                                      Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
-                             Duration(),
-                             DoseValue(200.0),
-                             TucuUnit("mg"),
-                             Duration(std::chrono::hours(24)),
-                             getBolusFormulationAndRoute(),
-                             getBolusFormulationAndRoute().getAbsorptionModel(),
-                             Duration(std::chrono::minutes(20)),
-                             static_cast<int>(CYCLE_SIZE));
+        intakes.emplace_back(
+                DateTime(
+                        date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                        Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
+                Duration(),
+                DoseValue(200.0),
+                TucuUnit("mg"),
+                Duration(std::chrono::hours(24)),
+                getBolusFormulationAndRoute(),
+                getBolusFormulationAndRoute().getAbsorptionModel(),
+                Duration(std::chrono::minutes(20)),
+                static_cast<int>(CYCLE_SIZE));
+        intakes.emplace_back(
+                DateTime(
+                        date::year_month_day(date::year(2017), date::month(6), date::day(7)),
+                        Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
+                Duration(),
+                DoseValue(200.0),
+                TucuUnit("mg"),
+                Duration(std::chrono::hours(24)),
+                getBolusFormulationAndRoute(),
+                getBolusFormulationAndRoute().getAbsorptionModel(),
+                Duration(std::chrono::minutes(20)),
+                static_cast<int>(CYCLE_SIZE));
 
         // Associate the intake calculator to the intakes
         std::shared_ptr<ConstantEliminationBolus> intakeCalculator = std::make_shared<ConstantEliminationBolus>();
@@ -107,18 +107,20 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
 
         // Only one sample at date 06/06/2017 at 12:30
         // Sample value: 200.0
-        SampleEvent sample1(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
-                                     Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
-                            200.0);
+        SampleEvent sample1(
+                DateTime(
+                        date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                        Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
+                200.0);
         SampleSeries samples;
         samples.push_back(sample1);
 
         // Here we have wrong parameters, and a matrix with a size corresponding to the number of variable parameters
-        auto omega = Tucuxi::Core::OmegaMatrix(2,2);
-        omega(0,0) = 0.356 * 0.356;
-        omega(0,1) = 0.798 * 0.356 * 0.629;
-        omega(1,1) = 0.629 * 0.629;
-        omega(1,0) = 0.798 * 0.356 * 0.629;
+        auto omega = Tucuxi::Core::OmegaMatrix(2, 2);
+        omega(0, 0) = 0.356 * 0.356;
+        omega(0, 1) = 0.798 * 0.356 * 0.629;
+        omega(1, 1) = 0.629 * 0.629;
+        omega(1, 0) = 0.798 * 0.356 * 0.629;
 
         SigmaResidualErrorModel residualErrorModel;
         Tucuxi::Core::Sigma sigma(1);
@@ -127,8 +129,10 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
         residualErrorModel.setSigma(sigma);
 
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V", 347, Tucuxi::Core::ParameterVariabilityType::Additive));
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::Additive));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "V", 347, Tucuxi::Core::ParameterVariabilityType::Additive));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::Additive));
         Tucuxi::Core::ParameterSetEvent parameterEvent(DateTime::now(), microParameterDefs);
         ConcentrationCalculator calculator;
         ParameterSetSeries parameters;
@@ -158,18 +162,24 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
 
         // Only one sample at date 06/06/2017 at 12:30
         // Sample value: 200.0
-        SampleEvent sample1(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
-                                     Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
-                            200.0);
+        SampleEvent sample1(
+                DateTime(
+                        date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                        Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
+                200.0);
         SampleSeries samples;
         samples.push_back(sample1);
 
         // Here we build parameters that correspond to the intake calculator (ConstantEliminationBolus)
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameterEvent(DateTime::now(), microParameterDefs);
         ConcentrationCalculator calculator;
         ParameterSetSeries parameters;
@@ -186,8 +196,8 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
         Etas etas(1);
         etas[0] = theEta;
 
-        auto omega = Tucuxi::Core::OmegaMatrix(1,1);
-        omega(0,0) = 0.1; // Variance of A
+        auto omega = Tucuxi::Core::OmegaMatrix(1, 1);
+        omega(0, 0) = 0.1; // Variance of A
 
         Likelihood likelihood(omega, residualErrorModel, samples, intakes, parameters, calculator);
 
@@ -203,8 +213,8 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
         EigenVector etasmd(1);
         etasmd[0] = theEta;
 
-        double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd) -
-                               residualErrorModel.calculateSampleLikelihood(expectedSampleValue, sample1.getValue());
+        double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
+                               - residualErrorModel.calculateSampleLikelihood(expectedSampleValue, sample1.getValue());
         fructose_assert_double_eq(res, expectedValue);
     }
 
@@ -222,10 +232,14 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
 
         // Here we build parameters that correspond to the intake calculator (ConstantEliminationBolus)
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameterEvent(DateTime::now(), microParameterDefs);
         ConcentrationCalculator calculator;
         ParameterSetSeries parameters;
@@ -242,19 +256,23 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
         Etas etas(1);
         etas[0] = theEta;
 
-        auto omega = Tucuxi::Core::OmegaMatrix(1,1);
-        omega(0,0) = 0.1; // Variance of A
+        auto omega = Tucuxi::Core::OmegaMatrix(1, 1);
+        omega(0, 0) = 0.1; // Variance of A
 
         // Two samples at date 06/06/2017 at 12:30
         // Sample value: 200.0
         SampleSeries samples;
-        SampleEvent sample1(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
-                                     Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
-                            200.0);
+        SampleEvent sample1(
+                DateTime(
+                        date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                        Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
+                200.0);
         samples.push_back(sample1);
-        SampleEvent sample2(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
-                                     Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
-                            200.0);
+        SampleEvent sample2(
+                DateTime(
+                        date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                        Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
+                200.0);
         samples.push_back(sample2);
 
 
@@ -272,8 +290,9 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
         EigenVector etasmd(1);
         etasmd[0] = theEta;
 
-        double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd) -
-                               2.0 * residualErrorModel.calculateSampleLikelihood(expectedSampleValue, sample1.getValue());
+        double expectedValue =
+                0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
+                - 2.0 * residualErrorModel.calculateSampleLikelihood(expectedSampleValue, sample1.getValue());
         fructose_assert_double_eq(res, expectedValue);
     }
 
@@ -292,10 +311,14 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
 
         // Here we build parameters that correspond to the intake calculator (ConstantEliminationBolus)
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestS", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameterEvent(DateTime::now(), microParameterDefs);
         ConcentrationCalculator calculator;
         ParameterSetSeries parameters;
@@ -312,21 +335,25 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
         Etas etas(1);
         etas[0] = theEta;
 
-        auto omega = Tucuxi::Core::OmegaMatrix(1,1);
-        omega(0,0) = 0.1; // Variance of A
+        auto omega = Tucuxi::Core::OmegaMatrix(1, 1);
+        omega(0, 0) = 0.1; // Variance of A
 
         // Two samples at date 06/06/2017.
         // First at 12:30
         // Second at 16:30
         // Sample value: 200.0
         SampleSeries samples;
-        SampleEvent sample1(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
-                                     Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
-                            200.0);
+        SampleEvent sample1(
+                DateTime(
+                        date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                        Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
+                200.0);
         samples.push_back(sample1);
-        SampleEvent sample2(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
-                                     Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0))),
-                            200.0);
+        SampleEvent sample2(
+                DateTime(
+                        date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                        Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0))),
+                200.0);
         samples.push_back(sample2);
 
 
@@ -345,9 +372,9 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
         EigenVector etasmd(1);
         etasmd[0] = theEta;
 
-        double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd) -
-                               residualErrorModel.calculateSampleLikelihood(expectedSampleValue1, sample1.getValue()) -
-                               residualErrorModel.calculateSampleLikelihood(expectedSampleValue2, sample2.getValue());
+        double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
+                               - residualErrorModel.calculateSampleLikelihood(expectedSampleValue1, sample1.getValue())
+                               - residualErrorModel.calculateSampleLikelihood(expectedSampleValue2, sample2.getValue());
         fructose_assert_double_eq(res, expectedValue);
     }
 
@@ -366,10 +393,14 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
 
         // Here we build parameters that correspond to the intake calculator (ConstantEliminationBolus)
         Tucuxi::Core::ParameterDefinitions microParameterDefs;
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
-        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("TestS", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameterEvent(DateTime::now(), microParameterDefs);
         ConcentrationCalculator calculator;
         ParameterSetSeries parameters;
@@ -386,25 +417,31 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
         Etas etas(1);
         etas[0] = theEta;
 
-        auto omega = Tucuxi::Core::OmegaMatrix(1,1);
-        omega(0,0) = 0.1; // Variance of A
+        auto omega = Tucuxi::Core::OmegaMatrix(1, 1);
+        omega(0, 0) = 0.1; // Variance of A
 
         // Three samples at date 06/06/2017.
         // First at 12:30 : value 200.0
         // Second at 16:30 : value 200.0
         // Third at 17:30 : value 100.0
         SampleSeries samples;
-        SampleEvent sample1(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
-                                     Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
-                            200.0);
+        SampleEvent sample1(
+                DateTime(
+                        date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                        Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
+                200.0);
         samples.push_back(sample1);
-        SampleEvent sample2(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
-                                     Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0))),
-                            200.0);
+        SampleEvent sample2(
+                DateTime(
+                        date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                        Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0))),
+                200.0);
         samples.push_back(sample2);
-        SampleEvent sample3(DateTime(date::year_month_day(date::year(2017), date::month(6), date::day(6)),
-                                     Duration(std::chrono::hours(17), std::chrono::minutes(30), std::chrono::seconds(0))),
-                            100.0);
+        SampleEvent sample3(
+                DateTime(
+                        date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                        Duration(std::chrono::hours(17), std::chrono::minutes(30), std::chrono::seconds(0))),
+                100.0);
         samples.push_back(sample3);
 
 
@@ -424,13 +461,12 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
         EigenVector etasmd(1);
         etasmd[0] = theEta;
 
-        double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd) -
-                               residualErrorModel.calculateSampleLikelihood(expectedSampleValue1, sample1.getValue()) -
-                               residualErrorModel.calculateSampleLikelihood(expectedSampleValue2, sample2.getValue()) -
-                               residualErrorModel.calculateSampleLikelihood(expectedSampleValue3, sample3.getValue());
+        double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
+                               - residualErrorModel.calculateSampleLikelihood(expectedSampleValue1, sample1.getValue())
+                               - residualErrorModel.calculateSampleLikelihood(expectedSampleValue2, sample2.getValue())
+                               - residualErrorModel.calculateSampleLikelihood(expectedSampleValue3, sample3.getValue());
         fructose_assert_double_eq(res, expectedValue);
     }
-
 };
 
 #endif // TEST_LIKELIHOOD_H

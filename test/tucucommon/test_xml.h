@@ -2,13 +2,13 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include "fructose/fructose.h"
-
-#include "tucucommon/xmldocument.h"
-#include "tucucommon/xmlnode.h"
-#include "tucucommon/xmlattribute.h"
-#include "tucucommon/xmliterator.h"
 #include "tucucommon/utils.h"
+#include "tucucommon/xmlattribute.h"
+#include "tucucommon/xmldocument.h"
+#include "tucucommon/xmliterator.h"
+#include "tucucommon/xmlnode.h"
+
+#include "fructose/fructose.h"
 
 struct TestXml : public fructose::test_base<TestXml>
 {
@@ -24,7 +24,8 @@ struct TestXml : public fructose::test_base<TestXml>
         std::cout << _testName << std::endl;
 
         Tucuxi::Common::XmlDocument xmlDoc;
-        xmlDoc.fromString("<ROOT><CHILD text='abc' id='1'>Salut</CHILD><CHILD text='def' id='2'>Tcho</CHILD><AAA>bbb</AAA></ROOT>");
+        xmlDoc.fromString(
+                "<ROOT><CHILD text='abc' id='1'>Salut</CHILD><CHILD text='def' id='2'>Tcho</CHILD><AAA>bbb</AAA></ROOT>");
 
         std::string test = "";
         Tucuxi::Common::XmlNode root = xmlDoc.getRoot();
@@ -58,7 +59,7 @@ struct TestXml : public fructose::test_base<TestXml>
 
         Tucuxi::Common::XmlDocument doc;
         Tucuxi::Common::XmlNode root = doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "ROOT");
-        doc.setRoot(root);        
+        doc.setRoot(root);
         Tucuxi::Common::XmlNode node1 = doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "CHILD", "Salut");
         node1.addAttribute(doc.createAttribute("text", "abc"));
         node1.addAttribute(doc.createAttribute("id", "1"));
@@ -67,18 +68,19 @@ struct TestXml : public fructose::test_base<TestXml>
         node2.addAttribute(doc.createAttribute("text", "def"));
         node2.addAttribute(doc.createAttribute("id", "2"));
         root.addChild(node2);
-        
+
         std::string strXml;
         doc.toString(strXml);
 
-        fructose_assert(strXml == "<ROOT><CHILD text='abc' id='1'>Salut</CHILD><CHILD text='def' id='2'>Tcho</CHILD></ROOT>");
+        fructose_assert(
+                strXml == "<ROOT><CHILD text='abc' id='1'>Salut</CHILD><CHILD text='def' id='2'>Tcho</CHILD></ROOT>");
     }
 
     void files(const std::string& _testName)
     {
         std::cout << _testName << std::endl;
 
-        int nChildren =  5000;
+        int nChildren = 5000;
         std::string fileName = Tucuxi::Common::Utils::strFormat("%s/test.xml", m_path.c_str());
 
         { // Create a big document and save it into a text file
@@ -125,7 +127,6 @@ struct TestXml : public fructose::test_base<TestXml>
         xmlDoc.fromString("<ROOT><CHILD text='abc' id='1'>Salut</CHILD><CHILD text='def' id='2'>Tcho</CHILD></ROOT>");
 
         Tucuxi::Common::XmlNodeIterator iterNodes = xmlDoc.getRoot().getChildren("CHILD");
-
     }
 
 private:

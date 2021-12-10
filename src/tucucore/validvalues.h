@@ -12,7 +12,6 @@ namespace Core {
 class IValidValues
 {
 public:
-
     virtual std::vector<Value> getValues() const = 0;
 
     virtual Value getToValue() const = 0;
@@ -26,7 +25,7 @@ public:
 class ValidValues
 {
 public:
-    ValidValues(const Common::TucuUnit &_unit, std::unique_ptr<PopulationValue> _defaultValue);
+    ValidValues(const Common::TucuUnit& _unit, std::unique_ptr<PopulationValue> _defaultValue);
 
     virtual ~ValidValues();
 
@@ -41,7 +40,6 @@ public:
     void addValues(std::unique_ptr<IValidValues> _values);
 
 protected:
-
     TucuUnit m_unit;
     std::unique_ptr<PopulationValue> m_defaultValue;
 
@@ -54,10 +52,9 @@ class ValidValuesRange : public IValidValues
 {
 public:
     ValidValuesRange(
-             std::unique_ptr<PopulationValue> _from,
-             std::unique_ptr<PopulationValue> _to,
-             std::unique_ptr<PopulationValue> _step
-             );
+            std::unique_ptr<PopulationValue> _from,
+            std::unique_ptr<PopulationValue> _to,
+            std::unique_ptr<PopulationValue> _step);
 
     std::vector<Value> getValues() const override;
 
@@ -76,15 +73,23 @@ class ValidValuesFixed : public IValidValues
 {
 
 public:
-
     ValidValuesFixed();
 
     void addValue(Value _dose);
     std::vector<Value> getValues() const override;
 
-    Value getStepValue() const override {return 0.0;} // Need to change this, only use for ValidValuesRange
-    Value getToValue() const override {return 0.0;} // Need to change this, only use for ValidValuesRange
-    Value getFromValue() const override {return 0.0;} // Need to change this, only use for ValidValuesRange¨
+    Value getStepValue() const override
+    {
+        return 0.0;
+    } // Need to change this, only use for ValidValuesRange
+    Value getToValue() const override
+    {
+        return 0.0;
+    } // Need to change this, only use for ValidValuesRange
+    Value getFromValue() const override
+    {
+        return 0.0;
+    } // Need to change this, only use for ValidValuesRange¨
 
 protected:
     std::vector<Value> m_values;

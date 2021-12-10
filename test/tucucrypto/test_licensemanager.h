@@ -2,16 +2,16 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include <string>
-#include <iostream>
 #include <ctime>
+#include <iostream>
+#include <string>
+
+#include "tucucommon/datetime.h"
 
 #include "fructose/fructose.h"
-
-#include "tucucrypto/systeminfo.h"
 #include "tucucrypto/cryptohelper.h"
 #include "tucucrypto/licensemanager.h"
-#include "tucucommon/datetime.h"
+#include "tucucrypto/systeminfo.h"
 
 using namespace Tucuxi::Common;
 
@@ -22,9 +22,9 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
     std::string m_key;
 
 
-    std::string m_fingerprint;  // Fingerprint
-    MachineIdType m_type;       // Type of fingerprint
-    std::string m_licenses[6];  // Licenses
+    std::string m_fingerprint; // Fingerprint
+    MachineIdType m_type;      // Type of fingerprint
+    std::string m_licenses[6]; // Licenses
 
     TestLicenseManager(std::string& _path)
     {
@@ -38,7 +38,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         for (int i = int(MachineIdType::CPU); i != int(MachineIdType::UNDEFINED); i++) {
             m_fingerprint = SystemInfo::retrieveFingerPrint(static_cast<MachineIdType>(i));
 
-            if(!m_fingerprint.empty()) {
+            if (!m_fingerprint.empty()) {
                 m_type = static_cast<MachineIdType>(i);
                 break;
             }
@@ -54,8 +54,8 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         char endLicense1[9];
         char endLicense2[9];
         sprintf(today, "%i%02i%02i", dateToday.year(), dateToday.month(), dateToday.day());
-        sprintf(endLicense1, "%i%02i%02i", dateToday.year()+1, dateToday.month(), dateToday.day());
-        sprintf(endLicense2, "%i%02i%02i", dateToday.year()-1, dateToday.month(), dateToday.day());
+        sprintf(endLicense1, "%i%02i%02i", dateToday.year() + 1, dateToday.month(), dateToday.day());
+        sprintf(endLicense2, "%i%02i%02i", dateToday.year() - 1, dateToday.month(), dateToday.day());
 
         // Valid licens
         m_licenses[0] = "license:";
@@ -67,7 +67,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[0] += ":";
         m_licenses[0] += today;
 
-        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[0], m_licenses[0]))  {
+        if (!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[0], m_licenses[0])) {
             fructose_fail("Error encrypt failed.");
         }
 
@@ -81,7 +81,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[1] += ":";
         m_licenses[1] += today;
 
-        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[1], m_licenses[1]))  {
+        if (!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[1], m_licenses[1])) {
             fructose_fail("Error encrypt failed.");
         }
 
@@ -95,7 +95,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[2] += ":";
         m_licenses[2] += today;
 
-        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[2], m_licenses[2]))  {
+        if (!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[2], m_licenses[2])) {
             fructose_fail("Error encrypt failed.");
         }
 
@@ -109,7 +109,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[3] += ":";
         m_licenses[3] += today;
 
-        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[3], m_licenses[3]))  {
+        if (!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[3], m_licenses[3])) {
             fructose_fail("Error encrypt failed.");
         }
 
@@ -123,7 +123,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[4] += ":";
         m_licenses[4] += endLicense1;
 
-        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[4], m_licenses[4]))  {
+        if (!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[4], m_licenses[4])) {
             fructose_fail("Error encrypt failed.");
         }
 
@@ -137,7 +137,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         m_licenses[5] += ":";
         m_licenses[5] += endLicense2;
 
-        if(!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[5], m_licenses[5]))  {
+        if (!Tucuxi::Common::CryptoHelper::encrypt(m_key, m_licenses[5], m_licenses[5])) {
             fructose_fail("Error encrypt failed.");
         }
     }
@@ -178,7 +178,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         for (int i = int(MachineIdType::CPU); i != int(MachineIdType::UNDEFINED); i++) {
             hashedFingerprint = SystemInfo::retrieveFingerPrint(static_cast<MachineIdType>(i));
 
-            if(!hashedFingerprint.empty()) {
+            if (!hashedFingerprint.empty()) {
                 idType = static_cast<MachineIdType>(i);
                 break;
             }
@@ -206,7 +206,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         std::cout << "Request string: " << request << std::endl;
 
         std::string decryptedRequest;
-        if(!Tucuxi::Common::CryptoHelper::decrypt(m_key, m_licenses[0], decryptedRequest))  {
+        if (!Tucuxi::Common::CryptoHelper::decrypt(m_key, m_licenses[0], decryptedRequest)) {
             fructose_fail("Error encrypt failed.");
         }
         std::cout << "Decrypted request: " << decryptedRequest << std::endl;
@@ -230,10 +230,10 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
 
         LicenseError res = LicenseError::INVALID_LICENSE;
 
-        for(int i=1; i < 6; i++) {
+        for (int i = 1; i < 6; i++) {
 
             std::string test;
-            if(!Tucuxi::Common::CryptoHelper::decrypt(m_key, m_licenses[i], test))  {
+            if (!Tucuxi::Common::CryptoHelper::decrypt(m_key, m_licenses[i], test)) {
                 fructose_fail("Error encrypt failed.");
             }
 

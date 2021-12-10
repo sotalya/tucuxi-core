@@ -9,15 +9,13 @@ namespace Query {
 
 SingleResponseData::SingleResponseData(
         std::unique_ptr<Tucuxi::Core::ComputingResponse> _computingResponse,
-        std::unique_ptr<ComputingResponseMetaData> _metaData) :
-    m_computingResponse(std::move(_computingResponse)),
-    m_metaData(std::move(_metaData))
+        std::unique_ptr<ComputingResponseMetaData> _metaData)
+    : m_computingResponse(std::move(_computingResponse)), m_metaData(std::move(_metaData))
 {
 }
 
 
-ComputingQueryResponse::ComputingQueryResponse()
-= default;
+ComputingQueryResponse::ComputingQueryResponse() = default;
 
 Tucuxi::Core::RequestResponseId ComputingQueryResponse::getQueryId() const
 {
@@ -50,23 +48,20 @@ void ComputingQueryResponse::setQueryStatus(QueryStatus _queryStatus, std::strin
     m_errorMessage = std::move(_errorMessage);
 }
 
-void ComputingQueryResponse::addRequestResponse(std::unique_ptr<Core::ComputingResponse> _computingResponse,
-                                                std::unique_ptr<ComputingResponseMetaData> _metaData)
+void ComputingQueryResponse::addRequestResponse(
+        std::unique_ptr<Core::ComputingResponse> _computingResponse,
+        std::unique_ptr<ComputingResponseMetaData> _metaData)
 {
-    m_requestResponses.emplace_back(std::move(_computingResponse),
-                                    std::move(_metaData));
+    m_requestResponses.emplace_back(std::move(_computingResponse), std::move(_metaData));
 }
 
 void ComputingQueryResponse::setRequestResponseId(Tucuxi::Core::RequestResponseId _requestResponseId)
 {
-   m_queryId = std::move(_requestResponseId);
+    m_queryId = std::move(_requestResponseId);
 }
 
-ComputingResponseMetaData::ComputingResponseMetaData(
-        std::string _drugModelID) :
-    m_drugModelId(std::move(_drugModelID))
+ComputingResponseMetaData::ComputingResponseMetaData(std::string _drugModelID) : m_drugModelId(std::move(_drugModelID))
 {
-
 }
 
 

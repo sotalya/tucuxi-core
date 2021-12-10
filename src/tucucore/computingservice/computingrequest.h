@@ -5,9 +5,9 @@
 #ifndef COMPUTINGREQUEST_H
 #define COMPUTINGREQUEST_H
 
-#include "tucucore/drugtreatment/drugtreatment.h"
-#include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/computingservice/computingtrait.h"
+#include "tucucore/drugmodel/drugmodel.h"
+#include "tucucore/drugtreatment/drugtreatment.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -28,7 +28,6 @@ namespace Core {
 class ComputingRequest
 {
 public:
-
     ///
     /// \brief ComputingRequest
     /// \param _id The unique Id of the request
@@ -38,10 +37,11 @@ public:
     ///
 
 
-    ComputingRequest(RequestResponseId _id,
-                      const DrugModel& _drugModel,
-                      const DrugTreatment& _drugTreatment,
-                      std::unique_ptr<ComputingTrait> _computingTrait);
+    ComputingRequest(
+            RequestResponseId _id,
+            const DrugModel& _drugModel,
+            const DrugTreatment& _drugTreatment,
+            std::unique_ptr<ComputingTrait> _computingTrait);
     ///
     /// \brief getId Retrieves the Id of the request
     /// \return The Id of the request
@@ -67,15 +67,14 @@ public:
     const ComputingTraits& getComputingTraits() const;
 
 protected:
-
     //! Id of the request
     RequestResponseId m_id;
 
     //! Reference to the drug model
-    const DrugModel &m_drugModel;
+    const DrugModel& m_drugModel;
 
     //! Reference to the drug treatment
-    const DrugTreatment &m_drugTreatment;
+    const DrugTreatment& m_drugTreatment;
 
     //! Reference to the list of computing traits
     std::unique_ptr<ComputingTraits> m_computingTraits;

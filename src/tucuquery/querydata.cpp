@@ -12,11 +12,11 @@ QueryData::QueryData(
         const Common::DateTime& _pQueryDate,
         const string& _language,
         unique_ptr<DrugTreatmentData> _pParameters,
-        vector< unique_ptr< RequestData > >& _requests
-) : m_queryID(_queryID), m_clientID(_clientID), m_pQueryDate(_pQueryDate),
-    m_language(_language), m_pParameters(move(_pParameters)),
-    m_requests(move(_requests))
-{}
+        vector<unique_ptr<RequestData> >& _requests)
+    : m_queryID(_queryID), m_clientID(_clientID), m_pQueryDate(_pQueryDate), m_language(_language),
+      m_pParameters(move(_pParameters)), m_requests(move(_requests))
+{
+}
 
 string QueryData::getQueryID() const
 {
@@ -43,7 +43,7 @@ const DrugTreatmentData& QueryData::getpParameters() const
     return *m_pParameters;
 }
 
-const vector< unique_ptr< RequestData > >& QueryData::getRequests() const
+const vector<unique_ptr<RequestData> >& QueryData::getRequests() const
 {
     return m_requests;
 }

@@ -5,8 +5,8 @@
 #include <mutex>
 #include <vector>
 
-#include "tucucore/computingservice/computingresult.h"
 #include "tucucore/computingservice/computingresponse.h"
+#include "tucucore/computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -19,7 +19,7 @@ class ComputedData;
 class CacheComputing
 {
 public:
-    CacheComputing(IComputingService *_computingComponent);
+    CacheComputing(IComputingService* _computingComponent);
 
     ///
     /// \brief computes
@@ -30,7 +30,7 @@ public:
     ///
     /// Currently, only percentiles calculations are handled by the cache.
     ///
-    ComputingStatus compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response);
+    ComputingStatus compute(const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response);
 
     ///
     /// \brief returns a description of the last error in case of failed computation
@@ -51,7 +51,6 @@ public:
     bool isLastCallaHit() const;
 
 protected:
-
     ///
     /// \brief Tries to get data from the cache
     /// \param _request The computing request to calculate
@@ -61,7 +60,7 @@ protected:
     /// If data is found in the cache, the _response is filled when the function returns.
     /// If data is not found in the cache, then the _response is unchanged.
     ///
-    bool getFromCache(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response);
+    bool getFromCache(const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response);
 
     ///
     /// \brief Tries to get data for a specific interval from the cache
@@ -74,7 +73,8 @@ protected:
     /// If data is found in the cache, the _response is filled when the function returns.
     /// If data is not found in the cache, then the _response is unchanged.
     ///
-    bool getSpecificIntervalFromCache(DateTime _start, DateTime _end, double _nbPointsPerHour, std::unique_ptr<ComputingResponse> &_response);
+    bool getSpecificIntervalFromCache(
+            DateTime _start, DateTime _end, double _nbPointsPerHour, std::unique_ptr<ComputingResponse>& _response);
 
     ///
     /// \brief buildResponse
@@ -92,13 +92,18 @@ protected:
     /// at least the required number of points per hour.
     /// It tries to build a response set from the candidates, and populate the response if possible.
     ///
-    bool buildResponse(DateTime _start, DateTime _end, double _nbPointsPerHour, const std::vector<PercentilesData *> &_candidates, std::unique_ptr<ComputingResponse> &_response);
+    bool buildResponse(
+            DateTime _start,
+            DateTime _end,
+            double _nbPointsPerHour,
+            const std::vector<PercentilesData*>& _candidates,
+            std::unique_ptr<ComputingResponse>& _response);
 
     /// A mutex to protect the compute() method
     std::mutex m_mutex;
 
     /// The computing component used by the cache, initialized within the constructor
-    IComputingService *m_computingComponent;
+    IComputingService* m_computingComponent;
 
     /// A vector containing all data previously calculated
     std::vector<std::unique_ptr<ComputedData> > m_data;
@@ -107,8 +112,9 @@ protected:
     bool m_isLastCallaHit{false};
 
     /// This structure embeds information about a cycle data added in m_indexVector
-    typedef struct {
-        PercentilesData *m_set;   ///! The percentile data containing the cycle data
+    typedef struct
+    {
+        PercentilesData* m_set;   ///! The percentile data containing the cycle data
         std::size_t m_cycleIndex; ///! Index of the cycle data
         DateTime m_start;         ///! Start date of the cycle data
         DateTime m_end;           ///! End date of the cycle data
@@ -131,7 +137,8 @@ protected:
     /// This function assumes each candidate has an overlap with the [_start, _end] interval.
     /// It fills m_indexVector with indexes to cycle datas
     ///
-    void buildIndex(DateTime _start, DateTime _end, double _nbPointsPerHour, const std::vector<PercentilesData *> &_candidates);
+    void buildIndex(
+            DateTime _start, DateTime _end, double _nbPointsPerHour, const std::vector<PercentilesData*>& _candidates);
 
     ///
     /// \brief Tries to insert a cycle data into the m_indexVector
@@ -156,7 +163,6 @@ protected:
     /// [_start, _end] interval
     ///
     bool isFullIntervalInCache(DateTime _start, DateTime _end);
-
 };
 
 } // namespace Core

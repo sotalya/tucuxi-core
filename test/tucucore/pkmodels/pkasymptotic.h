@@ -6,15 +6,20 @@
 #ifndef PKASYMPTOTIC_H
 #define PKASYMPTOTIC_H
 
-#include "tucucore/intakeintervalcalculatoranalytical.h"
-
 #include "tucucore/intakeevent.h"
+#include "tucucore/intakeintervalcalculatoranalytical.h"
 
 namespace Tucuxi {
 namespace Core {
 
-enum class PkAsymptoticExponentials : int { Times };
-enum class PkAsymptoticCompartments : int { First };
+enum class PkAsymptoticExponentials : int
+{
+    Times
+};
+enum class PkAsymptoticCompartments : int
+{
+    First
+};
 
 
 ///
@@ -25,14 +30,14 @@ enum class PkAsymptoticCompartments : int { First };
 class PertinentTimesCalculatorAsymptotic : public IPertinentTimesCalculator
 {
 public:
-
     ///
     /// \brief setTPeak Sets the peak time
     /// \param _tPeak The peak time, in hours
     ///
     /// This function should be called before calculating the times, so before
     /// calculateTimes is called
-    void setTPeak(double _tPeak) {
+    void setTPeak(double _tPeak)
+    {
         m_tPeak = _tPeak;
     }
 
@@ -47,9 +52,7 @@ public:
     ///     - From m_tPeak to (Interval - m_tPeak)
     ///     - From (Interval - m_tPeak) to Interval
     ///
-    void calculateTimes(const IntakeEvent& _intakeEvent,
-                        Eigen::Index _nbPoints,
-                        Eigen::VectorXd& _times) override
+    void calculateTimes(const IntakeEvent& _intakeEvent, Eigen::Index _nbPoints, Eigen::VectorXd& _times) override
     {
         double interval = _intakeEvent.getInterval().toHours();
 
@@ -75,26 +78,29 @@ public:
 
         double middleTime = interval - 2 * tPeak;
 
-        Eigen::Index nbPointsBeforePeak = std::min(_nbPoints, std::max(Eigen::Index{2}, static_cast<Eigen::Index>((tPeak / interval)
-                                                                                  * static_cast<double>(_nbPoints))));
+        Eigen::Index nbPointsBeforePeak = std::min(
+                _nbPoints,
+                std::max(
+                        Eigen::Index{2},
+                        static_cast<Eigen::Index>((tPeak / interval) * static_cast<double>(_nbPoints))));
         Eigen::Index nbPointsMiddle = _nbPoints - 2 * nbPointsBeforePeak;
 
-        for(Eigen::Index i = 0; i < nbPointsBeforePeak; i++) {
+        for (Eigen::Index i = 0; i < nbPointsBeforePeak; i++) {
             _times[i] = static_cast<double>(i) / static_cast<double>(nbPointsBeforePeak - 1) * tPeak;
         }
 
-        for(Eigen::Index i = 0; i < nbPointsMiddle; i++) {
-            _times[i + nbPointsBeforePeak] = tPeak + static_cast<double>(i + 1) / static_cast<double>(nbPointsMiddle + 1) * middleTime;
+        for (Eigen::Index i = 0; i < nbPointsMiddle; i++) {
+            _times[i + nbPointsBeforePeak] =
+                    tPeak + static_cast<double>(i + 1) / static_cast<double>(nbPointsMiddle + 1) * middleTime;
         }
 
-        for(Eigen::Index i = 0; i < nbPointsBeforePeak; i++) {
-            _times[i + nbPointsBeforePeak + nbPointsMiddle] = interval - tPeak + static_cast<double>(i) / static_cast<double>(nbPointsBeforePeak - 1) * tPeak;
+        for (Eigen::Index i = 0; i < nbPointsBeforePeak; i++) {
+            _times[i + nbPointsBeforePeak + nbPointsMiddle] =
+                    interval - tPeak + static_cast<double>(i) / static_cast<double>(nbPointsBeforePeak - 1) * tPeak;
         }
-
     }
 
 protected:
-
     /// Time of peak
     double m_tPeak;
 };
@@ -126,9 +132,8 @@ class PkAsymptotic : public IntakeIntervalCalculatorBase<1, PkAsymptoticExponent
     INTAKEINTERVALCALCULATOR_UTILS(PkAsymptotic)
 public:
     /// \brief Constructor
-    PkAsymptotic() : IntakeIntervalCalculatorBase<1, PkAsymptoticExponentials> (new PertinentTimesCalculatorAsymptotic())
+    PkAsymptotic() : IntakeIntervalCalculatorBase<1, PkAsymptoticExponentials>(new PertinentTimesCalculatorAsymptotic())
     {
-
     }
 
     typedef PkAsymptoticExponentials Exponentials;
@@ -143,7 +148,7 @@ protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
     {
 
-        if(!checkCondition(_parameters.size() >= 2, "The number of parameters should be equal to 2.")) {
+        if (!checkCondition(_parameters.size() >= 2, "The number of parameters should be equal to 2.")) {
             return false;
         }
 
@@ -153,7 +158,7 @@ protected:
         m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
         m_Int = static_cast<int>((_intakeEvent.getInterval()).toHours());
 
-    #ifdef DEBUG
+#ifdef DEBUG
         Tucuxi::Common::LoggerHelper logHelper;
 
         logHelper.debug("<<Input Values>>");
@@ -161,7 +166,7 @@ protected:
         logHelper.debug("m_T: {}", m_TPeak);
         logHelper.debug("m_nbPoints: {}", m_nbPoints);
         logHelper.debug("m_Int: {}", m_Int);
-    #endif
+#endif
 
         // check the inputs
         bool bOK = true;
@@ -180,7 +185,11 @@ protected:
         setExponentials(Exponentials::Times, _times.array());
     }
 
-    bool computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
+    bool computeConcentrations(
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) override
     {
         Eigen::VectorXd concentrations;
         size_t firstCompartment = static_cast<size_t>(Compartments::First);
@@ -200,7 +209,12 @@ protected:
         return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
     }
 
-    bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) override
+    bool computeConcentration(
+            const Value& _atTime,
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) override
     {
         TMP_UNUSED_PARAMETER(_atTime);
 
@@ -231,11 +245,11 @@ protected:
 
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations);
 
-    Value m_D;	/// Quantity of drug
-    Value m_R;	/// Convergence rate
-    Value m_TPeak;	/// Time to peak
+    Value m_D;               /// Quantity of drug
+    Value m_R;               /// Convergence rate
+    Value m_TPeak;           /// Time to peak
     Eigen::Index m_nbPoints; /// Number measure points during interval
-    Value m_Int; /// Interval (hours)
+    Value m_Int;             /// Interval (hours)
 
 private:
     typedef PkAsymptoticCompartments Compartments;
@@ -259,7 +273,7 @@ inline void PkAsymptotic::compute(const Residuals& _inResiduals, Eigen::VectorXd
             _concentrations[i] = r0 + diff * (t / m_TPeak);
         }
         else if (t <= (m_Int - m_TPeak)) {
-            _concentrations[i] = lastC - diff * ( t - m_TPeak) / (m_Int - 2.0 * m_TPeak);
+            _concentrations[i] = lastC - diff * (t - m_TPeak) / (m_Int - 2.0 * m_TPeak);
         }
         else {
             _concentrations[i] = r0 + diff * (t - m_Int + m_TPeak) / m_TPeak;

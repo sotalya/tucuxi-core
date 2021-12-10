@@ -2,20 +2,21 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include "tucucommon/utils.h"
-#include "tucucommon/loggerhelper.h"
 #include "tucucommon/general.h"
+#include "tucucommon/loggerhelper.h"
+#include "tucucommon/utils.h"
 
 #include "tucucore/definitions.h"
+#include "tucucore/drugmodelrepository.h"
 #include "tucucore/intakeevent.h"
 #include "tucucore/parameter.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
-#include "tucucore/drugmodelrepository.h"
 
-#include "cxxopts/include/cxxopts.hpp"
-#include "clicomputer.h"
 #include "tucuquery/querylogger.h"
 #include "tucuquery/querystatus.h"
+
+#include "clicomputer.h"
+#include "cxxopts/include/cxxopts.hpp"
 
 using namespace std::chrono_literals;
 
@@ -27,30 +28,23 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
 
     Tucuxi::Common::LoggerHelper logHelper;
 
-    try
-    {
+    try {
 
-        cxxopts::Options options(_argv[0], " - Tucuxi command line");  // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-        options
-                .positional_help("[optional args]")
-                .show_positional_help();
+        cxxopts::Options options(
+                _argv[0], " - Tucuxi command line"); // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+        options.positional_help("[optional args]").show_positional_help();
 
-        options
-                .allow_unrecognised_options()
-                .add_options()
-                ("d,drugpath", "Drug files path", cxxopts::value<std::string>())
-                ("i,input", "Input request file", cxxopts::value<std::string>())
-                ("o,output", "Output response file", cxxopts::value<std::string>())
-                ("q,querylogpath", "Query folder path", cxxopts::value<std::string>())
-                ("csv", "Data file (.dat) folder path", cxxopts::value<std::string>())
-                ("help", "Print help")
-                ;
+        options.allow_unrecognised_options().add_options()(
+                "d,drugpath", "Drug files path", cxxopts::value<std::string>())(
+                "i,input", "Input request file", cxxopts::value<std::string>())(
+                "o,output", "Output response file", cxxopts::value<std::string>())(
+                "q,querylogpath", "Query folder path", cxxopts::value<std::string>())(
+                "csv", "Data file (.dat) folder path", cxxopts::value<std::string>())("help", "Print help");
 
 
         auto result = options.parse(_argc, _argv);
 
-        if (result.count("help") > 0)
-        {
+        if (result.count("help") > 0) {
             std::cout << options.help({"", "Group"}) << std::endl;
             exit(0);
         }
@@ -100,15 +94,15 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
 
 
 
-        auto drugModelRepository = dynamic_cast<Tucuxi::Core::DrugModelRepository*>(
-                    Tucuxi::Core::DrugModelRepository::createComponent());
+        auto drugModelRepository =
+                dynamic_cast<Tucuxi::Core::DrugModelRepository*>(Tucuxi::Core::DrugModelRepository::createComponent());
 
         pCmpMgr->registerComponent("DrugModelRepository", drugModelRepository);
 
         drugModelRepository->addFolderPath(drugPath);
 
-        Tucuxi::Query::QueryLogger *queryLogger = dynamic_cast<Tucuxi::Query::QueryLogger*>(
-                    Tucuxi::Query::QueryLogger::createComponent(queryLogPath));
+        Tucuxi::Query::QueryLogger* queryLogger =
+                dynamic_cast<Tucuxi::Query::QueryLogger*>(Tucuxi::Query::QueryLogger::createComponent(queryLogPath));
 
         pCmpMgr->registerComponent("QueryLogger", queryLogger);
 
@@ -125,9 +119,8 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
         delete queryLogger;
 
         return static_cast<int>(queryStatus);
-
-    } catch (const cxxopts::OptionException& e)
-    {
+    }
+    catch (const cxxopts::OptionException& e) {
         logHelper.error("error parsing options: {}", e.what());
 
         return -1;

@@ -2,18 +2,18 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include <string>
-#include <sstream>
-#include <iomanip>
 #include <cmath>
+#include <iomanip>
+#include <sstream>
+#include <string>
 
-#undef min  // Prevent problems with date.h
-#undef max  // Prevent problems with date.h
+#undef min // Prevent problems with date.h
+#undef max // Prevent problems with date.h
 #include "date/date.h"
 
-#include "tucucommon/timeofday.h"
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
+#include "tucucommon/timeofday.h"
 
 #ifdef _WIN32
 #define timegm _mkgmtime
@@ -42,19 +42,44 @@ void DateTime::disableChecks()
 }
 
 /// This function is just useful to place a breakpoint during debugging
-void errorUndefinedDateTime(const DateTime &/*_date*/)
+void errorUndefinedDateTime(const DateTime& /*_date*/)
 {
     std::cerr << "Error : Using an undefined DateTime" << std::endl;
 }
 
-#define SETDEFINED(value) {m_isDefined = value;} // NOLINT(cppcoreguidelines-macro-usage)
-#define CHECKDEFINED {if (sm_enableChecks && this->isUndefined()){errorUndefinedDateTime(*this);throw std::runtime_error("Date Time used but undefined");}}
-#define CHECKOTHERDEFINED {if (sm_enableChecks && _other.isUndefined()) {errorUndefinedDateTime(_other);throw std::runtime_error("Date Time used but undefined");}}
+#define SETDEFINED(value)    \
+    {                        \
+        m_isDefined = value; \
+    } // NOLINT(cppcoreguidelines-macro-usage)
+
+#define CHECKDEFINED                                                  \
+    {                                                                 \
+        if (sm_enableChecks && this->isUndefined()) {                 \
+            errorUndefinedDateTime(*this);                            \
+            throw std::runtime_error("Date Time used but undefined"); \
+        }                                                             \
+    }
+
+#define CHECKOTHERDEFINED                                             \
+    {                                                                 \
+        if (sm_enableChecks && _other.isUndefined()) {                \
+            errorUndefinedDateTime(_other);                           \
+            throw std::runtime_error("Date Time used but undefined"); \
+        }                                                             \
+    }
+
 #else // CHECK_DATETIME
-#define SETDEFINED(value) {m_isDefined = value;} // NOLINT(cppcoreguidelines-macro-usage)
+#define SETDEFINED(value)    \
+    {                        \
+        m_isDefined = value; \
+    } // NOLINT(cppcoreguidelines-macro-usage)
+
 #define CHECKDEFINED
+
 #define CHECKOTHERDEFINED
+
 void DateTime::enableChecks() {}
+
 void DateTime::disableChecks() {}
 #endif // CHECK_DATETIME
 
@@ -68,19 +93,13 @@ void DateTime::updateString()
         return;
     }
     std::stringstream str;
-    str << day() << "/"
-        << month() << "/"
-        << year() << " "
-        << hour() << ":"
-        << minute() << ":"
-        << second();
+    str << day() << "/" << month() << "/" << year() << " " << hour() << ":" << minute() << ":" << second();
     m_dateString = str.str();
 }
 
 #endif
 
-DateTime::DateTime()
-    : m_date(std::chrono::time_point<std::chrono::system_clock>())
+DateTime::DateTime() : m_date(std::chrono::time_point<std::chrono::system_clock>())
 {
     m_isDefined = false;
     UPDATESTRING;
@@ -109,18 +128,19 @@ DateTime DateTime::now()
 }
 
 
-DateTime::DateTime(const std::string &_date, const std::string& _format)
+DateTime::DateTime(const std::string& _date, const std::string& _format)
 {
     std::tm tm = {};
     std::stringstream ss(_date);
     // std::istringstream ss(_date);
     ss >> std::get_time(&tm, _format.c_str());
-    if(ss.fail()){
+    if (ss.fail()) {
         throw std::runtime_error("Date Time parsing failed");
     }
-    date::year_month_day day = date::year_month_day(date::year(1900 + tm.tm_year),
-                                                    date::month(static_cast<unsigned int>(tm.tm_mon + 1)),
-                                                    date::day(static_cast<unsigned int>(tm.tm_mday)));
+    date::year_month_day day = date::year_month_day(
+            date::year(1900 + tm.tm_year),
+            date::month(static_cast<unsigned int>(tm.tm_mon + 1)),
+            date::day(static_cast<unsigned int>(tm.tm_mday)));
 
     m_date = date::sys_days(day);
     m_date += std::chrono::milliseconds(tm.tm_hour * 3600 * 1000 + tm.tm_min * 60000 + tm.tm_sec * 1000);
@@ -129,8 +149,7 @@ DateTime::DateTime(const std::string &_date, const std::string& _format)
 }
 
 
-DateTime::DateTime(const date::year_month_day& _date)
-    : m_date(date::sys_days(_date))
+DateTime::DateTime(const date::year_month_day& _date) : m_date(date::sys_days(_date))
 {
     SETDEFINED(true);
     UPDATESTRING;
@@ -155,13 +174,17 @@ DateTime::DateTime(const date::year_month_day& _date, const std::chrono::seconds
 }
 
 
-DateTime::DateTime(const Duration &_durationSinceEpoch)
+DateTime DateTime::fromDurationSinceEpoch(const Duration& _durationSinceEpoch)
 {
     int64 ms = _durationSinceEpoch.toMilliseconds();
     const std::chrono::system_clock::duration d = std::chrono::milliseconds(ms);
-    m_date = std::chrono::time_point<std::chrono::system_clock>(d);
-    SETDEFINED(true);
-    UPDATESTRING;
+    DateTime date;
+    date.m_date = std::chrono::time_point<std::chrono::system_clock>(d);
+    date.m_isDefined = true;
+#ifdef EASY_DEBUG
+    date.updateString();
+#endif // EASY_DEBUG
+    return date;
 }
 
 
@@ -175,7 +198,7 @@ date::year_month_day DateTime::getDate() const
 TimeOfDay DateTime::getTimeOfDay() const
 {
     // Not sure we should keep it without a check
-//    CHECKDEFINED;
+    //    CHECKDEFINED;
     date::sys_days today = date::floor<date::days>(m_date);
     return TimeOfDay(Duration(std::chrono::duration_cast<std::chrono::milliseconds>(m_date - today)));
 }
@@ -207,7 +230,7 @@ void DateTime::setTimeOfDay(const TimeOfDay& _newTime)
 
 
 void DateTime::addYears(int _nYears)
-{    
+{
     CHECKDEFINED;
     date::year_month_day curDate = DateTime::getDate();
     TimeOfDay t = getTimeOfDay();
@@ -223,12 +246,11 @@ void DateTime::addMonths(int _nMonths)
     CHECKDEFINED;
     date::year_month_day curDate = DateTime::getDate();
     TimeOfDay t = getTimeOfDay();
-    int nMonths = year() *12 + month() + _nMonths;
+    int nMonths = year() * 12 + month() + _nMonths;
     int nYears = nMonths / 12;
     nMonths = nMonths % 12;
-    m_date = date::sys_days(date::year_month_day(date::year(nYears),
-                                                 date::month(static_cast<unsigned int>(nMonths)),
-                                                 curDate.day()));
+    m_date = date::sys_days(
+            date::year_month_day(date::year(nYears), date::month(static_cast<unsigned int>(nMonths)), curDate.day()));
     m_date += std::chrono::milliseconds(t.getDuration());
     UPDATESTRING;
 }
@@ -237,7 +259,7 @@ void DateTime::addMonths(int _nMonths)
 void DateTime::addDays(int _nDays)
 {
     CHECKDEFINED;
-    m_date += std::chrono::hours(_nDays*24);
+    m_date += std::chrono::hours(_nDays * 24);
     UPDATESTRING;
 }
 
@@ -429,13 +451,15 @@ double DateTime::toDays() const
 }
 
 
-DateTime DateTime::max() {
+DateTime DateTime::max()
+{
     DateTime result;
     result.m_date = std::chrono::time_point<std::chrono::system_clock>::max();
     return result;
 }
 
-DateTime DateTime::min() {
+DateTime DateTime::min()
+{
     DateTime result;
     result.m_date = std::chrono::time_point<std::chrono::system_clock>::min();
     return result;

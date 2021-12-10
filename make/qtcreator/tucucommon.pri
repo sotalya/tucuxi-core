@@ -25,7 +25,8 @@ HEADERS += \
     $$PWD/../../src/tucucommon/xmlnode.h \
     $$PWD/../../src/tucucommon/general.h \
     $$PWD/../../src/tucucommon/translatablestring.h \
-    $$PWD/../../src/tucucommon/iimport.h
+    $$PWD/../../src/tucucommon/iimport.h \
+    $$PWD/../../src/tucucommon/xmltypes.h
 
 SOURCES += \
     $$PWD/../../src/tucucommon/componentmanager.cpp \

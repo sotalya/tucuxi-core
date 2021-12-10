@@ -8,18 +8,17 @@
 
 #include <date/date.h>
 
-#include "fructose/fructose.h"
-
 #include "tucucommon/datetime.h"
 
-
-#include "tucucore/drugmodelimport.h"
+#include "tucucore/computingcomponent.h"
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/computingservice/computingresponse.h"
 #include "tucucore/computingservice/computingtrait.h"
-#include "tucucore/computingcomponent.h"
 #include "tucucore/drugmodel/drugmodel.h"
+#include "tucucore/drugmodelimport.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
+
+#include "fructose/fructose.h"
 
 using namespace std::chrono_literals;
 using namespace date;
@@ -740,7 +739,7 @@ static const std::string test_mm_2comp_tdd = R"(
 
 struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten2comp>
 {
-    TestMichaelisMenten2comp() { }
+    TestMichaelisMenten2comp() {}
 
     std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRoute& _route)
     {
@@ -751,18 +750,15 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
 
         // Create a time range starting at the beginning of june 2017, with no upper end (to test that the repetitions
         // are handled correctly)
-        DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
-                               Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+        DateTime startSept2018(
+                date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
 
         //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
-        LastingDose periodicDose(DoseValue(200.0),
-                                 TucuUnit("mg"),
-                                 _route,
-                                 Duration(),
-                                 Duration(std::chrono::hours(6)));
+        LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), _route, Duration(), Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 16);
         auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
@@ -772,7 +768,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
     }
 
 
-    std::unique_ptr<DrugTreatment> buildDrugTreatmentMix(const FormulationAndRoute& _route1, const FormulationAndRoute& _route2)
+    std::unique_ptr<DrugTreatment> buildDrugTreatmentMix(
+            const FormulationAndRoute& _route1, const FormulationAndRoute& _route2)
     {
         auto drugTreatment = std::make_unique<DrugTreatment>();
 
@@ -781,31 +778,27 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
 
         // Create a time range starting at the beginning of june 2017, with no upper end (to test that the repetitions
         // are handled correctly)
-        DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
-                               Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+        DateTime startSept2018(
+                date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
 
         //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
-        LastingDose periodicDose(DoseValue(200.0),
-                                 TucuUnit("mg"),
-                                 _route1,
-                                 Duration(),
-                                 Duration(std::chrono::hours(6)));
+        LastingDose periodicDose(
+                DoseValue(200.0), TucuUnit("mg"), _route1, Duration(), Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 16);
         auto sept2018 = std::make_unique<DosageTimeRange>(startSept2018, repeatedDose);
 
 
         drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
 
-        LastingDose periodicDose2(DoseValue(200.0),
-                                 TucuUnit("mg"),
-                                 _route2,
-                                 Duration(),
-                                 Duration(std::chrono::hours(6)));
+        LastingDose periodicDose2(
+                DoseValue(200.0), TucuUnit("mg"), _route2, Duration(), Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose2(periodicDose2, 16);
-        auto second = std::make_unique<DosageTimeRange>(startSept2018 + Duration(std::chrono::hours(6*16)), repeatedDose2);
+        auto second =
+                std::make_unique<DosageTimeRange>(startSept2018 + Duration(std::chrono::hours(6 * 16)), repeatedDose2);
 
         drugTreatment->getModifiableDosageHistory().addTimeRange(*second);
 
@@ -813,7 +806,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
     }
 
 
-    std::unique_ptr<DrugTreatment> buildDrugTreatmentMix3(const FormulationAndRoute& _route1, const FormulationAndRoute& _route2, const FormulationAndRoute& _route3)
+    std::unique_ptr<DrugTreatment> buildDrugTreatmentMix3(
+            const FormulationAndRoute& _route1, const FormulationAndRoute& _route2, const FormulationAndRoute& _route3)
     {
         auto drugTreatment = std::make_unique<DrugTreatment>();
 
@@ -822,41 +816,35 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
 
         // Create a time range starting at the beginning of june 2017, with no upper end (to test that the repetitions
         // are handled correctly)
-        DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
-                               Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+        DateTime startSept2018(
+                date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
 
         //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
-        LastingDose periodicDose(DoseValue(200.0),
-                                 TucuUnit("mg"),
-                                 _route1,
-                                 Duration(),
-                                 Duration(std::chrono::hours(24)));
+        LastingDose periodicDose(
+                DoseValue(200.0), TucuUnit("mg"), _route1, Duration(), Duration(std::chrono::hours(24)));
         DosageRepeat repeatedDose(periodicDose, 2);
         auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
 
         drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
 
-        LastingDose periodicDose2(DoseValue(200.0),
-                                 TucuUnit("mg"),
-                                 _route2,
-                                 Duration(),
-                                 Duration(std::chrono::hours(24)));
+        LastingDose periodicDose2(
+                DoseValue(200.0), TucuUnit("mg"), _route2, Duration(), Duration(std::chrono::hours(24)));
         DosageRepeat repeatedDose2(periodicDose2, 1);
-        auto second = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018 + Duration(std::chrono::hours(2*24)), repeatedDose2);
+        auto second = std::make_unique<Tucuxi::Core::DosageTimeRange>(
+                startSept2018 + Duration(std::chrono::hours(2 * 24)), repeatedDose2);
 
         drugTreatment->getModifiableDosageHistory().addTimeRange(*second);
 
-        LastingDose periodicDose3(DoseValue(200.0),
-                                 TucuUnit("mg"),
-                                 _route3,
-                                 Duration(),
-                                 Duration(std::chrono::hours(24)));
+        LastingDose periodicDose3(
+                DoseValue(200.0), TucuUnit("mg"), _route3, Duration(), Duration(std::chrono::hours(24)));
         DosageRepeat repeatedDose3(periodicDose3, 1);
-        auto third = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018 + Duration(std::chrono::hours(3*24)), repeatedDose3);
+        auto third = std::make_unique<Tucuxi::Core::DosageTimeRange>(
+                startSept2018 + Duration(std::chrono::hours(3 * 24)), repeatedDose3);
 
         drugTreatment->getModifiableDosageHistory().addTimeRange(*third);
 
@@ -877,12 +865,12 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
         fructose_assert(drugModel != nullptr);
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        const FormulationAndRoute route(Formulation::ParenteralSolution,
-                                        AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+        const FormulationAndRoute route(
+                Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
 
         auto drugTreatment = buildDrugTreatment(route);
 
@@ -893,9 +881,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
             ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-            std::unique_ptr<ComputingTraitConcentration> traits =
-                    std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -904,18 +891,19 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
-            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+            const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
             if (resp == nullptr) {
                 return;
             }
             fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
             fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
-            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+            fructose_assert_eq(
+                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "Population parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -930,9 +918,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
             ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment);
-            std::unique_ptr<ComputingTraitConcentration> traits =
-                    std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -941,15 +928,16 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
-            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+            const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
             fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
             fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
-            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+            fructose_assert_eq(
+                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "A priori parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -976,12 +964,12 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
         fructose_assert(drugModel != nullptr);
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        const FormulationAndRoute route(Formulation::ParenteralSolution,
-                                        AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+        const FormulationAndRoute route(
+                Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
 
         auto drugTreatment = buildDrugTreatment(route);
 
@@ -992,9 +980,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
             ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-            std::unique_ptr<ComputingTraitConcentration> traits =
-                    std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -1003,18 +990,19 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
-            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+            const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
             if (resp == nullptr) {
                 return;
             }
 
             fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
             fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
-            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+            fructose_assert_eq(
+                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "Population parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1029,9 +1017,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
             ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment);
-            std::unique_ptr<ComputingTraitConcentration> traits =
-                    std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -1040,15 +1027,16 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
-            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+            const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
             fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
             fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
-            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+            fructose_assert_eq(
+                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "A priori parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1075,12 +1063,12 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
         fructose_assert(drugModel != nullptr);
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        const FormulationAndRoute route(Formulation::ParenteralSolution,
-                                        AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(
+                Formulation::ParenteralSolution, AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
 
         auto drugTreatment = buildDrugTreatment(route);
 
@@ -1091,9 +1079,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
             ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-            std::unique_ptr<ComputingTraitConcentration> traits =
-                    std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -1102,15 +1089,16 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
-            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+            const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
             fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
             fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
-            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+            fructose_assert_eq(
+                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "Population parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1125,9 +1113,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
             ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment);
-            std::unique_ptr<ComputingTraitConcentration> traits =
-                    std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -1136,15 +1123,16 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
-            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+            const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
             fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
             fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
-            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+            fructose_assert_eq(
+                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "A priori parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1171,13 +1159,13 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
         fructose_assert(drugModel != nullptr);
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
 
-        const FormulationAndRoute route(Formulation::ParenteralSolution,
-                                        AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag);
+        const FormulationAndRoute route(
+                Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag);
         auto drugTreatment = buildDrugTreatment(route);
 
         {
@@ -1187,9 +1175,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
             ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-            std::unique_ptr<ComputingTraitConcentration> traits =
-                    std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -1198,15 +1185,16 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
-            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+            const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
             fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
             fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
-            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+            fructose_assert_eq(
+                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "Population parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1221,9 +1209,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
             ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment);
-            std::unique_ptr<ComputingTraitConcentration> traits =
-                    std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -1232,15 +1219,16 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
-            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+            const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
             fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
             fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
-            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+            fructose_assert_eq(
+                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "A priori parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1267,15 +1255,15 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
         fructose_assert(drugModel != nullptr);
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        const FormulationAndRoute route1(Formulation::ParenteralSolution,
-                                        AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+        const FormulationAndRoute route1(
+                Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
 
-        const FormulationAndRoute route2(Formulation::ParenteralSolution,
-                                        AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route2(
+                Formulation::ParenteralSolution, AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
 
         auto drugTreatment = buildDrugTreatmentMix(route1, route2);
 
@@ -1286,9 +1274,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             Tucuxi::Common::DateTime end(2018_y / sep / 9, 8h + 0min);
             double nbPointsPerHour = 10.0;
             ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-            std::unique_ptr<ComputingTraitConcentration> traits =
-                    std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -1297,18 +1284,19 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
             if (dynamic_cast<const SinglePredictionData*>(responseData) == nullptr) {
                 return;
             }
-            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+            const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
             fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
             fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
-            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+            fructose_assert_eq(
+                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "Population parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1323,9 +1311,8 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
             ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment);
-            std::unique_ptr<ComputingTraitConcentration> traits =
-                    std::make_unique<ComputingTraitConcentration>(
-                        requestResponseId, start, end, nbPointsPerHour, computingOption);
+            std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                    requestResponseId, start, end, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -1334,15 +1321,16 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
-            const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+            const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
             fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{1});
             fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "analyte");
-            fructose_assert_eq(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+            fructose_assert_eq(
+                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             //std::cout << "A priori parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1369,18 +1357,18 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
         fructose_assert(drugModel != nullptr);
 
 
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
-        const FormulationAndRoute route1(Formulation::ParenteralSolution,
-                                        AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+        const FormulationAndRoute route1(
+                Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
 
-        const FormulationAndRoute route2(Formulation::ParenteralSolution,
-                                        AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route2(
+                Formulation::ParenteralSolution, AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
 
-        const FormulationAndRoute route3(Formulation::ParenteralSolution,
-                                        AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+        const FormulationAndRoute route3(
+                Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
 
         auto drugTreatment = buildDrugTreatmentMix3(route1, route2, route3);
 
@@ -1391,10 +1379,9 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
             double nbPointsPerHour = 10.0;
             ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-            std::vector<double> ranks = {5,10,25,50,75,90,95};
-            std::unique_ptr<ComputingTraitPercentiles> traits =
-                    std::make_unique<ComputingTraitPercentiles>(
-                        requestResponseId, start, end, ranks, nbPointsPerHour, computingOption);
+            std::vector<double> ranks = {5, 10, 25, 50, 75, 90, 95};
+            std::unique_ptr<ComputingTraitPercentiles> traits = std::make_unique<ComputingTraitPercentiles>(
+                    requestResponseId, start, end, ranks, nbPointsPerHour, computingOption);
 
             ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -1403,17 +1390,17 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             ComputingStatus result;
             result = component->compute(request, response);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+            fructose_assert_eq(result, ComputingStatus::Ok);
 
             const ComputedData* responseData = response->getData();
             fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
             if (dynamic_cast<const PercentilesData*>(responseData) == nullptr) {
                 return;
             }
-            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+            const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
             fructose_assert_eq(resp->getPercentileData(0).size(), 4);
-//            fructose_assert_eq(resp->getIds().size(), size_t{1});
-//            fructose_assert_eq(resp->getIds()[0], "analyte");
+            //            fructose_assert_eq(resp->getIds().size(), size_t{1});
+            //            fructose_assert_eq(resp->getIds()[0], "analyte");
 
             //std::cout << "Population parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1425,8 +1412,6 @@ struct TestMichaelisMenten2comp : public fructose::test_base<TestMichaelisMenten
             delete component;
         }
     }
-
-
 };
 
 

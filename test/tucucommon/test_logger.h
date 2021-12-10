@@ -2,20 +2,20 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include <sstream>
-#include <string>
-#include <iostream>
-#include <stdio.h>
 #include <cstdio>
+#include <iostream>
 #include <regex>
+#include <sstream>
+#include <stdio.h>
+#include <string>
+
+#include "tucucommon/componentmanager.h"
+#include "tucucommon/loggerhelper.h"
+#include "tucucommon/utils.h"
 
 #include "fructose/fructose.h"
 
-#include "tucucommon/loggerhelper.h"
-#include "tucucommon/componentmanager.h"
-#include "tucucommon/utils.h"
-
-struct TestLogger : public fructose::test_base<TestLogger> 
+struct TestLogger : public fructose::test_base<TestLogger>
 {
     std::string m_path;
 
@@ -52,11 +52,11 @@ struct TestLogger : public fructose::test_base<TestLogger>
         // Work with an uninitialized logger
         Tucuxi::Common::LoggerHelper logger;
         logger.info("asdfa");
-        
+
         // Initialize with a bad file path
         Tucuxi::Common::LoggerHelper::init("");
         Tucuxi::Common::LoggerHelper logger2;
-        logger2.info("asdfa");        
+        logger2.info("asdfa");
 
 
         // Try to make our LoggerHelper crash
@@ -99,4 +99,4 @@ private:
             fructose_assert(match[2].str() == _msg);
         }
     }
- };
+};

@@ -4,8 +4,10 @@
 
 #include <Eigen/Dense>
 
-#include "tucucommon/loggerhelper.h"
 #include "tucucore/pkmodels/threecompartmentbolus.h"
+
+#include "tucucommon/loggerhelper.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
@@ -15,7 +17,8 @@ namespace Core {
 #define DEBUG
 #endif
 
-ThreeCompartmentBolusMicro::ThreeCompartmentBolusMicro() : IntakeIntervalCalculatorBase<3, ThreeCompartmentBolusExponentials> (new PertinentTimesCalculatorStandard())
+ThreeCompartmentBolusMicro::ThreeCompartmentBolusMicro()
+    : IntakeIntervalCalculatorBase<3, ThreeCompartmentBolusExponentials>(new PertinentTimesCalculatorStandard())
 {
 }
 
@@ -46,15 +49,15 @@ bool ThreeCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     a0 = m_Ke * m_K21 * m_K31;
     a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
     a2 = m_Ke + m_K12 + m_K13 + m_K21 + m_K31;
-    p = a1 - std::pow(a2,2) / 3;
-    q = 2 * std::pow(a2,3) / 27 - a1 * a2 / 3 + a0;
-    r1 = std::sqrt(-(std::pow(p,3) / 27));
-    r2 = 2 * std::pow(r1,1/3);
-    phi = std::acos(- q / (2 * r1)) / 3;
+    p = a1 - std::pow(a2, 2) / 3;
+    q = 2 * std::pow(a2, 3) / 27 - a1 * a2 / 3 + a0;
+    r1 = std::sqrt(-(std::pow(p, 3) / 27));
+    r2 = 2 * std::pow(r1, 1 / 3);
+    phi = std::acos(-q / (2 * r1)) / 3;
 
-    m_Alpha = - (std::cos(phi) * r2 - a2 / 3);
-    m_Beta = - (std::cos(phi + 2 * 3.1428 / 3) * r2 - a2/3);
-    m_Gamma = - (std::cos(phi + 4 * 3.1428/3) * r2 - a2/3);
+    m_Alpha = -(std::cos(phi) * r2 - a2 / 3);
+    m_Beta = -(std::cos(phi + 2 * 3.1428 / 3) * r2 - a2 / 3);
+    m_Gamma = -(std::cos(phi + 4 * 3.1428 / 3) * r2 - a2 / 3);
 
 #ifdef DEBUG
     Tucuxi::Common::LoggerHelper logHelper;
@@ -100,7 +103,11 @@ void ThreeCompartmentBolusMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool ThreeCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentBolusMicro::computeConcentrations(
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
@@ -117,7 +124,7 @@ bool ThreeCompartmentBolusMicro::computeConcentrations(const Residuals& _inResid
     _outResiduals[thirdCompartment] = concentrations3;
 
     // return concentration
-    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
     // TODO: add calcuation concentrations of second and third compartment and condtions
     TMP_UNUSED_PARAMETER(_isAll);
 
@@ -128,7 +135,12 @@ bool ThreeCompartmentBolusMicro::computeConcentrations(const Residuals& _inResid
     return bOK;
 }
 
-bool ThreeCompartmentBolusMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentBolusMicro::computeConcentration(
+        const Value& _atTime,
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
@@ -167,9 +179,7 @@ bool ThreeCompartmentBolusMicro::computeConcentration(const Value& _atTime, cons
     return bOK;
 }
 
-ThreeCompartmentBolusMacro::ThreeCompartmentBolusMacro() : ThreeCompartmentBolusMicro()
-{
-}
+ThreeCompartmentBolusMacro::ThreeCompartmentBolusMacro() : ThreeCompartmentBolusMicro() {}
 
 std::vector<std::string> ThreeCompartmentBolusMacro::getParametersId()
 {
@@ -202,15 +212,15 @@ bool ThreeCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     a0 = m_Ke * m_K21 * m_K31;
     a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
     a2 = m_Ke + m_K12 + m_K13 + m_K21 + m_K31;
-    p = a1 - std::pow(a2,2) / 3;
-    q = 2 * std::pow(a2,3) / 27 - a1 * a2 / 3 + a0;
-    r1 = std::sqrt(-(std::pow(p,3) / 27));
-    r2 = 2 * std::pow(r1,1/3);
-    phi = std::acos(- q / (2 * r1)) / 3;
+    p = a1 - std::pow(a2, 2) / 3;
+    q = 2 * std::pow(a2, 3) / 27 - a1 * a2 / 3 + a0;
+    r1 = std::sqrt(-(std::pow(p, 3) / 27));
+    r2 = 2 * std::pow(r1, 1 / 3);
+    phi = std::acos(-q / (2 * r1)) / 3;
 
-    m_Alpha = - (std::cos(phi) * r2 - a2 / 3);
-    m_Beta = - (std::cos(phi + 2 * 3.1428 / 3) * r2 - a2/3);
-    m_Gamma = - (std::cos(phi + 4 * 3.1428/3) * r2 - a2/3);
+    m_Alpha = -(std::cos(phi) * r2 - a2 / 3);
+    m_Beta = -(std::cos(phi + 2 * 3.1428 / 3) * r2 - a2 / 3);
+    m_Gamma = -(std::cos(phi + 4 * 3.1428 / 3) * r2 - a2 / 3);
 
 #ifdef DEBUG
     Tucuxi::Common::LoggerHelper logHelper;
@@ -251,6 +261,5 @@ bool ThreeCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, co
 }
 
 
-}
-}
-
+} // namespace Core
+} // namespace Tucuxi

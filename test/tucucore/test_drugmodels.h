@@ -6,10 +6,10 @@
 #define TEST_DRUGMODELS_H
 
 
-#include "fructose/fructose.h"
-
 #include "tucucore/drugmodel/drugmodel.h"
+
 #include "drugmodels/buildimatinib.h"
+#include "fructose/fructose.h"
 
 using namespace Tucuxi::Core;
 
@@ -17,7 +17,7 @@ using namespace Tucuxi::Core;
 
 struct TestDrugModels : public fructose::test_base<TestDrugModels>
 {
-    TestDrugModels() { }
+    TestDrugModels() {}
 
     std::unique_ptr<DrugModel> buildImatinib()
     {
@@ -31,7 +31,6 @@ struct TestDrugModels : public fructose::test_base<TestDrugModels>
 
         fructose_assert(imatinib != nullptr);
     }
-
 };
 
 #endif // TEST_DRUGMODELS_H

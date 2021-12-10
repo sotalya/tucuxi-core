@@ -6,15 +6,14 @@
 #ifndef TUCUXI_CORE_MULTILIKELIHOOD_H
 #define TUCUXI_CORE_MULTILIKELIHOOD_H
 
-#include <boost/math/special_functions/sign.hpp>
 #include <Eigen/Dense>
+#include <boost/math/special_functions/sign.hpp>
 
 #include "deriv.h"
-#include "sampleevent.h"
 #include "dosage.h"
-#include "parameter.h"
 #include "multiconcentrationcalculator.h"
-#include "fructose/fructose.h"
+#include "parameter.h"
+#include "sampleevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -28,15 +27,16 @@ class IMultiConcentrationCalculator;
 ///
 /// As there can multiple analytes, the constructor takes a vector of residual error models, one per
 /// analyte, and a vector of sample series, also one per analyte.
-class MultiLikelihood {
+class MultiLikelihood
+{
 public:
-
-    MultiLikelihood(const OmegaMatrix& _omega,
-               const std::vector<IResidualErrorModel*>& _residualErrorModel,
-               const std::vector<SampleSeries>& _samples,
-               const IntakeSeries& _intakes,
-               const ParameterSetSeries& _parameters,
-               MultiConcentrationCalculator& _concentrationCalculator);
+    MultiLikelihood(
+            const OmegaMatrix& _omega,
+            const std::vector<IResidualErrorModel*>& _residualErrorModel,
+            const std::vector<SampleSeries>& _samples,
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            MultiConcentrationCalculator& _concentrationCalculator);
 
     /// \brief operator ()
     /// This method calculates the negative log of the posterior and prior.
@@ -88,9 +88,12 @@ public:
     /// \param _x
     /// \param _deriv
     ///
-    void df(ValueVector &_x, ValueVector &_deriv)
+    void df(ValueVector& _x, ValueVector& _deriv)
     {
-        deriv1([&](const ValueVector & _in) -> Value {return (*this)(_in);}, _x, _deriv, static_cast<Value>(_x.size()));
+        deriv1([&](const ValueVector& _in) -> Value { return (*this)(_in); },
+               _x,
+               _deriv,
+               static_cast<Value>(_x.size()));
         for (unsigned int i = 0; i < _x.size(); i++) {
             // bounds the value:
             _deriv[i] = std::max(m_omin[i], std::min(_deriv[i], m_omax[i]));
@@ -110,9 +113,8 @@ public:
     /// \param _observed Observed concentration values
     /// \param _residualErrorModel Residual error model to be used for calculation
     /// \return the negative log-likelihood of a concentration at the sample time
-    Value calculateSampleNegativeLogLikelihood(Value _expected,
-                                               const SampleEvent& _observed,
-                                               const IResidualErrorModel* _residualErrorModel) const;
+    Value calculateSampleNegativeLogLikelihood(
+            Value _expected, const SampleEvent& _observed, const IResidualErrorModel* _residualErrorModel) const;
 
     /// Sets the bounds on etas to extreme values of normal distribution
     /// using the equation for the inverse of the cdf for normal distribution
@@ -122,11 +124,12 @@ public:
     /// \param _oMin
     /// \param _highX
     /// \param _lowX
-    void initBounds(const OmegaMatrix& _omega,
-                    EigenVector& _oMax,
-                    EigenVector& _oMin,
-                    double _highX = 0.999,
-                    double _lowX = 0.001);
+    void initBounds(
+            const OmegaMatrix& _omega,
+            EigenVector& _oMax,
+            EigenVector& _oMin,
+            double _highX = 0.999,
+            double _lowX = 0.001);
 
     /// \brief Calculates the negative log of the prior from Bayes theorem
     /// \param _etas vector of eta values being optimized
@@ -136,7 +139,6 @@ public:
 
 
 private:
-
     /// vector of minimum values for eta
     EigenVector m_omin;
 
@@ -176,4 +178,3 @@ private:
 
 
 #endif // TUCUXI_CORE_MULTILIKELIHOOD_H
-

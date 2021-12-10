@@ -5,12 +5,12 @@
 #ifndef APOSTERIORIETASCALCULATOR_H
 #define APOSTERIORIETASCALCULATOR_H
 
+#include "computingservice/computingresult.h"
+#include "definitions.h"
 #include "dosage.h"
 #include "parameter.h"
-#include "definitions.h"
 #include "residualerrormodel.h"
 #include "sampleevent.h"
-#include "computingservice/computingresult.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -18,16 +18,16 @@ namespace Core {
 
 class APosterioriEtasCalculator
 {
-public:    
+public:
     APosterioriEtasCalculator();
 
     ComputingStatus computeAposterioriEtas(
-            const IntakeSeries &_intakes,
-            const ParameterSetSeries &_parameters,
-            const OmegaMatrix &_omega,
-            const IResidualErrorModel &_residualErrorModel,
-            const SampleSeries &_samples,
-            Etas &_aPosterioriEtas);
+            const IntakeSeries& _intakes,
+            const ParameterSetSeries& _parameters,
+            const OmegaMatrix& _omega,
+            const IResidualErrorModel& _residualErrorModel,
+            const SampleSeries& _samples,
+            Etas& _aPosterioriEtas);
 };
 
 } // namespace Core

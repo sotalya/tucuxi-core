@@ -2,36 +2,35 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include <chrono>  // for high_resolution_clock
+#include <chrono> // for high_resolution_clock
 
 #include "computingcomponent.h"
 
 #include "tucucommon/general.h"
 
-#include "tucucore/drugmodel/drugmodel.h"
-
-#include "tucucore/computingcomponent.h"
-#include "tucucore/drugtreatment/drugtreatment.h"
-#include "tucucore/sampleextractor.h"
-#include "tucucore/concentrationcalculator.h"
 #include "tucucore/aposteriorietascalculator.h"
-#include "tucucore/computingservice/icomputingservice.h"
+#include "tucucore/computingcomponent.h"
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/computingservice/computingresponse.h"
 #include "tucucore/computingservice/computingtrait.h"
+#include "tucucore/computingservice/icomputingservice.h"
+#include "tucucore/concentrationcalculator.h"
+#include "tucucore/drugmodel/drugmodel.h"
+#include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/intaketocalculatorassociator.h"
-#include "tucucore/pkmodel.h"
 #include "tucucore/montecarlopercentilecalculator.h"
 #include "tucucore/multimontecarlopercentilecalculator.h"
 #include "tucucore/percentilesprediction.h"
+#include "tucucore/pkmodel.h"
+#include "tucucore/sampleextractor.h"
 //#include "tucucore/overloadevaluator.h"
-#include "tucucore/residualerrormodelextractor.h"
-#include "tucucore/generalextractor.h"
-#include "tucucore/cyclestatisticscalculator.h"
-#include "tucucore/computingservice/computingresult.h"
-#include "tucucore/treatmentdrugmodelcompatibilitychecker.h"
 #include "tucucore/computingadjustments.h"
+#include "tucucore/computingservice/computingresult.h"
 #include "tucucore/computingutils.h"
+#include "tucucore/cyclestatisticscalculator.h"
+#include "tucucore/generalextractor.h"
+#include "tucucore/residualerrormodelextractor.h"
+#include "tucucore/treatmentdrugmodelcompatibilitychecker.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -39,14 +38,14 @@ namespace Core {
 
 Tucuxi::Common::Interface* ComputingComponent::createComponent()
 {
-    ComputingComponent *cmp = new ComputingComponent();
+    ComputingComponent* cmp = new ComputingComponent();
 
     cmp->initialize();
 
     return dynamic_cast<IComputingService*>(cmp);
 }
 
-Tucuxi::Common::Interface* ComputingComponent::getInterface(const std::string &_name)
+Tucuxi::Common::Interface* ComputingComponent::getInterface(const std::string& _name)
 {
     return Tucuxi::Common::Component::getInterfaceImpl(_name);
 }
@@ -70,7 +69,8 @@ bool ComputingComponent::initialize()
     return true;
 }
 
-void ComputingComponent::setPkModelCollection(std::shared_ptr<PkModelCollection> _collection) {
+void ComputingComponent::setPkModelCollection(std::shared_ptr<PkModelCollection> _collection)
+{
     m_utils->m_models = std::move(_collection);
 }
 
@@ -81,11 +81,13 @@ std::string ComputingComponent::getErrorString() const
 }
 
 
-ComputingStatus ComputingComponent::compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response)
+ComputingStatus ComputingComponent::compute(
+        const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
 {
     // Record start time
     auto start = std::chrono::high_resolution_clock::now();
-    TUCU_TRY {
+    TUCU_TRY
+    {
         if (m_utils == nullptr) {
             m_logger.error("The Computing Component has not been initialized");
             _response->setComputingStatus(ComputingStatus::ComputingComponentNotInitialized);
@@ -128,27 +130,27 @@ ComputingStatus ComputingComponent::compute(const ComputingRequest &_request, st
 
         _response->setComputingStatus(result);
         return result;
-
     }
-    TUCU_CATCH(...) {
+    TUCU_CATCH(...)
+    {
         _response->setComputingStatus(ComputingStatus::ComputingComponentExceptionError);
         return ComputingStatus::ComputingComponentExceptionError;
     }
 }
 
 
-ComputingStatus ComputingComponent::recordCycle(const ComputingTraitStandard *_traits,
-        const ComputingRequest &_request,
-        ConcentrationData &_concentrationData,
+ComputingStatus ComputingComponent::recordCycle(
+        const ComputingTraitStandard* _traits,
+        const ComputingRequest& _request,
+        ConcentrationData& _concentrationData,
         DateTime _start,
         DateTime _end,
-        const TimeOffsets &_times,
-        const std::vector<ConcentrationPredictionPtr> &_activeMoietiesPredictions,
-        const std::vector<ConcentrationPredictionPtr> &_analytesPredictions,
+        const TimeOffsets& _times,
+        const std::vector<ConcentrationPredictionPtr>& _activeMoietiesPredictions,
+        const std::vector<ConcentrationPredictionPtr>& _analytesPredictions,
         size_t _valueIndex,
-        const std::map<AnalyteGroupId, Etas> &_etas,
-        GroupsParameterSetSeries &_parameterSeries
-        )
+        const std::map<AnalyteGroupId, Etas>& _etas,
+        GroupsParameterSetSeries& _parameterSeries)
 {
     // The final unit depends on the computing options
     TucuUnit unit("ug/l");
@@ -159,40 +161,46 @@ ComputingStatus ComputingComponent::recordCycle(const ComputingTraitStandard *_t
     CycleData cycle(_start, _end, unit);
 
     if (!_request.getDrugModel().isSingleAnalyte()) {
-        for (const auto &activeMoiety : _activeMoietiesPredictions) {
-            cycle.addData(_times,
-                          Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
-                              activeMoiety->getValues()[_valueIndex],
-                              _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
-                              unit));
+        for (const auto& activeMoiety : _activeMoietiesPredictions) {
+            cycle.addData(
+                    _times,
+                    Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                            activeMoiety->getValues()[_valueIndex],
+                            _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                            unit));
         }
     }
 
     size_t index = 0;
-    for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+    for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
         AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
-        cycle.addData(_times, Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
-                          _analytesPredictions[index]->getValues()[_valueIndex],
-                          _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
-                          unit));
-        index ++;
+        cycle.addData(
+                _times,
+                Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        _analytesPredictions[index]->getValues()[_valueIndex],
+                        _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                        unit));
+        index++;
     }
 
     AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
     ParameterSetEventPtr params = _parameterSeries[analyteGroupId].getAtTime(_start, _etas.at(analyteGroupId));
 
     if (_traits->getComputingOption().retrieveParameters() == RetrieveParametersOption::RetrieveParameters) {
-        for (auto p = params->begin() ; p < params->end() ; p++) {
+        for (auto p = params->begin(); p < params->end(); p++) {
             cycle.m_parameters.push_back({(*p).getParameterId(), (*p).getValue()});
         }
-        std::sort(cycle.m_parameters.begin(), cycle.m_parameters.end(),
-                  [&] (const ParameterValue &_v1, const ParameterValue &_v2)
-        { return _v1.m_parameterId < _v2.m_parameterId; });
+        std::sort(
+                cycle.m_parameters.begin(),
+                cycle.m_parameters.end(),
+                [&](const ParameterValue& _v1, const ParameterValue& _v2) {
+                    return _v1.m_parameterId < _v2.m_parameterId;
+                });
     }
 
     if (_traits->getComputingOption().retrieveCovariates() == RetrieveCovariatesOption::RetrieveCovariates) {
-        for (const auto &cov : params->m_covariates) {
+        for (const auto& cov : params->m_covariates) {
             cycle.m_covariates.push_back({cov.m_id, cov.m_value});
         }
     }
@@ -203,21 +211,20 @@ ComputingStatus ComputingComponent::recordCycle(const ComputingTraitStandard *_t
 }
 
 void ComputingComponent::endRecord(
-        const ComputingTraitStandard *_traits,
-        const ComputingRequest &_request,
-        ConcentrationData &_concentrationData
-        )
+        const ComputingTraitStandard* _traits, const ComputingRequest& _request, ConcentrationData& _concentrationData)
 {
     if (_request.getDrugModel().isSingleAnalyte()) {
         AnalyteId analyteId = _request.getDrugModel().getAnalyteSets()[0]->getAnalytes()[0]->getAnalyteId();
-        _concentrationData.addCompartmentInfo({CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte, analyteId.toString()});
+        _concentrationData.addCompartmentInfo(
+                {CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte, analyteId.toString()});
     }
     if (!_request.getDrugModel().isSingleAnalyte()) {
-        for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
-            _concentrationData.addCompartmentInfo({CompartmentInfo::CompartmentType::ActiveMoiety, activeMoiety->getActiveMoietyId().toString()});
+        for (const auto& activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+            _concentrationData.addCompartmentInfo(
+                    {CompartmentInfo::CompartmentType::ActiveMoiety, activeMoiety->getActiveMoietyId().toString()});
         }
 
-        for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+        for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
             AnalyteId analyteId = analyteGroup->getAnalytes()[0]->getAnalyteId();
             _concentrationData.addCompartmentInfo({CompartmentInfo::CompartmentType::Analyte, analyteId.toString()});
         }
@@ -231,9 +238,9 @@ void ComputingComponent::endRecord(
 
 
 ComputingStatus ComputingComponent::compute(
-        const ComputingTraitConcentration *_traits,
-        const ComputingRequest &_request,
-        std::unique_ptr<ComputingResponse> &_response)
+        const ComputingTraitConcentration* _traits,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response)
 {
 
     if (_traits == nullptr) {
@@ -248,14 +255,15 @@ ComputingStatus ComputingComponent::compute(
     GroupsParameterSetSeries parameterSeries;
     DateTime calculationStartTime;
 
-    ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(_traits,
-                                                                                       _request,
-                                                                                       m_utils->m_models.get(),
-                                                                                       pkModel,
-                                                                                       intakeSeries,
-                                                                                       covariateSeries,
-                                                                                       parameterSeries,
-                                                                                       calculationStartTime);
+    ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(
+            _traits,
+            _request,
+            m_utils->m_models.get(),
+            pkModel,
+            intakeSeries,
+            covariateSeries,
+            parameterSeries,
+            calculationStartTime);
 
     if (extractionResult != ComputingStatus::Ok) {
         return extractionResult;
@@ -269,7 +277,7 @@ ComputingStatus ComputingComponent::compute(
 
     std::map<AnalyteGroupId, Etas> allEtas;
 
-    for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+    for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
         AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
         ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
@@ -277,7 +285,15 @@ ComputingStatus ComputingComponent::compute(
         Etas etas;
 
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-            ComputingStatus extractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(etas, _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
+            ComputingStatus extractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
+                    etas,
+                    _request,
+                    analyteGroupId,
+                    intakeSeries[analyteGroupId],
+                    parameterSeries[analyteGroupId],
+                    covariateSeries,
+                    calculationStartTime,
+                    _traits->getEnd());
             if (extractionResult != ComputingStatus::Ok) {
                 return extractionResult;
             }
@@ -288,17 +304,16 @@ ComputingStatus ComputingComponent::compute(
 
         Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
         computingResult = concentrationCalculator.computeConcentrations(
-                    pPrediction,
-                    false,
-                    _traits->getStart(),
-                    _traits->getEnd(),
-                    intakeSeries[analyteGroupId],
-                    parameterSeries[analyteGroupId],
-                    etas);
+                pPrediction,
+                false,
+                _traits->getStart(),
+                _traits->getEnd(),
+                intakeSeries[analyteGroupId],
+                parameterSeries[analyteGroupId],
+                etas);
 
 
-        if (computingResult == ComputingStatus::Ok)
-        {
+        if (computingResult == ComputingStatus::Ok) {
             analytesPredictions.push_back(std::move(pPrediction));
         }
         else {
@@ -309,9 +324,10 @@ ComputingStatus ComputingComponent::compute(
 
     if (!_request.getDrugModel().isSingleAnalyte()) {
 
-        for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+        for (const auto& activeMoiety : _request.getDrugModel().getActiveMoieties()) {
             ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
-            ComputingStatus activeMoietyComputingResult = m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
+            ComputingStatus activeMoietyComputingResult =
+                    m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
             if (activeMoietyComputingResult != ComputingStatus::Ok) {
                 return activeMoietyComputingResult;
             }
@@ -322,10 +338,14 @@ ComputingStatus ComputingComponent::compute(
     std::unique_ptr<SinglePredictionData> resp = std::make_unique<SinglePredictionData>(_request.getId());
 
     IntakeSeries recordedIntakes;
-    selectRecordedIntakes(recordedIntakes, intakeSeries[_request.getDrugModel().getAnalyteSets()[0]->getId()], _traits->getStart(), _traits->getEnd());
+    selectRecordedIntakes(
+            recordedIntakes,
+            intakeSeries[_request.getDrugModel().getAnalyteSets()[0]->getId()],
+            _traits->getStart(),
+            _traits->getEnd());
 
-    if ((recordedIntakes.size() != analytesPredictions[0]->getTimes().size()) ||
-            (recordedIntakes.size() != analytesPredictions[0]->getValues().size())) {
+    if ((recordedIntakes.size() != analytesPredictions[0]->getTimes().size())
+        || (recordedIntakes.size() != analytesPredictions[0]->getValues().size())) {
         return ComputingStatus::RecordedIntakesSizeError;
     }
 
@@ -344,17 +364,17 @@ ComputingStatus ComputingComponent::compute(
         if (end > _traits->getStart()) {
             // std::cout << "Selected Time index " << i << " : " << start << std::endl;
             ComputingStatus recordStatus = recordCycle(
-                        _traits,
-                        _request,
-                        *resp,
-                        start,
-                        end,
-                        times,
-                        activeMoietiesPredictions,
-                        analytesPredictions,
-                        i,
-                        allEtas,
-                        parameterSeries);
+                    _traits,
+                    _request,
+                    *resp,
+                    start,
+                    end,
+                    times,
+                    activeMoietiesPredictions,
+                    analytesPredictions,
+                    i,
+                    allEtas,
+                    parameterSeries);
             if (recordStatus != ComputingStatus::Ok) {
                 return recordStatus;
             }
@@ -368,9 +388,9 @@ ComputingStatus ComputingComponent::compute(
 }
 
 ComputingStatus ComputingComponent::compute(
-        const ComputingTraitPercentiles *_traits,
-        const ComputingRequest &_request,
-        std::unique_ptr<ComputingResponse> &_response)
+        const ComputingTraitPercentiles* _traits,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response)
 {
 #ifdef NO_PERCENTILES
     return ComputingStatus::NoPercentilesCalculation;
@@ -382,9 +402,9 @@ ComputingStatus ComputingComponent::compute(
 }
 
 ComputingStatus ComputingComponent::computePercentilesMulti(
-        const ComputingTraitPercentiles *_traits,
-        const ComputingRequest &_request,
-        std::unique_ptr<ComputingResponse> &_response)
+        const ComputingTraitPercentiles* _traits,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response)
 {
 #ifdef NO_PERCENTILES
     return ComputingStatus::NoPercentilesCalculation;
@@ -401,14 +421,15 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
     GroupsParameterSetSeries parameterSeries;
     DateTime calculationStartTime;
 
-    ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(_traits,
-                                                                                       _request,
-                                                                                       m_utils->m_models.get(),
-                                                                                       pkModel,
-                                                                                       intakeSeries,
-                                                                                       covariateSeries,
-                                                                                       parameterSeries,
-                                                                                       calculationStartTime);
+    ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(
+            _traits,
+            _request,
+            m_utils->m_models.get(),
+            pkModel,
+            intakeSeries,
+            covariateSeries,
+            parameterSeries,
+            calculationStartTime);
 
     if (extractionResult != ComputingStatus::Ok) {
         return extractionResult;
@@ -421,7 +442,7 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
 
     Tucuxi::Core::PercentileRanks percentileRanks;
     std::map<AnalyteGroupId, Tucuxi::Core::OmegaMatrix> omega;
-    Tucuxi::Core::ComputingAborter *aborter = _traits->getAborter();
+    Tucuxi::Core::ComputingAborter* aborter = _traits->getAborter();
 
     percentileRanks = _traits->getRanks();
 
@@ -429,15 +450,17 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
     ResidualErrorModelExtractor errorModelExtractor;
     std::map<AnalyteGroupId, std::unique_ptr<IResidualErrorModel> > residualErrorModel;
 
-    for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+    for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
         AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
         std::unique_ptr<IResidualErrorModel> errorModel;
 
-        ComputingStatus errorModelExtractionResult = errorModelExtractor.extract(analyteGroup->getAnalytes()[0]->getResidualErrorModel(),
-                                                                                 analyteGroup->getAnalytes()[0]->getUnit(),
-                                                                                 analyteGroup->getAnalytes()[0]->getUnit(),
-                                                                                 covariateSeries, errorModel);
+        ComputingStatus errorModelExtractionResult = errorModelExtractor.extract(
+                analyteGroup->getAnalytes()[0]->getResidualErrorModel(),
+                analyteGroup->getAnalytes()[0]->getUnit(),
+                analyteGroup->getAnalytes()[0]->getUnit(),
+                covariateSeries,
+                errorModel);
         residualErrorModel[analyteGroupId] = std::move(errorModel);
 
         if (errorModelExtractionResult != ComputingStatus::Ok) {
@@ -446,11 +469,14 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
     }
 
 
-    for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+    for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
         AnalyteGroupId analyteGroupId = analyteGroup->getId();
-        std::vector<const FullFormulationAndRoute *> fullFormulationAndRoutes = m_utils->m_generalExtractor->extractFormulationAndRoutes(_request.getDrugModel(), intakeSeries[analyteGroupId]);
+        std::vector<const FullFormulationAndRoute*> fullFormulationAndRoutes =
+                m_utils->m_generalExtractor->extractFormulationAndRoutes(
+                        _request.getDrugModel(), intakeSeries[analyteGroupId]);
 
-        ComputingStatus omegaComputingResult = m_utils->m_generalExtractor->extractOmega(_request.getDrugModel(), analyteGroupId, fullFormulationAndRoutes, omega[analyteGroupId]);
+        ComputingStatus omegaComputingResult = m_utils->m_generalExtractor->extractOmega(
+                _request.getDrugModel(), analyteGroupId, fullFormulationAndRoutes, omega[analyteGroupId]);
         if (omegaComputingResult != ComputingStatus::Ok) {
             return omegaComputingResult;
         }
@@ -464,12 +490,20 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
 
     Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
 
-    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori)   {
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
 
-        for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+        for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
             AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
-            ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
+            ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
+                    etas[analyteGroupId],
+                    _request,
+                    analyteGroupId,
+                    intakeSeries[analyteGroupId],
+                    parameterSeries[analyteGroupId],
+                    covariateSeries,
+                    calculationStartTime,
+                    _traits->getEnd());
             if (aposterioriEtasExtractionResult != ComputingStatus::Ok) {
                 return aposterioriEtasExtractionResult;
             }
@@ -479,38 +513,43 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
         // This extraction is already done in extractAposterioriEtas... Could be optimized
         std::map<AnalyteGroupId, SampleSeries> sampleSeries;
 
-        for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+        for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
             AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
 
             SampleExtractor sampleExtractor;
-            ComputingStatus sampleExtractionResult =
-                    sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(), sampleSeries[analyteGroupId]);
+            ComputingStatus sampleExtractionResult = sampleExtractor.extract(
+                    _request.getDrugTreatment().getSamples(),
+                    _request.getDrugModel().getAnalyteSet(analyteGroupId),
+                    calculationStartTime,
+                    _traits->getEnd(),
+                    _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(),
+                    sampleSeries[analyteGroupId]);
 
             if (sampleExtractionResult != ComputingStatus::Ok) {
                 return sampleExtractionResult;
             }
         }
 
-        std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculatorMulti> calculator(new Tucuxi::Core::AposterioriMonteCarloPercentileCalculatorMulti());
+        std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculatorMulti> calculator(
+                new Tucuxi::Core::AposterioriMonteCarloPercentileCalculatorMulti());
         computingResult = calculator->calculate(
-                    percentiles,
-                    _traits->getStart(),
-                    _traits->getEnd(),
-                    intakeSeries,
-                    parameterSeries,
-                    omega,
-                    residualErrorModel,
-                    etas,
-                    sampleSeries,
-                    percentileRanks,
-                    concentrationCalculator,
-                    _request.getDrugModel().getActiveMoieties()[0].get(),
-                    aborter);
-
+                percentiles,
+                _traits->getStart(),
+                _traits->getEnd(),
+                intakeSeries,
+                parameterSeries,
+                omega,
+                residualErrorModel,
+                etas,
+                sampleSeries,
+                percentileRanks,
+                concentrationCalculator,
+                _request.getDrugModel().getActiveMoieties()[0].get(),
+                aborter);
     }
     else {
-        for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+        for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
             AnalyteGroupId analyteGroupId = analyteGroup->getId();
             etas[analyteGroupId] = Etas(0);
         }
@@ -518,18 +557,18 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
         std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculatorMulti> calculator =
                 std::make_unique<Tucuxi::Core::AprioriPercentileCalculatorMulti>();
         computingResult = calculator->calculate(
-                    percentiles,
-                    _traits->getStart(),
-                    _traits->getEnd(),
-                    intakeSeries,
-                    parameterSeries,
-                    omega,
-                    residualErrorModel,
-                    etas,
-                    percentileRanks,
-                    concentrationCalculator,
-                    _request.getDrugModel().getActiveMoieties()[0].get(),
-                    aborter);
+                percentiles,
+                _traits->getStart(),
+                _traits->getEnd(),
+                intakeSeries,
+                parameterSeries,
+                omega,
+                residualErrorModel,
+                etas,
+                percentileRanks,
+                concentrationCalculator,
+                _request.getDrugModel().getActiveMoieties()[0].get(),
+                aborter);
     }
 
     if (computingResult != ComputingStatus::Ok) {
@@ -543,31 +582,25 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
     AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
 
     ComputingStatus predictionResult = concentrationCalculator.computeConcentrations(
-                pPrediction,
-                false,
-                _traits->getStart(),
-                _traits->getEnd(),
-                intakeSeries[analyteGroupId],
-                parameterSeries[analyteGroupId]);
+            pPrediction,
+            false,
+            _traits->getStart(),
+            _traits->getEnd(),
+            intakeSeries[analyteGroupId],
+            parameterSeries[analyteGroupId]);
 
     if (predictionResult != ComputingStatus::Ok) {
         return predictionResult;
     }
 
     return preparePercentilesResponse(
-                _traits,
-                _request,
-                _response,
-                intakeSeries,
-                pPrediction,
-                percentiles,
-                percentileRanks);
+            _traits, _request, _response, intakeSeries, pPrediction, percentiles, percentileRanks);
 }
 
 ComputingStatus ComputingComponent::computePercentilesSimple(
-        const ComputingTraitPercentiles *_traits,
-        const ComputingRequest &_request,
-        std::unique_ptr<ComputingResponse> &_response)
+        const ComputingTraitPercentiles* _traits,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response)
 {
 #ifdef NO_PERCENTILES
     return ComputingStatus::NoPercentilesCalculation;
@@ -584,14 +617,15 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
     GroupsParameterSetSeries parameterSeries;
     DateTime calculationStartTime;
 
-    ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(_traits,
-                                                                              _request,
-                                                                              m_utils->m_models.get(),
-                                                                              pkModel,
-                                                                              intakeSeries,
-                                                                              covariateSeries,
-                                                                              parameterSeries,
-                                                                              calculationStartTime);
+    ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(
+            _traits,
+            _request,
+            m_utils->m_models.get(),
+            pkModel,
+            intakeSeries,
+            covariateSeries,
+            parameterSeries,
+            calculationStartTime);
 
     if (extractionResult != ComputingStatus::Ok) {
         return extractionResult;
@@ -609,24 +643,29 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
 
     Tucuxi::Core::PercentileRanks percentileRanks;
     Tucuxi::Core::OmegaMatrix omega;
-    Tucuxi::Core::ComputingAborter *aborter = _traits->getAborter();
+    Tucuxi::Core::ComputingAborter* aborter = _traits->getAborter();
 
     percentileRanks = _traits->getRanks();
 
 
     ResidualErrorModelExtractor errorModelExtractor;
     std::unique_ptr<IResidualErrorModel> residualErrorModel;
-    ComputingStatus errorModelExtractionResult = errorModelExtractor.extract(_request.getDrugModel().getAnalyteSet()->getAnalytes()[0]->getResidualErrorModel(),
-                                                                             _request.getDrugModel().getAnalyteSet()->getAnalytes()[0]->getUnit(),
-                                                                             _request.getDrugModel().getAnalyteSet()->getAnalytes()[0]->getUnit(),
-                                                                             covariateSeries, residualErrorModel);
+    ComputingStatus errorModelExtractionResult = errorModelExtractor.extract(
+            _request.getDrugModel().getAnalyteSet()->getAnalytes()[0]->getResidualErrorModel(),
+            _request.getDrugModel().getAnalyteSet()->getAnalytes()[0]->getUnit(),
+            _request.getDrugModel().getAnalyteSet()->getAnalytes()[0]->getUnit(),
+            covariateSeries,
+            residualErrorModel);
     if (errorModelExtractionResult != ComputingStatus::Ok) {
         return errorModelExtractionResult;
     }
 
-    std::vector<const FullFormulationAndRoute *> fullFormulationAndRoutes = m_utils->m_generalExtractor->extractFormulationAndRoutes(_request.getDrugModel(), intakeSeries[analyteGroupId]);
+    std::vector<const FullFormulationAndRoute*> fullFormulationAndRoutes =
+            m_utils->m_generalExtractor->extractFormulationAndRoutes(
+                    _request.getDrugModel(), intakeSeries[analyteGroupId]);
 
-    ComputingStatus omegaComputingResult = m_utils->m_generalExtractor->extractOmega(_request.getDrugModel(), analyteGroupId, fullFormulationAndRoutes, omega);
+    ComputingStatus omegaComputingResult = m_utils->m_generalExtractor->extractOmega(
+            _request.getDrugModel(), analyteGroupId, fullFormulationAndRoutes, omega);
     if (omegaComputingResult != ComputingStatus::Ok) {
         return omegaComputingResult;
     }
@@ -639,8 +678,16 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
 
     Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
 
-    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori)   {
-        ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(etas, _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+        ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
+                etas,
+                _request,
+                analyteGroupId,
+                intakeSeries[analyteGroupId],
+                parameterSeries[analyteGroupId],
+                covariateSeries,
+                calculationStartTime,
+                _traits->getEnd());
         if (aposterioriEtasExtractionResult != ComputingStatus::Ok) {
             return aposterioriEtasExtractionResult;
         }
@@ -653,8 +700,13 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
         SampleSeries sampleSeries;
         SampleExtractor sampleExtractor;
         // We take all samples
-        ComputingStatus sampleExtractionResult =
-                sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), DateTime::min(), DateTime::max(), _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(), sampleSeries);
+        ComputingStatus sampleExtractionResult = sampleExtractor.extract(
+                _request.getDrugTreatment().getSamples(),
+                _request.getDrugModel().getAnalyteSet(analyteGroupId),
+                DateTime::min(),
+                DateTime::max(),
+                _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(),
+                sampleSeries);
         //sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(), sampleSeries);
 
         if (sampleExtractionResult != ComputingStatus::Ok) {
@@ -668,35 +720,34 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
         std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculator> calculator =
                 std::make_unique<Tucuxi::Core::AposterioriMonteCarloPercentileCalculator>();
         computingResult = calculator->calculate(
-                    percentiles,
-                    _traits->getStart(),
-                    _traits->getEnd(),
-                    intakeSeries[analyteGroupId],
-                    parameterSeries[analyteGroupId],
-                    omega,
-                    *residualErrorModel,
-                    etas,
-                    sampleSeries,
-                    percentileRanks,
-                    concentrationCalculator,
-                    aborter);
-
+                percentiles,
+                _traits->getStart(),
+                _traits->getEnd(),
+                intakeSeries[analyteGroupId],
+                parameterSeries[analyteGroupId],
+                omega,
+                *residualErrorModel,
+                etas,
+                sampleSeries,
+                percentileRanks,
+                concentrationCalculator,
+                aborter);
     }
     else {
         std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculator> calculator =
                 std::make_unique<Tucuxi::Core::AprioriMonteCarloPercentileCalculator>();
         computingResult = calculator->calculate(
-                    percentiles,
-                    _traits->getStart(),
-                    _traits->getEnd(),
-                    intakeSeries[analyteGroupId],
-                    parameterSeries[analyteGroupId],
-                    omega,
-                    *residualErrorModel,
-                    etas,
-                    percentileRanks,
-                    concentrationCalculator,
-                    aborter);
+                percentiles,
+                _traits->getStart(),
+                _traits->getEnd(),
+                intakeSeries[analyteGroupId],
+                parameterSeries[analyteGroupId],
+                omega,
+                *residualErrorModel,
+                etas,
+                percentileRanks,
+                concentrationCalculator,
+                aborter);
     }
 
     if (computingResult != ComputingStatus::Ok) {
@@ -708,45 +759,38 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
     ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
 
     ComputingStatus predictionResult = concentrationCalculator.computeConcentrations(
-                pPrediction,
-                false,
-                _traits->getStart(),
-                _traits->getEnd(),
-                intakeSeries[analyteGroupId],
-                parameterSeries[analyteGroupId]);
+            pPrediction,
+            false,
+            _traits->getStart(),
+            _traits->getEnd(),
+            intakeSeries[analyteGroupId],
+            parameterSeries[analyteGroupId]);
 
     if (predictionResult != ComputingStatus::Ok) {
         return predictionResult;
     }
 
     return preparePercentilesResponse(
-                _traits,
-                _request,
-                _response,
-                intakeSeries,
-                pPrediction,
-                percentiles,
-                percentileRanks);
+            _traits, _request, _response, intakeSeries, pPrediction, percentiles, percentileRanks);
 }
 
 ComputingStatus ComputingComponent::preparePercentilesResponse(
-        const ComputingTraitPercentiles *_traits,
-        const ComputingRequest &_request,
-        std::unique_ptr<ComputingResponse> &_response,
-        GroupsIntakeSeries &_intakeSeries,
-        const ConcentrationPredictionPtr &_pPrediction,
-        const Tucuxi::Core::PercentilesPrediction &_percentiles,
-        const Tucuxi::Core::PercentileRanks &_percentileRanks
-        )
+        const ComputingTraitPercentiles* _traits,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response,
+        GroupsIntakeSeries& _intakeSeries,
+        const ConcentrationPredictionPtr& _pPrediction,
+        const Tucuxi::Core::PercentilesPrediction& _percentiles,
+        const Tucuxi::Core::PercentileRanks& _percentileRanks)
 {
 
     auto defaultAnalyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
     IntakeSeries selectedIntakes;
-    selectRecordedIntakes(selectedIntakes, _intakeSeries[defaultAnalyteGroupId], _traits->getStart(), _traits->getEnd());
+    selectRecordedIntakes(
+            selectedIntakes, _intakeSeries[defaultAnalyteGroupId], _traits->getStart(), _traits->getEnd());
 
-    if (selectedIntakes.size() == _pPrediction->getTimes().size() &&
-            selectedIntakes.size() == _pPrediction->getValues().size())
-    {
+    if (selectedIntakes.size() == _pPrediction->getTimes().size()
+        && selectedIntakes.size() == _pPrediction->getValues().size()) {
         std::unique_ptr<PercentilesData> resp = std::make_unique<PercentilesData>(_request.getId());
         resp->setNbPointsPerHour(_traits->getNbPointsPerHour());
 
@@ -769,7 +813,7 @@ ComputingStatus ComputingComponent::preparePercentilesResponse(
                 return ComputingStatus::SelectedIntakesSizeError;
             }
 
-            for (unsigned int cycle = 0; cycle < allValues[p].size(); cycle ++) {
+            for (unsigned int cycle = 0; cycle < allValues[p].size(); cycle++) {
 
                 TimeOffsets times = _pPrediction->getTimes()[cycle];
                 DateTime start = selectedIntakes[cycle].getEventTime();
@@ -781,11 +825,13 @@ ComputingStatus ComputingComponent::preparePercentilesResponse(
                 if (end > _traits->getStart()) {
                     CycleData cycleData(start, end, finalUnit);
                     //                    cycleData.addData(times, allValues[p][cycle]);
-                    cycleData.addData(times,
-                                      Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
-                                          allValues[p][cycle],
-                                          _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
-                                      finalUnit));
+                    cycleData.addData(
+                            times,
+                            Tucuxi::Common::UnitManager::convertToUnit<
+                                    Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                                    allValues[p][cycle],
+                                    _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                                    finalUnit));
                     percData.push_back(cycleData);
                 }
             }
@@ -807,31 +853,30 @@ ComputingStatus ComputingComponent::preparePercentilesResponse(
 
 
 ComputingStatus ComputingComponent::compute(
-        const ComputingTraitAdjustment *_traits,
-        const ComputingRequest &_request,
-        std::unique_ptr<ComputingResponse> &_response)
+        const ComputingTraitAdjustment* _traits,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response)
 {
 
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
         return ComputingStatus::NoComputingTraits;
     }
-   ComputingAdjustments computer(m_utils.get());
-   return computer.compute(_traits, _request, _response);
+    ComputingAdjustments computer(m_utils.get());
+    return computer.compute(_traits, _request, _response);
 }
 
 
 
 ComputingStatus ComputingComponent::compute(
-        const ComputingTraitAtMeasures *_traits,
-        const ComputingRequest &_request,
-        std::unique_ptr<ComputingResponse> &_response)
+        const ComputingTraitAtMeasures* _traits,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response)
 {
 
     // Simply extract the sample dates
     std::vector<Tucuxi::Common::DateTime> sampleTimes;
-    for (const auto &sample : _request.getDrugTreatment().getSamples())
-    {
+    for (const auto& sample : _request.getDrugTreatment().getSamples()) {
         sampleTimes.push_back(sample->getDate());
     }
 
@@ -843,9 +888,9 @@ ComputingStatus ComputingComponent::compute(
 }
 
 ComputingStatus ComputingComponent::compute(
-        const ComputingTraitSinglePoints *_traits,
-        const ComputingRequest &_request,
-        std::unique_ptr<ComputingResponse> &_response)
+        const ComputingTraitSinglePoints* _traits,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response)
 {
 
     if (_traits == nullptr) {
@@ -870,7 +915,7 @@ ComputingStatus ComputingComponent::compute(
     DateTime firstDate;
     DateTime lastDate;
 
-    for (const auto &singleTime : _traits->getTimes()) {
+    for (const auto& singleTime : _traits->getTimes()) {
         if (firstDate.isUndefined() || (singleTime < firstDate)) {
             firstDate = singleTime;
         }
@@ -884,14 +929,15 @@ ComputingStatus ComputingComponent::compute(
     // TODO : Check if 3 is necessary or not
     ComputingTraitStandard standardTraits(_request.getId(), firstDate, lastDate, 3, _traits->getComputingOption());
 
-    ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(&standardTraits,
-                                                                              _request,
-                                                                              m_utils->m_models.get(),
-                                                                              pkModel,
-                                                                              intakeSeries,
-                                                                              covariateSeries,
-                                                                              parameterSeries,
-                                                                              calculationStartTime);
+    ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(
+            &standardTraits,
+            _request,
+            m_utils->m_models.get(),
+            pkModel,
+            intakeSeries,
+            covariateSeries,
+            parameterSeries,
+            calculationStartTime);
 
     if (extractionResult != ComputingStatus::Ok) {
         return extractionResult;
@@ -901,7 +947,7 @@ ComputingStatus ComputingComponent::compute(
         return ComputingStatus::NoAnalytesGroup;
     }
 
-    for (const auto & analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+    for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
         AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
         // Now ready to do the real computing with all the extracted values
@@ -913,7 +959,15 @@ ComputingStatus ComputingComponent::compute(
         Etas etas;
 
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-            ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(etas, _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, lastDate);
+            ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
+                    etas,
+                    _request,
+                    analyteGroupId,
+                    intakeSeries[analyteGroupId],
+                    parameterSeries[analyteGroupId],
+                    covariateSeries,
+                    calculationStartTime,
+                    lastDate);
             if (aposterioriEtasExtractionResult != ComputingStatus::Ok) {
                 return aposterioriEtasExtractionResult;
             }
@@ -923,29 +977,27 @@ ComputingStatus ComputingComponent::compute(
 
         SampleSeries timesSeries;
 
-        for (const auto &times : _traits->getTimes()) {
+        for (const auto& times : _traits->getTimes()) {
             timesSeries.push_back(SampleEvent(times));
         }
 
         // Sort the times in chronological order
-        std::sort(timesSeries.begin(), timesSeries.end(), [](const SampleEvent &_a, const SampleEvent &_b)
-        {
+        std::sort(timesSeries.begin(), timesSeries.end(), [](const SampleEvent& _a, const SampleEvent& _b) {
             return _a.getEventTime() < _b.getEventTime();
         });
 
         ConcentrationCalculator calculator;
         computingResult = calculator.computeConcentrationsAtTimes(
-                    concentrations,
-                    false,
-                    intakeSeries[analyteGroupId],
-                    parameterSeries[analyteGroupId],
-                    timesSeries,
-                    etas,
-                    true);
+                concentrations,
+                false,
+                intakeSeries[analyteGroupId],
+                parameterSeries[analyteGroupId],
+                timesSeries,
+                etas,
+                true);
 
 
-        if (computingResult == ComputingStatus::Ok)
-        {
+        if (computingResult == ComputingStatus::Ok) {
             std::unique_ptr<SinglePointsData> resp = std::make_unique<SinglePointsData>(_request.getId());
 
             if (concentrations.size() != timesSeries.size()) {
@@ -956,7 +1008,7 @@ ComputingStatus ComputingComponent::compute(
 
             size_t nbTimes = concentrations.size();
             Concentrations c;
-            for(size_t i = 0; i < nbTimes; i++) {
+            for (size_t i = 0; i < nbTimes; i++) {
                 c.push_back(concentrations[i]);
                 resp->m_times.push_back(timesSeries[i].getEventTime());
             }
@@ -968,7 +1020,6 @@ ComputingStatus ComputingComponent::compute(
         else {
             return computingResult;
         }
-
     }
     return ComputingStatus::Ok;
 }

@@ -6,12 +6,14 @@
 #include <Eigen/LU>
 
 #include "tucucore/pkmodels/rkonecompartmentextra.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
 
-RK4OneCompartmentExtraMicro::RK4OneCompartmentExtraMicro() : IntakeIntervalCalculatorRK4Base<2, RK4OneCompartmentExtraMicro> (new PertinentTimesCalculatorStandard())
+RK4OneCompartmentExtraMicro::RK4OneCompartmentExtraMicro()
+    : IntakeIntervalCalculatorRK4Base<2, RK4OneCompartmentExtraMicro>(new PertinentTimesCalculatorStandard())
 {
 }
 
@@ -43,9 +45,7 @@ bool RK4OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, c
 }
 
 
-RK4OneCompartmentExtraMacro::RK4OneCompartmentExtraMacro() : RK4OneCompartmentExtraMicro()
-{
-}
+RK4OneCompartmentExtraMacro::RK4OneCompartmentExtraMacro() : RK4OneCompartmentExtraMicro() {}
 
 bool RK4OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
@@ -75,6 +75,5 @@ bool RK4OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     return bOK;
 }
 
-}
-}
-
+} // namespace Core
+} // namespace Tucuxi

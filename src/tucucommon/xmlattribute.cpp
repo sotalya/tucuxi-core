@@ -2,24 +2,18 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include "rapidxml.hpp"
-
-#include "xmlnode.h"
 #include "xmlattribute.h"
+
+#include "rapidxml.hpp"
+#include "xmlnode.h"
 
 namespace Tucuxi {
 namespace Common {
 
-XmlAttribute::XmlAttribute()
-    : m_pAttribute(nullptr)
-{
-}
+XmlAttribute::XmlAttribute() : m_pAttribute(nullptr) {}
 
 
-XmlAttribute::XmlAttribute(const XmlAttribute& _node)
-    :m_pAttribute(_node.m_pAttribute)
-{
-}
+XmlAttribute::XmlAttribute(const XmlAttribute& _node) : m_pAttribute(_node.m_pAttribute) {}
 
 
 XmlAttribute::XmlAttribute(rapidxml::xml_attribute<>* _pAttribute)
@@ -49,7 +43,7 @@ std::string XmlAttribute::getName() const
 
 bool XmlAttribute::setName(const std::string& _name)
 {
-    char *pstr = allocateString(_name);
+    char* pstr = allocateString(_name);
     if (pstr != nullptr) {
         m_pAttribute->name(pstr);
         return true;
@@ -69,7 +63,7 @@ std::string XmlAttribute::getValue() const
 
 bool XmlAttribute::setValue(const std::string& _value)
 {
-    char *pstr = allocateString(_value);
+    char* pstr = allocateString(_value);
     if (pstr != nullptr) {
         m_pAttribute->value(pstr);
         return true;
@@ -127,4 +121,3 @@ char* XmlAttribute::allocateString(const std::string& _string)
 
 } // namespace Common
 } // namespace Tucuxi
-

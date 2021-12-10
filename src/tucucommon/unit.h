@@ -1,10 +1,10 @@
 #ifndef TUCUXI_COMMON_UNIT_H
 #define TUCUXI_COMMON_UNIT_H
 
-#include <string>
 #include <map>
-#include <vector>
 #include <stdexcept>
+#include <string>
+#include <vector>
 
 namespace Tucuxi {
 namespace Common {
@@ -24,7 +24,6 @@ namespace Common {
 class TucuUnit
 {
 public:
-
     ///
     /// \brief Constructs an empty unit
     ///
@@ -38,14 +37,17 @@ public:
     /// can be performed later on depending on a specific type of unit required
     /// at a specific place in code.
     ///
-    TucuUnit(const std::string& _unitString) : m_unitString(_unitString){}
+    TucuUnit(const std::string& _unitString) : m_unitString(_unitString) {}
 
     ///
     /// \brief Compares two units for equality
     /// \param _rhs The unit to compare
     /// \return true if the units are equal, false else
     ///
-    inline bool operator==(const TucuUnit& _rhs) const { return this->m_unitString == _rhs.m_unitString; }
+    inline bool operator==(const TucuUnit& _rhs) const
+    {
+        return this->m_unitString == _rhs.m_unitString;
+    }
 
     ///
     /// \brief Converts the unit to a string
@@ -61,10 +63,8 @@ public:
 
 
 protected:
-
     /// A unit is simply represented as a string
     std::string m_unitString;
-
 };
 
 ///
@@ -79,8 +79,8 @@ protected:
 class UnitManager
 {
 public:
-
-    enum class UnitType{
+    enum class UnitType
+    {
         Weight = 0,
         Concentration,
         MoleConcentration,
@@ -110,8 +110,7 @@ public:
         std::string initialKey = _initialUnit.toString();
         std::string finalKey = _finalUnit.toString();
 
-        if ((conversionMap.count(initialKey) == 0) || (conversionMap.count(finalKey) == 0))
-        {
+        if ((conversionMap.count(initialKey) == 0) || (conversionMap.count(finalKey) == 0)) {
             logConversionError(_initialUnit, _finalUnit);
             throw std::invalid_argument("Error in unit conversion");
         }
@@ -127,7 +126,8 @@ public:
     /// \return converted vector
     ///
     template<UnitType unitType>
-    static std::vector<double> convertToUnit(const std::vector<double>& _value, const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
+    static std::vector<double> convertToUnit(
+            const std::vector<double>& _value, const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
     {
         std::vector<double> result(_value.size());
         const auto conversionMap = getConversionMap().at(unitType);
@@ -135,13 +135,12 @@ public:
         std::string initialKey = _initialUnit.toString();
         std::string finalKey = _finalUnit.toString();
 
-        if ((conversionMap.count(initialKey) == 0) || (conversionMap.count(finalKey) == 0))
-        {
+        if ((conversionMap.count(initialKey) == 0) || (conversionMap.count(finalKey) == 0)) {
             logConversionError(_initialUnit, _finalUnit);
             throw std::invalid_argument("Error in unit conversion");
         }
 
-        double factor =  1.0 / conversionMap.at(finalKey) * conversionMap.at(initialKey);
+        double factor = 1.0 / conversionMap.at(finalKey) * conversionMap.at(initialKey);
 
         for (size_t i = 0; i < _value.size(); i++) {
             result[i] = _value[i] * factor;
@@ -157,20 +156,20 @@ public:
     /// \param _finalUnit
     ///
     template<UnitType unitType>
-    static void updateAndConvertToUnit(std::vector<double>& _value, const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
+    static void updateAndConvertToUnit(
+            std::vector<double>& _value, const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
     {
         const auto conversionMap = getConversionMap().at(unitType);
 
         std::string initialKey = _initialUnit.toString();
         std::string finalKey = _finalUnit.toString();
 
-        if ((conversionMap.count(initialKey) == 0) || (conversionMap.count(finalKey) == 0))
-        {
+        if ((conversionMap.count(initialKey) == 0) || (conversionMap.count(finalKey) == 0)) {
             logConversionError(_initialUnit, _finalUnit);
             throw std::invalid_argument("Error in unit conversion");
         }
 
-        double factor =  1.0 / conversionMap.at(finalKey) * conversionMap.at(initialKey);
+        double factor = 1.0 / conversionMap.at(finalKey) * conversionMap.at(initialKey);
 
         for (size_t i = 0; i < _value.size(); i++) {
             _value[i] = _value[i] * factor;
@@ -194,7 +193,7 @@ public:
     /// \param _finalUnit
     /// \return converted value
     ///
-    static double convertToUnit(double _value, const TucuUnit &_initialUnit, const TucuUnit &_finalUnit);
+    static double convertToUnit(double _value, const TucuUnit& _initialUnit, const TucuUnit& _finalUnit);
 
     static void logConversionError(const TucuUnit& _initialUnit, const TucuUnit& _finalUnit);
 
@@ -240,9 +239,7 @@ public:
     static TucuUnit getWeightFromConcentration(const TucuUnit& _unit);
 
 private:
-
     static const std::map<UnitManager::UnitType, std::map<std::string, double>>& getConversionMap();
-
 };
 
 

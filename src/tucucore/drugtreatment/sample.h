@@ -71,7 +71,6 @@ namespace Core {
 class Sample
 {
 public:
-
     ///
     /// \brief Sample constructor
     /// \param _date Date of measures
@@ -91,7 +90,7 @@ public:
     /// \brief Returns the sample ID
     /// \return Sample ID
     ///
-//    std::string getSampleId() const;
+    //    std::string getSampleId() const;
 
     ///
     /// \brief Returns the analyte ID
@@ -113,9 +112,8 @@ public:
 
 
 protected:
-
     /// Sample ID
-//    const std::string m_sampleID;
+    //    const std::string m_sampleID;
 
     /// Date of measure (date + time)
     DateTime m_date;
@@ -128,9 +126,6 @@ protected:
 
     /// Unit of the measure
     const TucuUnit m_unit;
-
-
-
 };
 
 /// A vector of unique_ptr on Sample objects

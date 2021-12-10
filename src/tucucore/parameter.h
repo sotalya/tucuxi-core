@@ -5,20 +5,20 @@
 #ifndef TUCUXI_CORE_PARAMETER_H
 #define TUCUXI_CORE_PARAMETER_H
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 #include "tucucommon/general.h"
 #include "tucucommon/loggerhelper.h"
 
 #include "tucucore/definitions.h"
-#include "tucucore/timedevent.h"
-#include "tucucore/operation.h"
 #include "tucucore/drugdefinitions.h"
-#include "tucucore/drugmodel/parameterdefinition.h"
-#include "tucucore/parameterids.h"
 #include "tucucore/drugmodel/analyte.h"
+#include "tucucore/drugmodel/parameterdefinition.h"
+#include "tucucore/operation.h"
+#include "tucucore/parameterids.h"
+#include "tucucore/timedevent.h"
 
 struct TestParameterExtractor;
 
@@ -37,15 +37,14 @@ class ParametersExtractor;
 class Parameter : public IndividualValue<ParameterDefinition>
 {
 public:
-    Parameter(const ParameterDefinition &_def, Value _value) :
-        IndividualValue<ParameterDefinition>(_def),
-        m_value(_value)
+    Parameter(const ParameterDefinition& _def, Value _value)
+        : IndividualValue<ParameterDefinition>(_def), m_value(_value)
     {
     }
 
-    Parameter(Parameter && _other) = default;
-    Parameter(const Parameter & _other) = default;
-/*
+    Parameter(Parameter&& _other) = default;
+    Parameter(const Parameter& _other) = default;
+    /*
     const Parameter& operator=(const Parameter& other) {
         if (this != &other) { // protect against invalid self-assignment
             m_value = other.m_value;
@@ -67,10 +66,19 @@ public:
     /// \unittest{TestParameter::testApplyEta()}
     ///
     bool applyEta(Deviation _eta);
-    Value getValue() const { return m_value; }
-    bool isVariable() const { return m_definition.isVariable(); }
+    Value getValue() const
+    {
+        return m_value;
+    }
+    bool isVariable() const
+    {
+        return m_definition.isVariable();
+    }
 
-    std::string getParameterId() const {return m_definition.getId();}
+    std::string getParameterId() const
+    {
+        return m_definition.getId();
+    }
 
     // Make the test class friend, as this will allow us to manually check the available events.
     friend TestParameterExtractor;
@@ -89,16 +97,15 @@ class ParameterSetEvent : public TimedEvent
 public:
     /// \brief Create an empty parameter set event at a given date.
     /// \param _date Timing information for the parameter set event.
-    ParameterSetEvent(const DateTime &_date)
-        : TimedEvent(_date)
+    ParameterSetEvent(const DateTime& _date) : TimedEvent(_date)
     {
         m_IdToIndex.fill(-1);
-//        for (int i = 0; i < ParameterId::size; i++) {
-//            m_IdToIndex[i] = -1;
-//        }
+        //        for (int i = 0; i < ParameterId::size; i++) {
+        //            m_IdToIndex[i] = -1;
+        //        }
     }
 
-    void setEventTime(const DateTime &_date)
+    void setEventTime(const DateTime& _date)
     {
         m_time = _date;
     }
@@ -119,10 +126,9 @@ public:
     /// Finaly, if the parameter is already in the set, its value is updated. This feature
     /// is useful to build the ParameterSetEvent after extraction of changing parameters
     /// in the ParametersExtractor.
-    void addParameterEvent(const ParameterDefinition &_definition, Value _value);
+    void addParameterEvent(const ParameterDefinition& _definition, Value _value);
 
-    ParameterSetEvent(const DateTime& _date, const ParameterDefinitions &_definitions)
-        : ParameterSetEvent(_date)
+    ParameterSetEvent(const DateTime& _date, const ParameterDefinitions& _definitions) : ParameterSetEvent(_date)
     {
         ParameterDefinitions::const_iterator it;
         for (it = _definitions.begin(); it != _definitions.end(); it++) {
@@ -132,8 +138,14 @@ public:
 
 
     bool applyEtas(const Etas& _etas);
-    Parameters::const_iterator begin() const { return m_parameters.begin(); }
-    Parameters::const_iterator end() const { return m_parameters.end(); }
+    Parameters::const_iterator begin() const
+    {
+        return m_parameters.begin();
+    }
+    Parameters::const_iterator end() const
+    {
+        return m_parameters.end();
+    }
 
     ///
     /// \brief Gets the value of a parameter
@@ -171,13 +183,17 @@ public:
         return 0.0;
     }
 
-    int size() const { return static_cast<int>(m_parameters.size()); }
+    int size() const
+    {
+        return static_cast<int>(m_parameters.size());
+    }
 
-    bool equals(const ParameterSetEvent *_other) const {
+    bool equals(const ParameterSetEvent* _other) const
+    {
         if (m_parameters.size() != _other->m_parameters.size()) {
             return false;
         }
-        for(size_t i = 0; i < m_parameters.size(); i++) {
+        for (size_t i = 0; i < m_parameters.size(); i++) {
             if (m_parameters[i].getValue() != _other->m_parameters[i].getValue()) {
                 return false;
             }
@@ -205,7 +221,6 @@ typedef std::unique_ptr<const ParameterSetEvent> ParameterSetEventPtr;
 class ParameterSetSeries
 {
 public:
-
     ///
     /// \brief getAtTime
     /// \param _date
@@ -214,8 +229,8 @@ public:
     ///
     /// \unittest{TestParameter::testGetAtTime()}
     ///
-    ParameterSetEventPtr getAtTime(const DateTime &_date, const Etas &_etas = Etas(0)) const;
-    void addParameterSetEvent(const ParameterSetEvent &_parameterSetEvent);
+    ParameterSetEventPtr getAtTime(const DateTime& _date, const Etas& _etas = Etas(0)) const;
+    void addParameterSetEvent(const ParameterSetEvent& _parameterSetEvent);
 
     // Make the test class friend, as this will allow us to manually check the available events.
     friend TestParameterExtractor;
@@ -223,7 +238,7 @@ public:
     // To allow the ParametersExtractor to manipulate m_parameterSets
     friend ParametersExtractor;
 
-// private:
+    // private:
     std::vector<ParameterSetEvent> m_parameterSets;
 };
 

@@ -1,12 +1,14 @@
 #include "formulationandroute.h"
-#include "parameterdefinition.h"
 
 #include "tucucommon/general.h"
+
+#include "parameterdefinition.h"
 
 namespace Tucuxi {
 namespace Core {
 
-const ParameterSetDefinition* FullFormulationAndRoute::getParameterDefinitions(const AnalyteGroupId &_analyteGroupId) const
+const ParameterSetDefinition* FullFormulationAndRoute::getParameterDefinitions(
+        const AnalyteGroupId& _analyteGroupId) const
 {
     for (const std::unique_ptr<AnalyteSetToAbsorptionAssociation>& association : m_associations) {
         if (association->m_analyteSet.getId() == _analyteGroupId) {
@@ -17,7 +19,7 @@ const ParameterSetDefinition* FullFormulationAndRoute::getParameterDefinitions(c
 }
 
 
-AbsorptionModel FullFormulationAndRoute::getAbsorptionModel(const AnalyteGroupId &_analyteGroupId) const
+AbsorptionModel FullFormulationAndRoute::getAbsorptionModel(const AnalyteGroupId& _analyteGroupId) const
 {
     for (const std::unique_ptr<AnalyteSetToAbsorptionAssociation>& association : m_associations) {
         if (association->m_analyteSet.getId() == _analyteGroupId) {
@@ -27,11 +29,7 @@ AbsorptionModel FullFormulationAndRoute::getAbsorptionModel(const AnalyteGroupId
     return AbsorptionModel::Undefined;
 }
 
-FormulationAndRoutes::FormulationAndRoutes() :
-    m_defaultIndex(0)
-{
-
-}
+FormulationAndRoutes::FormulationAndRoutes() : m_defaultIndex(0) {}
 
 
 void FormulationAndRoutes::add(std::unique_ptr<FullFormulationAndRoute> _far, bool _isDefault)
@@ -50,13 +48,13 @@ const FullFormulationAndRoute* FormulationAndRoutes::getDefault() const
     return m_fars[m_defaultIndex].get();
 }
 
-const FullFormulationAndRoute* FormulationAndRoutes::get(const Formulation& _formulation, AdministrationRoute _route) const
+const FullFormulationAndRoute* FormulationAndRoutes::get(
+        const Formulation& _formulation, AdministrationRoute _route) const
 {
     TMP_UNUSED_PARAMETER(_formulation);
 
     for (const std::unique_ptr<FullFormulationAndRoute>& far : m_fars) {
-        if (
-            far->m_specs.getAdministrationRoute() == _route) {
+        if (far->m_specs.getAdministrationRoute() == _route) {
             return far.get();
         }
     }
@@ -80,13 +78,13 @@ const std::vector<std::unique_ptr<FullFormulationAndRoute> >& FormulationAndRout
 }
 
 
-std::vector<FormulationAndRoute> mergeFormulationAndRouteList(const std::vector<FormulationAndRoute> &_v1,
-                                                              const std::vector<FormulationAndRoute> &_v2)
+std::vector<FormulationAndRoute> mergeFormulationAndRouteList(
+        const std::vector<FormulationAndRoute>& _v1, const std::vector<FormulationAndRoute>& _v2)
 {
     std::vector<FormulationAndRoute> result;
     result = _v1;
 
-    for (const auto & dd : _v2) {
+    for (const auto& dd : _v2) {
         if (std::find(result.begin(), result.end(), dd) == result.end()) {
             result.push_back(dd);
         }
@@ -95,5 +93,5 @@ std::vector<FormulationAndRoute> mergeFormulationAndRouteList(const std::vector<
     return result;
 }
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

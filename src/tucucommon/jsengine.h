@@ -5,8 +5,8 @@
 #ifndef TUCUXI_TUCUCOMMON_JSENGINE_H
 #define TUCUXI_TUCUCOMMON_JSENGINE_H
 
-#include <string>
 #include <memory>
+#include <string>
 
 class CTinyJS;
 
@@ -23,13 +23,13 @@ public:
 
     /// \brief Destructor deleting pointers
     ~JSEngine();
-    
+
     /// \brief Retrieve a variable managed by the engine.
     /// The variable may have been added via setVariable or during the execution of a script.
     /// \param _name The name of the variable
     /// \param _value Its value
     /// \return True if the variable was found
-    template < typename T>
+    template<typename T>
     bool getVariable(const std::string& _name, T& _value);
 
     /// \brief Create a new variable or change the value of an existing one.
@@ -37,7 +37,7 @@ public:
     /// \param _value An expression to change the value of the variable
     /// \return True if the operation was successful
     bool setVariable(const std::string& _name, const std::string& _expression);
-    
+
     /// \brief Execute the specified script
     /// \param _code The script to execute
     /// \return True if the execution of the given script was successfull

@@ -1,6 +1,6 @@
-#include "unit.h"
-
 #include <iostream>
+
+#include "unit.h"
 
 #include "tucucommon/loggerhelper.h"
 
@@ -8,37 +8,39 @@
 namespace Tucuxi {
 namespace Common {
 
-bool TucuUnit::isEmpty() const {
+bool TucuUnit::isEmpty() const
+{
     return m_unitString.empty();
 }
 
 
-std::string TucuUnit::toString() const {
+std::string TucuUnit::toString() const
+{
     return m_unitString;
 }
 
-const std::vector<std::pair<std::string, std::string> >& getTolerateUnit()
+const std::vector<std::pair<std::string, std::string>>& getTolerateUnit()
 {
-    static const std::vector<std::pair<std::string, std::string> > sm_toleratePairUnit =  // NOLINT(readability-identifier-naming)
-    {
-        {"day","d"},
-        {"days", "d"},
-        {"week", "w"},
-        {"weeks", "w"},
-        {"months", "month"},
-        {"year", "y"},
-        {"years", "y"}
-    };
+    static const std::vector<std::pair<std::string, std::string>>
+            sm_toleratePairUnit = // NOLINT(readability-identifier-naming)
+            {{"day", "d"},
+             {"days", "d"},
+             {"week", "w"},
+             {"weeks", "w"},
+             {"months", "month"},
+             {"year", "y"},
+             {"years", "y"}};
 
     return sm_toleratePairUnit;
 }
 
-bool UnitManager::isUnitTolerated(std::string& _unitString) {
+bool UnitManager::isUnitTolerated(std::string& _unitString)
+{
 
     auto toleratePairUnit = getTolerateUnit();
 
-    for(const auto &unit : toleratePairUnit){
-        if(_unitString == unit.first){
+    for (const auto& unit : toleratePairUnit) {
+        if (_unitString == unit.first) {
             _unitString = unit.second;
             return true;
         }
@@ -48,6 +50,7 @@ bool UnitManager::isUnitTolerated(std::string& _unitString) {
 
 const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManager::getConversionMap()
 {
+    // clang-format off
     static const std::map<UnitType, std::map<std::string, double>> sm_conversionMap = // NOLINT(readability-identifier-naming)
     {
         {
@@ -171,6 +174,7 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
             }
         }
     };
+    // clang-format on
 
     return sm_conversionMap;
 }
@@ -178,17 +182,18 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
 void UnitManager::logConversionError(const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
 {
     static Tucuxi::Common::LoggerHelper logHelper;
-    logHelper.error("Error in unit conversion. No known conversion from {} to {}", _initialUnit.toString(), _finalUnit.toString());
+    logHelper.error(
+            "Error in unit conversion. No known conversion from {} to {}",
+            _initialUnit.toString(),
+            _finalUnit.toString());
 }
 
 double UnitManager::convertToUnit(double _value, const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
 {
     std::string initialKey = _initialUnit.toString();
     std::string finalKey = _finalUnit.toString();
-    for(const auto &map : getConversionMap())
-    {
-        if ((map.second.count(initialKey) != 0) && (map.second.count(finalKey) != 0))
-        {
+    for (const auto& map : getConversionMap()) {
+        if ((map.second.count(initialKey) != 0) && (map.second.count(finalKey) != 0)) {
             return _value * map.second.at(initialKey) / map.second.at(finalKey);
         }
     }
@@ -202,10 +207,8 @@ bool UnitManager::isCompatible(const TucuUnit& _unit1, const TucuUnit& _unit2)
 {
     std::string unitString1 = _unit1.toString();
     std::string unitString2 = _unit2.toString();
-    for(const auto &map : getConversionMap())
-    {
-        if ((map.second.count(unitString1) != 0) && (map.second.count(unitString2) != 0))
-        {
+    for (const auto& map : getConversionMap()) {
+        if ((map.second.count(unitString1) != 0) && (map.second.count(unitString2) != 0)) {
             return true;
         }
     }
@@ -216,8 +219,8 @@ bool UnitManager::isCompatible(const TucuUnit& _unit1, const TucuUnit& _unit2)
 bool UnitManager::isKnown(const TucuUnit& _unit)
 {
     std::string key = _unit.toString();
-    for(const auto &map : getConversionMap()){
-        if (map.second.count(key) != 0){
+    for (const auto& map : getConversionMap()) {
+        if (map.second.count(key) != 0) {
             return true;
         }
     }
@@ -227,7 +230,7 @@ bool UnitManager::isKnown(const TucuUnit& _unit)
 
 TucuUnit UnitManager::getWeightFromConcentration(const TucuUnit& _unit)
 {
-
+    // clang-format off
     static const std::map<std::string, std::string> sm_conversionMap = // NOLINT(readability-identifier-naming)
     {
         {"g/l", "g"},
@@ -237,6 +240,7 @@ TucuUnit UnitManager::getWeightFromConcentration(const TucuUnit& _unit)
         {"mg/ml", "mg"},
         {"ug/ml", "ug"}
     };
+    // clang-format on
 
     std::string key = _unit.toString();
     if (sm_conversionMap.count(key) > 0) {

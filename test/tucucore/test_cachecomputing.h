@@ -7,19 +7,19 @@
 #include <memory>
 #include <typeinfo>
 
-#include "fructose/fructose.h"
-
 #include "tucucommon/datetime.h"
 
+#include "tucucore/cachecomputing.h"
+#include "tucucore/computingcomponent.h"
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/computingservice/computingresponse.h"
 #include "tucucore/computingservice/computingtrait.h"
-#include "tucucore/computingcomponent.h"
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
-#include "drugmodels/buildimatinib.h"
 #include "tucucore/montecarlopercentilecalculator.h"
-#include "tucucore/cachecomputing.h"
+
+#include "drugmodels/buildimatinib.h"
+#include "fructose/fructose.h"
 
 using namespace Tucuxi::Core;
 
@@ -31,7 +31,8 @@ struct TestCacheComputing : public fructose::test_base<TestCacheComputing>
 
     std::unique_ptr<CacheComputing> m_cache;
 
-    TestCacheComputing() {
+    TestCacheComputing()
+    {
 
         // We reduce the number of patients to speed up the tests
         MonteCarloPercentileCalculatorBase::setStaticNumberPatients(10);
@@ -47,18 +48,15 @@ struct TestCacheComputing : public fructose::test_base<TestCacheComputing>
 
         // Create a time range starting at the beginning of june 2017, with no upper end (to test that the repetitions
         // are handled correctly)
-        DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
-                               Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+        DateTime startSept2018(
+                date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
 
         //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
-        LastingDose periodicDose(DoseValue(200.0),
-                                 TucuUnit("mg"),
-                                 _route,
-                                 Duration(),
-                                 Duration(std::chrono::hours(6)));
+        LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), _route, Duration(), Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 16);
         auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
@@ -78,18 +76,15 @@ struct TestCacheComputing : public fructose::test_base<TestCacheComputing>
 
         // Create a time range starting at the beginning of june 2017, with no upper end (to test that the repetitions
         // are handled correctly)
-        DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
-                               Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+        DateTime startSept2018(
+                date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
 
         //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
-        LastingDose periodicDose(DoseValue(200.0),
-                                 TucuUnit("mg"),
-                                 _route,
-                                 Duration(),
-                                 Duration(std::chrono::hours(6)));
+        LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), _route, Duration(), Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 30);
         auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
@@ -108,18 +103,16 @@ struct TestCacheComputing : public fructose::test_base<TestCacheComputing>
 
         // Create a time range starting at the beginning of june 2017, with no upper end (to test that the repetitions
         // are handled correctly)
-        DateTime startSept2018(date::year_month_day(date::year(2018), date::month(9), date::day(1)),
-                               Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+        DateTime startSept2018(
+                date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
 
         //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
-        LastingDose periodicDose(DoseValue(200.0),
-                                 TucuUnit("mg"),
-                                 _route,
-                                 Duration(),
-                                 Duration(std::chrono::hours(24)));
+        LastingDose periodicDose(
+                DoseValue(200.0), TucuUnit("mg"), _route, Duration(), Duration(std::chrono::hours(24)));
         DosageRepeat repeatedDose(periodicDose, 90);
         auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
@@ -129,33 +122,38 @@ struct TestCacheComputing : public fructose::test_base<TestCacheComputing>
         return drugTreatment;
     }
 
-    void compute(DrugTreatment *_drugTreatment, DrugModel *_drugModel, DateTime _start, DateTime _end, double _nbPointsPerHour, bool _isHitExpected)
+    void compute(
+            DrugTreatment* _drugTreatment,
+            DrugModel* _drugModel,
+            DateTime _start,
+            DateTime _end,
+            double _nbPointsPerHour,
+            bool _isHitExpected)
     {
 
         RequestResponseId requestResponseId = "1";
         PercentileRanks percentileRanks({5, 25, 50, 75, 95});
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-        std::unique_ptr<ComputingTraitPercentiles> traits =
-                std::make_unique<ComputingTraitPercentiles>(
-                    requestResponseId, _start, _end, percentileRanks, _nbPointsPerHour, computingOption);
+        std::unique_ptr<ComputingTraitPercentiles> traits = std::make_unique<ComputingTraitPercentiles>(
+                requestResponseId, _start, _end, percentileRanks, _nbPointsPerHour, computingOption);
 
         ComputingRequest request(requestResponseId, *_drugModel, *_drugTreatment, std::move(traits));
 
 
         std::unique_ptr<ComputingResponse> response2 = std::make_unique<ComputingResponse>(requestResponseId);
 
-            ComputingStatus result;
-            result = m_cache->compute(request, response2);
+        ComputingStatus result;
+        result = m_cache->compute(request, response2);
 
-            fructose_assert_eq( result, ComputingStatus::Ok);
+        fructose_assert_eq(result, ComputingStatus::Ok);
 
-            fructose_assert_eq(m_cache->isLastCallaHit(), _isHitExpected);
+        fructose_assert_eq(m_cache->isLastCallaHit(), _isHitExpected);
 
-            const ComputedData* responseData = response2->getData();
-            fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+        const ComputedData* responseData = response2->getData();
+        fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+        const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
 
-            TMP_UNUSED_PARAMETER(resp);
+        TMP_UNUSED_PARAMETER(resp);
     }
 
     ///
@@ -166,9 +164,9 @@ struct TestCacheComputing : public fructose::test_base<TestCacheComputing>
     ///
     void testImatinibFullInterval(const std::string& /* _testName */)
     {
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
         m_cache = std::make_unique<CacheComputing>(component);
 
@@ -176,7 +174,8 @@ struct TestCacheComputing : public fructose::test_base<TestCacheComputing>
         auto drugModel = builder.buildDrugModel();
         fructose_assert(drugModel != nullptr);
 
-        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(
+                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
         auto drugTreatment = buildDrugTreatment(route);
 
@@ -187,9 +186,8 @@ struct TestCacheComputing : public fructose::test_base<TestCacheComputing>
         PercentileRanks percentileRanks({5, 25, 50, 75, 95});
         double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-        std::unique_ptr<ComputingTraitPercentiles> traits =
-                std::make_unique<ComputingTraitPercentiles>(
-                    requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+        std::unique_ptr<ComputingTraitPercentiles> traits = std::make_unique<ComputingTraitPercentiles>(
+                requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
         ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -223,9 +221,9 @@ struct TestCacheComputing : public fructose::test_base<TestCacheComputing>
     ///
     void testImatinibSplitInterval(const std::string& /* _testName */)
     {
-        IComputingService *component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
-        fructose_assert( component != nullptr);
+        fructose_assert(component != nullptr);
 
         m_cache = std::make_unique<CacheComputing>(component);
 
@@ -233,7 +231,8 @@ struct TestCacheComputing : public fructose::test_base<TestCacheComputing>
         auto drugModel = builder.buildDrugModel();
         fructose_assert(drugModel != nullptr);
 
-        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(
+                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
         auto drugTreatment = buildDrugTreatment2(route);
 
@@ -244,9 +243,8 @@ struct TestCacheComputing : public fructose::test_base<TestCacheComputing>
         PercentileRanks percentileRanks({5, 25, 50, 75, 95});
         double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-        std::unique_ptr<ComputingTraitPercentiles> traits =
-                std::make_unique<ComputingTraitPercentiles>(
-                    requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+        std::unique_ptr<ComputingTraitPercentiles> traits = std::make_unique<ComputingTraitPercentiles>(
+                requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
 
         ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
 
@@ -267,7 +265,6 @@ struct TestCacheComputing : public fructose::test_base<TestCacheComputing>
         delete component;
         m_cache.reset();
     }
-
 };
 
 

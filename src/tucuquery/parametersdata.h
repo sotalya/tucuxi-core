@@ -1,15 +1,17 @@
 #ifndef TUCUXI_QUERY_PARAMETERSDATA_H
 #define TUCUXI_QUERY_PARAMETERSDATA_H
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
+
 #include "tucucommon/datetime.h"
+
 #include "tucucore/definitions.h"
 #include "tucucore/dosage.h"
 #include "tucucore/drugtreatment/patientcovariate.h"
-#include "tucucore/drugtreatment/target.h"
 #include "tucucore/drugtreatment/sample.h"
+#include "tucucore/drugtreatment/target.h"
 
 namespace Tucuxi {
 namespace Query {
@@ -21,13 +23,12 @@ public:
     CovariateData() = delete;
 
     CovariateData(
-        std::string& _covariateId,
-        Tucuxi::Common::DateTime& _pDate,
-        std::string& _value,
-        std::string& _unit,
-        Tucuxi::Core::DataType _datatype,
-        std::string& _nature
-    );
+            std::string& _covariateId,
+            Tucuxi::Common::DateTime& _pDate,
+            std::string& _value,
+            std::string& _unit,
+            Tucuxi::Core::DataType _datatype,
+            std::string& _nature);
 
     CovariateData(CovariateData& _other) = delete;
 
@@ -54,7 +55,7 @@ public:
     // Constructors
     PatientData() = delete;
 
-    PatientData(std::vector< std::unique_ptr<Tucuxi::Core::PatientCovariate> >& _covariates);
+    PatientData(std::vector<std::unique_ptr<Tucuxi::Core::PatientCovariate> >& _covariates);
 
     PatientData(PatientData& _other) = delete;
 
@@ -62,7 +63,7 @@ public:
     const std::vector<std::unique_ptr<Tucuxi::Core::PatientCovariate> >& getCovariates() const;
 
 protected:
-    std::vector< std::unique_ptr<Tucuxi::Core::PatientCovariate> > m_covariates;
+    std::vector<std::unique_ptr<Tucuxi::Core::PatientCovariate> > m_covariates;
 };
 
 class Treatment
@@ -185,14 +186,14 @@ public:
     // Constructors
     DrugData() = delete;
 
-    DrugData(std::string& _drugID,
-        std::string& _activePrinciple,
-        std::string& _brandName,
-        std::string& _atc,
-        std::unique_ptr<Treatment> _pTreatment,
-        std::vector< std::unique_ptr<Tucuxi::Core::Sample> >& _samples,
-        std::vector< std::unique_ptr<Tucuxi::Core::Target> >& _targets
-    );
+    DrugData(
+            std::string& _drugID,
+            std::string& _activePrinciple,
+            std::string& _brandName,
+            std::string& _atc,
+            std::unique_ptr<Treatment> _pTreatment,
+            std::vector<std::unique_ptr<Tucuxi::Core::Sample> >& _samples,
+            std::vector<std::unique_ptr<Tucuxi::Core::Target> >& _targets);
 
     DrugData(DrugData& _other) = delete;
 
@@ -211,8 +212,8 @@ protected:
     const std::string m_brandName;
     const std::string m_atc;
     std::unique_ptr<Treatment> m_pTreatment;
-    std::vector< std::unique_ptr<Tucuxi::Core::Sample> > m_samples;
-    std::vector< std::unique_ptr<Tucuxi::Core::Target> > m_targets;
+    std::vector<std::unique_ptr<Tucuxi::Core::Sample> > m_samples;
+    std::vector<std::unique_ptr<Tucuxi::Core::Target> > m_targets;
 };
 
 class DrugTreatmentData
@@ -221,10 +222,7 @@ public:
     // Constructors
     DrugTreatmentData() = delete;
 
-    DrugTreatmentData(
-        std::unique_ptr<PatientData> _pPatient,
-        std::vector< std::unique_ptr<DrugData> > _drugs
-    );
+    DrugTreatmentData(std::unique_ptr<PatientData> _pPatient, std::vector<std::unique_ptr<DrugData> > _drugs);
 
     DrugTreatmentData(DrugTreatmentData& _other) = delete;
 
@@ -234,8 +232,7 @@ public:
 
 protected:
     std::unique_ptr<PatientData> m_pPatient;
-    std::vector< std::unique_ptr<DrugData> > m_drugs;
-
+    std::vector<std::unique_ptr<DrugData> > m_drugs;
 };
 
 } // namespace Query

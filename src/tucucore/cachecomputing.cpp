@@ -1,25 +1,22 @@
 #include "cachecomputing.h"
 
-#include "computingservice/icomputingservice.h"
 #include "computingservice/computingrequest.h"
 #include "computingservice/computingresponse.h"
+#include "computingservice/icomputingservice.h"
 
 namespace Tucuxi {
 namespace Core {
 
-CacheComputing::CacheComputing(IComputingService *_computingComponent) : m_computingComponent(_computingComponent)
-{
+CacheComputing::CacheComputing(IComputingService* _computingComponent) : m_computingComponent(_computingComponent) {}
 
-}
-
-ComputingStatus CacheComputing::compute(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response)
+ComputingStatus CacheComputing::compute(const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
 {
     // Ensure the function is reentrant
     std::lock_guard<std::mutex> lock(m_mutex);
 
     if (getFromCache(_request, _response)) {
         m_isLastCallaHit = true;
-//        std::cout << "Using the cache" << std::endl;
+        //        std::cout << "Using the cache" << std::endl;
         return ComputingStatus::Ok;
     }
 
@@ -42,7 +39,7 @@ ComputingStatus CacheComputing::compute(const ComputingRequest &_request, std::u
 
 void CacheComputing::clear()
 {
-//    std::cout << "Clearing the cache" << std::endl;
+    //    std::cout << "Clearing the cache" << std::endl;
     m_data.clear();
 }
 
@@ -52,17 +49,14 @@ bool CacheComputing::isLastCallaHit() const
 }
 
 bool CacheComputing::getSpecificIntervalFromCache(
-        DateTime _start,
-        DateTime _end,
-        double _nbPointsPerHour,
-        std::unique_ptr<ComputingResponse> &_response)
+        DateTime _start, DateTime _end, double _nbPointsPerHour, std::unique_ptr<ComputingResponse>& _response)
 {
     // This function implements various ways of getting pertinent data from the Cache.
 
     std::vector<PercentilesData*> candidates;
 
-    for (const auto &data : m_data) {
-        PercentilesData *pData = dynamic_cast<PercentilesData*>(data.get());
+    for (const auto& data : m_data) {
+        PercentilesData* pData = dynamic_cast<PercentilesData*>(data.get());
         if (pData != nullptr) {
             // We have cycles of the first percentiles through pData->getPercentileData(0)
             const auto firstCycle = pData->getPercentileData(0).front();
@@ -80,7 +74,7 @@ bool CacheComputing::getSpecificIntervalFromCache(
                 // Is there an overlap between the cached data and the interval?
                 // If yes, then keep a reference on the candidate
                 if (((firstCycle.m_start <= _start) && (lastCycle.m_end > _start))
-                || ((firstCycle.m_start < _end) && (lastCycle.m_end >= _end))) {
+                    || ((firstCycle.m_start < _end) && (lastCycle.m_end >= _end))) {
                     candidates.push_back(pData);
                 }
             }
@@ -95,18 +89,18 @@ bool CacheComputing::buildResponse(
         DateTime _start,
         DateTime _end,
         double _nbPointsPerHour,
-        const std::vector<PercentilesData*> &_candidates,
-        std::unique_ptr<ComputingResponse> &_response)
+        const std::vector<PercentilesData*>& _candidates,
+        std::unique_ptr<ComputingResponse>& _response)
 {
     buildIndex(_start, _end, _nbPointsPerHour, _candidates);
     if (isFullIntervalInCache(_start, _end)) {
         PercentilesData pData(_response->getId());
-        for (const auto &index : m_indexVector) {
+        for (const auto& index : m_indexVector) {
             if (index.m_end > _start) {
-                const auto &ranks = _candidates[0]->getRanks();
+                const auto& ranks = _candidates[0]->getRanks();
                 pData.setRanks(ranks);
                 pData.setNbPointsPerHour(_nbPointsPerHour);
-                for (size_t rankIndex = 0; rankIndex < index.m_set->getNbRanks(); rankIndex ++) {
+                for (size_t rankIndex = 0; rankIndex < index.m_set->getNbRanks(); rankIndex++) {
                     pData.addPercentileData(index.m_set->getPercentileData(rankIndex));
                 }
             }
@@ -129,7 +123,7 @@ bool CacheComputing::isFullIntervalInCache(DateTime _start, DateTime _end)
         return false;
     }
     DateTime lastEnd = m_indexVector.front().m_start;
-    for (const auto & index : m_indexVector) {
+    for (const auto& index : m_indexVector) {
         if (index.m_start != lastEnd) {
             return false;
         }
@@ -139,15 +133,12 @@ bool CacheComputing::isFullIntervalInCache(DateTime _start, DateTime _end)
 }
 
 void CacheComputing::buildIndex(
-        DateTime _start,
-        DateTime _end,
-        double _nbPointsPerHour,
-        const std::vector<PercentilesData*> &_candidates)
+        DateTime _start, DateTime _end, double _nbPointsPerHour, const std::vector<PercentilesData*>& _candidates)
 {
     TMP_UNUSED_PARAMETER(_nbPointsPerHour);
     m_indexVector.clear();
-    for (const auto &data : _candidates) {
-        PercentilesData *pData = dynamic_cast<PercentilesData*>(data);
+    for (const auto& data : _candidates) {
+        PercentilesData* pData = dynamic_cast<PercentilesData*>(data);
         if (pData != nullptr) {
             const auto p0 = pData->getPercentileData(0);
             const auto size = p0.size();
@@ -172,10 +163,10 @@ void CacheComputing::insertCycle(DateTime _start, DateTime _end, PercentilesData
         if (_start > (*it).m_start) {
             break;
         }
-        it ++;
+        it++;
     }
     m_indexVector.insert(it.base(), index_t{_data, _cycleIndex, _start, _end});
-/*
+    /*
     size_t insertIndex = m_indexVector.size();
     for(size_t i = m_indexVector.size() - 1; i >= 0; i--) {
         if (_start == m_indexVector[i].m_start) {
@@ -193,12 +184,12 @@ void CacheComputing::insertCycle(DateTime _start, DateTime _end, PercentilesData
     */
 }
 
-bool CacheComputing::getFromCache(const ComputingRequest &_request, std::unique_ptr<ComputingResponse> &_response)
+bool CacheComputing::getFromCache(const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
 {
     // We iterate over the computing traits, and only process the percentiles,
     // by calling getSpecificIntervalFromCache
-    for (const auto & trait : _request.getComputingTraits()) {
-        ComputingTraitPercentiles *pTraits = dynamic_cast<ComputingTraitPercentiles*>(trait.get());
+    for (const auto& trait : _request.getComputingTraits()) {
+        ComputingTraitPercentiles* pTraits = dynamic_cast<ComputingTraitPercentiles*>(trait.get());
         if (pTraits != nullptr) {
             auto start = pTraits->getStart();
             auto end = pTraits->getEnd();
@@ -218,5 +209,3 @@ std::string CacheComputing::getErrorString() const
 
 } // namespace Core
 } // namespace Tucuxi
-
-

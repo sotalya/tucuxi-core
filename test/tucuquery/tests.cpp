@@ -9,7 +9,7 @@
 
 #include "test_dosageimportexport.h"
 
-int main(int argc, char** argv) 
+int main(int argc, char** argv)
 {
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(argv);

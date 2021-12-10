@@ -1,9 +1,9 @@
 #ifndef QUERY_H
 #define QUERY_H
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 namespace Tucuxi {
 

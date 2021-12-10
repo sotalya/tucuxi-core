@@ -4,8 +4,10 @@
 
 #include <Eigen/Dense>
 
-#include "tucucommon/loggerhelper.h"
 #include "tucucore/pkmodels/threecompartmentextra.h"
+
+#include "tucucommon/loggerhelper.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
@@ -15,7 +17,8 @@ namespace Core {
 #define DEBUG
 #endif
 
-ThreeCompartmentExtraMicro::ThreeCompartmentExtraMicro() : IntakeIntervalCalculatorBase<3, ThreeCompartmentExtraExponentials> (new PertinentTimesCalculatorStandard())
+ThreeCompartmentExtraMicro::ThreeCompartmentExtraMicro()
+    : IntakeIntervalCalculatorBase<3, ThreeCompartmentExtraExponentials>(new PertinentTimesCalculatorStandard())
 {
 }
 
@@ -37,25 +40,25 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_Ke = _parameters.getValue(ParameterId::Ke);
-    m_K12 =_parameters.getValue(ParameterId::K12);
-    m_K21 =_parameters.getValue(ParameterId::K21);
-    m_K13 =_parameters.getValue(ParameterId::K13);
-    m_K31 =_parameters.getValue(ParameterId::K31);
+    m_K12 = _parameters.getValue(ParameterId::K12);
+    m_K21 = _parameters.getValue(ParameterId::K21);
+    m_K13 = _parameters.getValue(ParameterId::K13);
+    m_K31 = _parameters.getValue(ParameterId::K31);
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
     a0 = m_Ke * m_K21 * m_K31;
     a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
     a2 = m_Ke + m_K12 + m_K13 + m_K21 + m_K31;
-    p = a1 - std::pow(a2,2) / 3;
-    q = 2 * std::pow(a2,3) / 27 - a1 * a2 / 3 + a0;
-    r1 = std::sqrt(-(std::pow(p,3) / 27));
-    r2 = 2 * std::pow(r1,1/3);
-    phi = std::acos(- q / (2 * r1)) / 3;
+    p = a1 - std::pow(a2, 2) / 3;
+    q = 2 * std::pow(a2, 3) / 27 - a1 * a2 / 3 + a0;
+    r1 = std::sqrt(-(std::pow(p, 3) / 27));
+    r2 = 2 * std::pow(r1, 1 / 3);
+    phi = std::acos(-q / (2 * r1)) / 3;
 
-    m_Alpha = - (std::cos(phi) * r2 - a2 / 3);
-    m_Beta = - (std::cos(phi + 2 * 3.1428 / 3) * r2 - a2/3);
-    m_Gamma = - (std::cos(phi + 4 * 3.1428/3) * r2 - a2/3);
+    m_Alpha = -(std::cos(phi) * r2 - a2 / 3);
+    m_Beta = -(std::cos(phi + 2 * 3.1428 / 3) * r2 - a2 / 3);
+    m_Gamma = -(std::cos(phi + 4 * 3.1428 / 3) * r2 - a2 / 3);
 
 #ifdef DEBUG
     Tucuxi::Common::LoggerHelper logHelper;
@@ -92,7 +95,7 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     return bOK;
 }
 
-void ThreeCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times) 
+void ThreeCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times)
 {
     setExponentials(Exponentials::Alpha, (-m_Alpha * _times).array().exp());
     setExponentials(Exponentials::Beta, (-m_Beta * _times).array().exp());
@@ -101,7 +104,11 @@ void ThreeCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 
-bool ThreeCompartmentExtraMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentExtraMicro::computeConcentrations(
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Value concentrations2, concentrations3;
@@ -118,7 +125,7 @@ bool ThreeCompartmentExtraMicro::computeConcentrations(const Residuals& _inResid
     _outResiduals[thirdCompartment] = concentrations3;
 
     // return concentration
-    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
     // TODO: add calcuation concentrations of second and third compartment and condtions
     TMP_UNUSED_PARAMETER(_isAll);
 
@@ -129,7 +136,12 @@ bool ThreeCompartmentExtraMicro::computeConcentrations(const Residuals& _inResid
     return bOK;
 }
 
-bool ThreeCompartmentExtraMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentExtraMicro::computeConcentration(
+        const Value& _atTime,
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     TMP_UNUSED_PARAMETER(_atTime);
     Eigen::VectorXd concentrations1;
@@ -167,8 +179,7 @@ bool ThreeCompartmentExtraMicro::computeConcentration(const Value& _atTime, cons
     return bOK;
 }
 
-ThreeCompartmentExtraMacro::ThreeCompartmentExtraMacro()
-= default;
+ThreeCompartmentExtraMacro::ThreeCompartmentExtraMacro() = default;
 
 std::vector<std::string> ThreeCompartmentExtraMacro::getParametersId()
 {
@@ -202,15 +213,15 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     a0 = m_Ke * m_K21 * m_K31;
     a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
     a2 = m_Ke + m_K12 + m_K13 + m_K21 + m_K31;
-    p = a1 - std::pow(a2,2) / 3;
-    q = 2 * std::pow(a2,3) / 27 - a1 * a2 / 3 + a0;
-    r1 = std::sqrt(-(std::pow(p,3) / 27));
-    r2 = 2 * std::pow(r1,1/3);
-    phi = std::acos(- q / (2 * r1)) / 3;
+    p = a1 - std::pow(a2, 2) / 3;
+    q = 2 * std::pow(a2, 3) / 27 - a1 * a2 / 3 + a0;
+    r1 = std::sqrt(-(std::pow(p, 3) / 27));
+    r2 = 2 * std::pow(r1, 1 / 3);
+    phi = std::acos(-q / (2 * r1)) / 3;
 
-    m_Alpha = - (std::cos(phi) * r2 - a2 / 3);
-    m_Beta = - (std::cos(phi + 2 * 3.1428 / 3) * r2 - a2/3);
-    m_Gamma = - (std::cos(phi + 4 * 3.1428/3) * r2 - a2/3);
+    m_Alpha = -(std::cos(phi) * r2 - a2 / 3);
+    m_Beta = -(std::cos(phi + 2 * 3.1428 / 3) * r2 - a2 / 3);
+    m_Gamma = -(std::cos(phi + 4 * 3.1428 / 3) * r2 - a2 / 3);
 
 #ifdef DEBUG
     Tucuxi::Common::LoggerHelper logHelper;
@@ -252,6 +263,5 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     return bOK;
 }
 
-}
-}
-
+} // namespace Core
+} // namespace Tucuxi

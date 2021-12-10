@@ -1,86 +1,99 @@
 #include "computingadjustments.h"
 
 #include "tucucommon/datetime.h"
-#include "tucucore/drugmodel/formulationandroute.h"
-#include "tucucore/dosage.h"
-#include "tucucore/pkmodel.h"
-#include "tucucore/covariateevent.h"
+
 #include "tucucore/computingcomponent.h"
-#include "tucucore/generalextractor.h"
 #include "tucucore/computingservice/computingrequest.h"
-#include "tucucore/targetextractor.h"
-#include "tucucore/targetevaluator.h"
+#include "tucucore/computingutils.h"
+#include "tucucore/concentrationcalculator.h"
+#include "tucucore/covariateevent.h"
+#include "tucucore/cyclestatisticscalculator.h"
+#include "tucucore/dosage.h"
+#include "tucucore/drugmodel/formulationandroute.h"
+#include "tucucore/generalextractor.h"
 #include "tucucore/intakeextractor.h"
 #include "tucucore/intaketocalculatorassociator.h"
-#include "tucucore/concentrationcalculator.h"
-#include "tucucore/computingutils.h"
-#include "tucucore/cyclestatisticscalculator.h"
+#include "tucucore/pkmodel.h"
+#include "tucucore/targetevaluator.h"
+#include "tucucore/targetextractor.h"
 
 namespace Tucuxi {
 namespace Core {
 
-ComputingAdjustments::ComputingAdjustments(ComputingUtils *_computingUtils) :
-    m_utils(_computingUtils)
-{
-
-}
+ComputingAdjustments::ComputingAdjustments(ComputingUtils* _computingUtils) : m_utils(_computingUtils) {}
 
 
-std::unique_ptr<DosageTimeRange> ComputingAdjustments::createDosage(const ComputingAdjustments::SimpleDosageCandidate &_candidate,
-        DateTime _startTime,
-        DateTime _endTime)
+std::unique_ptr<DosageTimeRange> ComputingAdjustments::createDosage(
+        const ComputingAdjustments::SimpleDosageCandidate& _candidate, DateTime _startTime, DateTime _endTime)
 {
     // At least a number of intervals allowing to fill the interval asked
     unsigned int nbTimes = static_cast<unsigned int>(std::ceil((_endTime - _startTime) / _candidate.m_interval));
-    LastingDose lastingDose(_candidate.m_dose, _candidate.m_doseUnit, _candidate.m_formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
+    LastingDose lastingDose(
+            _candidate.m_dose,
+            _candidate.m_doseUnit,
+            _candidate.m_formulationAndRoute,
+            _candidate.m_infusionTime,
+            _candidate.m_interval);
     DosageRepeat repeat(lastingDose, nbTimes);
     auto newTimeRange = std::make_unique<DosageTimeRange>(_startTime, _endTime, repeat);
     return newTimeRange;
 }
 
-std::unique_ptr<DosageTimeRange> ComputingAdjustments::createLoadingDosageOrRestPeriod(const SimpleDosageCandidate &_candidate,
-        DateTime _startTime)
+std::unique_ptr<DosageTimeRange> ComputingAdjustments::createLoadingDosageOrRestPeriod(
+        const SimpleDosageCandidate& _candidate, DateTime _startTime)
 {
     unsigned int nbTimes = 1;
 
-    LastingDose lastingDose(_candidate.m_dose, _candidate.m_doseUnit, _candidate.m_formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
+    LastingDose lastingDose(
+            _candidate.m_dose,
+            _candidate.m_doseUnit,
+            _candidate.m_formulationAndRoute,
+            _candidate.m_infusionTime,
+            _candidate.m_interval);
     DosageRepeat repeat(lastingDose, nbTimes);
     DateTime endTime = _startTime + _candidate.m_interval;
     auto newTimeRange = std::make_unique<DosageTimeRange>(_startTime, endTime, repeat);
     return newTimeRange;
 }
 
-std::unique_ptr<DosageTimeRange> ComputingAdjustments::createSteadyStateDosage(const SimpleDosageCandidate &_candidate,
-        DateTime _startTime)
+std::unique_ptr<DosageTimeRange> ComputingAdjustments::createSteadyStateDosage(
+        const SimpleDosageCandidate& _candidate, DateTime _startTime)
 {
     // A single interval
     unsigned int nbTimes = 1;
-    LastingDose lastingDose(_candidate.m_dose, _candidate.m_doseUnit, _candidate.m_formulationAndRoute, _candidate.m_infusionTime, _candidate.m_interval);
+    LastingDose lastingDose(
+            _candidate.m_dose,
+            _candidate.m_doseUnit,
+            _candidate.m_formulationAndRoute,
+            _candidate.m_infusionTime,
+            _candidate.m_interval);
     DosageRepeat repeat(lastingDose, nbTimes);
     DateTime endTime = _startTime + _candidate.m_interval;
     auto newTimeRange = std::make_unique<DosageTimeRange>(_startTime, endTime, repeat);
     return newTimeRange;
 }
 
-ComputingStatus ComputingAdjustments::buildCandidates(const FullFormulationAndRoute* _formulationAndRoute, std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates)
+ComputingStatus ComputingAdjustments::buildCandidates(
+        const FullFormulationAndRoute* _formulationAndRoute,
+        std::vector<ComputingAdjustments::SimpleDosageCandidate>& _candidates)
 {
     std::vector<Value> doseValues;
     TucuUnit doseUnit;
     std::vector<Duration> intervalValues;
     std::vector<Duration> infusionTimes;
 
-    const ValidDoses * doses = _formulationAndRoute->getValidDoses();
+    const ValidDoses* doses = _formulationAndRoute->getValidDoses();
     if (doses != nullptr) {
         doseValues = doses->getValues();
         doseUnit = doses->getUnit();
     }
 
-    const ValidDurations * intervals = _formulationAndRoute->getValidIntervals();
+    const ValidDurations* intervals = _formulationAndRoute->getValidIntervals();
     if (intervals != nullptr) {
         intervalValues = intervals->getDurations();
     }
 
-    const ValidDurations * infusions = _formulationAndRoute->getValidInfusionTimes();
+    const ValidDurations* infusions = _formulationAndRoute->getValidInfusionTimes();
     if (infusions != nullptr) {
         infusionTimes = infusions->getDurations();
     }
@@ -105,10 +118,11 @@ ComputingStatus ComputingAdjustments::buildCandidates(const FullFormulationAndRo
 
 
     // Creation of all candidates
-    for(auto dose : doseValues) {
-        for(const auto &interval : intervalValues) {
-            for(const auto &infusion : infusionTimes) {
-                _candidates.push_back({_formulationAndRoute->getFormulationAndRoute(), dose, doseUnit,  interval, infusion});
+    for (auto dose : doseValues) {
+        for (const auto& interval : intervalValues) {
+            for (const auto& infusion : infusionTimes) {
+                _candidates.push_back(
+                        {_formulationAndRoute->getFormulationAndRoute(), dose, doseUnit, interval, infusion});
 #if 0
                 std::string mess;
                 mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)
@@ -122,21 +136,22 @@ ComputingStatus ComputingAdjustments::buildCandidates(const FullFormulationAndRo
     return ComputingStatus::Ok;
 }
 
-ComputingStatus ComputingAdjustments::buildCandidatesForInterval(const FullFormulationAndRoute* _formulationAndRoute,
-                                                                 Duration _interval,
-                                                                 std::vector<ComputingAdjustments::SimpleDosageCandidate> &_candidates)
+ComputingStatus ComputingAdjustments::buildCandidatesForInterval(
+        const FullFormulationAndRoute* _formulationAndRoute,
+        Duration _interval,
+        std::vector<ComputingAdjustments::SimpleDosageCandidate>& _candidates)
 {
     std::vector<Value> doseValues;
     TucuUnit doseUnit;
     std::vector<Duration> infusionTimes;
 
-    const ValidDoses * doses = _formulationAndRoute->getValidDoses();
+    const ValidDoses* doses = _formulationAndRoute->getValidDoses();
     if (doses != nullptr) {
         doseValues = doses->getValues();
         doseUnit = doses->getUnit();
     }
 
-    const ValidDurations * infusions = _formulationAndRoute->getValidInfusionTimes();
+    const ValidDurations* infusions = _formulationAndRoute->getValidInfusionTimes();
     if (infusions != nullptr) {
         infusionTimes = infusions->getDurations();
     }
@@ -156,9 +171,10 @@ ComputingStatus ComputingAdjustments::buildCandidatesForInterval(const FullFormu
 
 
     // Creation of all candidates
-    for(auto dose : doseValues) {
-        for(const auto &infusion : infusionTimes) {
-            _candidates.push_back({_formulationAndRoute->getFormulationAndRoute(), dose, doseUnit, _interval, infusion});
+    for (auto dose : doseValues) {
+        for (const auto& infusion : infusionTimes) {
+            _candidates.push_back(
+                    {_formulationAndRoute->getFormulationAndRoute(), dose, doseUnit, _interval, infusion});
 #if 0
             std::string mess;
             mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)
@@ -173,13 +189,14 @@ ComputingStatus ComputingAdjustments::buildCandidatesForInterval(const FullFormu
 }
 
 
-bool compareCandidates(const DosageAdjustment &_a, const DosageAdjustment &_b)
+bool compareCandidates(const DosageAdjustment& _a, const DosageAdjustment& _b)
 {
     return _a.getGlobalScore() < _b.getGlobalScore();
 }
 
 
-std::vector<DosageAdjustment> ComputingAdjustments::sortAndFilterCandidates(std::vector<DosageAdjustment> &_candidates, BestCandidatesOption _option)
+std::vector<DosageAdjustment> ComputingAdjustments::sortAndFilterCandidates(
+        std::vector<DosageAdjustment>& _candidates, BestCandidatesOption _option)
 {
     // Sort in reverse order. The highest score will be the first element
     // There is an issue with DosageHistory as the copy don't work correctly
@@ -195,28 +212,30 @@ std::vector<DosageAdjustment> ComputingAdjustments::sortAndFilterCandidates(std:
 #endif // 0
 
     switch (_option) {
-    case BestCandidatesOption::AllDosages : {
+    case BestCandidatesOption::AllDosages: {
         return _candidates;
     } // break;
-    case BestCandidatesOption::BestDosage : {
+    case BestCandidatesOption::BestDosage: {
         std::vector<DosageAdjustment> bestDosage;
         if (!_candidates.empty()) {
             bestDosage.push_back(_candidates[0]);
         }
         return bestDosage;
     } // break;
-    case BestCandidatesOption::BestDosagePerInterval : {
-        for(size_t i = 0; i < _candidates.size(); i++) {
-            const DosageRepeat *repeat = dynamic_cast<const DosageRepeat *>(_candidates[i].m_history.getDosageTimeRanges().back()->getDosage());
+    case BestCandidatesOption::BestDosagePerInterval: {
+        for (size_t i = 0; i < _candidates.size(); i++) {
+            const DosageRepeat* repeat = dynamic_cast<const DosageRepeat*>(
+                    _candidates[i].m_history.getDosageTimeRanges().back()->getDosage());
             if (repeat != nullptr) {
-                const LastingDose *dose = dynamic_cast<const LastingDose *>(repeat->getDosage());
+                const LastingDose* dose = dynamic_cast<const LastingDose*>(repeat->getDosage());
                 if (dose != nullptr) {
                     Duration interval = dose->getTimeStep();
-                    for(size_t j = i + 1; j < _candidates.size(); j++) {
+                    for (size_t j = i + 1; j < _candidates.size(); j++) {
 
-                        const DosageRepeat *repeat2 = dynamic_cast<const DosageRepeat *>(_candidates[j].m_history.getDosageTimeRanges().back()->getDosage());
+                        const DosageRepeat* repeat2 = dynamic_cast<const DosageRepeat*>(
+                                _candidates[j].m_history.getDosageTimeRanges().back()->getDosage());
                         if (repeat2 != nullptr) {
-                            const LastingDose *dose2 = dynamic_cast<const LastingDose *>(repeat2->getDosage());
+                            const LastingDose* dose2 = dynamic_cast<const LastingDose*>(repeat2->getDosage());
                             if (dose2 != nullptr) {
                                 if (dose2->getTimeStep() == interval) {
                                     _candidates.erase(_candidates.begin() + static_cast<long>(j));
@@ -224,7 +243,6 @@ std::vector<DosageAdjustment> ComputingAdjustments::sortAndFilterCandidates(std:
                                 }
                             }
                         }
-
                     }
                 }
             }
@@ -239,13 +257,13 @@ std::vector<DosageAdjustment> ComputingAdjustments::sortAndFilterCandidates(std:
 
 std::vector<const FullFormulationAndRoute*> selectFormulationAndRoutes(
         FormulationAndRouteSelectionOption _option,
-        const FormulationAndRoutes & _availableFormulationAndRoutes,
-        const DosageHistory & _dosageHistory)
+        const FormulationAndRoutes& _availableFormulationAndRoutes,
+        const DosageHistory& _dosageHistory)
 {
     std::vector<const FullFormulationAndRoute*> result;
 
     switch (_option) {
-    case FormulationAndRouteSelectionOption::LastFormulationAndRoute : {
+    case FormulationAndRouteSelectionOption::LastFormulationAndRoute: {
         if (_dosageHistory.isEmpty()) {
             // If the dosage history is empty, then use the default of DrugModel
             result.push_back(_availableFormulationAndRoutes.getDefault());
@@ -253,20 +271,21 @@ std::vector<const FullFormulationAndRoute*> selectFormulationAndRoutes(
         else {
             // We get the last formulation and retrieve the corresponding full spec from the available ones
             FormulationAndRoute formulation = _dosageHistory.getLastFormulationAndRoute();
-            const FullFormulationAndRoute *selectedFormulationAndRoute = _availableFormulationAndRoutes.get(formulation);
+            const FullFormulationAndRoute* selectedFormulationAndRoute =
+                    _availableFormulationAndRoutes.get(formulation);
             if (selectedFormulationAndRoute != nullptr) {
                 result.push_back(selectedFormulationAndRoute);
             }
         }
     } break;
 
-    case FormulationAndRouteSelectionOption::DefaultFormulationAndRoute : {
+    case FormulationAndRouteSelectionOption::DefaultFormulationAndRoute: {
         // Get the default
         result.push_back(_availableFormulationAndRoutes.getDefault());
     } break;
-    case FormulationAndRouteSelectionOption::AllFormulationAndRoutes : {
+    case FormulationAndRouteSelectionOption::AllFormulationAndRoutes: {
         // Get the entire available list
-        for (auto const & f : _availableFormulationAndRoutes) {
+        for (auto const& f : _availableFormulationAndRoutes) {
             result.push_back(f.get());
         }
     } break;
@@ -275,21 +294,18 @@ std::vector<const FullFormulationAndRoute*> selectFormulationAndRoutes(
 }
 
 ComputingStatus ComputingAdjustments::extractCandidates(
-        const ComputingTraitAdjustment *_traits,
-        const ComputingRequest &_request,
-        std::vector<SimpleDosageCandidate> &_candidates,
-        bool &_multipleFormulationAndRoutes
-        )
+        const ComputingTraitAdjustment* _traits,
+        const ComputingRequest& _request,
+        std::vector<SimpleDosageCandidate>& _candidates,
+        bool& _multipleFormulationAndRoutes)
 {
 
-    const FormulationAndRoutes &formulationAndRoutes = _request.getDrugModel().getFormulationAndRoutes();
+    const FormulationAndRoutes& formulationAndRoutes = _request.getDrugModel().getFormulationAndRoutes();
 
-    const DosageHistory &dosageHistory = _request.getDrugTreatment().getDosageHistory();
+    const DosageHistory& dosageHistory = _request.getDrugTreatment().getDosageHistory();
 
     std::vector<const FullFormulationAndRoute*> selectedFormulationAndRoutes = selectFormulationAndRoutes(
-                _traits->getFormulationAndRouteSelectionOption(),
-                formulationAndRoutes,
-                dosageHistory);
+            _traits->getFormulationAndRouteSelectionOption(), formulationAndRoutes, dosageHistory);
 
     _multipleFormulationAndRoutes = (selectedFormulationAndRoutes.size() > 1);
 
@@ -299,7 +315,7 @@ ComputingStatus ComputingAdjustments::extractCandidates(
     }
 
     // We iterate over the potential formulation and routes
-    for (auto const *selectedFormulationAndRoute : selectedFormulationAndRoutes) {
+    for (auto const* selectedFormulationAndRoute : selectedFormulationAndRoutes) {
 
         if (selectedFormulationAndRoute == nullptr) {
             m_logger.error("Can not find a formulation and route for adjustment");
@@ -319,9 +335,9 @@ ComputingStatus ComputingAdjustments::extractCandidates(
 }
 
 ComputingStatus ComputingAdjustments::compute(
-        const ComputingTraitAdjustment *_traits,
-        const ComputingRequest &_request,
-        std::unique_ptr<ComputingResponse> &_response)
+        const ComputingTraitAdjustment* _traits,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response)
 {
 
     if (_traits == nullptr) {
@@ -345,7 +361,7 @@ ComputingStatus ComputingAdjustments::compute(
 
     // 2. Get the list of drug model analyte group Ids
     std::vector<AnalyteGroupId> allGroupIds;
-    for(const auto &analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+    for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
         allGroupIds.push_back(analyteGroup->getId());
     }
 
@@ -364,14 +380,15 @@ ComputingStatus ComputingAdjustments::compute(
         GroupsParameterSetSeries parameterSeries;
         GroupsIntakeSeries intakeSeries;
 
-        ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(_traits,
-                                                                                           _request,
-                                                                                           m_utils->m_models.get(),
-                                                                                           pkModel,
-                                                                                           intakeSeries,
-                                                                                           covariateSeries,
-                                                                                           parameterSeries,
-                                                                                           calculationStartTime);
+        ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(
+                _traits,
+                _request,
+                m_utils->m_models.get(),
+                pkModel,
+                intakeSeries,
+                covariateSeries,
+                parameterSeries,
+                calculationStartTime);
 
         if (extractionResult != ComputingStatus::Ok) {
             return extractionResult;
@@ -380,16 +397,23 @@ ComputingStatus ComputingAdjustments::compute(
 
 
 
-        for(const auto& analyteGroupId : allGroupIds) {
+        for (const auto& analyteGroupId : allGroupIds) {
             if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-                ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(etas[analyteGroupId], _request, analyteGroupId, intakeSeries[analyteGroupId], parameterSeries[analyteGroupId], covariateSeries, calculationStartTime, _traits->getEnd());
+                ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
+                        etas[analyteGroupId],
+                        _request,
+                        analyteGroupId,
+                        intakeSeries[analyteGroupId],
+                        parameterSeries[analyteGroupId],
+                        covariateSeries,
+                        calculationStartTime,
+                        _traits->getEnd());
 
                 if (aposterioriEtasExtractionResult != ComputingStatus::Ok) {
                     return aposterioriEtasExtractionResult;
                 }
             }
         }
-
     }
 
 
@@ -400,7 +424,7 @@ ComputingStatus ComputingAdjustments::compute(
     TargetExtractor targetExtractor;
     TargetExtractionOption targetExtractionOption = _traits->getTargetExtractionOption();
 
-    for (const auto &activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+    for (const auto& activeMoiety : _request.getDrugModel().getActiveMoieties()) {
 
         // The final unit depends on the computing options
         TucuUnit finalUnit("ug/l");
@@ -408,11 +432,16 @@ ComputingStatus ComputingAdjustments::compute(
             finalUnit = activeMoiety->getUnit();
         }
 
-        ComputingStatus targetExtractionResult =
-                targetExtractor.extract(activeMoiety->getActiveMoietyId(), covariateSeries, activeMoiety->getTargetDefinitions(),
-                                        _request.getDrugTreatment().getTargets(), _traits->getStart(), _traits->getEnd(),
-                                        finalUnit,
-                                        targetExtractionOption, targetSeries[activeMoiety->getActiveMoietyId()]);
+        ComputingStatus targetExtractionResult = targetExtractor.extract(
+                activeMoiety->getActiveMoietyId(),
+                covariateSeries,
+                activeMoiety->getTargetDefinitions(),
+                _request.getDrugTreatment().getTargets(),
+                _traits->getStart(),
+                _traits->getEnd(),
+                finalUnit,
+                targetExtractionOption,
+                targetSeries[activeMoiety->getActiveMoietyId()]);
 
         if (targetExtractionResult != ComputingStatus::Ok) {
             return targetExtractionResult;
@@ -429,7 +458,7 @@ ComputingStatus ComputingAdjustments::compute(
     std::vector<DosageAdjustment> dosageCandidates;
 
     // A vector of vector because each adjustment candidate can have various targets
-    std::vector< std::vector< TargetEvaluationResult> > evaluationResults;
+    std::vector<std::vector<TargetEvaluationResult> > evaluationResults;
 
 
     // Iterate over pre-selected candidates
@@ -478,22 +507,24 @@ ComputingStatus ComputingAdjustments::compute(
         double nbPointsPerHour = _traits->getNbPointsPerHour();
         nbPointsPerHour = 20;
 
-        ComputingTraitConcentration traits("0", _traits->getAdjustmentTime(), newEndTime, nbPointsPerHour, _traits->getComputingOption());
+        ComputingTraitConcentration traits(
+                "0", _traits->getAdjustmentTime(), newEndTime, nbPointsPerHour, _traits->getComputingOption());
 
 
         GroupsIntakeSeries intakeSeries;
         CovariateSeries unusedCovariateSeries;
-        ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(&traits,
-                                                                                           _request.getDrugModel(),
-                                                                                           *newHistory,
-                                                                                           _request.getDrugTreatment().getSamples(),
-                                                                                           _request.getDrugTreatment().getCovariates(),
-                                                                                           m_utils->m_models.get(),
-                                                                                           pkModel,
-                                                                                           intakeSeries,
-                                                                                           unusedCovariateSeries,
-                                                                                           parameterSeries,
-                                                                                           calculationStartTime);
+        ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(
+                &traits,
+                _request.getDrugModel(),
+                *newHistory,
+                _request.getDrugTreatment().getSamples(),
+                _request.getDrugTreatment().getCovariates(),
+                m_utils->m_models.get(),
+                pkModel,
+                intakeSeries,
+                unusedCovariateSeries,
+                parameterSeries,
+                calculationStartTime);
 
         if (extractionResult != ComputingStatus::Ok) {
             return extractionResult;
@@ -510,23 +541,29 @@ ComputingStatus ComputingAdjustments::compute(
 
             IntakeExtractor intakeExtractor;
             double nbPointsPerHour = _traits->getNbPointsPerHour();
-            ComputingStatus intakeExtractionResult = intakeExtractor.extract(*newHistory, calculationStartTime, newEndTime,
-                                                                             nbPointsPerHour,
-                                                                             _request.getDrugModel().getAnalyteSet(analyteGroupId)->getDoseUnit(),
-                                                                             intakeSeriesPerGroup[analyteGroupId],
-                                                                             ExtractionOption::EndofDate);
+            ComputingStatus intakeExtractionResult = intakeExtractor.extract(
+                    *newHistory,
+                    calculationStartTime,
+                    newEndTime,
+                    nbPointsPerHour,
+                    _request.getDrugModel().getAnalyteSet(analyteGroupId)->getDoseUnit(),
+                    intakeSeriesPerGroup[analyteGroupId],
+                    ExtractionOption::EndofDate);
 
             if (intakeExtractionResult != ComputingStatus::Ok) {
                 return intakeExtractionResult;
             }
 
-            auto status = m_utils->m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
+            auto status = m_utils->m_generalExtractor->convertAnalytes(
+                    intakeSeriesPerGroup[analyteGroupId],
+                    _request.getDrugModel(),
+                    _request.getDrugModel().getAnalyteSet(analyteGroupId));
             if (status != ComputingStatus::Ok) {
                 return status;
             }
 
-            ComputingStatus intakeAssociationResult =
-                    IntakeToCalculatorAssociator::associate(intakeSeriesPerGroup[analyteGroupId], *pkModel[analyteGroupId]);
+            ComputingStatus intakeAssociationResult = IntakeToCalculatorAssociator::associate(
+                    intakeSeriesPerGroup[analyteGroupId], *pkModel[analyteGroupId]);
 
             if (intakeAssociationResult != ComputingStatus::Ok) {
                 m_logger.error("Can not associate intake calculators for the specified route");
@@ -540,24 +577,24 @@ ComputingStatus ComputingAdjustments::compute(
             if (_traits->getSteadyStateTargetOption() == SteadyStateTargetOption::AtSteadyState) {
                 ConcentrationCalculator concentrationCalculator;
                 predictionComputingResult = concentrationCalculator.computeConcentrationsAtSteadyState(
-                            pPrediction,
-                            false,
-                            calculationStartTime,
-                            newEndTime,
-                            intakeSeriesPerGroup[analyteGroupId],
-                            parameterSeries[analyteGroupId],
-                            etas[analyteGroupId]);
+                        pPrediction,
+                        false,
+                        calculationStartTime,
+                        newEndTime,
+                        intakeSeriesPerGroup[analyteGroupId],
+                        parameterSeries[analyteGroupId],
+                        etas[analyteGroupId]);
             }
             else {
                 ConcentrationCalculator concentrationCalculator;
                 predictionComputingResult = concentrationCalculator.computeConcentrations(
-                            pPrediction,
-                            false,
-                            calculationStartTime,
-                            newEndTime,
-                            intakeSeriesPerGroup[analyteGroupId],
-                            parameterSeries[analyteGroupId],
-                            etas[analyteGroupId]);
+                        pPrediction,
+                        false,
+                        calculationStartTime,
+                        newEndTime,
+                        intakeSeriesPerGroup[analyteGroupId],
+                        parameterSeries[analyteGroupId],
+                        etas[analyteGroupId]);
             }
 
             if (predictionComputingResult != ComputingStatus::Ok) {
@@ -571,9 +608,10 @@ ComputingStatus ComputingAdjustments::compute(
                 finalUnit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
             }
             for (size_t i = 0; i < pPrediction->getValues().size(); i++) {
-                Tucuxi::Common::UnitManager::updateAndConvertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
-                            pPrediction->getModifiableValues()[i],
-                            _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                Tucuxi::Common::UnitManager::updateAndConvertToUnit<
+                        Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        pPrediction->getModifiableValues()[i],
+                        _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
                         finalUnit);
             }
             analytesPredictions.push_back(std::move(pPrediction));
@@ -583,9 +621,10 @@ ComputingStatus ComputingAdjustments::compute(
 
         if (!_request.getDrugModel().isSingleAnalyte()) {
 
-            for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+            for (const auto& activeMoiety : _request.getDrugModel().getActiveMoieties()) {
                 ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
-                ComputingStatus activeMoietyComputingResult = m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
+                ComputingStatus activeMoietyComputingResult =
+                        m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
                 if (activeMoietyComputingResult != ComputingStatus::Ok) {
                     return activeMoietyComputingResult;
                 }
@@ -596,7 +635,7 @@ ComputingStatus ComputingAdjustments::compute(
             activeMoietiesPredictions.push_back(std::move(analytesPredictions[0]));
         }
 
-        std::vector< TargetEvaluationResult> candidateResults;
+        std::vector<TargetEvaluationResult> candidateResults;
         bool isValidCandidate = true;
 
         if (targetSeries.empty()) {
@@ -606,14 +645,16 @@ ComputingStatus ComputingAdjustments::compute(
         size_t moietyIndex = 0;
 
         // Check wheter value (after extraction) is in target or not
-        for (const auto &activeMoiety : _request.getDrugModel().getActiveMoieties()) {
-            for(const auto & target : targetSeries[activeMoiety->getActiveMoietyId()]) {
+        for (const auto& activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+            for (const auto& target : targetSeries[activeMoiety->getActiveMoietyId()]) {
                 TargetEvaluationResult localResult;
 
                 // Now the score calculation
-                ComputingStatus evaluationResult = targetEvaluator.evaluate(*activeMoietiesPredictions[moietyIndex].get(),
-                                                                            intakeSeriesPerGroup[allGroupIds[0]],
-                                                                            target, localResult);
+                ComputingStatus evaluationResult = targetEvaluator.evaluate(
+                        *activeMoietiesPredictions[moietyIndex].get(),
+                        intakeSeriesPerGroup[allGroupIds[0]],
+                        target,
+                        localResult);
 
                 // Here we do not compare to Result::Ok, because the result can also be
                 // Result::InvalidCandidate
@@ -630,7 +671,7 @@ ComputingStatus ComputingAdjustments::compute(
                     isValidCandidate = false;
                 }
             }
-            moietyIndex ++;
+            moietyIndex++;
         }
 
         if (isValidCandidate) {
@@ -641,7 +682,7 @@ ComputingStatus ComputingAdjustments::compute(
             std::string fileName = "candidate_" + std::to_string(index) + ".dat";
             pPrediction->streamToFile(fileName);
 #endif // 0
-            index ++;
+            index++;
 
             DosageAdjustment dosage;
             dosage.m_targetsEvaluation = candidateResults;
@@ -650,7 +691,6 @@ ComputingStatus ComputingAdjustments::compute(
             if (_traits->getSteadyStateTargetOption() == SteadyStateTargetOption::AtSteadyState) {
                 // In that case we create the dosage with a good end time
                 newDosage = createDosage(candidate, _traits->getAdjustmentTime(), _traits->getEnd());
-
             }
             dosage.m_history.addTimeRange(*newDosage);
 
@@ -669,11 +709,13 @@ ComputingStatus ComputingAdjustments::compute(
                     DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000 * 3600);
                     if (start >= _traits->getAdjustmentTime()) {
                         CycleData cycle(start, end, finalUnit);
-                        cycle.addData(times,
-                                      Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
-                                          activeMoietiesPredictions[0]->getValues()[i],
-                                          _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
-                                          finalUnit));
+                        cycle.addData(
+                                times,
+                                Tucuxi::Common::UnitManager::convertToUnit<
+                                        Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                                        activeMoietiesPredictions[0]->getValues()[i],
+                                        _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                                        finalUnit));
 
                         // Here we do not add parameters and covariates information on the cycle data, as
                         // it only serves to see if a loading dose or rest period is worth it
@@ -687,8 +729,6 @@ ComputingStatus ComputingAdjustments::compute(
         }
 
         evaluationResults.push_back(candidateResults);
-
-
     }
 
 #if 0
@@ -716,16 +756,15 @@ ComputingStatus ComputingAdjustments::compute(
     finalCandidates = sortAndFilterCandidates(dosageCandidates, _traits->getBestCandidatesOption());
 
     // Verify if Loading dose or Rest period is needed
-    ComputingStatus addResult = addLoadOrRest(finalCandidates, _traits, _request, allGroupIds, initialCalculationTime,
-                                              pkModel, parameterSeries, etas);
+    ComputingStatus addResult = addLoadOrRest(
+            finalCandidates, _traits, _request, allGroupIds, initialCalculationTime, pkModel, parameterSeries, etas);
     if (addResult != ComputingStatus::Ok) {
         return addResult;
     }
 
 
-    ComputingStatus generateResult = generatePredictions(finalCandidates, _traits, _request,
-                                                         allGroupIds, initialCalculationTime, pkModel, parameterSeries,
-                                                         etas);
+    ComputingStatus generateResult = generatePredictions(
+            finalCandidates, _traits, _request, allGroupIds, initialCalculationTime, pkModel, parameterSeries, etas);
     if (generateResult != ComputingStatus::Ok) {
         return generateResult;
     }
@@ -743,18 +782,19 @@ ComputingStatus ComputingAdjustments::compute(
 }
 
 
-ComputingStatus ComputingAdjustments::addLoadOrRest(std::vector<DosageAdjustment> &_dosages,
-                                                     const ComputingTraitAdjustment *_traits,
-                                                     const ComputingRequest &_request,
-                                                     const std::vector<AnalyteGroupId> &_allGroupIds,
-                                                     const Common::DateTime &_calculationStartTime,
-                                                     std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
-                                                     GroupsParameterSetSeries &_parameterSeries,
-                                                     std::map<AnalyteGroupId, Etas> &_etas)
+ComputingStatus ComputingAdjustments::addLoadOrRest(
+        std::vector<DosageAdjustment>& _dosages,
+        const ComputingTraitAdjustment* _traits,
+        const ComputingRequest& _request,
+        const std::vector<AnalyteGroupId>& _allGroupIds,
+        const Common::DateTime& _calculationStartTime,
+        std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& _pkModel,
+        GroupsParameterSetSeries& _parameterSeries,
+        std::map<AnalyteGroupId, Etas>& _etas)
 {
-    for (auto & dosage : _dosages) {
-        ComputingStatus result = addLoadOrRest(dosage, _traits, _request, _allGroupIds, _calculationStartTime,
-                                               _pkModel, _parameterSeries, _etas);
+    for (auto& dosage : _dosages) {
+        ComputingStatus result = addLoadOrRest(
+                dosage, _traits, _request, _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries, _etas);
         if (result != ComputingStatus::Ok) {
             return result;
         }
@@ -763,30 +803,42 @@ ComputingStatus ComputingAdjustments::addLoadOrRest(std::vector<DosageAdjustment
 }
 
 
-typedef struct {
+typedef struct
+{
     DosageAdjustment loadingDosage; // NOLINT(readability-identifier-naming)
-    double score;              // NOLINT(readability-identifier-naming)
+    double score;                   // NOLINT(readability-identifier-naming)
     Duration interval;              // NOLINT(readability-identifier-naming)
 } LoadingCandidate;
 
-typedef struct {
+typedef struct
+{
     DosageAdjustment restDosage; // NOLINT(readability-identifier-naming)
-    double score;           // NOLINT(readability-identifier-naming)
+    double score;                // NOLINT(readability-identifier-naming)
     Duration interval;           // NOLINT(readability-identifier-naming)
 } RestCandidate;
 
-ComputingStatus ComputingAdjustments::addLoadOrRest(DosageAdjustment &_dosage,
-                                              const ComputingTraitAdjustment *_traits,
-                                              const ComputingRequest &_request,
-                                              const std::vector<AnalyteGroupId> &_allGroupIds,
-                                              const Common::DateTime &_calculationStartTime,
-                                              std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
-                                              GroupsParameterSetSeries &_parameterSeries,
-                                              std::map<AnalyteGroupId, Etas> &_etas)
+ComputingStatus ComputingAdjustments::addLoadOrRest(
+        DosageAdjustment& _dosage,
+        const ComputingTraitAdjustment* _traits,
+        const ComputingRequest& _request,
+        const std::vector<AnalyteGroupId>& _allGroupIds,
+        const Common::DateTime& _calculationStartTime,
+        std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& _pkModel,
+        GroupsParameterSetSeries& _parameterSeries,
+        std::map<AnalyteGroupId, Etas>& _etas)
 {
     bool modified = false;
     if (_traits->getRestPeriodOption() == RestPeriodOption::RestPeriodAllowed) {
-        auto result2 = addRest(_dosage, _traits, _request, _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries, _etas, modified);
+        auto result2 =
+                addRest(_dosage,
+                        _traits,
+                        _request,
+                        _allGroupIds,
+                        _calculationStartTime,
+                        _pkModel,
+                        _parameterSeries,
+                        _etas,
+                        modified);
         if (result2 != ComputingStatus::Ok) {
             return result2;
         }
@@ -795,7 +847,16 @@ ComputingStatus ComputingAdjustments::addLoadOrRest(DosageAdjustment &_dosage,
         }
     }
     if (_traits->getLoadingOption() == LoadingOption::LoadingDoseAllowed) {
-        auto result1 = addLoad(_dosage, _traits, _request, _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries, _etas, modified);
+        auto result1 =
+                addLoad(_dosage,
+                        _traits,
+                        _request,
+                        _allGroupIds,
+                        _calculationStartTime,
+                        _pkModel,
+                        _parameterSeries,
+                        _etas,
+                        modified);
         if (result1 != ComputingStatus::Ok) {
             return result1;
         }
@@ -804,26 +865,28 @@ ComputingStatus ComputingAdjustments::addLoadOrRest(DosageAdjustment &_dosage,
 }
 
 
-ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
-                                              const ComputingTraitAdjustment *_traits,
-                                              const ComputingRequest &_request,
-                                              const std::vector<AnalyteGroupId> &_allGroupIds,
-                                              const Common::DateTime &_calculationStartTime,
-                                              std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
-                                              GroupsParameterSetSeries &_parameterSeries,
-                                              std::map<AnalyteGroupId, Etas> &_etas,
-                                              bool& _modified)
+ComputingStatus ComputingAdjustments::addRest(
+        DosageAdjustment& _dosage,
+        const ComputingTraitAdjustment* _traits,
+        const ComputingRequest& _request,
+        const std::vector<AnalyteGroupId>& _allGroupIds,
+        const Common::DateTime& _calculationStartTime,
+        std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& _pkModel,
+        GroupsParameterSetSeries& _parameterSeries,
+        std::map<AnalyteGroupId, Etas>& _etas,
+        bool& _modified)
 {
     if (_traits->getRestPeriodOption() == RestPeriodOption::NoRestPeriod) {
         return ComputingStatus::Ok;
     }
 
-    const DosageRepeat *repeat = dynamic_cast<const DosageRepeat *>(_dosage.m_history.getDosageTimeRanges()[0]->getDosage());
+    const DosageRepeat* repeat =
+            dynamic_cast<const DosageRepeat*>(_dosage.m_history.getDosageTimeRanges()[0]->getDosage());
     if (repeat == nullptr) {
         _modified = false;
         return ComputingStatus::AdjustmentsInternalError;
     }
-    const LastingDose *dosage = dynamic_cast<const LastingDose *>(repeat->getDosage());
+    const LastingDose* dosage = dynamic_cast<const LastingDose*>(repeat->getDosage());
     if (dosage == nullptr) {
         _modified = false;
         return ComputingStatus::AdjustmentsInternalError;
@@ -832,46 +895,59 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
     Duration interval = dosage->getTimeStep();
     auto dose = dosage->getDose();
 
-    const std::vector<double> &lastConcentrations = _dosage.getData().back().m_concentrations[0];
+    const std::vector<double>& lastConcentrations = _dosage.getData().back().m_concentrations[0];
     double steadyStateResidual = lastConcentrations.back();
 
     FormulationAndRoute formulationAndRoute = dosage->getLastFormulationAndRoute();
 
 
     // TODO : This is wrong to take the default here
-    const FullFormulationAndRoute *fullFormulationAndRoute = _request.getDrugModel().getFormulationAndRoutes().getDefault();
+    const FullFormulationAndRoute* fullFormulationAndRoute =
+            _request.getDrugModel().getFormulationAndRoutes().getDefault();
     std::vector<ComputingAdjustments::SimpleDosageCandidate> candidates;
 
 
     // Add candidates in order to decrease dosage
-    const ValidDurations * intervals = fullFormulationAndRoute->getValidIntervals();
+    const ValidDurations* intervals = fullFormulationAndRoute->getValidIntervals();
     std::vector<Tucuxi::Common::Duration> intervalValues;
     if (intervals != nullptr) {
         intervalValues = intervals->getDurations();
     }
     TucuUnit dUnit("ug");
     candidates.reserve(intervalValues.size());
-    for (const auto &interval : intervalValues) {
-        candidates.push_back({fullFormulationAndRoute->getFormulationAndRoute(), 0, dUnit, interval, Duration(std::chrono::hours(0))});
+    for (const auto& interval : intervalValues) {
+        candidates.push_back(
+                {fullFormulationAndRoute->getFormulationAndRoute(),
+                 0,
+                 dUnit,
+                 interval,
+                 Duration(std::chrono::hours(0))});
     }
 
     std::vector<LoadingCandidate> loadingCandidates;
 
-    for (const auto &candidate : candidates) {
+    for (const auto& candidate : candidates) {
 
         DosageAdjustment loadingDosage;
         // Create the loading dose
-        std::unique_ptr<DosageTimeRange> newDosage = createLoadingDosageOrRestPeriod(candidate, _traits->getAdjustmentTime());
+        std::unique_ptr<DosageTimeRange> newDosage =
+                createLoadingDosageOrRestPeriod(candidate, _traits->getAdjustmentTime());
         loadingDosage.m_history.addTimeRange(*newDosage);
 
-        ComputingStatus generateResult = generatePrediction(loadingDosage, _traits, _request,
-                                                             _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries,
-                                                             _etas);
+        ComputingStatus generateResult = generatePrediction(
+                loadingDosage,
+                _traits,
+                _request,
+                _allGroupIds,
+                _calculationStartTime,
+                _pkModel,
+                _parameterSeries,
+                _etas);
         if (generateResult != ComputingStatus::Ok) {
             return generateResult;
         }
 
-        const std::vector<double> &concentrations = loadingDosage.getData()[0].m_concentrations[0];
+        const std::vector<double>& concentrations = loadingDosage.getData()[0].m_concentrations[0];
         double residual = concentrations.back();
         double score = steadyStateResidual - residual;
         loadingCandidates.push_back({loadingDosage, score, candidate.m_interval});
@@ -882,13 +958,13 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
     double bestScore = 1000000000.0;
     size_t bestIndex = 0;
     size_t index = 0;
-    for (const auto & candidate : loadingCandidates) {
+    for (const auto& candidate : loadingCandidates) {
         if (std::abs(candidate.score) < bestScore) {
             bestScore = std::abs(candidate.score);
             loadingInterval = candidate.interval;
             bestIndex = index;
         }
-        index ++;
+        index++;
     }
 
     double existingDosageScore;
@@ -897,14 +973,20 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
         DosageAdjustment loadingDosage;
         loadingDosage.m_history = _dosage.m_history;
 
-        ComputingStatus generateResult = generatePrediction(loadingDosage, _traits, _request,
-                                                             _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries,
-                                                             _etas);
+        ComputingStatus generateResult = generatePrediction(
+                loadingDosage,
+                _traits,
+                _request,
+                _allGroupIds,
+                _calculationStartTime,
+                _pkModel,
+                _parameterSeries,
+                _etas);
         if (generateResult != ComputingStatus::Ok) {
             return generateResult;
         }
 
-        const std::vector<double> &concentrations = loadingDosage.getData()[0].m_concentrations[0];
+        const std::vector<double>& concentrations = loadingDosage.getData()[0].m_concentrations[0];
         double residual = concentrations.back();
         existingDosageScore = steadyStateResidual - residual;
     }
@@ -916,12 +998,13 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
 
 
     {
-        const DosageRepeat *repeat = dynamic_cast<const DosageRepeat *>(loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0]->getDosage());
+        const DosageRepeat* repeat = dynamic_cast<const DosageRepeat*>(
+                loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0]->getDosage());
         if (repeat == nullptr) {
             _modified = false;
             return ComputingStatus::AdjustmentsInternalError;
         }
-        const LastingDose *dosage = dynamic_cast<const LastingDose *>(repeat->getDosage());
+        const LastingDose* dosage = dynamic_cast<const LastingDose*>(repeat->getDosage());
         if (dosage == nullptr) {
             _modified = false;
             return ComputingStatus::AdjustmentsInternalError;
@@ -943,33 +1026,36 @@ ComputingStatus ComputingAdjustments::addRest(DosageAdjustment &_dosage,
     auto d = range.getDosage();
     DosageTimeRange newRange(range.getStartDate() + loadingInterval, range.getEndDate(), *d);
     _dosage.m_history = DosageHistory();
-    _dosage.m_history.addTimeRange(*loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0].get());
+    _dosage.m_history.addTimeRange(
+            *loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0].get());
     _dosage.m_history.mergeDosage(&newRange);
 
     _modified = true;
     return ComputingStatus::Ok;
 }
 
-ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
-                                              const ComputingTraitAdjustment *_traits,
-                                              const ComputingRequest &_request,
-                                              const std::vector<AnalyteGroupId> &_allGroupIds,
-                                              const Common::DateTime &_calculationStartTime,
-                                              std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
-                                              GroupsParameterSetSeries &_parameterSeries,
-                                              std::map<AnalyteGroupId, Etas> &_etas,
-                                              bool& _modified)
+ComputingStatus ComputingAdjustments::addLoad(
+        DosageAdjustment& _dosage,
+        const ComputingTraitAdjustment* _traits,
+        const ComputingRequest& _request,
+        const std::vector<AnalyteGroupId>& _allGroupIds,
+        const Common::DateTime& _calculationStartTime,
+        std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& _pkModel,
+        GroupsParameterSetSeries& _parameterSeries,
+        std::map<AnalyteGroupId, Etas>& _etas,
+        bool& _modified)
 {
     if (_traits->getLoadingOption() == LoadingOption::NoLoadingDose) {
         return ComputingStatus::Ok;
     }
 
-    const DosageRepeat *repeat = dynamic_cast<const DosageRepeat *>(_dosage.m_history.getDosageTimeRanges()[0]->getDosage());
+    const DosageRepeat* repeat =
+            dynamic_cast<const DosageRepeat*>(_dosage.m_history.getDosageTimeRanges()[0]->getDosage());
     if (repeat == nullptr) {
         _modified = false;
         return ComputingStatus::AdjustmentsInternalError;
     }
-    const LastingDose *dosage = dynamic_cast<const LastingDose *>(repeat->getDosage());
+    const LastingDose* dosage = dynamic_cast<const LastingDose*>(repeat->getDosage());
     if (dosage == nullptr) {
         _modified = false;
         return ComputingStatus::AdjustmentsInternalError;
@@ -979,14 +1065,15 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
     auto dose = dosage->getDose();
 
 
-    const std::vector<double> &lastConcentrations = _dosage.getData().back().m_concentrations[0];
+    const std::vector<double>& lastConcentrations = _dosage.getData().back().m_concentrations[0];
     double steadyStateResidual = lastConcentrations.back();
 
     FormulationAndRoute formulationAndRoute = dosage->getLastFormulationAndRoute();
 
 
     // TODO : This is wrong to take the default here
-    const FullFormulationAndRoute *fullFormulationAndRoute = _request.getDrugModel().getFormulationAndRoutes().getDefault();
+    const FullFormulationAndRoute* fullFormulationAndRoute =
+            _request.getDrugModel().getFormulationAndRoutes().getDefault();
     std::vector<ComputingAdjustments::SimpleDosageCandidate> candidates;
     // Add candidates in order to increase dosage
     ComputingStatus buildResult = buildCandidatesForInterval(fullFormulationAndRoute, interval, candidates);
@@ -994,7 +1081,7 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
         return buildResult;
     }
 
-/*
+    /*
     const ValidDurations * intervals = fullFormulationAndRoute->getValidIntervals();
     std::vector<Tucuxi::Common::Duration> intervalValues;
     if (intervals != nullptr) {
@@ -1012,21 +1099,28 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
 
     std::vector<LoadingCandidate> loadingCandidates;
 
-    for (const auto &candidate : candidates) {
+    for (const auto& candidate : candidates) {
 
         DosageAdjustment loadingDosage;
         // Create the loading dose
-        std::unique_ptr<DosageTimeRange> newDosage = createLoadingDosageOrRestPeriod(candidate, _traits->getAdjustmentTime());
+        std::unique_ptr<DosageTimeRange> newDosage =
+                createLoadingDosageOrRestPeriod(candidate, _traits->getAdjustmentTime());
         loadingDosage.m_history.addTimeRange(*newDosage);
 
-        ComputingStatus generateResult = generatePrediction(loadingDosage, _traits, _request,
-                                                             _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries,
-                                                             _etas);
+        ComputingStatus generateResult = generatePrediction(
+                loadingDosage,
+                _traits,
+                _request,
+                _allGroupIds,
+                _calculationStartTime,
+                _pkModel,
+                _parameterSeries,
+                _etas);
         if (generateResult != ComputingStatus::Ok) {
             return generateResult;
         }
 
-        const std::vector<double> &concentrations = loadingDosage.getData()[0].m_concentrations[0];
+        const std::vector<double>& concentrations = loadingDosage.getData()[0].m_concentrations[0];
         double residual = concentrations.back();
         double score = steadyStateResidual - residual;
         loadingCandidates.push_back({loadingDosage, score, candidate.m_interval});
@@ -1037,13 +1131,13 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
     double bestScore = 1000000000.0;
     size_t bestIndex = 0;
     size_t index = 0;
-    for (const auto & candidate : loadingCandidates) {
+    for (const auto& candidate : loadingCandidates) {
         if (std::abs(candidate.score) < bestScore) {
             bestScore = std::abs(candidate.score);
             loadingInterval = candidate.interval;
             bestIndex = index;
         }
-        index ++;
+        index++;
     }
 
 
@@ -1053,14 +1147,20 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
         DosageAdjustment loadingDosage;
         loadingDosage.m_history = _dosage.m_history;
 
-        ComputingStatus generateResult = generatePrediction(loadingDosage, _traits, _request,
-                                                             _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries,
-                                                             _etas);
+        ComputingStatus generateResult = generatePrediction(
+                loadingDosage,
+                _traits,
+                _request,
+                _allGroupIds,
+                _calculationStartTime,
+                _pkModel,
+                _parameterSeries,
+                _etas);
         if (generateResult != ComputingStatus::Ok) {
             return generateResult;
         }
 
-        const std::vector<double> &concentrations = loadingDosage.getData()[0].m_concentrations[0];
+        const std::vector<double>& concentrations = loadingDosage.getData()[0].m_concentrations[0];
         double residual = concentrations.back();
         existingDosageScore = steadyStateResidual - residual;
     }
@@ -1071,12 +1171,13 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
     }
 
     {
-        const DosageRepeat *repeat = dynamic_cast<const DosageRepeat *>(loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0]->getDosage());
+        const DosageRepeat* repeat = dynamic_cast<const DosageRepeat*>(
+                loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0]->getDosage());
         if (repeat == nullptr) {
             _modified = false;
             return ComputingStatus::AdjustmentsInternalError;
         }
-        const LastingDose *dosage = dynamic_cast<const LastingDose *>(repeat->getDosage());
+        const LastingDose* dosage = dynamic_cast<const LastingDose*>(repeat->getDosage());
         if (dosage == nullptr) {
             _modified = false;
             return ComputingStatus::AdjustmentsInternalError;
@@ -1096,7 +1197,8 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
     DosageHistory steadyStateHistory = _dosage.m_history;
     DosageTimeRange range = *steadyStateHistory.getDosageTimeRanges()[0].get();
     _dosage.m_history = DosageHistory();
-    _dosage.m_history.addTimeRange(*loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0].get());
+    _dosage.m_history.addTimeRange(
+            *loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0].get());
     // We shift the existing dosage, if the new range is valid
     if (range.getStartDate() + loadingInterval < range.getEndDate()) {
         auto d = range.getDosage();
@@ -1108,18 +1210,19 @@ ComputingStatus ComputingAdjustments::addLoad(DosageAdjustment &_dosage,
     return ComputingStatus::Ok;
 }
 
-ComputingStatus ComputingAdjustments::generatePredictions(std::vector<DosageAdjustment> &_dosages,
-                                                          const ComputingTraitAdjustment *_traits,
-                                                          const ComputingRequest &_request,
-                                                          const std::vector<AnalyteGroupId> &_allGroupIds,
-                                                          const DateTime &_calculationStartTime,
-                                                          std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
-                                                          GroupsParameterSetSeries &_parameterSeries,
-                                                          std::map<AnalyteGroupId, Etas> &_etas
-                                                          )
+ComputingStatus ComputingAdjustments::generatePredictions(
+        std::vector<DosageAdjustment>& _dosages,
+        const ComputingTraitAdjustment* _traits,
+        const ComputingRequest& _request,
+        const std::vector<AnalyteGroupId>& _allGroupIds,
+        const DateTime& _calculationStartTime,
+        std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& _pkModel,
+        GroupsParameterSetSeries& _parameterSeries,
+        std::map<AnalyteGroupId, Etas>& _etas)
 {
-    for (auto & dosage : _dosages) {
-        ComputingStatus result = generatePrediction(dosage, _traits, _request, _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries, _etas);
+    for (auto& dosage : _dosages) {
+        ComputingStatus result = generatePrediction(
+                dosage, _traits, _request, _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries, _etas);
         if (result != ComputingStatus::Ok) {
             return result;
         }
@@ -1128,21 +1231,21 @@ ComputingStatus ComputingAdjustments::generatePredictions(std::vector<DosageAdju
 }
 
 
-ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosage,
-                                                         const ComputingTraitAdjustment *_traits,
-                                                         const ComputingRequest &_request,
-                                                         const std::vector<AnalyteGroupId> &_allGroupIds,
-                                                         const Common::DateTime &_calculationStartTime,
-                                                         std::map<AnalyteGroupId, std::shared_ptr<PkModel> > &_pkModel,
-                                                         GroupsParameterSetSeries &_parameterSeries,
-                                                         std::map<AnalyteGroupId, Etas> &_etas
-                                                         )
+ComputingStatus ComputingAdjustments::generatePrediction(
+        DosageAdjustment& _dosage,
+        const ComputingTraitAdjustment* _traits,
+        const ComputingRequest& _request,
+        const std::vector<AnalyteGroupId>& _allGroupIds,
+        const Common::DateTime& _calculationStartTime,
+        std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& _pkModel,
+        GroupsParameterSetSeries& _parameterSeries,
+        std::map<AnalyteGroupId, Etas>& _etas)
 {
     TMP_UNUSED_PARAMETER(_parameterSeries);
     DateTime newEndTime = _traits->getEnd();
 
     std::unique_ptr<DosageHistory> newHistory = _request.getDrugTreatment().getDosageHistory().clone();
-    for (const auto & timeRange : _dosage.m_history.getDosageTimeRanges()) {
+    for (const auto& timeRange : _dosage.m_history.getDosageTimeRanges()) {
         newHistory->mergeDosage(timeRange.get());
     }
 
@@ -1156,17 +1259,18 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
 
     GroupsParameterSetSeries parameterSeries;
     GroupsIntakeSeries intakeSeries;
-    ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(_traits,
-                                                                                       _request.getDrugModel(),
-                                                                                       *newHistory,
-                                                                                       _request.getDrugTreatment().getSamples(),
-                                                                                       _request.getDrugTreatment().getCovariates(),
-                                                                                       m_utils->m_models.get(),
-                                                                                       _pkModel,
-                                                                                       intakeSeries,
-                                                                                       covariateSeries,
-                                                                                       parameterSeries,
-                                                                                       calculationStartTime);
+    ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(
+            _traits,
+            _request.getDrugModel(),
+            *newHistory,
+            _request.getDrugTreatment().getSamples(),
+            _request.getDrugTreatment().getCovariates(),
+            m_utils->m_models.get(),
+            _pkModel,
+            intakeSeries,
+            covariateSeries,
+            parameterSeries,
+            calculationStartTime);
     if (extractionResult != ComputingStatus::Ok) {
         return extractionResult;
     }
@@ -1179,12 +1283,19 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
         IntakeExtractor intakeExtractor;
         double nbPointsPerHour = _traits->getNbPointsPerHour();
         //Extract all Time range
-        ComputingStatus intakeExtractionResult = intakeExtractor.extract(*newHistory, _calculationStartTime, newEndTime,
-                                                                         nbPointsPerHour,_request.getDrugModel().getAnalyteSet(analyteGroupId)->getDoseUnit(),
-                                                                         intakeSeriesPerGroup[analyteGroupId],
-                                                                         ExtractionOption::EndofDate);
+        ComputingStatus intakeExtractionResult = intakeExtractor.extract(
+                *newHistory,
+                _calculationStartTime,
+                newEndTime,
+                nbPointsPerHour,
+                _request.getDrugModel().getAnalyteSet(analyteGroupId)->getDoseUnit(),
+                intakeSeriesPerGroup[analyteGroupId],
+                ExtractionOption::EndofDate);
 
-        auto status = m_utils->m_generalExtractor->convertAnalytes(intakeSeriesPerGroup[analyteGroupId], _request.getDrugModel(), _request.getDrugModel().getAnalyteSet(analyteGroupId));
+        auto status = m_utils->m_generalExtractor->convertAnalytes(
+                intakeSeriesPerGroup[analyteGroupId],
+                _request.getDrugModel(),
+                _request.getDrugModel().getAnalyteSet(analyteGroupId));
         if (status != ComputingStatus::Ok) {
             return status;
         }
@@ -1194,8 +1305,8 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
             return intakeExtractionResult;
         }
 
-        ComputingStatus intakeAssociationResult =
-                IntakeToCalculatorAssociator::associate(intakeSeriesPerGroup[analyteGroupId], *_pkModel[analyteGroupId]);
+        ComputingStatus intakeAssociationResult = IntakeToCalculatorAssociator::associate(
+                intakeSeriesPerGroup[analyteGroupId], *_pkModel[analyteGroupId]);
 
         if (intakeAssociationResult != ComputingStatus::Ok) {
             m_logger.error("Can not associate intake calculators for the specified route");
@@ -1207,13 +1318,13 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
         ComputingStatus predictionComputingResult;
         ConcentrationCalculator concentrationCalculator;
         predictionComputingResult = concentrationCalculator.computeConcentrations(
-                    pPrediction,
-                    false,
-                    _calculationStartTime,
-                    newEndTime,
-                    intakeSeriesPerGroup[analyteGroupId],
-                    parameterSeries[analyteGroupId],
-                    _etas[analyteGroupId]);
+                pPrediction,
+                false,
+                _calculationStartTime,
+                newEndTime,
+                intakeSeriesPerGroup[analyteGroupId],
+                parameterSeries[analyteGroupId],
+                _etas[analyteGroupId]);
 
         if (predictionComputingResult != ComputingStatus::Ok) {
             m_logger.error("Error with the computation of a single adjustment candidate");
@@ -1221,16 +1332,16 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
         }
 
         analytesPredictions.push_back(std::move(pPrediction));
-        
     }
 
     std::vector<ConcentrationPredictionPtr> activeMoietiesPredictions;
 
     if (!_request.getDrugModel().isSingleAnalyte()) {
 
-        for (const auto & activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+        for (const auto& activeMoiety : _request.getDrugModel().getActiveMoieties()) {
             ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
-            ComputingStatus activeMoietyComputingResult = m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
+            ComputingStatus activeMoietyComputingResult =
+                    m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
             if (activeMoietyComputingResult != ComputingStatus::Ok) {
                 return activeMoietyComputingResult;
             }
@@ -1250,8 +1361,8 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
     IntakeSeries recordedIntakes;
     selectRecordedIntakes(recordedIntakes, intakeSeriesPerGroup[defaultGroupId], _calculationStartTime, newEndTime);
 
-    if ((recordedIntakes.size() != analytesPredictions[0]->getTimes().size()) ||
-            (recordedIntakes.size() != analytesPredictions[0]->getValues().size())) {
+    if ((recordedIntakes.size() != analytesPredictions[0]->getTimes().size())
+        || (recordedIntakes.size() != analytesPredictions[0]->getValues().size())) {
         return ComputingStatus::RecordedIntakesSizeError;
     }
 
@@ -1267,21 +1378,20 @@ ComputingStatus ComputingAdjustments::generatePrediction(DosageAdjustment &_dosa
         if (start >= _traits->getAdjustmentTime()) {
 
             ComputingStatus recordStatus = ComputingComponent::recordCycle(
-                        _traits,
-                        _request,
-                        _dosage,
-                        start,
-                        end,
-                        times,
-                        activeMoietiesPredictions,
-                        analytesPredictions,
-                        i,
-                        _etas,
-                        parameterSeries);
+                    _traits,
+                    _request,
+                    _dosage,
+                    start,
+                    end,
+                    times,
+                    activeMoietiesPredictions,
+                    analytesPredictions,
+                    i,
+                    _etas,
+                    parameterSeries);
             if (recordStatus != ComputingStatus::Ok) {
                 return recordStatus;
             }
-
         }
     }
 

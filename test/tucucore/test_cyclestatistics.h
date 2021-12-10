@@ -8,15 +8,15 @@
 #include <iostream>
 #include <memory>
 
-#include "fructose/fructose.h"
-
 #include "tucucommon/general.h"
 
-#include "tucucore/residualerrormodel.h"
-#include "tucucore/pkmodels/onecompartmentextra.h"
-#include "tucucore/cyclestatisticscalculator.h"
 #include "tucucore/concentrationprediction.h"
+#include "tucucore/cyclestatisticscalculator.h"
 #include "tucucore/definitions.h"
+#include "tucucore/pkmodels/onecompartmentextra.h"
+#include "tucucore/residualerrormodel.h"
+
+#include "fructose/fructose.h"
 
 // TODO : Add a test for residual value CycleStatisticType::Residual
 
@@ -24,7 +24,7 @@ using namespace Tucuxi::Core;
 
 struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
 {
-    TestCycleStatistics() { }
+    TestCycleStatistics() {}
 
     void test1CycleStatistics(const std::string& /* _testName */)
     {
@@ -33,7 +33,7 @@ struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
         size_t nbCompartments = 1;
         size_t nbPoints = 10;
         Tucuxi::Core::CycleData cycleData;
-        std::vector< std::vector<Tucuxi::Core::CycleStatistic> > stats;
+        std::vector<std::vector<Tucuxi::Core::CycleStatistic> > stats;
 
         cycleData.m_start = now;
 
@@ -42,18 +42,20 @@ struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
 
         for (size_t compartment = 0; compartment < nbCompartments; compartment++) {
             // assign concentration data
-            cycleData.m_concentrations.push_back(Concentrations ());
+            cycleData.m_concentrations.push_back(Concentrations());
             cycleData.m_concentrations[compartment].reserve(nbPoints);
-            cycleData.m_concentrations[compartment].assign(concentrations[compartment].begin(),concentrations[compartment].end());
+            cycleData.m_concentrations[compartment].assign(
+                    concentrations[compartment].begin(), concentrations[compartment].end());
 
             // assign time data
-            cycleData.m_times.push_back(TimeOffsets ());
+            cycleData.m_times.push_back(TimeOffsets());
             cycleData.m_times[compartment].reserve(nbPoints);
-            cycleData.m_times[compartment].assign(times[compartment].begin(),times[compartment].end());
+            cycleData.m_times[compartment].assign(times[compartment].begin(), times[compartment].end());
 
             // allocate memory for local variable stats
-            stats.push_back(std::vector<Tucuxi::Core::CycleStatistic> ());
-            for (unsigned int type= 0; type< static_cast<int>(CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE); type++) {
+            stats.push_back(std::vector<Tucuxi::Core::CycleStatistic>());
+            for (unsigned int type = 0; type < static_cast<int>(CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE);
+                 type++) {
                 stats[compartment].push_back(CycleStatistic(cycleData.m_start, static_cast<CycleStatisticType>(type)));
             }
         }
@@ -85,7 +87,7 @@ struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
         // Max
         size_t nbValue;
         cycleStatistics.getStatistics(CycleStatisticType::Maximum, stats);
-        for (nbValue=0; nbValue<stats[0][static_cast<int>(CycleStatisticType::Maximum)].getNbValue(); nbValue++) {
+        for (nbValue = 0; nbValue < stats[0][static_cast<int>(CycleStatisticType::Maximum)].getNbValue(); nbValue++) {
             stats[0][static_cast<int>(CycleStatisticType::Maximum)].getValue(dateTime, value, nbValue);
             //std::cout << "[Maximum] dateTime: " << dateTime << ", value: " << value << std::endl;
         }
@@ -93,7 +95,8 @@ struct TestCycleStatistics : public fructose::test_base<TestCycleStatistics>
 
         // Min
         cycleStatistics.getStatistics(CycleStatisticType::Minimum, stats);
-        for (size_t nbValue=0; nbValue<stats[0][static_cast<int>(CycleStatisticType::Minimum)].getNbValue(); nbValue++) {
+        for (size_t nbValue = 0; nbValue < stats[0][static_cast<int>(CycleStatisticType::Minimum)].getNbValue();
+             nbValue++) {
             stats[0][static_cast<int>(CycleStatisticType::Minimum)].getValue(dateTime, value, nbValue);
             //std::cout << "[Minimum] dateTime: " << dateTime << ", value: " << value << std::endl;
         }

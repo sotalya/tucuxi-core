@@ -3,6 +3,7 @@
 */
 
 #include "drugmodeldomain.h"
+
 #include "tucucore/operation.h"
 
 
@@ -16,8 +17,7 @@ DrugModelDomain::DrugModelDomain(std::unique_ptr<Constraint> _constraint)
         m_constraints.push_back(std::move(_constraint));
 }
 
-DrugModelDomain::~DrugModelDomain()
-= default;
+DrugModelDomain::~DrugModelDomain() = default;
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

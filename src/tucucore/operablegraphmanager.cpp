@@ -7,15 +7,10 @@
 namespace Tucuxi {
 namespace Core {
 
-OperableGraphManager::OperableGraphManager()
-    : m_nextAvailableID{0}, m_validGraph{true}
-{
-
-}
+OperableGraphManager::OperableGraphManager() : m_nextAvailableID{0}, m_validGraph{true} {}
 
 
-bool
-OperableGraphManager::evaluate()
+bool OperableGraphManager::evaluate()
 {
     // Ensure that the graph is valid, before wasting time doing computations (or, even worse, get stuck in an infinite
     // loop). To save computations, the result is cached and won't change unless the graph's structure changes.
@@ -31,12 +26,12 @@ OperableGraphManager::evaluate()
     std::map<IOperable_ID, bool> alreadyComputed;
 
     // Initialize the map to false since all the nodes still have to be computed.
-    for (const auto &it : m_operables) {
+    for (const auto& it : m_operables) {
         alreadyComputed.insert(std::pair<IOperable_ID, bool>(it.first, false));
     }
 
     // Now, for practicality, iterate directly on the alreadyComputed map.
-    for (auto const &current : alreadyComputed) {
+    for (auto const& current : alreadyComputed) {
         bool rc = evaluateOperableNode(current.first, alreadyComputed);
         if (!rc) {
             return false;
@@ -46,8 +41,7 @@ OperableGraphManager::evaluate()
 }
 
 
-bool
-OperableGraphManager::getValue(const std::string &_name, double &_value) const
+bool OperableGraphManager::getValue(const std::string& _name, double& _value) const
 {
     if (m_operableInputs.find(_name) != m_operableInputs.end()) {
         _value = m_operableInputs.at(_name).getValue();
@@ -57,8 +51,7 @@ OperableGraphManager::getValue(const std::string &_name, double &_value) const
 }
 
 
-bool
-OperableGraphManager::isInputPresent(const std::string &_name) const
+bool OperableGraphManager::isInputPresent(const std::string& _name) const
 {
     if (m_operableInputs.find(_name) != m_operableInputs.end()) {
         return true;
@@ -67,9 +60,11 @@ OperableGraphManager::isInputPresent(const std::string &_name) const
 }
 
 
-bool
-OperableGraphManager::registerInput(const std::shared_ptr<IOperableInput>& _input, const std::string &_scriptVarName,
-                                    bool _isComputed, IOperable_ID _id)
+bool OperableGraphManager::registerInput(
+        const std::shared_ptr<IOperableInput>& _input,
+        const std::string& _scriptVarName,
+        bool _isComputed,
+        IOperable_ID _id)
 {
     if (_input == nullptr || (_isComputed && _id < 0)) {
         return false;
@@ -77,11 +72,12 @@ OperableGraphManager::registerInput(const std::shared_ptr<IOperableInput>& _inpu
     // Create a OperableInputNode object on the fly with the required fields filled, and push it into the map.
     std::pair<std::map<std::string, OperableInputNode>::iterator, bool> ret;
     if (_isComputed) {
-        ret = m_operableInputs.insert(std::pair<std::string, OperableInputNode>(_scriptVarName,
-                                                                                OperableInputNode(_input, true, _id)));
-    } else {
-        ret = m_operableInputs.insert(std::pair<std::string, OperableInputNode>(_scriptVarName,
-                                                                                OperableInputNode(_input)));
+        ret = m_operableInputs.insert(
+                std::pair<std::string, OperableInputNode>(_scriptVarName, OperableInputNode(_input, true, _id)));
+    }
+    else {
+        ret = m_operableInputs.insert(
+                std::pair<std::string, OperableInputNode>(_scriptVarName, OperableInputNode(_input)));
     }
     // ret.second is false if the name was already taken.
     if (!ret.second) {
@@ -93,15 +89,14 @@ OperableGraphManager::registerInput(const std::shared_ptr<IOperableInput>& _inpu
 }
 
 
-bool
-OperableGraphManager::registerOperable(const std::shared_ptr<IOperable> &_operable, const std::string &_scriptVarName)
+bool OperableGraphManager::registerOperable(
+        const std::shared_ptr<IOperable>& _operable, const std::string& _scriptVarName)
 {
     if (_operable == nullptr) {
         return false;
     }
 
-    m_operables.insert(std::pair<IOperable_ID, OperableComputeNode>(m_nextAvailableID,
-                                                                    OperableComputeNode(_operable)));
+    m_operables.insert(std::pair<IOperable_ID, OperableComputeNode>(m_nextAvailableID, OperableComputeNode(_operable)));
 
     // Take advantage of the registerInputs function to insert the value of the current Operable in the list of
     // available inputs, if it is expected to be reused (that is, a variable name has been specified).
@@ -114,8 +109,7 @@ OperableGraphManager::registerOperable(const std::shared_ptr<IOperable> &_operab
 }
 
 
-bool
-OperableGraphManager::evaluateOperableNode(IOperable_ID _id, std::map<IOperable_ID, bool> &_alreadyComputed)
+bool OperableGraphManager::evaluateOperableNode(IOperable_ID _id, std::map<IOperable_ID, bool>& _alreadyComputed)
 {
     if (_alreadyComputed.at(_id)) {
         // Operable already evaluated, so return success.
@@ -127,7 +121,7 @@ OperableGraphManager::evaluateOperableNode(IOperable_ID _id, std::map<IOperable_
     // Iterate over the dependencies and check each of them:
     // If the m_operableInputs map marks it as a "simple" input, then just skip to the subsequent one. Otherwise check
     // in the _alreadyComputed map if it has already been computed. If this is not the case, recursively evaluate it.
-    for (auto const &it : deps) {
+    for (auto const& it : deps) {
         if (m_operableInputs.find(it) == m_operableInputs.end()) {
             // The input ID does not exist.
             return false;
@@ -149,8 +143,7 @@ OperableGraphManager::evaluateOperableNode(IOperable_ID _id, std::map<IOperable_
 }
 
 
-bool
-OperableGraphManager::isValid()
+bool OperableGraphManager::isValid()
 {
     // Check that no loops are present by checking if any back-edge is present.
     std::map<std::string, bool> visited;
@@ -171,10 +164,8 @@ OperableGraphManager::isValid()
 }
 
 
-bool
-OperableGraphManager::isCyclic(const std::string &_cur,
-                               std::map<std::string, bool> &_visited,
-                               std::map<std::string, bool> &_gotBack) const
+bool OperableGraphManager::isCyclic(
+        const std::string& _cur, std::map<std::string, bool>& _visited, std::map<std::string, bool>& _gotBack) const
 {
     if (!_visited.at(_cur)) {
         _visited.at(_cur) = true;
@@ -202,16 +193,14 @@ OperableGraphManager::isCyclic(const std::string &_cur,
 }
 
 
-OperableGraphManager::OperableInputNode::OperableInputNode(std::shared_ptr<IOperableInput> _ptr,
-                                                           bool _isComputed, IOperable_ID _id)
+OperableGraphManager::OperableInputNode::OperableInputNode(
+        std::shared_ptr<IOperableInput> _ptr, bool _isComputed, IOperable_ID _id)
     : m_sptr{std::move(_ptr)}, m_isComputed{_isComputed}, m_id{_id}
 {
-
 }
 
 
-IOperable_ID
-OperableGraphManager::OperableInputNode::getOperableID() const
+IOperable_ID OperableGraphManager::OperableInputNode::getOperableID() const
 {
     if (m_isComputed) {
         return m_id;
@@ -220,15 +209,13 @@ OperableGraphManager::OperableInputNode::getOperableID() const
 }
 
 
-double
-OperableGraphManager::OperableInputNode::getValue() const
+double OperableGraphManager::OperableInputNode::getValue() const
 {
     return m_sptr->getValue();
 }
 
 
-bool
-OperableGraphManager::OperableInputNode::isComputed() const
+bool OperableGraphManager::OperableInputNode::isComputed() const
 {
     return m_isComputed;
 }
@@ -239,49 +226,41 @@ OperableGraphManager::OperableComputeNode::OperableComputeNode(std::shared_ptr<I
 {
     OperationInputList inList = m_sptr->getInputs();
 
-    for (const auto &it : inList) {
+    for (const auto& it : inList) {
         m_deps.push_back(it.getName());
     }
 }
 
 
-bool
-OperableGraphManager::OperableComputeNode::evaluate(const OperableGraphManager &_graphMgr)
+bool OperableGraphManager::OperableComputeNode::evaluate(const OperableGraphManager& _graphMgr)
 {
     return m_sptr->evaluate(_graphMgr);
 }
 
 
-std::vector<std::string>
-OperableGraphManager::OperableComputeNode::getDependencies() const
+std::vector<std::string> OperableGraphManager::OperableComputeNode::getDependencies() const
 {
     return m_deps;
 }
 
 
-double
-OperableGraphManager::OperableComputeNode::getValue() const
+double OperableGraphManager::OperableComputeNode::getValue() const
 {
     return m_sptr->getValue();
 }
 
 
-Operable::Operable(const double &_value)
-    : m_value{_value}
+Operable::Operable(const double& _value) : m_value{_value} {}
+
+
+bool Operable::evaluate(const OperableGraphManager& _graphMgr)
 {
-
-}
-
-
-bool
-Operable::evaluate(const OperableGraphManager &_graphMgr)
-{
-    Operation &op = getOperation();
+    Operation& op = getOperation();
 
     // Collect inputs
     OperationInputList inputs = getInputs();
 
-    for (auto &input : inputs) {
+    for (auto& input : inputs) {
         double val;
         bool rc = _graphMgr.getValue(input.getName(), val);
         if (!rc) {
@@ -294,23 +273,20 @@ Operable::evaluate(const OperableGraphManager &_graphMgr)
 }
 
 
-OperationInputList
-Operable::getInputs() const
+OperationInputList Operable::getInputs() const
 {
-    Operation &op = getOperation();
+    Operation& op = getOperation();
     return op.getInputs();
 }
 
 
-double
-Operable::getValue() const
+double Operable::getValue() const
 {
     return m_value;
 }
 
 
-void
-Operable::setValue(double _value)
+void Operable::setValue(double _value)
 {
     m_value = _value;
 }

@@ -2,16 +2,16 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include <sstream>
-#include <string>
-#include <iostream>
-#include <stdio.h>
 #include <cstdio>
+#include <iostream>
 #include <regex>
-
-#include "fructose/fructose.h"
+#include <sstream>
+#include <stdio.h>
+#include <string>
 
 #include "tucucommon/jsengine.h"
+
+#include "fructose/fructose.h"
 
 struct TestScriptEngine : public fructose::test_base<TestScriptEngine>
 {
@@ -27,7 +27,7 @@ struct TestScriptEngine : public fructose::test_base<TestScriptEngine>
 
         engine.evaluate("b = a-10;");
         engine.getVariable("b", value);
-        fructose_assert(value == 58); 
+        fructose_assert(value == 58);
 
         engine.setVariable("c", "12");
         engine.evaluate("d = b+c;");
@@ -53,4 +53,4 @@ struct TestScriptEngine : public fructose::test_base<TestScriptEngine>
         engine.getVariable("f", bValue);
         fructose_assert(bValue);
     }
- };
+};

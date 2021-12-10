@@ -8,23 +8,23 @@
 #include <iostream>
 #include <memory>
 
-#include "fructose/fructose.h"
-
 #include "tucucommon/general.h"
 
+#include "tucucore/concentrationcalculator.h"
 #include "tucucore/dosage.h"
 #include "tucucore/intakeextractor.h"
 #include "tucucore/intakeintervalcalculator.h"
-#include "tucucore/concentrationcalculator.h"
 #include "tucucore/pkmodels/onecompartmentbolus.h"
-#include "tucucore/pkmodels/onecompartmentinfusion.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
-#include "tucucore/pkmodels/twocompartmentbolus.h"
-#include "tucucore/pkmodels/twocompartmentinfusion.h"
-#include "tucucore/pkmodels/twocompartmentextra.h"
+#include "tucucore/pkmodels/onecompartmentinfusion.h"
 #include "tucucore/pkmodels/threecompartmentbolus.h"
-#include "tucucore/pkmodels/threecompartmentinfusion.h"
 #include "tucucore/pkmodels/threecompartmentextra.h"
+#include "tucucore/pkmodels/threecompartmentinfusion.h"
+#include "tucucore/pkmodels/twocompartmentbolus.h"
+#include "tucucore/pkmodels/twocompartmentextra.h"
+#include "tucucore/pkmodels/twocompartmentinfusion.h"
+
+#include "fructose/fructose.h"
 #include "pkmodels/constanteliminationbolus.h"
 #include "pkmodels/multiconstanteliminationbolus.h"
 
@@ -43,15 +43,16 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
 {
     static const int CYCLE_SIZE = 251;
 
-    TestMultiConstantEliminationBolus() { }
+    TestMultiConstantEliminationBolus() {}
 
     template<class CalculatorClass>
-    void testCalculator(const Tucuxi::Core::ParameterSetSeries &_parameters,
-                        double _dose,
-                        Tucuxi::Core::AbsorptionModel _route,
-                        std::chrono::hours _interval,
-                        std::chrono::seconds _infusionTime,
-                        CycleSize _nbPoints)
+    void testCalculator(
+            const Tucuxi::Core::ParameterSetSeries& _parameters,
+            double _dose,
+            Tucuxi::Core::AbsorptionModel _route,
+            std::chrono::hours _interval,
+            std::chrono::seconds _infusionTime,
+            CycleSize _nbPoints)
     {
         // Compare the result on one interval
         // with ConcentrationCalculator vs directly with the IntakeIntervalCalculator
@@ -71,7 +72,16 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
             concentrations.resize(residualSize);
 
             Tucuxi::Core::TimeOffsets times;
-            Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
+            Tucuxi::Core::IntakeEvent intakeEvent(
+                    now,
+                    offsetTime,
+                    _dose,
+                    TucuUnit("mg"),
+                    interval,
+                    Tucuxi::Core::FormulationAndRoute(_route),
+                    _route,
+                    infusionTime,
+                    _nbPoints);
 
             // std::cout << typeid(calculator).name() << std::endl;
 
@@ -83,14 +93,7 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
 
                 Tucuxi::Core::ParameterSetEvent event = *(_parameters.getAtTime(now));
                 res = calculator->calculateIntakePoints(
-                    concentrations,
-                    times,
-                    intakeEvent,
-                    event,
-                    inResiduals,
-                    isAll,
-                    outResiduals,
-                    true);
+                        concentrations, times, intakeEvent, event, inResiduals, isAll, outResiduals, true);
 
                 fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
             }
@@ -108,12 +111,7 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
                 intakeSeries.push_back(intakeEvent);
                 auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
                 auto status = concentrationCalculator->computeConcentrations(
-                    predictionPtr,
-                    isAll,
-                    recordFrom,
-                    recordTo,
-                    intakeSeries,
-                    _parameters);
+                        predictionPtr, isAll, recordFrom, recordTo, intakeSeries, _parameters);
                 fructose_assert_eq(status, ComputingStatus::Ok);
             }
 
@@ -153,7 +151,16 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
             {
                 // Be careful, the intakeEvent embedds the nb of points, but the intervalintakecalculator also. They have to agree
 
-                Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, TucuUnit("mg"), interval * nbCycles, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, (_nbPoints - 1 ) * nbCycles + 1);
+                Tucuxi::Core::IntakeEvent intakeEvent(
+                        now,
+                        offsetTime,
+                        _dose,
+                        TucuUnit("mg"),
+                        interval * nbCycles,
+                        Tucuxi::Core::FormulationAndRoute(_route),
+                        _route,
+                        infusionTime,
+                        (_nbPoints - 1) * nbCycles + 1);
 
                 Tucuxi::Core::Residuals inResiduals(residualSize);
                 Tucuxi::Core::Residuals outResiduals(residualSize);
@@ -162,14 +169,7 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
 
                 Tucuxi::Core::ParameterSetEvent event = *(_parameters.getAtTime(now));
                 res = calculator.calculateIntakePoints(
-                    concentrations,
-                    times,
-                    intakeEvent,
-                    event,
-                    inResiduals,
-                    isAll,
-                    outResiduals,
-                    true);
+                        concentrations, times, intakeEvent, event, inResiduals, isAll, outResiduals, true);
 
 #if 0
         for(int testPoint = 0; testPoint < (_nbPoints - 1 ) * nbCycles + 1; testPoint++) {
@@ -190,19 +190,23 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
                 DateTime recordFrom = now;
                 DateTime recordTo = now + interval * nbCycles;
 
-                for(size_t i = 0; i < nbCycles; i++) {
-                    Tucuxi::Core::IntakeEvent event(now + interval * i, offsetTime, _dose, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
+                for (size_t i = 0; i < nbCycles; i++) {
+                    Tucuxi::Core::IntakeEvent event(
+                            now + interval * i,
+                            offsetTime,
+                            _dose,
+                            TucuUnit("mg"),
+                            interval,
+                            Tucuxi::Core::FormulationAndRoute(_route),
+                            _route,
+                            infusionTime,
+                            _nbPoints);
                     event.setCalculator(calculator2);
                     intakeSeries.push_back(event);
                 }
                 auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
                 auto status = concentrationCalculator->computeConcentrations(
-                    predictionPtr,
-                    isAll,
-                    recordFrom,
-                    recordTo,
-                    intakeSeries,
-                    _parameters);
+                        predictionPtr, isAll, recordFrom, recordTo, intakeSeries, _parameters);
                 fructose_assert_eq(status, ComputingStatus::Ok);
 
 #if 0
@@ -215,8 +219,9 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
             }
 
             // Only works for linear elimination, so do not perform that for some classes
-            if (!(typeid(CalculatorClass) == typeid(ConstantEliminationBolus) or typeid(CalculatorClass) == typeid(MultiConstantEliminationBolus))) {
-                for (size_t cycle = 0; cycle < nbCycles; cycle ++) {
+            if (!(typeid(CalculatorClass) == typeid(ConstantEliminationBolus)
+                  or typeid(CalculatorClass) == typeid(MultiConstantEliminationBolus))) {
+                for (size_t cycle = 0; cycle < nbCycles; cycle++) {
                     Tucuxi::Core::Concentrations concentration2;
                     concentration2 = predictionPtr->getValues()[cycle];
                     for (CycleSize i = 0; i < _nbPoints - 1; i++) {
@@ -235,7 +240,7 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
         // Create 2 samples and compare the result of computeConcentrations() and pointsAtTime().
         //
         // This test fails for infusion. It should be redesigned according to non linear times
-        if (_route != AbsorptionModel::Infusion){
+        if (_route != AbsorptionModel::Infusion) {
             CalculatorClass calculator;
 
             CycleSize nbPoints = 201;
@@ -248,7 +253,16 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
 
             Tucuxi::Core::Concentrations concentrations;
             Tucuxi::Core::TimeOffsets times;
-            Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, nbPoints);
+            Tucuxi::Core::IntakeEvent intakeEvent(
+                    now,
+                    offsetTime,
+                    _dose,
+                    TucuUnit("mg"),
+                    interval,
+                    Tucuxi::Core::FormulationAndRoute(_route),
+                    _route,
+                    infusionTime,
+                    nbPoints);
 
             Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
             {
@@ -263,12 +277,7 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
                 intakeSeries.push_back(intakeEvent);
                 auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
                 auto status = concentrationCalculator->computeConcentrations(
-                    predictionPtr,
-                    isAll,
-                    recordFrom,
-                    recordTo,
-                    intakeSeries,
-                    _parameters);
+                        predictionPtr, isAll, recordFrom, recordTo, intakeSeries, _parameters);
                 fructose_assert_eq(status, ComputingStatus::Ok);
 
 #if 0
@@ -284,25 +293,21 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
                 intakeSeries.push_back(intakeEvent);
 
                 Tucuxi::Core::SampleSeries sampleSeries;
-                DateTime date0 = now + interval/4.0;
+                DateTime date0 = now + interval / 4.0;
 
                 Tucuxi::Core::SampleEvent s0(date0);
                 sampleSeries.push_back(s0);
-                DateTime date1 = now + interval * 3.0 /4.0;
+                DateTime date1 = now + interval * 3.0 / 4.0;
 
                 Tucuxi::Core::SampleEvent s1(date1);
                 sampleSeries.push_back(s1);
 
                 auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
                 ComputingStatus res = concentrationCalculator->computeConcentrationsAtTimes(
-                    concentrations,
-                    isAll,
-                    intakeSeries,
-                    _parameters,
-                    sampleSeries);
+                        concentrations, isAll, intakeSeries, _parameters, sampleSeries);
 
                 fructose_assert(res == ComputingStatus::Ok);
-                fructose_assert_eq(res , ComputingStatus::Ok);
+                fructose_assert_eq(res, ComputingStatus::Ok);
             }
 
             size_t n0 = (nbPoints - 1) / 4;
@@ -325,14 +330,22 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
 
 
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR0", 2.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS0", 0.03, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM0", 4.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestA1", 10.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestR1", 20.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestS1", 0.003, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("TestM1", 40.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("TestR0", 2.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("TestS0", 0.03, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("TestM0", 4.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("TestA1", 10.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("TestR1", 20.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("TestS1", 0.003, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("TestM1", 40.0, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
@@ -359,18 +372,20 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
 
 
 
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, dose, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(Tucuxi::Core::AbsorptionModel::Intravascular), Tucuxi::Core::AbsorptionModel::Intravascular, infusionTime, CYCLE_SIZE);
+        Tucuxi::Core::IntakeEvent intakeEvent(
+                now,
+                offsetTime,
+                dose,
+                TucuUnit("mg"),
+                interval,
+                Tucuxi::Core::FormulationAndRoute(Tucuxi::Core::AbsorptionModel::Intravascular),
+                Tucuxi::Core::AbsorptionModel::Intravascular,
+                infusionTime,
+                CYCLE_SIZE);
 
         bool isAll = false;
         res = aux.calculateIntakePoints(
-            concentrations,
-            times,
-            intakeEvent,
-            parameters,
-            inResiduals,
-            isAll,
-            outResiduals,
-            true);
+                concentrations, times, intakeEvent, parameters, inResiduals, isAll, outResiduals, true);
 
         fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
 
@@ -384,17 +399,16 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
         //
 
         for (int i = 0; i < CYCLE_SIZE; i++) {
-            fructose_assert_double_eq(concentrations[0][i], std::max(0.0, ( 200.0 + inResiduals[0] * 2.0) * ( 1.0 - times[i] * 0.03) * 4.0 + 1.0));
-            fructose_assert_double_eq(concentrations[1][i], std::max(0.0, ( 200.0 + inResiduals[0] * 20.0) * ( 1.0 - times[i] * 0.003) * 40.0 + 10.0));
+            fructose_assert_double_eq(
+                    concentrations[0][i],
+                    std::max(0.0, (200.0 + inResiduals[0] * 2.0) * (1.0 - times[i] * 0.03) * 4.0 + 1.0));
+            fructose_assert_double_eq(
+                    concentrations[1][i],
+                    std::max(0.0, (200.0 + inResiduals[0] * 20.0) * (1.0 - times[i] * 0.003) * 40.0 + 10.0));
         }
 
         testCalculator<Tucuxi::Core::MultiConstantEliminationBolus>(
-            parametersSeries,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Intravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+                parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Intravascular, 12h, 0s, CYCLE_SIZE);
     }
 
 
@@ -403,198 +417,197 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
     void test1compBolus(const std::string& /* _testName */)
     {
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 22.97, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("Ke", 22.97, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
         testCalculator<Tucuxi::Core::OneCompartmentBolusMicro>(
-            parametersSeries,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Intravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+                parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Intravascular, 12h, 0s, CYCLE_SIZE);
     }
 
 
     void test1compExtra(const std::string& /* _testName */)
     {
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
         testCalculator<Tucuxi::Core::OneCompartmentExtraMicro>(
-            parametersSeries,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Extravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+                parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
     }
 
 
     void test1compInfusion(const std::string& /* _testName */)
     {
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 22.97, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("V", 347, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("Ke", 22.97, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
         testCalculator<Tucuxi::Core::OneCompartmentInfusionMicro>(
-            parametersSeries,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Infusion,
-            12h,
-            1h,
-            CYCLE_SIZE);
+                parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Infusion, 12h, 1h, CYCLE_SIZE);
     }
 
     void test2compBolus(const std::string& /* _testName */)
     {
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
         testCalculator<Tucuxi::Core::TwoCompartmentBolusMicro>(
-            parametersSeries,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Intravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+                parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Intravascular, 12h, 0s, CYCLE_SIZE);
     }
 
 
     void test2compExtra(const std::string& /* _testName */)
     {
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("F", 1, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
         testCalculator<Tucuxi::Core::TwoCompartmentExtraMicro>(
-            parametersSeries,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Extravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+                parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
     }
 
 
     void test2compInfusion(const std::string& /* _testName */)
     {
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
         testCalculator<Tucuxi::Core::TwoCompartmentInfusionMicro>(
-            parametersSeries,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Infusion,
-            12h,
-            1h,
-            CYCLE_SIZE);
+                parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Infusion, 12h, 1h, CYCLE_SIZE);
     }
 
     void test3compBolus(const std::string& /* _testName */)
     {
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
         testCalculator<Tucuxi::Core::ThreeCompartmentBolusMicro>(
-            parametersSeries,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Intravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+                parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Intravascular, 12h, 0s, CYCLE_SIZE);
     }
 
 
     void test3compExtra(const std::string& /* _testName */)
     {
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
         testCalculator<Tucuxi::Core::ThreeCompartmentExtraMicro>(
-            parametersSeries,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Extravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+                parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
     }
 
 
     void test3compInfusion(const std::string& /* _testName */)
     {
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("F", 2, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("V1", 340, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("Ke", 0.0444294, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K12", 0.0588235, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K13", 0.0882353, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
+                new Tucuxi::Core::ParameterDefinition("K31", 0.0877193, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
         Tucuxi::Core::ParameterSetSeries parametersSeries;
         parametersSeries.addParameterSetEvent(parameters);
 
         testCalculator<Tucuxi::Core::ThreeCompartmentInfusionMicro>(
-            parametersSeries,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Infusion,
-            12h,
-            1h,
-            CYCLE_SIZE);
+                parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Infusion, 12h, 1h, CYCLE_SIZE);
     }
 };
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi
 #endif // TEST_CONCENTRATIONCALCULATOR_H

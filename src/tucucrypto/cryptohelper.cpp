@@ -2,13 +2,13 @@
  * Copyright (C) 2017 Tucuxi SA
  */
 
-#include "tucucrypto/cryptohelper.h"
-
 #include <iostream>
 
 #include <botan/auto_rng.h>
 #include <botan/b64_filt.h>
 #include <botan/cipher_filter.h>
+
+#include "tucucrypto/cryptohelper.h"
 #ifdef _WIN32
 #include <botan/pipe.h>
 #else
@@ -31,8 +31,7 @@ bool CryptoHelper::generateKey(std::string& _key)
         _key = botanKey.as_string();
         return true;
     }
-    catch (const std::exception& e)
-    {
+    catch (const std::exception& e) {
         std::cout << "Error in CryptoHelper::generateKey: " << e.what() << std::endl;
         return false;
     }
@@ -50,8 +49,7 @@ bool CryptoHelper::hash(const std::string& _plaintext, std::string& _result)
         _result = Botan::hex_encode(hash->final());
         return true;
     }
-    catch (const std::exception& e)
-    {
+    catch (const std::exception& e) {
         std::cout << "Error in CryptoHelper::hash: " << e.what() << std::endl;
         return false;
     }
@@ -68,8 +66,8 @@ bool CryptoHelper::encrypt(const std::string& _key, const std::string& _plaintex
         Botan::AutoSeeded_RNG rng;
         Botan::InitializationVector iv(rng, 16);
 
-        Botan::Pipe encryptor(Botan::get_cipher("AES-256/CBC", masterKey, iv, Botan::ENCRYPTION),
-                              new Botan::Base64_Encoder());
+        Botan::Pipe encryptor(
+                Botan::get_cipher("AES-256/CBC", masterKey, iv, Botan::ENCRYPTION), new Botan::Base64_Encoder());
 
         // Encrypt some data
         encryptor.process_msg(_plaintext);
@@ -80,14 +78,13 @@ bool CryptoHelper::encrypt(const std::string& _key, const std::string& _plaintex
 
         return true;
     }
-    catch (const std::exception& e)
-    {
+    catch (const std::exception& e) {
         std::cout << "Error in CryptoHelper::encrypt: " << e.what() << std::endl;
         return false;
     }
 }
 
-bool CryptoHelper::decrypt(const std::string &_key, const std::string &_ciphertextiv, std::string &_result)
+bool CryptoHelper::decrypt(const std::string& _key, const std::string& _ciphertextiv, std::string& _result)
 {
     try {
         // Create the key
@@ -98,8 +95,8 @@ bool CryptoHelper::decrypt(const std::string &_key, const std::string &_cipherte
         std::string ciphertext = _ciphertextiv.size() < 32 ? std::string() : _ciphertextiv.substr(32);
 
         // Create the decryption pipe
-        Botan::Pipe decryptor(new Botan::Base64_Decoder(),
-                              Botan::get_cipher("AES-256/CBC", masterKey, iv, Botan::DECRYPTION));
+        Botan::Pipe decryptor(
+                new Botan::Base64_Decoder(), Botan::get_cipher("AES-256/CBC", masterKey, iv, Botan::DECRYPTION));
 
         // Decrypt some data
         decryptor.process_msg(ciphertext);
@@ -107,8 +104,7 @@ bool CryptoHelper::decrypt(const std::string &_key, const std::string &_cipherte
 
         return true;
     }
-    catch (const std::exception& e)
-    {
+    catch (const std::exception& e) {
         std::cout << "Error in CryptoHelper::decrypt: " << e.what() << std::endl;
         return false;
     }

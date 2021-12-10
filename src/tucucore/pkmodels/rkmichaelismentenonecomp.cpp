@@ -1,18 +1,18 @@
 #include "rkmichaelismentenonecomp.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
 
 
-RkMichaelisMentenOneComp::RkMichaelisMentenOneComp() : IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenOneComp> (new PertinentTimesCalculatorStandard())
+RkMichaelisMentenOneComp::RkMichaelisMentenOneComp()
+    : IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenOneComp>(new PertinentTimesCalculatorStandard())
 {
 }
 
 
-RkMichaelisMentenOneCompExtra::RkMichaelisMentenOneCompExtra() : RkMichaelisMentenOneComp()
-{
-}
+RkMichaelisMentenOneCompExtra::RkMichaelisMentenOneCompExtra() : RkMichaelisMentenOneComp() {}
 
 std::vector<std::string> RkMichaelisMentenOneCompExtra::getParametersId()
 {
@@ -49,9 +49,7 @@ bool RkMichaelisMentenOneCompExtra::checkInputs(const IntakeEvent& _intakeEvent,
 }
 
 
-RkMichaelisMentenOneCompBolus::RkMichaelisMentenOneCompBolus() : RkMichaelisMentenOneComp()
-{
-}
+RkMichaelisMentenOneCompBolus::RkMichaelisMentenOneCompBolus() : RkMichaelisMentenOneComp() {}
 
 std::vector<std::string> RkMichaelisMentenOneCompBolus::getParametersId()
 {
@@ -88,16 +86,15 @@ bool RkMichaelisMentenOneCompBolus::checkInputs(const IntakeEvent& _intakeEvent,
 }
 
 
-RkMichaelisMentenOneCompInfusion::RkMichaelisMentenOneCompInfusion() : RkMichaelisMentenOneComp()
-{
-}
+RkMichaelisMentenOneCompInfusion::RkMichaelisMentenOneCompInfusion() : RkMichaelisMentenOneComp() {}
 
 std::vector<std::string> RkMichaelisMentenOneCompInfusion::getParametersId()
 {
     return {"V", "Km", "Vmax", "F"};
 }
 
-bool RkMichaelisMentenOneCompInfusion::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool RkMichaelisMentenOneCompInfusion::checkInputs(
+        const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
         return false;

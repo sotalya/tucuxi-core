@@ -6,8 +6,8 @@
 #define TUCUXI_COMMON_LOOGER
 
 #include "tucucommon/componentmanager.h"
-#include "tucucommon/logger.h"
 #include "tucucommon/ilogger.h"
+#include "tucucommon/logger.h"
 
 namespace Tucuxi {
 namespace Common {
@@ -15,8 +15,8 @@ namespace Common {
 /// \ingroup TucuCommon
 /// \brief Helper class to simplify logging
 ///
-/// This is a wrapper around the ILogger interface of the Logger component. This idea is to make it as 
-/// simple as possible to log messages. To log messages, just create an instance of LoggerHelper locally or 
+/// This is a wrapper around the ILogger interface of the Logger component. This idea is to make it as
+/// simple as possible to log messages. To log messages, just create an instance of LoggerHelper locally or
 /// as a member of your class and call its logging methods.
 ///
 /// Example:
@@ -44,7 +44,7 @@ public:
         }
     }
 
-    /// \brief Initialize the Logger component 
+    /// \brief Initialize the Logger component
     /// Call this method once at startup to enable logging.
     /// \param _logFilePath Path of the generated rotating log file
     /// \return True if initialization succeeded
@@ -63,7 +63,7 @@ public:
                 }
             }
             return true;
-        }        
+        }
         return false;
     }
 
@@ -107,18 +107,19 @@ public:
     {
         debug(_msg.c_str());
     }
-    
+
     /// \brief Log a formatted "debug" message.
     /// \param _fmt The message format
     /// \param _args List of values referenced by _fmt
-    template<typename... Args> void debug(const char* _fmt, const Args&... _args)
+    template<typename... Args>
+    void debug(const char* _fmt, const Args&... _args)
     {
         try {
             fmt::MemoryWriter writer;
             writer.write(_fmt, _args...);
             debug(writer.c_str());
         }
-        catch (const std::exception &ex) {
+        catch (const std::exception& ex) {
         }
     }
 
@@ -144,14 +145,15 @@ public:
     /// \brief Log a formatted "information" message.
     /// \param _fmt The message format
     /// \param _args List of values referenced by _fmt
-    template<typename... Args> void info(const char* _fmt, const Args&... _args)
+    template<typename... Args>
+    void info(const char* _fmt, const Args&... _args)
     {
         try {
             fmt::MemoryWriter writer;
             writer.write(_fmt, _args...);
             info(writer.c_str());
         }
-        catch (const std::exception &) {
+        catch (const std::exception&) {
         }
     }
 
@@ -177,14 +179,15 @@ public:
     /// \brief Log a formatted "warning" message.
     /// \param _fmt The message format
     /// \param _args List of values referenced by _fmt
-    template<typename... Args> void warn(const char* _fmt, const Args&... _args)
+    template<typename... Args>
+    void warn(const char* _fmt, const Args&... _args)
     {
         try {
             fmt::MemoryWriter writer;
             writer.write(_fmt, _args...);
             warn(writer.c_str());
         }
-        catch (const std::exception &) {
+        catch (const std::exception&) {
         }
     }
 
@@ -210,14 +213,15 @@ public:
     /// \brief Log a formatted "error" message.
     /// \param _fmt The message format
     /// \param _args List of values referenced by _fmt
-    template<typename... Args> void error(const char* _fmt, const Args&... _args)
+    template<typename... Args>
+    void error(const char* _fmt, const Args&... _args)
     {
         try {
             fmt::MemoryWriter writer;
             writer.write(_fmt, _args...);
             error(writer.c_str());
         }
-        catch (const std::exception &/*ex*/) {
+        catch (const std::exception& /*ex*/) {
         }
     }
 
@@ -243,33 +247,43 @@ public:
     /// \brief Log a formatted "critical" message.
     /// \param _fmt The message format
     /// \param _args List of values referenced by _fmt
-    template<typename... Args> void critical(const char* _fmt, const Args&... _args)
+    template<typename... Args>
+    void critical(const char* _fmt, const Args&... _args)
     {
         try {
             fmt::MemoryWriter writer;
             writer.write(_fmt, _args...);
             critical(writer.c_str());
         }
-        catch (const std::exception &) {
+        catch (const std::exception&) {
         }
     }
 
 
     /// Allows to disable the logger, for testing purpose
-    static void enable() { smEnable() = true;}
+    static void enable()
+    {
+        smEnable() = true;
+    }
 
-    static void disable() { smEnable() = false;}
+    static void disable()
+    {
+        smEnable() = false;
+    }
 
-    static bool & smEnable() {
-        static bool sm_enable = true;// NOLINT(readability-identifier-naming)
+    static bool& smEnable()
+    {
+        static bool sm_enable = true; // NOLINT(readability-identifier-naming)
         return sm_enable;
     }
 
-    static bool enabled() { return smEnable();}
+    static bool enabled()
+    {
+        return smEnable();
+    }
 
 private:
-    ILogger *m_pLogger; /// The pointer to the actual logger component
-
+    ILogger* m_pLogger; /// The pointer to the actual logger component
 };
 
 } // namespace Common

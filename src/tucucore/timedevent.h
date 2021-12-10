@@ -14,14 +14,14 @@ namespace Core {
 
 /// \ingroup TucuCore
 /// \brief Base class for all types of "events"
-/// An event is a change in a value that influences the computation of prediction. It could be 
+/// An event is a change in a value that influences the computation of prediction. It could be
 /// a new intake, a new measured concentration, a change of a covariate, ...
 class TimedEvent
 {
 public:
     /// \brief Constructor, "deleted" because not necessary.
     TimedEvent() = delete;
-    
+
     /// \brief Constructor defining the time of the event.
     /// \param _time Time of the event to set.
     /// \pre _time.isValid() == true
@@ -40,7 +40,7 @@ public:
     }
 
 protected:
-    DateTime m_time;    /// The time of the event
+    DateTime m_time; /// The time of the event
 };
 
 } // namespace Core

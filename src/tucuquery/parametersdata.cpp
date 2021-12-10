@@ -14,10 +14,11 @@ CovariateData::CovariateData(
         string& _value,
         string& _unit,
         Core::DataType _datatype,
-        string& _nature
-) : m_covariateId(_covariateId), m_pDate(_pDate), m_value(_value),
-    m_unit(_unit), m_datatype(_datatype), m_nature(_nature)
-{}
+        string& _nature)
+    : m_covariateId(_covariateId), m_pDate(_pDate), m_value(_value), m_unit(_unit), m_datatype(_datatype),
+      m_nature(_nature)
+{
+}
 
 const string& CovariateData::getCovariateId() const
 {
@@ -53,7 +54,8 @@ const std::string& CovariateData::getNature() const
 
 PatientData::PatientData(vector<unique_ptr<Tucuxi::Core::PatientCovariate> >& _covariates)
     : m_covariates(move(_covariates))
-{}
+{
+}
 
 const vector<unique_ptr<Tucuxi::Core::PatientCovariate> >& PatientData::getCovariates() const
 {
@@ -62,9 +64,7 @@ const vector<unique_ptr<Tucuxi::Core::PatientCovariate> >& PatientData::getCovar
 
 // Treatment class
 
-Treatment::Treatment(unique_ptr<Core::DosageHistory> _pDosageHistory)
-    : m_pDosageHistory(move(_pDosageHistory))
-{}
+Treatment::Treatment(unique_ptr<Core::DosageHistory> _pDosageHistory) : m_pDosageHistory(move(_pDosageHistory)) {}
 
 const Core::DosageHistory& Treatment::getpDosageHistory() const
 {
@@ -209,17 +209,18 @@ const Core::DosageHistory& Treatment::getpDosageHistory() const
 
 // DrugData class
 
-DrugData::DrugData(string& _drugID,
-                   string& _activePrinciple,
-                   string& _brandName,
-                   string& _atc,
-                   unique_ptr<Treatment> _pTreatment,
-                   vector<unique_ptr<Tucuxi::Core::Sample> >& _samples,
-                   vector<unique_ptr<Tucuxi::Core::Target> >& _targets
-) : m_drugID(_drugID), m_activePrinciple(_activePrinciple), m_brandName(_brandName),
-    m_atc(_atc), m_pTreatment(move(_pTreatment)), m_samples(move(_samples)),
-    m_targets(move(_targets))
-{}
+DrugData::DrugData(
+        string& _drugID,
+        string& _activePrinciple,
+        string& _brandName,
+        string& _atc,
+        unique_ptr<Treatment> _pTreatment,
+        vector<unique_ptr<Tucuxi::Core::Sample> >& _samples,
+        vector<unique_ptr<Tucuxi::Core::Target> >& _targets)
+    : m_drugID(_drugID), m_activePrinciple(_activePrinciple), m_brandName(_brandName), m_atc(_atc),
+      m_pTreatment(move(_pTreatment)), m_samples(move(_samples)), m_targets(move(_targets))
+{
+}
 
 const string& DrugData::getDrugID() const
 {
@@ -260,7 +261,8 @@ const vector<unique_ptr<Tucuxi::Core::Target> >& DrugData::getTargets() const
 
 DrugTreatmentData::DrugTreatmentData(unique_ptr<PatientData> _pPatient, vector<unique_ptr<DrugData> > _drugs)
     : m_pPatient(move(_pPatient)), m_drugs(move(_drugs))
-{}
+{
+}
 
 const PatientData& DrugTreatmentData::getpPatient() const
 {

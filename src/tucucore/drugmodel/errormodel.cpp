@@ -3,8 +3,7 @@
 namespace Tucuxi {
 namespace Core {
 
-ErrorModel::ErrorModel()
-= default;
+ErrorModel::ErrorModel() = default;
 
 
 

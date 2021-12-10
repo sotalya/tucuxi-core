@@ -3,23 +3,25 @@
 */
 
 #include "pkmodel.h"
-#include "intakeintervalcalculator.h"
+
 #include "tucucore/pkmodels/onecompartmentbolus.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
-#include "tucucore/pkmodels/onecompartmentinfusion.h"
 #include "tucucore/pkmodels/onecompartmentextralag.h"
-#include "tucucore/pkmodels/twocompartmentbolus.h"
-#include "tucucore/pkmodels/twocompartmentextra.h"
-#include "tucucore/pkmodels/twocompartmentinfusion.h"
-#include "tucucore/pkmodels/twocompartmentextralag.h"
+#include "tucucore/pkmodels/onecompartmentinfusion.h"
+#include "tucucore/pkmodels/rkmichaelismentenenzyme.h"
+#include "tucucore/pkmodels/rkmichaelismentenonecomp.h"
+#include "tucucore/pkmodels/rkmichaelismententwocomp.h"
+#include "tucucore/pkmodels/rktwocompartmenterlang.h"
 #include "tucucore/pkmodels/rktwocompartmentextralag.h"
 #include "tucucore/pkmodels/threecompartmentbolus.h"
 #include "tucucore/pkmodels/threecompartmentextra.h"
 #include "tucucore/pkmodels/threecompartmentinfusion.h"
-#include "tucucore/pkmodels/rktwocompartmenterlang.h"
-#include "tucucore/pkmodels/rkmichaelismentenonecomp.h"
-#include "tucucore/pkmodels/rkmichaelismententwocomp.h"
-#include "tucucore/pkmodels/rkmichaelismentenenzyme.h"
+#include "tucucore/pkmodels/twocompartmentbolus.h"
+#include "tucucore/pkmodels/twocompartmentextra.h"
+#include "tucucore/pkmodels/twocompartmentextralag.h"
+#include "tucucore/pkmodels/twocompartmentinfusion.h"
+
+#include "intakeintervalcalculator.h"
 
 #ifdef DRUGMODELTESTS
 #include "tucucore/../../test/tucucore/pkmodels/constanteliminationbolus.h"
@@ -30,7 +32,7 @@
 namespace Tucuxi {
 namespace Core {
 
-PkModel::PkModel(const std::string &_pkModelId, AllowMultipleRoutes _allowMultipleRoutes)
+PkModel::PkModel(const std::string& _pkModelId, AllowMultipleRoutes _allowMultipleRoutes)
     : m_pkModelId(_pkModelId), m_allowMultipleRoutes(_allowMultipleRoutes)
 {
 }
@@ -42,8 +44,8 @@ std::string PkModel::getPkModelId() const
 }
 
 
-bool PkModel::addIntakeIntervalCalculatorFactory(AbsorptionModel _route,
-                                                 const std::shared_ptr<IntakeIntervalCalculatorCreator>& _creator)
+bool PkModel::addIntakeIntervalCalculatorFactory(
+        AbsorptionModel _route, const std::shared_ptr<IntakeIntervalCalculatorCreator>& _creator)
 {
     std::pair<std::map<AbsorptionModel, std::shared_ptr<IntakeIntervalCalculatorCreator>>::iterator, bool> rc;
     rc = m_calculatorCreators.insert(std::make_pair(_route, _creator));
@@ -51,8 +53,7 @@ bool PkModel::addIntakeIntervalCalculatorFactory(AbsorptionModel _route,
 }
 
 
-bool PkModel::addParameterList(AbsorptionModel _route,
-                      std::vector<std::string> _parameterList)
+bool PkModel::addParameterList(AbsorptionModel _route, std::vector<std::string> _parameterList)
 {
     std::pair<std::map<AbsorptionModel, std::vector<std::string>>::iterator, bool> rc;
     rc = m_parameters.insert(std::make_pair(_route, std::move(_parameterList)));
@@ -63,9 +64,13 @@ std::vector<AbsorptionModel> PkModel::getAvailableRoutes() const
 {
     std::vector<AbsorptionModel> routes;
     // Push keys in a vector.
-    std::transform(m_calculatorCreators.begin(), m_calculatorCreators.end(),                              // Range to inspect
-                   std::back_inserter(routes),                                                            // Backward iterator on returned vector
-                   [](decltype(m_calculatorCreators)::value_type const &_pair) { return _pair.first; });  // Push values in vector
+    std::transform(
+            m_calculatorCreators.begin(),
+            m_calculatorCreators.end(), // Range to inspect
+            std::back_inserter(routes), // Backward iterator on returned vector
+            [](decltype(m_calculatorCreators)::value_type const& _pair) {
+                return _pair.first;
+            }); // Push values in vector
     return routes;
 }
 
@@ -94,8 +99,9 @@ std::vector<std::string> PkModel::getParametersForRoute(AbsorptionModel _route) 
 bool PkModelCollection::addPkModel(const std::shared_ptr<PkModel>& _pkModel)
 {
     // Check that no previous PkModel with the same Id was inserted in the collection.
-    auto it = std::find_if(m_collection.begin(), m_collection.end(),
-                           [_pkModel](const std::shared_ptr<PkModel> &_mod) { return _pkModel->getPkModelId() == _mod->getPkModelId(); });
+    auto it = std::find_if(m_collection.begin(), m_collection.end(), [_pkModel](const std::shared_ptr<PkModel>& _mod) {
+        return _pkModel->getPkModelId() == _mod->getPkModelId();
+    });
     if (it != m_collection.end()) {
         return false;
     }
@@ -104,10 +110,12 @@ bool PkModelCollection::addPkModel(const std::shared_ptr<PkModel>& _pkModel)
 }
 
 
-std::shared_ptr<PkModel> PkModelCollection::getPkModelFromId(const std::string &_pkModelId) const
+std::shared_ptr<PkModel> PkModelCollection::getPkModelFromId(const std::string& _pkModelId) const
 {
-    auto it = std::find_if(m_collection.begin(), m_collection.end(),
-                           [_pkModelId](const std::shared_ptr<PkModel> &_mod) { return _mod->getPkModelId() == _pkModelId; });
+    auto it =
+            std::find_if(m_collection.begin(), m_collection.end(), [_pkModelId](const std::shared_ptr<PkModel>& _mod) {
+                return _mod->getPkModelId() == _pkModelId;
+            });
     if (it == m_collection.end()) {
         return nullptr;
     }
@@ -118,9 +126,11 @@ std::shared_ptr<PkModel> PkModelCollection::getPkModelFromId(const std::string &
 std::vector<std::string> PkModelCollection::getPkModelIdList() const
 {
     std::vector<std::string> ids;
-    std::transform(m_collection.begin(), m_collection.end(),
-                   std::back_inserter(ids),                                                     // Backward iterator on returned vector
-                   [](const std::shared_ptr<PkModel> &_mod) { return _mod->getPkModelId(); });  // Push values in vector
+    std::transform(
+            m_collection.begin(),
+            m_collection.end(),
+            std::back_inserter(ids), // Backward iterator on returned vector
+            [](const std::shared_ptr<PkModel>& _mod) { return _mod->getPkModelId(); }); // Push values in vector
     return ids;
 }
 
@@ -136,37 +146,53 @@ std::vector<std::shared_ptr<PkModel>> PkModelCollection::getPkModelList() const
 /// \param _COMP_NO_NUM Number of transit compartments (expressed in numerical form).
 /// \param _RC Boolean return type (ORed result of all the add operations).
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define ADD_2COMP_ERLANG_PK_MODEL_TO_COLLECTION(_COLLECTION, _COMP_NO_NUM, _RC) \
-do { \
-    { \
-        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang" #_COMP_NO_NUM ".micro", PkModel::AllowMultipleRoutes::Yes); \
-        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMicro<_COMP_NO_NUM>::getCreator()); \
-        rc |= pkmodel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMicro<_COMP_NO_NUM>::getParametersId()); \
-        Tucuxi::Common::TranslatableString distribution; \
-        Tucuxi::Common::TranslatableString elimination; \
-        std::string comps; \
-        comps = "compartments"; \
-        distribution.setString(std::to_string(2) + " " + comps + ", erlang absorption with " #_COMP_NO_NUM " transit compartments", "en"); \
-        elimination.setString("linear", "en"); \
-        pkmodel->setDistribution(distribution); \
-        pkmodel->setElimination(elimination); \
-        _collection.addPkModel(pkmodel); \
-    } \
-    { \
-        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear.2comp.erlang" #_COMP_NO_NUM ".macro", PkModel::AllowMultipleRoutes::Yes); \
-        rc |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMacro<_COMP_NO_NUM>::getCreator()); \
-        rc |= pkmodel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::RK4TwoCompartmentErlangMacro<_COMP_NO_NUM>::getParametersId()); \
-        Tucuxi::Common::TranslatableString distribution; \
-        Tucuxi::Common::TranslatableString elimination; \
-        std::string comps; \
-        comps = "compartments"; \
-        distribution.setString(std::to_string(2) + " " + comps + ", erlang absorption with " #_COMP_NO_NUM " transit compartments", "en"); \
-        elimination.setString("linear", "en"); \
-        pkmodel->setDistribution(distribution); \
-        pkmodel->setElimination(elimination); \
-        _collection.addPkModel(pkmodel); \
-    } \
-} while (0);
+#define ADD_2COMP_ERLANG_PK_MODEL_TO_COLLECTION(_COLLECTION, _COMP_NO_NUM, _RC)                       \
+    do {                                                                                              \
+        {                                                                                             \
+            std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>(                             \
+                    "linear.2comp.erlang" #_COMP_NO_NUM ".micro", PkModel::AllowMultipleRoutes::Yes); \
+            rc |= pkmodel->addIntakeIntervalCalculatorFactory(                                        \
+                    AbsorptionModel::Extravascular,                                                   \
+                    Tucuxi::Core::RK4TwoCompartmentErlangMicro<_COMP_NO_NUM>::getCreator());          \
+            rc |= pkmodel->addParameterList(                                                          \
+                    AbsorptionModel::Extravascular,                                                   \
+                    Tucuxi::Core::RK4TwoCompartmentErlangMicro<_COMP_NO_NUM>::getParametersId());     \
+            Tucuxi::Common::TranslatableString distribution;                                          \
+            Tucuxi::Common::TranslatableString elimination;                                           \
+            std::string comps;                                                                        \
+            comps = "compartments";                                                                   \
+            distribution.setString(                                                                   \
+                    std::to_string(2) + " " + comps                                                   \
+                            + ", erlang absorption with " #_COMP_NO_NUM " transit compartments",      \
+                    "en");                                                                            \
+            elimination.setString("linear", "en");                                                    \
+            pkmodel->setDistribution(distribution);                                                   \
+            pkmodel->setElimination(elimination);                                                     \
+            _collection.addPkModel(pkmodel);                                                          \
+        }                                                                                             \
+        {                                                                                             \
+            std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>(                             \
+                    "linear.2comp.erlang" #_COMP_NO_NUM ".macro", PkModel::AllowMultipleRoutes::Yes); \
+            rc |= pkmodel->addIntakeIntervalCalculatorFactory(                                        \
+                    AbsorptionModel::Extravascular,                                                   \
+                    Tucuxi::Core::RK4TwoCompartmentErlangMacro<_COMP_NO_NUM>::getCreator());          \
+            rc |= pkmodel->addParameterList(                                                          \
+                    AbsorptionModel::Extravascular,                                                   \
+                    Tucuxi::Core::RK4TwoCompartmentErlangMacro<_COMP_NO_NUM>::getParametersId());     \
+            Tucuxi::Common::TranslatableString distribution;                                          \
+            Tucuxi::Common::TranslatableString elimination;                                           \
+            std::string comps;                                                                        \
+            comps = "compartments";                                                                   \
+            distribution.setString(                                                                   \
+                    std::to_string(2) + " " + comps                                                   \
+                            + ", erlang absorption with " #_COMP_NO_NUM " transit compartments",      \
+                    "en");                                                                            \
+            elimination.setString("linear", "en");                                                    \
+            pkmodel->setDistribution(distribution);                                                   \
+            pkmodel->setElimination(elimination);                                                     \
+            _collection.addPkModel(pkmodel);                                                          \
+        }                                                                                             \
+    } while (0);
 
 
 /// \brief Add a PkModel with Lag time to a collection.
@@ -179,32 +205,45 @@ do { \
 ///
 /// The lag time model is built in rk4
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define ADD_PKMODEL_TO_COLLECTION_LAG_RK4(_COLLECTION, _COMP_NO_NUM, _COMP_NO_LIT, _TYPE, _TYPE_NAME, _RC) \
-do { \
-    std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>("linear." #_COMP_NO_NUM "comp." #_TYPE_NAME, PkModel::AllowMultipleRoutes::No); \
-    (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getCreator()); \
-    (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::ExtravascularLag, Tucuxi::Core::RK4 ## _COMP_NO_LIT ## CompartmentExtraLag ## _TYPE::getCreator()); \
-    (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getCreator()); \
-    (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getCreator());\
-    (_RC) |= pkmodel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentExtra ## _TYPE::getParametersId()); \
-    (_RC) |= pkmodel->addParameterList(AbsorptionModel::ExtravascularLag, Tucuxi::Core::RK4 ## _COMP_NO_LIT ## CompartmentExtraLag ## _TYPE::getParametersId()); \
-    (_RC) |= pkmodel->addParameterList(AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT ## CompartmentBolus ## _TYPE::getParametersId()); \
-    (_RC) |= pkmodel->addParameterList(AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT ## CompartmentInfusion## _TYPE::getParametersId());\
-    Tucuxi::Common::TranslatableString distribution; \
-    Tucuxi::Common::TranslatableString elimination; \
-    std::string comps; \
-    if ((_COMP_NO_NUM) == 1) \
-        comps = "compartment"; \
-    else \
-        comps = "compartments"; \
-    distribution.setString(std::to_string(_COMP_NO_NUM) + " " + comps, "en"); \
-    elimination.setString("linear", "en"); \
-    pkmodel->setDistribution(distribution); \
-    pkmodel->setElimination(elimination); \
-    (_COLLECTION).addPkModel(pkmodel); \
-} while (0);
+#define ADD_PKMODEL_TO_COLLECTION_LAG_RK4(_COLLECTION, _COMP_NO_NUM, _COMP_NO_LIT, _TYPE, _TYPE_NAME, _RC)             \
+    do {                                                                                                               \
+        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>(                                                  \
+                "linear." #_COMP_NO_NUM "comp." #_TYPE_NAME, PkModel::AllowMultipleRoutes::No);                        \
+        (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(                                                          \
+                AbsorptionModel::Extravascular, Tucuxi::Core::_COMP_NO_LIT##CompartmentExtra##_TYPE::getCreator());    \
+        (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(                                                          \
+                AbsorptionModel::ExtravascularLag,                                                                     \
+                Tucuxi::Core::RK4##_COMP_NO_LIT##CompartmentExtraLag##_TYPE::getCreator());                            \
+        (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(                                                          \
+                AbsorptionModel::Intravascular, Tucuxi::Core::_COMP_NO_LIT##CompartmentBolus##_TYPE::getCreator());    \
+        (_RC) |= pkmodel->addIntakeIntervalCalculatorFactory(                                                          \
+                AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT##CompartmentInfusion##_TYPE::getCreator());      \
+        (_RC) |= pkmodel->addParameterList(                                                                            \
+                AbsorptionModel::Extravascular,                                                                        \
+                Tucuxi::Core::_COMP_NO_LIT##CompartmentExtra##_TYPE::getParametersId());                               \
+        (_RC) |= pkmodel->addParameterList(                                                                            \
+                AbsorptionModel::ExtravascularLag,                                                                     \
+                Tucuxi::Core::RK4##_COMP_NO_LIT##CompartmentExtraLag##_TYPE::getParametersId());                       \
+        (_RC) |= pkmodel->addParameterList(                                                                            \
+                AbsorptionModel::Intravascular,                                                                        \
+                Tucuxi::Core::_COMP_NO_LIT##CompartmentBolus##_TYPE::getParametersId());                               \
+        (_RC) |= pkmodel->addParameterList(                                                                            \
+                AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT##CompartmentInfusion##_TYPE::getParametersId()); \
+        Tucuxi::Common::TranslatableString distribution;                                                               \
+        Tucuxi::Common::TranslatableString elimination;                                                                \
+        std::string comps;                                                                                             \
+        if ((_COMP_NO_NUM) == 1)                                                                                       \
+            comps = "compartment";                                                                                     \
+        else                                                                                                           \
+            comps = "compartments";                                                                                    \
+        distribution.setString(std::to_string(_COMP_NO_NUM) + " " + comps, "en");                                      \
+        elimination.setString("linear", "en");                                                                         \
+        pkmodel->setDistribution(distribution);                                                                        \
+        pkmodel->setElimination(elimination);                                                                          \
+        (_COLLECTION).addPkModel(pkmodel);                                                                             \
+    } while (0);
 
-bool defaultPopulate(PkModelCollection &_collection)
+bool defaultPopulate(PkModelCollection& _collection)
 {
     bool rc = true;
 
@@ -226,14 +265,20 @@ bool defaultPopulate(PkModelCollection &_collection)
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("michaelismenten.1comp", PkModel::AllowMultipleRoutes::Yes);
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, RkMichaelisMentenOneCompExtra::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, RkMichaelisMentenOneCompExtra::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, RkMichaelisMentenOneCompExtra::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Extravascular, RkMichaelisMentenOneCompExtra::getParametersId());
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, RkMichaelisMentenOneCompBolus::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::Intravascular, RkMichaelisMentenOneCompBolus::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Intravascular, RkMichaelisMentenOneCompBolus::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Intravascular, RkMichaelisMentenOneCompBolus::getParametersId());
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, RkMichaelisMentenOneCompInfusion::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::Infusion, RkMichaelisMentenOneCompInfusion::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Infusion, RkMichaelisMentenOneCompInfusion::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Infusion, RkMichaelisMentenOneCompInfusion::getParametersId());
 
         Tucuxi::Common::TranslatableString elimination;
         elimination.setString("Michaelis-Menten", "en");
@@ -250,17 +295,25 @@ bool defaultPopulate(PkModelCollection &_collection)
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("michaelismenten.2comp.micro", PkModel::AllowMultipleRoutes::Yes);
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompExtraMicro::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompExtraMicro::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompExtraMicro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompExtraMicro::getParametersId());
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::ExtravascularLag, RkMichaelisMentenTwoCompExtraLagMicro::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::ExtravascularLag, RkMichaelisMentenTwoCompExtraLagMicro::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::ExtravascularLag, RkMichaelisMentenTwoCompExtraLagMicro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::ExtravascularLag, RkMichaelisMentenTwoCompExtraLagMicro::getParametersId());
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, RkMichaelisMentenTwoCompBolusMicro::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::Intravascular, RkMichaelisMentenTwoCompBolusMicro::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Intravascular, RkMichaelisMentenTwoCompBolusMicro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Intravascular, RkMichaelisMentenTwoCompBolusMicro::getParametersId());
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, RkMichaelisMentenTwoCompInfusionMicro::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::Infusion, RkMichaelisMentenTwoCompInfusionMicro::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Infusion, RkMichaelisMentenTwoCompInfusionMicro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Infusion, RkMichaelisMentenTwoCompInfusionMicro::getParametersId());
 
         Tucuxi::Common::TranslatableString elimination;
         elimination.setString("Michaelis-Menten", "en");
@@ -277,17 +330,25 @@ bool defaultPopulate(PkModelCollection &_collection)
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("michaelismenten.2comp.macro", PkModel::AllowMultipleRoutes::Yes);
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompExtraMacro::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompExtraMacro::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompExtraMacro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompExtraMacro::getParametersId());
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::ExtravascularLag, RkMichaelisMentenTwoCompExtraLagMacro::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::ExtravascularLag, RkMichaelisMentenTwoCompExtraLagMacro::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::ExtravascularLag, RkMichaelisMentenTwoCompExtraLagMacro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::ExtravascularLag, RkMichaelisMentenTwoCompExtraLagMacro::getParametersId());
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, RkMichaelisMentenTwoCompBolusMacro::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::Intravascular, RkMichaelisMentenTwoCompBolusMacro::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Intravascular, RkMichaelisMentenTwoCompBolusMacro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Intravascular, RkMichaelisMentenTwoCompBolusMacro::getParametersId());
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, RkMichaelisMentenTwoCompInfusionMacro::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::Infusion, RkMichaelisMentenTwoCompInfusionMacro::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Infusion, RkMichaelisMentenTwoCompInfusionMacro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Infusion, RkMichaelisMentenTwoCompInfusionMacro::getParametersId());
 
         Tucuxi::Common::TranslatableString elimination;
         elimination.setString("Michaelis-Menten", "en");
@@ -304,14 +365,18 @@ bool defaultPopulate(PkModelCollection &_collection)
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("michaelismenten.enzyme.1comp", PkModel::AllowMultipleRoutes::Yes);
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, RkMichaelisMentenEnzymeExtra::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, RkMichaelisMentenEnzymeExtra::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, RkMichaelisMentenEnzymeExtra::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Extravascular, RkMichaelisMentenEnzymeExtra::getParametersId());
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Intravascular, RkMichaelisMentenEnzymeBolus::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::Intravascular, RkMichaelisMentenEnzymeBolus::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Intravascular, RkMichaelisMentenEnzymeBolus::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Intravascular, RkMichaelisMentenEnzymeBolus::getParametersId());
 
-       // rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, RkMichaelisMentenEnzymeInfusion::getCreator());
-       // rc &= sharedPkModel->addParameterList(AbsorptionModel::Infusion, RkMichaelisMentenEnzymeInfusion::getParametersId());
+        // rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Infusion, RkMichaelisMentenEnzymeInfusion::getCreator());
+        // rc &= sharedPkModel->addParameterList(AbsorptionModel::Infusion, RkMichaelisMentenEnzymeInfusion::getParametersId());
 
         Tucuxi::Common::TranslatableString elimination;
         elimination.setString("Michaelis-Menten", "en");
@@ -330,8 +395,10 @@ bool defaultPopulate(PkModelCollection &_collection)
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::ConstantEliminationBolus::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Extravascular, Tucuxi::Core::ConstantEliminationBolus::getParametersId());
 
         _collection.addPkModel(sharedPkModel);
     }
@@ -339,8 +406,10 @@ bool defaultPopulate(PkModelCollection &_collection)
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.pkasymptotic");
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, PkAsymptotic::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::PkAsymptotic::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, PkAsymptotic::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Extravascular, Tucuxi::Core::PkAsymptotic::getParametersId());
 
         _collection.addPkModel(sharedPkModel);
     }
@@ -348,8 +417,10 @@ bool defaultPopulate(PkModelCollection &_collection)
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.multiconstantelimination");
 
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getCreator());
-        rc &= sharedPkModel->addParameterList(AbsorptionModel::Extravascular, Tucuxi::Core::MultiConstantEliminationBolus::getParametersId());
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Extravascular, Tucuxi::Core::MultiConstantEliminationBolus::getParametersId());
 
         _collection.addPkModel(sharedPkModel);
     }

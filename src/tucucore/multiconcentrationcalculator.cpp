@@ -13,14 +13,14 @@ namespace Tucuxi {
 namespace Core {
 
 ComputingStatus MultiConcentrationCalculator::computeConcentrations(
-        const MultiConcentrationPredictionPtr &_prediction,
+        const MultiConcentrationPredictionPtr& _prediction,
         bool _isAll,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
-        const IntakeSeries &_intakes,
+        const DateTime& _recordFrom,
+        const DateTime& _recordTo,
+        const IntakeSeries& _intakes,
         const ParameterSetSeries& _parameters,
         const Etas& _etas,
-        const std::vector<std::unique_ptr<IResidualErrorModel> > &_residualErrorModels,
+        const std::vector<std::unique_ptr<IResidualErrorModel> >& _residualErrorModels,
         const std::vector<Deviations>& _epsilons,
         bool _onlyAnalytes,
         bool _isFixedDensity)
@@ -42,7 +42,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
 
     // First calculate the size of residuals
     unsigned int residualSize = 0;
-    for (const auto & intake : _intakes) {
+    for (const auto& intake : _intakes) {
         std::shared_ptr<IntakeIntervalCalculator> pCalculator = intake.getCalculator();
         unsigned int s = pCalculator->getResidualSize();
         residualSize = std::max(residualSize, s);
@@ -52,7 +52,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
     Residuals outResiduals(residualSize);
 
     // Go through all intakes
-    for (const auto & intake : _intakes) {
+    for (const auto& intake : _intakes) {
 
         // Get parameters at intake start time
         // For population calculation, could be done only once at the beginning
@@ -74,34 +74,34 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
             std::vector<Concentrations> concentrations;
             concentrations.resize(residualSize);
 
-          _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
+            _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
 
-            ComputingStatus result = intake.calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+            ComputingStatus result = intake.calculateIntakePoints(
+                    concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
 
-            switch (result)
-            {
-                case ComputingStatus::Ok:
-                    break;
-                case ComputingStatus::DensityError:
-                    // Restart computation with more points...
+            switch (result) {
+            case ComputingStatus::Ok:
+                break;
+            case ComputingStatus::DensityError:
+                // Restart computation with more points...
 
-                    // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
-                    // so it can be used if this intake is recalculated.
-                    //IntakeSeries::const_iterator it;
-                    //if (it->getNbPoints() != ink.getNbPoints()) {
-                    //   intake_series_t::index<tags::times>::type& intakes_times_index = intakes.get<tags::times>();
-                    //   intakes_times_index.modify(it, IntakeEvent::change_density(ink.nbPoints));
-                    //}
-                    break;
-                default:
-                    //m_logger.error("Failed in calculation with given parameter values.");
-                    return result;
+                // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
+                // so it can be used if this intake is recalculated.
+                //IntakeSeries::const_iterator it;
+                //if (it->getNbPoints() != ink.getNbPoints()) {
+                //   intake_series_t::index<tags::times>::type& intakes_times_index = intakes.get<tags::times>();
+                //   intakes_times_index.modify(it, IntakeEvent::change_density(ink.nbPoints));
+                //}
+                break;
+            default:
+                //m_logger.error("Failed in calculation with given parameter values.");
+                return result;
             }
 
 
             // Apply the intra-individual errors
             if (!(_residualErrorModels.size() == 0) && !(_epsilons.size() == 0)) {
-                for(size_t i = 0; i < _residualErrorModels.size(); ++i) {
+                for (size_t i = 0; i < _residualErrorModels.size(); ++i) {
                     _residualErrorModels[i]->applyEpsToArray(concentrations[i], _epsilons[i]);
                 }
             }
@@ -119,53 +119,49 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
 
             _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
 
-            ComputingStatus result = intake.calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+            ComputingStatus result = intake.calculateIntakePoints(
+                    concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
 
-            switch (result)
-            {
-                case ComputingStatus::Ok:
-                    break;
-                case ComputingStatus::DensityError:
-                    // Restart computation with more points...
+            switch (result) {
+            case ComputingStatus::Ok:
+                break;
+            case ComputingStatus::DensityError:
+                // Restart computation with more points...
 
-                    // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
-                    // so it can be used if this intake is recalculated.
-                    //if (it->getNbPoints() != ink.getNbPoints()) {
-                    //    intake_series_t::index<tags::times>::type& intakes_times_index = intakes.get<tags::times>();
-                    //    intakes_times_index.modify(it, IntakeEvent::change_density(ink.nbPoints));
-                    //}
-                    break;
-                default:
-                    //m_logger.error("Failed in calculation with given parameter values.");
-                    return result;
+                // If nbpoints has changed (initial density was not the final density), change the density in the intakeevent
+                // so it can be used if this intake is recalculated.
+                //if (it->getNbPoints() != ink.getNbPoints()) {
+                //    intake_series_t::index<tags::times>::type& intakes_times_index = intakes.get<tags::times>();
+                //    intakes_times_index.modify(it, IntakeEvent::change_density(ink.nbPoints));
+                //}
+                break;
+            default:
+                //m_logger.error("Failed in calculation with given parameter values.");
+                return result;
             }
-
-
-
         }
 
 
         // Prepare residuals for the next cycle
         // NOTICE: "inResiduals = outResiduals" and "std::copy(outResiduals.begin(),
         // outResiduals.end(), inResiduals.begin())" are not working
-        for(unsigned int i = 0; i < residualSize; i++) {
+        for (unsigned int i = 0; i < residualSize; i++) {
             inResiduals[i] = outResiduals[i];
         }
     }
 
     return ComputingStatus::Ok;
-
 }
 
 ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState(
-        const MultiConcentrationPredictionPtr &_prediction,
+        const MultiConcentrationPredictionPtr& _prediction,
         bool _isAll,
-        const DateTime &_recordFrom,
-        const DateTime &_recordTo,
-        const IntakeSeries &_intakes,
-        const ParameterSetSeries &_parameters,
-        const Etas &_etas,
-        const std::vector<std::unique_ptr<IResidualErrorModel> > &_residualErrorModels,
+        const DateTime& _recordFrom,
+        const DateTime& _recordTo,
+        const IntakeSeries& _intakes,
+        const ParameterSetSeries& _parameters,
+        const Etas& _etas,
+        const std::vector<std::unique_ptr<IResidualErrorModel> >& _residualErrorModels,
         const std::vector<Deviations>& _epsilons,
         bool _onlyAnalytes,
         bool _isFixedDensity)
@@ -186,7 +182,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
 
     // First calculate the size of residuals
     unsigned int residualSize = 0;
-    for (const auto & intake : _intakes) {
+    for (const auto& intake : _intakes) {
         std::shared_ptr<IntakeIntervalCalculator> pCalculator = intake.getCalculator();
         unsigned int s = pCalculator->getResidualSize();
         residualSize = std::max(residualSize, s);
@@ -202,7 +198,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
 
     while (!finished) {
         // Go through all intakes
-        for (const auto & intake : _intakes) {
+        for (const auto& intake : _intakes) {
 
             // Get parameters at intake start time
             // For population calculation, could be done only once at the beginning
@@ -222,10 +218,10 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
 
                 _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
 
-                ComputingStatus result = intake.calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+                ComputingStatus result = intake.calculateIntakePoints(
+                        concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
 
-                switch (result)
-                {
+                switch (result) {
                 case ComputingStatus::Ok:
                     break;
                 case ComputingStatus::DensityError:
@@ -246,7 +242,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
 
                 // Apply the intra-individual errors
                 if (!(_residualErrorModels.size() == 0) && !(_epsilons.size() == 0)) {
-                    for(size_t i = 0; i < _residualErrorModels.size(); ++i) {
+                    for (size_t i = 0; i < _residualErrorModels.size(); ++i) {
                         _residualErrorModels[i]->applyEpsToArray(concentrations[i], _epsilons[i]);
                     }
                 }
@@ -264,10 +260,10 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
 
                 _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
 
-                ComputingStatus result = intake.calculateIntakePoints(concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
+                ComputingStatus result = intake.calculateIntakePoints(
+                        concentrations, times, intake, *parameters, inResiduals, _isAll, outResiduals, _isFixedDensity);
 
-                switch (result)
-                {
+                switch (result) {
                 case ComputingStatus::Ok:
                     break;
                 case ComputingStatus::DensityError:
@@ -284,9 +280,6 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
                     //m_logger.error("Failed in calculation with given parameter values.");
                     return result;
                 }
-
-
-
             }
 
             if (reachedSteadyState) {
@@ -294,7 +287,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
             }
 
             reachedSteadyState = true;
-            for(unsigned int i = 0; i < residualSize; i++) {
+            for (unsigned int i = 0; i < residualSize; i++) {
                 if (std::fabs(inResiduals[i] - outResiduals[i]) > 0.0001) {
                     reachedSteadyState = false;
                 }
@@ -303,13 +296,12 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
             // Prepare residuals for the next cycle
             // NOTICE: "inResiduals = outResiduals" and "std::copy(outResiduals.begin(),
             // outResiduals.end(), inResiduals.begin())" are not working
-            for(unsigned int i = 0; i < residualSize; i++) {
+            for (unsigned int i = 0; i < residualSize; i++) {
                 inResiduals[i] = outResiduals[i];
             }
-
         }
 
-        nbIterations ++;
+        nbIterations++;
         if (nbIterations > 1000) {
             return ComputingStatus::NoSteadyState;
         }
@@ -317,19 +309,18 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
 
 
     return ComputingStatus::Ok;
-
 }
 
 
 
 ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
-    std::vector<Concentrations> &_concentrations,
-    bool _isAll,
-    const IntakeSeries &_intakes,
-    const ParameterSetSeries &_parameters,
-    const SampleSeries &_samples,
-    const Etas &_etas,
-    bool _onlyAnalytes)
+        std::vector<Concentrations>& _concentrations,
+        bool _isAll,
+        const IntakeSeries& _intakes,
+        const ParameterSetSeries& _parameters,
+        const SampleSeries& _samples,
+        const Etas& _etas,
+        bool _onlyAnalytes)
 {
 
     TMP_UNUSED_PARAMETER(_onlyAnalytes);
@@ -338,7 +329,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
 
     // First calculate the size of residuals
     unsigned int residualSize = 0;
-    for (const auto & intake : _intakes) {
+    for (const auto& intake : _intakes) {
         residualSize = std::max(residualSize, intake.getCalculator()->getResidualSize());
     }
     Residuals inResiduals(residualSize);
@@ -362,7 +353,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
     // The size of residuals vectors equals the number of compartments. This shouldnt be hardcoded here.
     SampleSeries::const_iterator sampleEnd = _samples.end();
     SampleSeries::const_iterator sit = _samples.begin();
-    if(_samples.size() != 0){
+    if (_samples.size() != 0) {
         DateTime nextSampleTime = sit->getEventTime();
         // double _nextsampletime = intakes.begin()->time.secsTo(sit->time)/3600.0;
 
@@ -387,21 +378,21 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
             // If the next sample time greater than the next intake time,
             // the sample doesnt occur during this cycle, so we only care about residuals
             // clear locally defined concentration
-            for (unsigned int idx= 0; idx < residualSize; idx++) {
+            for (unsigned int idx = 0; idx < residualSize; idx++) {
                 concentrations[idx].clear();
             }
 
             if (nextSampleTime > nextIntakeTime) {
 
                 ComputingStatus result = it->calculateIntakeSinglePoint(
-                    concentrations,
-                    *it,
-                    *parameters,
-                    inResiduals,
-                    // We only need the residuals, so we don't care about a specific time
-                    0.0,
-                    _isAll,
-                    outResiduals);
+                        concentrations,
+                        *it,
+                        *parameters,
+                        inResiduals,
+                        // We only need the residuals, so we don't care about a specific time
+                        0.0,
+                        _isAll,
+                        outResiduals);
 
                 if (result != ComputingStatus::Ok) {
                     _concentrations.clear();
@@ -421,12 +412,12 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
                     Duration atTime = nextSampleTime - currentIntakeTime;
 
                     // clear locally defined concentration
-                    for (unsigned int idx= 0; idx < residualSize; idx++) {
+                    for (unsigned int idx = 0; idx < residualSize; idx++) {
                         concentrations[idx].clear();
                     }
 
-                    ComputingStatus result =
-                    it->calculateIntakeSinglePoint(concentrations, *it, *parameters, inResiduals, atTime.toHours(), _isAll, outResiduals);
+                    ComputingStatus result = it->calculateIntakeSinglePoint(
+                            concentrations, *it, *parameters, inResiduals, atTime.toHours(), _isAll, outResiduals);
 
                     if (result != ComputingStatus::Ok) {
                         _concentrations.clear();
@@ -436,7 +427,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
                     auto nbAnalytes = it->getCalculator()->getNbAnalytes();
                     Concentrations concentrationsAtMeasure(nbAnalytes);
 
-                    for(size_t i = 0; i < nbAnalytes; i++) {
+                    for (size_t i = 0; i < nbAnalytes; i++) {
                         concentrationsAtMeasure[i] = concentrations[i][0];
                     }
 
@@ -455,12 +446,11 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
 
                 inResiduals = outResiduals;
             }
-            it++; intakeNext++;
+            it++;
+            intakeNext++;
         }
-
-        }
+    }
     return ComputingStatus::Ok;
-
 }
 
 } // namespace Core

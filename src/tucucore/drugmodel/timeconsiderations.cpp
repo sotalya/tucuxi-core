@@ -4,9 +4,8 @@
 namespace Tucuxi {
 namespace Core {
 
-TimeConsiderations::TimeConsiderations()
-= default;
+TimeConsiderations::TimeConsiderations() = default;
 
 
-}
-}
+} // namespace Core
+} // namespace Tucuxi

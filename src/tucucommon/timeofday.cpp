@@ -2,9 +2,11 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include "date/date.h"
-#include "tucucommon/duration.h"
 #include "tucucommon/timeofday.h"
+
+#include "date/date.h"
+
+#include "tucucommon/duration.h"
 
 namespace Tucuxi {
 namespace Common {
@@ -12,20 +14,21 @@ namespace Common {
 TimeOfDay::TimeOfDay()
 {
     std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
-    date::sys_days today = date::floor<date::days>(now);    
+    date::sys_days today = date::floor<date::days>(now);
     m_time = now - today;
 }
 
 
-TimeOfDay::TimeOfDay(std::chrono::seconds& _time)
-    : m_time(_time)
+TimeOfDay::TimeOfDay(std::chrono::seconds& _time) : m_time(_time)
 {
     normalize();
 }
 
 
 TimeOfDay::TimeOfDay(const Duration& _time)
-    : m_time(static_cast<double>(_time.toMilliseconds())/1000.0) // Initialization must be done in seconds but we use milliseconds for better precision
+    : m_time(
+            static_cast<double>(_time.toMilliseconds())
+            / 1000.0) // Initialization must be done in seconds but we use milliseconds for better precision
 {
     normalize();
 }
@@ -111,10 +114,9 @@ void TimeOfDay::normalize()
 {
     int oneDay = 24 * 60 * 60 * 1000;
     int64 value = std::chrono::duration_cast<std::chrono::milliseconds>(m_time).count();
-    if (value > oneDay)
-    {
+    if (value > oneDay) {
         value %= oneDay;
-        m_time = std::chrono::duration<ChronoBaseType>(value/1000);
+        m_time = std::chrono::duration<ChronoBaseType>(value / 1000);
     }
 }
 

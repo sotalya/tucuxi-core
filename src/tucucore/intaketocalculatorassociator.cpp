@@ -10,8 +10,7 @@ namespace Core {
 
 
 ComputingStatus IntakeToCalculatorAssociator::associate(
-        Tucuxi::Core::IntakeSeries& _intakes,
-        const Tucuxi::Core::PkModel &_pkModel)
+        Tucuxi::Core::IntakeSeries& _intakes, const Tucuxi::Core::PkModel& _pkModel)
 {
     IntakeSeries::iterator it = _intakes.begin();
     while (it != _intakes.end()) {

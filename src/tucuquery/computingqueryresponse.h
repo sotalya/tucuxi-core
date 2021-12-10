@@ -1,8 +1,9 @@
 #ifndef COMPUTINGQUERYRESPONSE_H
 #define COMPUTINGQUERYRESPONSE_H
 
-#include "tucucore/computingservice/computingresult.h"
 #include "tucucore/computingservice/computingresponse.h"
+#include "tucucore/computingservice/computingresult.h"
+
 #include "querystatus.h"
 
 namespace Tucuxi {
@@ -14,7 +15,6 @@ namespace Query {
 ///
 class QueryResponseMetaData
 {
-
 };
 
 ///
@@ -31,12 +31,13 @@ private:
     std::string m_drugModelId;
 };
 
-class SingleResponseData {
+class SingleResponseData
+{
 
 public:
-
-    SingleResponseData(std::unique_ptr<Tucuxi::Core::ComputingResponse> _computingResponse,
-                       std::unique_ptr<ComputingResponseMetaData> _metaData);
+    SingleResponseData(
+            std::unique_ptr<Tucuxi::Core::ComputingResponse> _computingResponse,
+            std::unique_ptr<ComputingResponseMetaData> _metaData);
 
     std::unique_ptr<Tucuxi::Core::ComputingResponse> m_computingResponse;
     std::unique_ptr<ComputingResponseMetaData> m_metaData;
@@ -64,13 +65,14 @@ public:
 
     void setQueryStatus(QueryStatus _queryStatus, std::string _errorMessage);
 
-    void addRequestResponse(std::unique_ptr<Tucuxi::Core::ComputingResponse> _computingResponse,
-                            std::unique_ptr<ComputingResponseMetaData> _metaData);
+    void addRequestResponse(
+            std::unique_ptr<Tucuxi::Core::ComputingResponse> _computingResponse,
+            std::unique_ptr<ComputingResponseMetaData> _metaData);
     void setRequestResponseId(Tucuxi::Core::RequestResponseId _requestResponseId);
 
     Tucuxi::Core::RequestResponseId m_queryId;
 
-    QueryStatus m_queryStatus {QueryStatus::Undefined};
+    QueryStatus m_queryStatus{QueryStatus::Undefined};
 
     std::string m_errorMessage;
 

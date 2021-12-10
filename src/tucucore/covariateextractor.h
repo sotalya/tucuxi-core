@@ -16,10 +16,10 @@
 #include "tucucommon/datetime.h"
 #include "tucucommon/utils.h"
 
-#include "tucucore/definitions.h"
-#include "tucucore/covariateevent.h"
-#include "tucucore/intakeevent.h"
 #include "tucucore/computingservice/computingresult.h"
+#include "tucucore/covariateevent.h"
+#include "tucucore/definitions.h"
+#include "tucucore/intakeevent.h"
 
 struct TestCovariateExtractor;
 
@@ -32,19 +32,19 @@ using Tucuxi::Common::Duration;
 class ICovariateExtractor
 {
 public:
-
     /// \brief Create a Covariate Extractor for the specified interval and covariate set.
     /// \param _defaults Default covariate events.
     /// \param _patientCovariates Patient-specific covariates.
     /// \param _start Start time of the considered interval.
     /// \param _end End time of the considered interval.
-    ICovariateExtractor(const CovariateDefinitions &_defaults,
-                        const PatientVariates &_patientCovariates,
-                        const DateTime &_start,
-                        const DateTime &_end)
-        : m_defaults{_defaults}, m_patientCovariates{_patientCovariates},
-          m_start{_start}, m_end{_end}
-    { }
+    ICovariateExtractor(
+            const CovariateDefinitions& _defaults,
+            const PatientVariates& _patientCovariates,
+            const DateTime& _start,
+            const DateTime& _end)
+        : m_defaults{_defaults}, m_patientCovariates{_patientCovariates}, m_start{_start}, m_end{_end}
+    {
+    }
 
     /// \brief Default destructor for the Covariate Extractor.
     virtual ~ICovariateExtractor() = default;
@@ -52,15 +52,15 @@ public:
     /// \brief Extract covariate events.
     /// \param _series Set of extracted covariate events.
     /// \return 0 on success, an error code in case an issue arised.
-    virtual ComputingStatus extract(CovariateSeries &_series) = 0;
+    virtual ComputingStatus extract(CovariateSeries& _series) = 0;
 
 
 protected:
     /// \brief Set of default values for the covariates.
-    const CovariateDefinitions &m_defaults;
+    const CovariateDefinitions& m_defaults;
 
     /// \brief Patient-specific values for the covariates.
-    const PatientVariates &m_patientCovariates;
+    const PatientVariates& m_patientCovariates;
 
     /// \brief Start time for the desired interval.
     const DateTime m_start;
@@ -73,7 +73,6 @@ protected:
 class CovariateExtractor : public ICovariateExtractor
 {
 public:
-
     /// \brief Create a Covariate Extractor for the specified interval and covariate set.
     /// \param _defaults Default covariate events.
     /// \param _patientCovariates Patient-specific covariates.
@@ -83,10 +82,11 @@ public:
     /// \pre FORALL(p : _patientCovariates) { p != nullptr }
     /// \pre _start <= _end
     /// \pre No duplicates in _defaults
-    CovariateExtractor(const CovariateDefinitions &_defaults,
-                       const PatientVariates &_patientCovariates,
-                       const DateTime &_start,
-                       const DateTime &_end);
+    CovariateExtractor(
+            const CovariateDefinitions& _defaults,
+            const PatientVariates& _patientCovariates,
+            const DateTime& _start,
+            const DateTime& _end);
 
     /// \brief Default destructor for the Covariate Extractor.
     ~CovariateExtractor() override = default;
@@ -94,7 +94,7 @@ public:
     /// \brief Extract covariate events.
     /// \param _series Set of extracted covariate events.
     /// \return ComputingResult::Ok on success, Result::ExtractionError in case an issue arised.
-    ComputingStatus extract(CovariateSeries &_series) override;
+    ComputingStatus extract(CovariateSeries& _series) override;
 
     // Make the test class friend, as this will allow us to test the helper methods (which are private).
     friend TestCovariateExtractor;
@@ -109,22 +109,23 @@ public:
     /// \param _intakeSeries The series of intakes extracted by the IntakeExtractor
     /// \param _covariateDefinition The covariate definition corresponding to the dose covariate
     /// \param _patientCovariates The output list of patient covariates embedding the doses (in out param)
-    static ComputingStatus extractDosePatientVariate(const IntakeSeries &_intakeSeries,
-                                                     const CovariateDefinition &_covariateDefinition,
-                                                     PatientVariates &_patientCovariates);
+    static ComputingStatus extractDosePatientVariate(
+            const IntakeSeries& _intakeSeries,
+            const CovariateDefinition& _covariateDefinition,
+            PatientVariates& _patientCovariates);
 
 private:
     /// \brief Collect the time instants when the computed covariates have to be re-evaluated.
     /// \param _computedValuesMap Map that holds the pointers to the events due to computed covariates, as well as their
     ///                           latest value.
     /// \param _refreshMap Map containing, for each selected time instant, the list of covariates to update.
-    void collectRefreshIntervals(std::map<DateTime, std::vector<std::string>> &_refreshMap);
+    void collectRefreshIntervals(std::map<DateTime, std::vector<std::string>>& _refreshMap);
 
     /// \brief Generate the events due to the covariates and the patient variates.
     /// \param _refreshMap Map containing, for each selected time instant, the list of covariates to update.
     /// \param _series Set of extracted covariate events.
     /// \return True if the events have been successfully extracted, false in case of errors.
-    bool computeEvents(const std::map<DateTime, std::vector<std::string>> &_refreshMap, CovariateSeries &_series);
+    bool computeEvents(const std::map<DateTime, std::vector<std::string>>& _refreshMap, CovariateSeries& _series);
 
     /// \brief Perform the chosen interpolation between the given values.
     /// \note The desired time can be *before* the lower date or *after* the higher date. This results in extrapolation,
@@ -142,11 +143,14 @@ private:
     /// \post if (_date1 < _date2) { _valRes = INTERPOLATED_VALUE && [RETURN] == true }
     ///       else  if (_date1 == _date2 && _val1 == _val2) { _valRes = _val1 && [RETURN] == true }
     ///       else { [RETURN] == false }
-    bool interpolateValues(Value _val1, const DateTime &_date1,
-                           Value _val2, const DateTime &_date2,
-                           const DateTime &_dateRes,
-                           InterpolationType _interpolationType,
-                           Value &_valRes) const;
+    bool interpolateValues(
+            Value _val1,
+            const DateTime& _date1,
+            Value _val2,
+            const DateTime& _date2,
+            const DateTime& _dateRes,
+            InterpolationType _interpolationType,
+            Value& _valRes) const;
 
     /// \brief Sort available Patient Variates, discarding those not of interest.
     /// If the covariate is not interpolated, then its first observation is replaced by an observation at the beginning

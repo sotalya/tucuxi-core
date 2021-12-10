@@ -5,12 +5,11 @@
 #ifndef TUCUXI_CORE_TARGETEXTRACTOR_H
 #define TUCUXI_CORE_TARGETEXTRACTOR_H
 
-#include "tucucore/drugtreatment/target.h"
-#include "tucucore/targetevent.h"
+#include "tucucore/computingservice/computingresult.h"
+#include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/covariateevent.h"
 #include "tucucore/drugmodel/activemoiety.h"
-#include "tucucore/computingservice/computingtrait.h"
-#include "tucucore/computingservice/computingresult.h"
+#include "tucucore/drugtreatment/target.h"
 #include "tucucore/targetevent.h"
 
 struct TestTargetExtractor;
@@ -22,7 +21,6 @@ namespace Core {
 class TargetExtractor
 {
 public:
-
     ///
     /// \brief extract
     /// \param _covariates
@@ -39,23 +37,24 @@ public:
     /// - A priori values
     /// - Priority to targets over targetDefinitions
     /// - Only individual targets
-    ComputingStatus extract(const ActiveMoietyId &_activeMoietyId,
-            const CovariateSeries &_covariates,
+    ComputingStatus extract(
+            const ActiveMoietyId& _activeMoietyId,
+            const CovariateSeries& _covariates,
             const TargetDefinitions& _targetDefinitions,
-            const Targets &_targets,
-            const DateTime &_start,
-            const DateTime &_end,
-            const TucuUnit &_concentrationUnit,
+            const Targets& _targets,
+            const DateTime& _start,
+            const DateTime& _end,
+            const TucuUnit& _concentrationUnit,
             TargetExtractionOption _extractionOption,
-            TargetSeries &_series);
+            TargetSeries& _series);
 
 protected:
+    TargetEvent targetEventFromTarget(const Target* _target, const TucuUnit& _concentrationUnit);
 
-    TargetEvent targetEventFromTarget(const Target *_target, const TucuUnit &_concentrationUnit);
+    TargetEvent targetEventFromTarget(
+            const Target* _target, const TargetDefinition* _targetDefinition, const TucuUnit& _concentrationUnit);
 
-    TargetEvent targetEventFromTarget(const Target *_target, const TargetDefinition *_targetDefinition, const TucuUnit &_concentrationUnit);
-
-    TargetEvent targetEventFromTargetDefinition(const TargetDefinition *_target, const TucuUnit &_concentrationUnit);
+    TargetEvent targetEventFromTargetDefinition(const TargetDefinition* _target, const TucuUnit& _concentrationUnit);
 
     friend TestTargetExtractor;
     friend TestTargetEvaluator;

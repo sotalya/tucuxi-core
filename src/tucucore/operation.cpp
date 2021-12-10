@@ -1,85 +1,78 @@
 
-#include "tucucommon/loggerhelper.h"
-#include "tucucommon/general.h"
-
 #include "tucucore/operation.h"
+
+#include "tucucommon/general.h"
+#include "tucucommon/loggerhelper.h"
 
 #include "TinyJS.h"
 
 namespace Tucuxi {
 namespace Core {
 
-OperationInput::OperationInput(const std::string &_name, const InputType &_type)
+OperationInput::OperationInput(const std::string& _name, const InputType& _type)
     : m_name{_name}, m_type{_type}, m_isDefined{false}
 {
-
 }
 
 
-OperationInput::OperationInput(const std::string &_name, const bool &_value)
+OperationInput::OperationInput(const std::string& _name, const bool& _value)
     : m_name{_name}, m_type{InputType::BOOL}, m_isDefined{true}
 {
     m_value.b = _value;
 }
 
 
-OperationInput::OperationInput(const std::string &_name, const int &_value)
+OperationInput::OperationInput(const std::string& _name, const int& _value)
     : m_name{_name}, m_type{InputType::INTEGER}, m_isDefined{true}
 {
     m_value.i = _value;
 }
 
 
-OperationInput::OperationInput(const std::string &_name, const double &_value)
+OperationInput::OperationInput(const std::string& _name, const double& _value)
     : m_name{_name}, m_type{InputType::DOUBLE}, m_isDefined{true}
 {
     m_value.d = _value;
 }
 
 
-bool
-OperationInput::operator==(const OperationInput &_rhs) const
+bool OperationInput::operator==(const OperationInput& _rhs) const
 {
-    return (this->m_name == _rhs.m_name &&
-            this->m_isDefined == _rhs.m_isDefined &&
-            (!this->m_isDefined ||
-            ((this->m_type == InputType::BOOL && this->m_value.b == _rhs.m_value.b) ||
-             (this->m_type == InputType::INTEGER && this->m_value.i == _rhs.m_value.i) ||
-             (this->m_type == InputType::DOUBLE && fabs(this->m_value.d - _rhs.m_value.d) < std::numeric_limits<double>::min()))) &&
-            this->m_type == _rhs.m_type);
+    return (this->m_name == _rhs.m_name && this->m_isDefined == _rhs.m_isDefined
+            && (!this->m_isDefined
+                || ((this->m_type == InputType::BOOL && this->m_value.b == _rhs.m_value.b)
+                    || (this->m_type == InputType::INTEGER && this->m_value.i == _rhs.m_value.i)
+                    || (this->m_type == InputType::DOUBLE
+                        && fabs(this->m_value.d - _rhs.m_value.d) < std::numeric_limits<double>::min())))
+            && this->m_type == _rhs.m_type);
 }
 
 
-bool
-OperationInput::operator!=(const OperationInput &_rhs) const
+bool OperationInput::operator!=(const OperationInput& _rhs) const
 {
     return !(*this == _rhs);
 }
 
 
-bool
-OperationInput::isDefined() const
+bool OperationInput::isDefined() const
 {
     return m_isDefined;
 }
 
 
-std::string
-OperationInput::getName() const
+std::string OperationInput::getName() const
 {
     return m_name;
 }
 
 
-InputType
-OperationInput::getType() const
+InputType OperationInput::getType() const
 {
     return m_type;
 }
 
 
-bool
-OperationInput::getValue(bool &_value) const
+bool OperationInput::getValue(bool& _value) const
 {
     if (m_type == InputType::BOOL && m_isDefined) {
         _value = m_value.b;
@@ -89,8 +82,7 @@ OperationInput::getValue(bool &_value) const
 }
 
 
-bool
-OperationInput::setValue(const bool &_value)
+bool OperationInput::setValue(const bool& _value)
 {
     if (m_type == InputType::BOOL) {
         m_value.b = _value;
@@ -101,8 +93,7 @@ OperationInput::setValue(const bool &_value)
 }
 
 
-bool
-OperationInput::getValue(int &_value) const
+bool OperationInput::getValue(int& _value) const
 {
     if (m_type == InputType::INTEGER && m_isDefined) {
         _value = m_value.i;
@@ -112,8 +103,7 @@ OperationInput::getValue(int &_value) const
 }
 
 
-bool
-OperationInput::setValue(const int &_value)
+bool OperationInput::setValue(const int& _value)
 {
     if (m_type == InputType::INTEGER) {
         m_value.i = _value;
@@ -129,8 +119,7 @@ OperationInput::setValue(const int &_value)
 }
 
 
-bool
-OperationInput::getValue(double &_value) const
+bool OperationInput::getValue(double& _value) const
 {
     if (m_type == InputType::DOUBLE && m_isDefined) {
         _value = m_value.d;
@@ -140,8 +129,7 @@ OperationInput::getValue(double &_value) const
 }
 
 
-bool
-OperationInput::setValue(const double &_value)
+bool OperationInput::setValue(const double& _value)
 {
     if (m_type == InputType::DOUBLE) {
         m_value.d = _value;
@@ -168,15 +156,10 @@ std::string Operation::getLastErrorMessage() const
     return sm_errorMessage;
 }
 
-Operation::Operation(const OperationInputList &_requiredInputs)
-    : m_requiredInputs{_requiredInputs}
-{
-
-}
+Operation::Operation(const OperationInputList& _requiredInputs) : m_requiredInputs{_requiredInputs} {}
 
 
-bool
-Operation::check(const OperationInputList &_inputs) const
+bool Operation::check(const OperationInputList& _inputs) const
 {
     if (_inputs.size() < m_requiredInputs.size()) {
         // Early-stop if the number of given inputs is below the required one
@@ -184,10 +167,14 @@ Operation::check(const OperationInputList &_inputs) const
     }
     // Reject inputs with multiple definitions (perform the check on a copy to avoid side effects).
     OperationInputList givenInputs = _inputs;
-    std::sort(givenInputs.begin(), givenInputs.end(),
-              [](const OperationInput &_a, const OperationInput &_b) { return _a.getName() < _b.getName(); });
-    if (std::adjacent_find(givenInputs.begin(), givenInputs.end(),
-                           [](const OperationInput &_a, const OperationInput &_b) { return _a.getName() == _b.getName(); }) != givenInputs.end()) {
+    std::sort(givenInputs.begin(), givenInputs.end(), [](const OperationInput& _a, const OperationInput& _b) {
+        return _a.getName() < _b.getName();
+    });
+    if (std::adjacent_find(
+                givenInputs.begin(),
+                givenInputs.end(),
+                [](const OperationInput& _a, const OperationInput& _b) { return _a.getName() == _b.getName(); })
+        != givenInputs.end()) {
         return false;
     }
 
@@ -202,15 +189,13 @@ Operation::check(const OperationInputList &_inputs) const
 }
 
 
-OperationInputList
-Operation::getInputs() const
+OperationInputList Operation::getInputs() const
 {
     return m_requiredInputs;
 }
 
 
-bool
-checkInputIsDefined(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type)
+bool checkInputIsDefined(const OperationInputList& _inputs, const std::string& _inputName, const InputType& _type)
 {
     OperationInputIt it = findInputInList(_inputs, _inputName, _type);
     if (it != _inputs.end()) {
@@ -220,41 +205,42 @@ checkInputIsDefined(const OperationInputList &_inputs, const std::string &_input
 }
 
 
-bool
-checkInputIsPresent(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type)
+bool checkInputIsPresent(const OperationInputList& _inputs, const std::string& _inputName, const InputType& _type)
 {
     return findInputInList(_inputs, _inputName, _type) != _inputs.end();
 }
 
 
-OperationInputIt
-findInputInList(const OperationInputList &_inputs, const std::string &_inputName)
+OperationInputIt findInputInList(const OperationInputList& _inputs, const std::string& _inputName)
 {
-    OperationInputIt it = std::find_if(_inputs.begin(), _inputs.end(),
-                                       [&_inputName](const OperationInput &_in) -> bool { return _inputName == _in.getName(); });
+    OperationInputIt it =
+            std::find_if(_inputs.begin(), _inputs.end(), [&_inputName](const OperationInput& _in) -> bool {
+                return _inputName == _in.getName();
+            });
     return it;
 }
 
 
-OperationInputIt
-findInputInList(const OperationInputList &_inputs, const std::string &_inputName, const InputType &_type)
+OperationInputIt findInputInList(
+        const OperationInputList& _inputs, const std::string& _inputName, const InputType& _type)
 {
-    OperationInputIt it = std::find_if(_inputs.begin(), _inputs.end(),
-                                       [&_inputName,&_type](const OperationInput &_in) -> bool { return _inputName == _in.getName() &&
-                // Check if the types are similar
-                //
-                // The following has to be checked to see if we tolerate such integer-double equivalency
-                ((_type == _in.getType()) ||
-                 // Or double compatible with integer
-                 //(_type == InputType::DOUBLE && _in.getType() == InputType::INTEGER) ||
-                 // Or integer compatible with double
-                 (_type == InputType::INTEGER && _in.getType() == InputType::DOUBLE)); });
+    OperationInputIt it =
+            std::find_if(_inputs.begin(), _inputs.end(), [&_inputName, &_type](const OperationInput& _in) -> bool {
+                return _inputName == _in.getName() &&
+                       // Check if the types are similar
+                       //
+                       // The following has to be checked to see if we tolerate such integer-double equivalency
+                       ((_type == _in.getType()) ||
+                        // Or double compatible with integer
+                        //(_type == InputType::DOUBLE && _in.getType() == InputType::INTEGER) ||
+                        // Or integer compatible with double
+                        (_type == InputType::INTEGER && _in.getType() == InputType::DOUBLE));
+            });
     return it;
 }
 
 
-bool
-getInputValue(const OperationInputList &_inputs, const std::string &_inputName, bool &_value)
+bool getInputValue(const OperationInputList& _inputs, const std::string& _inputName, bool& _value)
 {
     OperationInputIt it = findInputInList(_inputs, _inputName, InputType::BOOL);
     if (it != _inputs.end()) {
@@ -264,8 +250,7 @@ getInputValue(const OperationInputList &_inputs, const std::string &_inputName, 
 }
 
 
-bool
-getInputValue(const OperationInputList &_inputs, const std::string &_inputName, int &_value)
+bool getInputValue(const OperationInputList& _inputs, const std::string& _inputName, int& _value)
 {
     OperationInputIt it = findInputInList(_inputs, _inputName, InputType::INTEGER);
     if (it != _inputs.end()) {
@@ -275,8 +260,7 @@ getInputValue(const OperationInputList &_inputs, const std::string &_inputName, 
 }
 
 
-bool
-getInputValue(const OperationInputList &_inputs, const std::string &_inputName, double &_value)
+bool getInputValue(const OperationInputList& _inputs, const std::string& _inputName, double& _value)
 {
     OperationInputIt it = findInputInList(_inputs, _inputName, InputType::DOUBLE);
     if (it != _inputs.end()) {
@@ -286,15 +270,10 @@ getInputValue(const OperationInputList &_inputs, const std::string &_inputName, 
 }
 
 
-HardcodedOperation::HardcodedOperation()
-    : m_filledInputs{false}
-{
-
-}
+HardcodedOperation::HardcodedOperation() : m_filledInputs{false} {}
 
 
-bool
-HardcodedOperation::evaluate(const OperationInputList &_inputs, double &_result)
+bool HardcodedOperation::evaluate(const OperationInputList& _inputs, double& _result)
 {
     if (!m_filledInputs) {
         fillRequiredInputs();
@@ -307,7 +286,7 @@ HardcodedOperation::evaluate(const OperationInputList &_inputs, double &_result)
 }
 
 
-JSOperation::JSOperation(const std::string &_expression, const OperationInputList &_requiredInputs)
+JSOperation::JSOperation(const std::string& _expression, const OperationInputList& _requiredInputs)
     : Operation(_requiredInputs)
 {
     // Put the code in a function, and call the function to store the result
@@ -315,41 +294,34 @@ JSOperation::JSOperation(const std::string &_expression, const OperationInputLis
     m_expression = "function calc() {\n" + _expression + "\n}\n result = calc();";
 }
 
-JSOperation::JSOperation(const OperationInputList &_requiredInputs)
-    : Operation(_requiredInputs)
-{
-}
+JSOperation::JSOperation(const OperationInputList& _requiredInputs) : Operation(_requiredInputs) {}
 
-JSExpression::JSExpression(const std::string &_expression, const OperationInputList &_requiredInputs):
-    JSOperation(_requiredInputs)
+JSExpression::JSExpression(const std::string& _expression, const OperationInputList& _requiredInputs)
+    : JSOperation(_requiredInputs)
 {
     // Append the prefix that will store the result of the evaluation in the 'result' variable
     m_expression = "result = " + _expression + ";";
 }
 
 
-std::unique_ptr<Operation>
-JSOperation::clone() const
+std::unique_ptr<Operation> JSOperation::clone() const
 {
     return std::unique_ptr<Operation>(new JSOperation(*this));
 }
 
 
 // Add the variable according to the given data type
-#define ADD_VAR_CASE(CASE_VAR, DATA_TYPE) \
-    case CASE_VAR: \
-    { \
-    DATA_TYPE value; \
-    if (inVar.getValue(value) == false) { \
-        return false;\
-    } \
-    jsEngine.setVariable(inVar.getName(), std::to_string(value)); \
-    } \
-    break;
+#define ADD_VAR_CASE(CASE_VAR, DATA_TYPE)                             \
+    case CASE_VAR: {                                                  \
+        DATA_TYPE value;                                              \
+        if (inVar.getValue(value) == false) {                         \
+            return false;                                             \
+        }                                                             \
+        jsEngine.setVariable(inVar.getName(), std::to_string(value)); \
+    } break;
 
 
-bool
-JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
+bool JSOperation::evaluate(const OperationInputList& _inputs, double& _result)
 {
     /// \warning The JS engine does not return an error if variables are missing -- it will silently assume that they
     ///          are zeroes and happily perform the computation. This could go horribly bad if no precautions are taken,
@@ -370,37 +342,37 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
         JSEngine jsEngine;
         // Push the inputs
 
-        for (const auto& inVar: _inputs) {
+        for (const auto& inVar : _inputs) {
             switch (inVar.getType()) {
-            ADD_VAR_CASE(InputType::BOOL, bool);
-            ADD_VAR_CASE(InputType::INTEGER, int);
-            ADD_VAR_CASE(InputType::DOUBLE, double);
+                ADD_VAR_CASE(InputType::BOOL, bool);
+                ADD_VAR_CASE(InputType::INTEGER, int);
+                ADD_VAR_CASE(InputType::DOUBLE, double);
             default:
                 return false;
             }
         }
 
         if (!jsEngine.evaluate(m_expression)) {
-           // Tucuxi::Common::LoggerHelper logger;
-           // logger.error("Could not evaluate the JSOperation : {}", m_expression);
+            // Tucuxi::Common::LoggerHelper logger;
+            // logger.error("Could not evaluate the JSOperation : {}", m_expression);
             return false;
         }
 
         std::string resAsString;
 
-        if(!jsEngine.getVariable("result", resAsString)) {
+        if (!jsEngine.getVariable("result", resAsString)) {
             //Tucuxi::Common::LoggerHelper logger;
             //logger.error("Could not get the result of the JSOperation : {}", m_expression);
             return false;
         }
 
         _result = std::stod(resAsString);
-
-    } catch (const CScriptException *e) {
+    }
+    catch (const CScriptException* e) {
         sm_errorMessage = e->text;
         delete e;
-//        Tucuxi::Common::LoggerHelper logger;
-//        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
+        //        Tucuxi::Common::LoggerHelper logger;
+        //        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
         return false;
     }
     catch (...) {
@@ -411,8 +383,7 @@ JSOperation::evaluate(const OperationInputList &_inputs, double &_result)
     return true;
 }
 
-bool
-JSOperation::checkOperation(const OperationInputList &_inputs)
+bool JSOperation::checkOperation(const OperationInputList& _inputs)
 {
 
     /// \warning The JS engine does not return an error if variables are missing -- it will silently assume that they
@@ -434,11 +405,11 @@ JSOperation::checkOperation(const OperationInputList &_inputs)
         JSEngine jsEngine;
         // Push the inputs
 
-        for (const auto& inVar: _inputs) {
+        for (const auto& inVar : _inputs) {
             switch (inVar.getType()) {
-            ADD_VAR_CASE(InputType::BOOL, bool);
-            ADD_VAR_CASE(InputType::INTEGER, int);
-            ADD_VAR_CASE(InputType::DOUBLE, double);
+                ADD_VAR_CASE(InputType::BOOL, bool);
+                ADD_VAR_CASE(InputType::INTEGER, int);
+                ADD_VAR_CASE(InputType::DOUBLE, double);
             default:
                 return false;
             }
@@ -458,13 +429,13 @@ JSOperation::checkOperation(const OperationInputList &_inputs)
         }
 
         if (!jsEngine.evaluate(exp)) {
-           // Tucuxi::Common::LoggerHelper logger;
-           // logger.error("Could not evaluate the JSOperation : {}", m_expression);
+            // Tucuxi::Common::LoggerHelper logger;
+            // logger.error("Could not evaluate the JSOperation : {}", m_expression);
             return false;
         }
 
         std::string resAsString;
-/*
+        /*
         if(!jsEngine.getVariable("result", resAsString)) {
             //Tucuxi::Common::LoggerHelper logger;
             //logger.error("Could not get the result of the JSOperation : {}", m_expression);
@@ -472,12 +443,12 @@ JSOperation::checkOperation(const OperationInputList &_inputs)
         }
         _result = std::stod(resAsString);
 */
-
-    } catch (const CScriptException *e) {
+    }
+    catch (const CScriptException* e) {
         sm_errorMessage = e->text;
         delete e;
-//        Tucuxi::Common::LoggerHelper logger;
-//        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
+        //        Tucuxi::Common::LoggerHelper logger;
+        //        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
         return false;
     }
     catch (...) {
@@ -492,11 +463,11 @@ JSOperation::checkOperation(const OperationInputList &_inputs)
         JSEngine jsEngine;
         // Push the inputs
 
-        for (const auto& inVar: _inputs) {
+        for (const auto& inVar : _inputs) {
             switch (inVar.getType()) {
-            ADD_VAR_CASE(InputType::BOOL, bool);
-            ADD_VAR_CASE(InputType::INTEGER, int);
-            ADD_VAR_CASE(InputType::DOUBLE, double);
+                ADD_VAR_CASE(InputType::BOOL, bool);
+                ADD_VAR_CASE(InputType::INTEGER, int);
+                ADD_VAR_CASE(InputType::DOUBLE, double);
             default:
                 return false;
             }
@@ -507,13 +478,13 @@ JSOperation::checkOperation(const OperationInputList &_inputs)
         std::string exp = m_expression;
 
         if (!jsEngine.evaluate(exp)) {
-           // Tucuxi::Common::LoggerHelper logger;
-           // logger.error("Could not evaluate the JSOperation : {}", m_expression);
+            // Tucuxi::Common::LoggerHelper logger;
+            // logger.error("Could not evaluate the JSOperation : {}", m_expression);
             return false;
         }
 
         std::string resAsString;
-/*
+        /*
         if(!jsEngine.getVariable("result", resAsString)) {
             //Tucuxi::Common::LoggerHelper logger;
             //logger.error("Could not get the result of the JSOperation : {}", m_expression);
@@ -521,12 +492,12 @@ JSOperation::checkOperation(const OperationInputList &_inputs)
         }
         _result = std::stod(resAsString);
 */
-
-    } catch (const CScriptException *e) {
+    }
+    catch (const CScriptException* e) {
         sm_errorMessage = e->text;
         delete e;
-//        Tucuxi::Common::LoggerHelper logger;
-//        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
+        //        Tucuxi::Common::LoggerHelper logger;
+        //        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
         return false;
     }
     catch (...) {
@@ -540,30 +511,27 @@ JSOperation::checkOperation(const OperationInputList &_inputs)
 }
 
 
-DynamicOperation::DynamicOperation(const DynamicOperation &_other)
-    : Operation(_other)
+DynamicOperation::DynamicOperation(const DynamicOperation& _other) : Operation(_other)
 {
-    for (auto&& op: _other.m_operations) {
+    for (auto&& op : _other.m_operations) {
         m_operations.push_back(std::make_pair(op.first->clone(), op.second));
     }
 }
 
 
-std::unique_ptr<Operation>
-DynamicOperation::clone() const
+std::unique_ptr<Operation> DynamicOperation::clone() const
 {
     return std::unique_ptr<Operation>(new DynamicOperation(*this));
 }
 
 
-bool
-DynamicOperation::addOperation(const Operation &_operation, unsigned int _preferenceLevel)
+bool DynamicOperation::addOperation(const Operation& _operation, unsigned int _preferenceLevel)
 {
     // Check that inputs do not conflict with exiting ones (that is, same name but different type).
     OperationInputList alreadyPresentInputs = getInputs();
     OperationInputList newInputs = _operation.getInputs();
 
-    for (const auto& newIn: newInputs) {
+    for (const auto& newIn : newInputs) {
         OperationInputIt it = findInputInList(alreadyPresentInputs, newIn.getName());
         if (it != alreadyPresentInputs.end()) {
             if (it->getType() != newIn.getType()) {
@@ -577,10 +545,9 @@ DynamicOperation::addOperation(const Operation &_operation, unsigned int _prefer
 }
 
 
-bool
-DynamicOperation::check(const OperationInputList &_inputs) const
+bool DynamicOperation::check(const OperationInputList& _inputs) const
 {
-    for (auto&& op: m_operations) {
+    for (auto&& op : m_operations) {
         if (op.first->check(_inputs)) {
             return true;
         }
@@ -589,8 +556,7 @@ DynamicOperation::check(const OperationInputList &_inputs) const
 }
 
 
-bool
-DynamicOperation::evaluate(const OperationInputList &_inputs, double &_result)
+bool DynamicOperation::evaluate(const OperationInputList& _inputs, double& _result)
 {
     // Initialize values that will be used in the search for the best matching operation
     int idxBest = -1;
@@ -622,13 +588,12 @@ DynamicOperation::evaluate(const OperationInputList &_inputs, double &_result)
 }
 
 
-OperationInputList
-DynamicOperation::getInputs() const
+OperationInputList DynamicOperation::getInputs() const
 {
     OperationInputList ret;
-    for (auto&& op: m_operations) {
+    for (auto&& op : m_operations) {
         OperationInputList tmp = op.first->getInputs();
-        for (const auto& input: tmp) {
+        for (const auto& input : tmp) {
             // Push missing inputs, skipping duplicates
             if (!checkInputIsPresent(ret, input.getName(), input.getType())) {
                 ret.push_back(input);

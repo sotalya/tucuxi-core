@@ -2,12 +2,11 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include <string>
-#include <iostream>
 #include <ctime>
+#include <iostream>
+#include <string>
 
 #include "fructose/fructose.h"
-
 #include "tucucrypto/cryptohelper.h"
 #include "tucucrypto/licensemanager.h"
 #include "tuculicense/licensegenerator.h"
@@ -49,6 +48,7 @@ struct TestLicenseGenerator : public fructose::test_base<TestLicenseGenerator>
 
         fructose_assert(res2 == Tucuxi::License::RequestError::REQUEST_SUCCESSFUL);
 
+        // clang-format off
         std::cout << "License : "
                   << plainRequest.m_keyWord << ":"
                   << plainRequest.m_type << ":"
@@ -58,11 +58,12 @@ struct TestLicenseGenerator : public fructose::test_base<TestLicenseGenerator>
                   << plainRequest.m_date.day() << ":"
                   << plainRequest.m_version
                   << std::endl;
+        // clang-format on
 
         std::string license = Tucuxi::License::LicenseGenerator::generateLicense(plainRequest);
 
         std::string test;
-        if(!Tucuxi::Common::CryptoHelper::decrypt(m_key, license, &test))  {
+        if (!Tucuxi::Common::CryptoHelper::decrypt(m_key, license, &test)) {
             fructose_fail("Error encrypt failed.");
         }
         std::cout << "Test : " << test << std::endl;
@@ -78,7 +79,5 @@ struct TestLicenseGenerator : public fructose::test_base<TestLicenseGenerator>
         // Check license file
         res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
         fructose_assert(res == int(Tucuxi::Common::LicenseError::VALID_LICENSE));
-
     }
-
 };

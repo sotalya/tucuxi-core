@@ -11,10 +11,10 @@
 
 #include <date/date.h>
 
-#include "fructose/fructose.h"
-
-#include "tucucore/drugmodelimport.h"
 #include "tucucore/drugmodel/drugmodel.h"
+#include "tucucore/drugmodelimport.h"
+
+#include "fructose/fructose.h"
 
 using namespace Tucuxi::Core;
 
@@ -223,7 +223,7 @@ static const std::string tobramycin_tdd = R"(<?xml version="1.0" encoding="UTF-8
                                                         <standardValue>37.2</standardValue>
                                                     </covariateValue>
                                                     <validation>)"
-                                                        R"(<errorMessage>
+                                          R"(<errorMessage>
                                                             <text lang='fr'>The SCR shall be positive.</text>
                                                         </errorMessage>
                                                         <operation>
@@ -429,7 +429,7 @@ static const std::string tobramycin_tdd = R"(<?xml version="1.0" encoding="UTF-8
                                                                                     <type>double</type>
                                                                                 </input>
                                                                             </inputs>)"
-                                                                            R"(<code>
+                                          R"(<code>
                                                                                 <![CDATA[theta_CL = 0.0;
                                                                                 theta_AGE = 0.0;
                                                                                 ffm = 0.0;
@@ -613,7 +613,7 @@ static const std::string tobramycin_tdd = R"(<?xml version="1.0" encoding="UTF-8
                                                                     </stdDevs>
                                                                 </bsv>
                                                                 <validation>)"
-                                                                    R"(<errorMessage>
+                                          R"(<errorMessage>
                                                                         <text lang='fr'>Q shall be positive.</text>
                                                                     </errorMessage>
                                                                     <operation>
@@ -812,7 +812,7 @@ static const std::string tobramycin_tdd = R"(<?xml version="1.0" encoding="UTF-8
 
 struct TestDrugTobramycin : public fructose::test_base<TestDrugTobramycin>
 {
-    TestDrugTobramycin() { }
+    TestDrugTobramycin() {}
 
     /// \brief Check that objects are correctly constructed by the constructor.
     void testTobramycin(const std::string& /* _testName */)

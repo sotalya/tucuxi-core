@@ -5,14 +5,13 @@
 #include <iostream>
 #include <memory>
 
-#include "fructose/fructose.h"
-
 #include "tucucommon/duration.h"
-
-#include "tucucore/pkmodels/twocompartmentextralag.h"
 
 #include "tucucore/drugmodel/formulationandroute.h"
 #include "tucucore/intakeevent.h"
+#include "tucucore/pkmodels/twocompartmentextralag.h"
+
+#include "fructose/fructose.h"
 
 using namespace Tucuxi::Core;
 using namespace std::chrono_literals;
@@ -24,15 +23,16 @@ struct TestTwoCompartmentExtraLag : public fructose::test_base<TestTwoCompartmen
     const double DELTA = 0.000001;
     const unsigned int maxResidualSize = 3;
 
-    TestTwoCompartmentExtraLag() { }
+    TestTwoCompartmentExtraLag() {}
 
 
-    void testFirstDose(const Tucuxi::Core::ParameterSetEvent &_parameters,
-                              double _dose,
-                              Tucuxi::Core::AbsorptionModel _route,
-                              std::chrono::hours _interval,
-                              std::chrono::seconds _infusionTime,
-                              CycleSize _nbPoints)
+    void testFirstDose(
+            const Tucuxi::Core::ParameterSetEvent& _parameters,
+            double _dose,
+            Tucuxi::Core::AbsorptionModel _route,
+            std::chrono::hours _interval,
+            std::chrono::seconds _infusionTime,
+            CycleSize _nbPoints)
     {
         Tucuxi::Core::ComputingStatus res;
         TwoCompartmentExtraLagMacro macroCalculator;
@@ -42,7 +42,9 @@ struct TestTwoCompartmentExtraLag : public fructose::test_base<TestTwoCompartmen
         Tucuxi::Common::Duration interval = _interval;
         Tucuxi::Common::Duration infusionTime = _infusionTime;
 
-        unsigned int residualSize = (macroCalculator.getResidualSize() == macroCalculator.getResidualSize()) ? macroCalculator.getResidualSize() : maxResidualSize;
+        unsigned int residualSize = (macroCalculator.getResidualSize() == macroCalculator.getResidualSize())
+                                            ? macroCalculator.getResidualSize()
+                                            : maxResidualSize;
         bool isAll = false;
 
         std::vector<Tucuxi::Core::Concentrations> concentrations;
@@ -58,7 +60,16 @@ struct TestTwoCompartmentExtraLag : public fructose::test_base<TestTwoCompartmen
         concentrations2Interval2.resize(residualSize);
 
         Tucuxi::Core::TimeOffsets times;
-        Tucuxi::Core::IntakeEvent intakeEvent(now, offsetTime, _dose, TucuUnit("mg"), interval, Tucuxi::Core::FormulationAndRoute(_route), _route, infusionTime, _nbPoints);
+        Tucuxi::Core::IntakeEvent intakeEvent(
+                now,
+                offsetTime,
+                _dose,
+                TucuUnit("mg"),
+                interval,
+                Tucuxi::Core::FormulationAndRoute(_route),
+                _route,
+                infusionTime,
+                _nbPoints);
 
         // Start with an empty residual
         const Tucuxi::Core::Residuals firstInResidual(residualSize, 0);
@@ -71,23 +82,12 @@ struct TestTwoCompartmentExtraLag : public fructose::test_base<TestTwoCompartmen
 
         // Calculation of Macro Class
         res = macroCalculator.calculateIntakePoints(
-            concentrations,
-            times,
-            intakeEvent,
-            _parameters,
-            firstInResidual,
-            isAll,
-            outMicroMultiResiduals,
-            true);
+                concentrations, times, intakeEvent, _parameters, firstInResidual, isAll, outMicroMultiResiduals, true);
 
         if (verbose()) {
-            std::cout << "[Micro Class Calculation]"<< std::endl;
-            for(unsigned int i = 0; i < residualSize; i++) {
-                std::cout << "Multiple Out residual["
-                          << i
-                          << "] = "
-                          << outMicroMultiResiduals[i]
-                          << std::endl;
+            std::cout << "[Micro Class Calculation]" << std::endl;
+            for (unsigned int i = 0; i < residualSize; i++) {
+                std::cout << "Multiple Out residual[" << i << "] = " << outMicroMultiResiduals[i] << std::endl;
             }
         }
 
@@ -105,22 +105,23 @@ struct TestTwoCompartmentExtraLag : public fructose::test_base<TestTwoCompartmen
 
         // parameter for macro class
         Tucuxi::Core::ParameterDefinitions macroParameterDefs;
-        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
-        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Q", 20, Tucuxi::Core::ParameterVariabilityType::None));
-        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V2", 342, Tucuxi::Core::ParameterVariabilityType::None));
-        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
-        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
-        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>("Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "Q", 20, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "V2", 342, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+        macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
-        testFirstDose(
-            macroParameters,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Extravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+        testFirstDose(macroParameters, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
     }
 };
 

@@ -2,11 +2,10 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include <string>
 #include <iostream>
+#include <string>
 
 #include "fructose/fructose.h"
-
 #include "tucucrypto/cryptohelper.h"
 
 struct TestCryptoHelper : public fructose::test_base<TestCryptoHelper>

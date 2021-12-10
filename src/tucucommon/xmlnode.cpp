@@ -2,31 +2,22 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include "rapidxml.hpp"
-
 #include "xmlnode.h"
+
+#include "rapidxml.hpp"
 #include "xmlattribute.h"
 #include "xmliterator.h"
 
 namespace Tucuxi {
 namespace Common {
 
-XmlNode::XmlNode()
-    : m_pNode(nullptr)
-{
-}
+XmlNode::XmlNode() : m_pNode(nullptr) {}
 
 
-XmlNode::XmlNode(const XmlNode& _other)
-    : m_pNode(_other.m_pNode)
-{
-}
+XmlNode::XmlNode(const XmlNode& _other) : m_pNode(_other.m_pNode) {}
 
 
-XmlNode::XmlNode(rapidxml::xml_node<>* _pNode) 
-    : m_pNode(_pNode)
-{    
-}
+XmlNode::XmlNode(rapidxml::xml_node<>* _pNode) : m_pNode(_pNode) {}
 
 
 std::string XmlNode::getName() const
@@ -38,9 +29,9 @@ std::string XmlNode::getName() const
 }
 
 
-bool XmlNode::setName(const std::string& _name) 
+bool XmlNode::setName(const std::string& _name)
 {
-    char *pstr = allocateString(_name);
+    char* pstr = allocateString(_name);
     if (pstr != nullptr) {
         m_pNode->name(pstr);
         return true;
@@ -60,7 +51,7 @@ std::string XmlNode::getValue() const
 
 bool XmlNode::setValue(const std::string& _value)
 {
-    char *pstr = allocateString(_value);
+    char* pstr = allocateString(_value);
     if (pstr != nullptr) {
         m_pNode->name(pstr);
         return true;
@@ -72,6 +63,7 @@ bool XmlNode::setValue(const std::string& _value)
 EXmlNodeType XmlNode::getType() const
 {
     if (m_pNode != nullptr) {
+        // clang-format off
         switch (m_pNode->type()) {
             case rapidxml::node_document:    return EXmlNodeType::Document;
             case rapidxml::node_element:     return EXmlNodeType::Element;
@@ -83,6 +75,7 @@ EXmlNodeType XmlNode::getType() const
             case rapidxml::node_pi:          return EXmlNodeType::Pi;
             default:                         break;
         }
+        // clang-format on
     }
     return EXmlNodeType::Undefined;
 }
@@ -90,7 +83,7 @@ EXmlNodeType XmlNode::getType() const
 
 XmlAttribute XmlNode::getAttribute(const std::string& _name) const
 {
-    rapidxml::xml_attribute<> *pAttr = nullptr;
+    rapidxml::xml_attribute<>* pAttr = nullptr;
     if (m_pNode != nullptr) {
         pAttr = m_pNode->first_attribute(_name.c_str());
     }

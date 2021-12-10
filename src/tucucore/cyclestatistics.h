@@ -9,7 +9,19 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class CycleStatisticType : int { Mean = 0, Peak, Maximum, Minimum, AUC, AUC24, CumulativeAuc, Residual, CycleInterval, CYCLE_STATISTIC_TYPE_SIZE };
+enum class CycleStatisticType : int
+{
+    Mean = 0,
+    Peak,
+    Maximum,
+    Minimum,
+    AUC,
+    AUC24,
+    CumulativeAuc,
+    Residual,
+    CycleInterval,
+    CYCLE_STATISTIC_TYPE_SIZE
+};
 
 ///
 /// \brief The CycleStatistic class
@@ -20,20 +32,20 @@ enum class CycleStatisticType : int { Mean = 0, Peak, Maximum, Minimum, AUC, AUC
 class CycleStatistic
 {
 public:
-
     ///
     /// \brief Build a new statistic with the given type
     /// \param _cycleStartDate Absolute cycle start date
     /// \param _type
     ///
-    CycleStatistic(const Tucuxi::Common::DateTime &_cycleStartDate, CycleStatisticType _type);
+    CycleStatistic(const Tucuxi::Common::DateTime& _cycleStartDate, CycleStatisticType _type);
 
     ///
     /// \brief Add a new value to the statistic
     /// \param _time offset from the start of the corresponding cycle (m_cycleStartDate)
     /// \param _value new value (mean, peak, maximum, minimum or AUC)
     ///
-    void addValue(const Tucuxi::Common::Duration _time, const Value _value) {
+    void addValue(const Tucuxi::Common::Duration _time, const Value _value)
+    {
         Data newData;
         newData.m_offset = _time;
         newData.m_value = _value;
@@ -44,13 +56,19 @@ public:
     /// \brief Return the number of values
     /// \return number of values
     ///
-    size_t getNbValue() const { return m_data.size(); }
+    size_t getNbValue() const
+    {
+        return m_data.size();
+    }
 
     ///
     /// \brief Return cycle start date
     /// \return cycle start date
     ///
-    Tucuxi::Common::DateTime getCycleStartDate() const { return m_cycleStartDate; }
+    Tucuxi::Common::DateTime getCycleStartDate() const
+    {
+        return m_cycleStartDate;
+    }
 
     ///
     /// \brief Find one of the values with index and return the value and its dateTime
@@ -59,7 +77,7 @@ public:
     /// \param _iindex
     /// \return True if there is a value at given index. otherwise False
     ///
-    bool getValue(Tucuxi::Common::DateTime &_dateTime, Value &_value, size_t _index = 0) const
+    bool getValue(Tucuxi::Common::DateTime& _dateTime, Value& _value, size_t _index = 0) const
     {
         // if the required index is bigger than the stored value...
         if (_index >= getNbValue()) {
@@ -74,13 +92,13 @@ private:
     Tucuxi::Common::DateTime m_cycleStartDate; // Date and time of the start of the corresponding cycle
     // CycleStatisticType m_type; // The type of statistic
 
-    struct Data {
+    struct Data
+    {
         Tucuxi::Common::Duration m_offset;
         Value m_value{0.0};
     };
 
     std::vector<Data> m_data; // The list of values (in case of maximum and minimum, we can have a list)
-
 };
 
 class CycleStats
@@ -92,22 +110,29 @@ public:
     /// \param _type mean, peak, maximum, minimum or AUC
     /// \return The list of statistics
     ///
-    CycleStatistic getStatistic(size_t _compartment, CycleStatisticType _type) const { return m_stats[_compartment][static_cast<size_t>(_type)]; }
+    CycleStatistic getStatistic(size_t _compartment, CycleStatisticType _type) const
+    {
+        return m_stats[_compartment][static_cast<size_t>(_type)];
+    }
 
-    void setStatistics(size_t _compartment, CycleStatisticType _type, CycleStatistic _statistic) {
+    void setStatistics(size_t _compartment, CycleStatisticType _type, CycleStatistic _statistic)
+    {
         while (m_stats.size() <= _compartment) {
-            m_stats.push_back(std::vector<CycleStatistic>(static_cast<int>(CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE),CycleStatistic(Tucuxi::Common::DateTime::now(), CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE)));
+            m_stats.push_back(std::vector<CycleStatistic>(
+                    static_cast<int>(CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE),
+                    CycleStatistic(Tucuxi::Common::DateTime::now(), CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE)));
         }
         m_stats[_compartment][static_cast<size_t>(_type)] = std::move(_statistic);
     }
 
-    std::vector<std::vector<CycleStatistic> > getStats() const {return m_stats;}
+    std::vector<std::vector<CycleStatistic> > getStats() const
+    {
+        return m_stats;
+    }
 
 protected:
-
     // The list of statistics for each compartments (e.g m_stats[0][]: 1st compartment, m_stats[1][]: 2nd compartment etc)
-    std::vector< std::vector<CycleStatistic> > m_stats;
-
+    std::vector<std::vector<CycleStatistic> > m_stats;
 };
 
 

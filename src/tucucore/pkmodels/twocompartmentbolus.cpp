@@ -4,8 +4,10 @@
 
 #include <Eigen/Dense>
 
-#include "tucucommon/loggerhelper.h"
 #include "tucucore/pkmodels/twocompartmentbolus.h"
+
+#include "tucucommon/loggerhelper.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
@@ -15,7 +17,8 @@ namespace Core {
 #define DEBUG
 #endif
 
-TwoCompartmentBolusMicro::TwoCompartmentBolusMicro() : IntakeIntervalCalculatorBase<2, TwoCompartmentBolusExponentials> (new PertinentTimesCalculatorStandard())
+TwoCompartmentBolusMicro::TwoCompartmentBolusMicro()
+    : IntakeIntervalCalculatorBase<2, TwoCompartmentBolusExponentials>(new PertinentTimesCalculatorStandard())
 {
 }
 
@@ -30,7 +33,7 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
         return false;
     }
-    
+
     m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Ke = _parameters.getValue(ParameterId::Ke);
@@ -41,8 +44,8 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
-    m_Alpha = (sumK + m_RootK)/2;
-    m_Beta = (sumK - m_RootK)/2;
+    m_Alpha = (sumK + m_RootK) / 2;
+    m_Beta = (sumK - m_RootK) / 2;
 
     // check the inputs
     bool bOK = checkPositiveValue(m_D, "The dose");
@@ -74,14 +77,18 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
 }
 
 
-void TwoCompartmentBolusMicro::computeExponentials(Eigen::VectorXd& _times) 
+void TwoCompartmentBolusMicro::computeExponentials(Eigen::VectorXd& _times)
 {
     setExponentials(Exponentials::Alpha, (-m_Alpha * _times).array().exp());
     setExponentials(Exponentials::Beta, (-m_Beta * _times).array().exp());
 }
 
 
-bool TwoCompartmentBolusMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentBolusMicro::computeConcentrations(
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1, concentrations2;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
@@ -95,10 +102,11 @@ bool TwoCompartmentBolusMicro::computeConcentrations(const Residuals& _inResidua
     _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
 
     // return concentration of comp1
-    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
     // Return concentrations of other compartments
     if (_isAll == true) {
-	_concentrations[secondCompartment].assign(concentrations2.data(), concentrations2.data() + concentrations2.size());	
+        _concentrations[secondCompartment].assign(
+                concentrations2.data(), concentrations2.data() + concentrations2.size());
     }
 
 
@@ -109,7 +117,12 @@ bool TwoCompartmentBolusMicro::computeConcentrations(const Residuals& _inResidua
 }
 
 
-bool TwoCompartmentBolusMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool TwoCompartmentBolusMicro::computeConcentration(
+        const Value& _atTime,
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     TMP_UNUSED_PARAMETER(_atTime);
     Eigen::VectorXd concentrations1, concentrations2;
@@ -124,7 +137,7 @@ bool TwoCompartmentBolusMicro::computeConcentration(const Value& _atTime, const 
     // return concentraions (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
     if (_isAll == true) {
-	_concentrations[secondCompartment].push_back(concentrations2[atTime]);
+        _concentrations[secondCompartment].push_back(concentrations2[atTime]);
     }
 
     // interval=0 means that it is the last cycle, so final residual = 0
@@ -143,9 +156,7 @@ bool TwoCompartmentBolusMicro::computeConcentration(const Value& _atTime, const 
     return bOK;
 }
 
-TwoCompartmentBolusMacro::TwoCompartmentBolusMacro() : TwoCompartmentBolusMicro()
-{
-}
+TwoCompartmentBolusMacro::TwoCompartmentBolusMacro() : TwoCompartmentBolusMicro() {}
 
 
 std::vector<std::string> TwoCompartmentBolusMacro::getParametersId()
@@ -155,15 +166,15 @@ std::vector<std::string> TwoCompartmentBolusMacro::getParametersId()
 
 bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if(!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
         return false;
     }
-    
+
     m_D = _intakeEvent.getDose();
-    Value cl = _parameters.getValue(ParameterId::CL); 
-    Value q = _parameters.getValue(ParameterId::Q); 
-    m_V1 = _parameters.getValue(ParameterId::V1); 
-    Value v2 = _parameters.getValue(ParameterId::V2); 
+    Value cl = _parameters.getValue(ParameterId::CL);
+    Value q = _parameters.getValue(ParameterId::Q);
+    m_V1 = _parameters.getValue(ParameterId::V1);
+    Value v2 = _parameters.getValue(ParameterId::V2);
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
     m_K21 = q / v2;
@@ -172,8 +183,8 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
 
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
-    m_Alpha = (sumK + m_RootK)/2;
-    m_Beta = (sumK - m_RootK)/2;
+    m_Alpha = (sumK + m_RootK) / 2;
+    m_Beta = (sumK - m_RootK) / 2;
 
 #ifdef DEBUG
     Tucuxi::Common::LoggerHelper logHelper;
@@ -206,6 +217,5 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
 }
 
 
-}
-}
-
+} // namespace Core
+} // namespace Tucuxi

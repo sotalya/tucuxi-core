@@ -2,14 +2,14 @@
 * Copyright (C) 2017 Tucuxi SA
 */
 
-#include "fructose/fructose.h"
-
 #include "date/date.h"
 
 #include "tucucommon/datetime.h"
-#include "tucucommon/timeofday.h"
 #include "tucucommon/duration.h"
+#include "tucucommon/timeofday.h"
 #include "tucucommon/utils.h"
+
+#include "fructose/fructose.h"
 
 using namespace std::chrono_literals;
 using namespace date;
@@ -48,8 +48,10 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         checkDateTime(d12, 1951, 12, 17, 17, 34, 20);
 
         // Test thrown exception
-        fructose_assert_exception(Tucuxi::Common::DateTime d13("mauvais format", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
-        fructose_assert_exception(Tucuxi::Common::DateTime d14("1911-12-17 s", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
+        fructose_assert_exception(
+                Tucuxi::Common::DateTime d13("mauvais format", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
+        fructose_assert_exception(
+                Tucuxi::Common::DateTime d14("1911-12-17 s", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
         fructose_assert_exception(Tucuxi::Common::DateTime d15("", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
         fructose_assert_exception(Tucuxi::Common::DateTime d16("17:34:20", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
 
@@ -57,13 +59,13 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         Tucuxi::Common::Duration diff = d2 - d1;
         fructose_assert(diff.toDays() == 365);
         fructose_assert(diff.toMonths() != 12); // Since a year is 365.2425 days
-        fructose_assert(diff.toYears() != 1);   // Since a month is 365.2425/12 
-        diff = diff + Tucuxi::Common::Duration(24h)*0.25;
+        fructose_assert(diff.toYears() != 1);   // Since a month is 365.2425/12
+        diff = diff + Tucuxi::Common::Duration(24h) * 0.25;
         fructose_assert(diff.toMonths() == 12);
         fructose_assert(diff.toYears() == 1);
 
         // Test getDate
-        Tucuxi::Common::DateTime d20(2017_y / jan / 1, 10h+22min);
+        Tucuxi::Common::DateTime d20(2017_y / jan / 1, 10h + 22min);
         checkDateTime(d20, 2017, 1, 1, 10, 22, 0);
         fructose_assert(d1.getDate() == d20.getDate());
 
@@ -85,7 +87,8 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
 
         // Test to and from seconds
         double nSeconds = d10.toSeconds();
-        Tucuxi::Common::DateTime d30(Tucuxi::Common::Duration(std::chrono::seconds(static_cast<int64>(nSeconds))));
+        Tucuxi::Common::DateTime d30 = Tucuxi::Common::DateTime::fromDurationSinceEpoch(
+                Tucuxi::Common::Duration(std::chrono::seconds(static_cast<int64>(nSeconds))));
         checkDateTime(d30, 2017, 12, 17, 17, 34, 20);
 
         // Test addDays, addMonth and addYears
@@ -98,7 +101,7 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         checkDateTime(d31, 2019, 1, 20, 17, 34, 20);
         d31.addDays(-399);
         checkDateTime(d31, 2017, 12, 17, 17, 34, 20);
-        
+
         Tucuxi::Common::DateTime d32 = d10;
         d32.addMonths(3);
         checkDateTime(d32, 2018, 3, 17, 17, 34, 20);
@@ -106,7 +109,7 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         checkDateTime(d32, 2020, 4, 17, 17, 34, 20);
         d32.addMonths(-12);
         checkDateTime(d32, 2019, 4, 17, 17, 34, 20);
-        
+
         Tucuxi::Common::DateTime d33 = d10;
         d33.addYears(3);
         checkDateTime(d33, 2020, 12, 17, 17, 34, 20);
@@ -184,7 +187,7 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
         Tucuxi::Common::Duration d10 = d2 % 7;
         checkDuration(d10, 4);
 
-        double n = d2/15min;
+        double n = d2 / 15min;
         fructose_assert(n == 8);
 
         fructose_assert(d2 > d3);
@@ -208,21 +211,22 @@ struct TestDateTime : public fructose::test_base<TestDateTime>
     }
 
 private:
-    void checkDateTime(const Tucuxi::Common::DateTime& _date, int _year, int _month, int _day, int _hour, int _minute, int _second)
+    void checkDateTime(
+            const Tucuxi::Common::DateTime& _date, int _year, int _month, int _day, int _hour, int _minute, int _second)
     {
-        fructose_assert_eq(_date.year() , _year);
-        fructose_assert_eq(_date.month() , _month);
-        fructose_assert_eq(_date.day() , _day);
-        fructose_assert_eq(_date.hour() , _hour);
-        fructose_assert_eq(_date.minute() , _minute);
-        fructose_assert_eq(_date.second() , _second);
+        fructose_assert_eq(_date.year(), _year);
+        fructose_assert_eq(_date.month(), _month);
+        fructose_assert_eq(_date.day(), _day);
+        fructose_assert_eq(_date.hour(), _hour);
+        fructose_assert_eq(_date.minute(), _minute);
+        fructose_assert_eq(_date.second(), _second);
     }
 
     void checkTimeOfDay(const Tucuxi::Common::TimeOfDay& _time, int _hour, int _minute, int _second)
     {
-        fructose_assert_eq(_time.hour() , _hour);
-        fructose_assert_eq(_time.minute() , _minute);
-        fructose_assert_eq(_time.second() , _second);
+        fructose_assert_eq(_time.hour(), _hour);
+        fructose_assert_eq(_time.minute(), _minute);
+        fructose_assert_eq(_time.second(), _second);
     }
     void checkDuration(const Tucuxi::Common::Duration& _duration, double _nbSeconds)
     {
@@ -232,8 +236,8 @@ private:
         fructose_assert(_duration.isEmpty() == isEmpty);
         fructose_assert(_duration.isNegative() == isNegative);
         fructose_assert_double_eq(_duration.toSeconds(), nSeconds);
-        fructose_assert_double_eq(_duration.toMinutes(), nSeconds/60);
-        fructose_assert_double_eq(_duration.toHours(), nSeconds/60/60);
+        fructose_assert_double_eq(_duration.toMinutes(), nSeconds / 60);
+        fructose_assert_double_eq(_duration.toHours(), nSeconds / 60 / 60);
         fructose_assert_double_eq(_duration.toDays(), nSeconds / 60 / 60 / 24);
         double d = static_cast<double>(_duration.toMilliseconds()) / 1000.0;
         fructose_assert_double_eq(d, _nbSeconds);

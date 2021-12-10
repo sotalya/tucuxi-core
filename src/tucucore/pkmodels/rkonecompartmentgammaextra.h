@@ -10,7 +10,11 @@
 namespace Tucuxi {
 namespace Core {
 
-enum class RK4OneCompartmentGammaExtraCompartments : int { First = 0, Second };
+enum class RK4OneCompartmentGammaExtraCompartments : int
+{
+    First = 0,
+    Second
+};
 
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm
@@ -27,14 +31,14 @@ public:
     static std::vector<std::string> getParametersId();
 
 
-    void initConcentrations (const Residuals& _inResiduals, std::vector<double> &_concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0];
     }
 
-//    auto time = [&h] (const uint32_t index) -> const double {
-//        return h * index;
-//   };
+    //    auto time = [&h] (const uint32_t index) -> const double {
+    //        return h * index;
+    //   };
 
     inline double probDensityAbsorptionTimes(const double& _t)
     {
@@ -56,7 +60,7 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    Value m_D;	/// Quantity of drug
+    Value m_D;  /// Quantity of drug
     Value m_F;  /// bioavailability
     Value m_V;  /// Volume of the compartment
     Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
@@ -86,4 +90,3 @@ protected:
 } // namespace Tucuxi
 
 #endif // TUCUXI_CORE_RK4ONECOMPARTMENTEXTRA_H
-

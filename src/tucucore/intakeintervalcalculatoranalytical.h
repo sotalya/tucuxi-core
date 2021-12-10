@@ -13,8 +13,10 @@ class IntakeIntervalCalculatorAnalytical : public IntakeIntervalCalculator
 
 public:
     /// \brief Constructor
-    IntakeIntervalCalculatorAnalytical(IPertinentTimesCalculator *_pertinentTimesCalculator) :
-        m_firstCalculation(true), m_pertinentTimesCalculator(_pertinentTimesCalculator) {}
+    IntakeIntervalCalculatorAnalytical(IPertinentTimesCalculator* _pertinentTimesCalculator)
+        : m_firstCalculation(true), m_pertinentTimesCalculator(_pertinentTimesCalculator)
+    {
+    }
 
     ~IntakeIntervalCalculatorAnalytical() override;
 
@@ -30,14 +32,14 @@ public:
     /// \param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
     /// \return An indication if the computation was successful
     ComputingStatus calculateIntakePoints(
-        std::vector<Concentrations>& _concentrations,
-        TimeOffsets & _times,
-        const IntakeEvent& _intakeEvent,
-        const ParameterSetEvent& _parameters,
-        const Residuals& _inResiduals,
-        bool _isAll,
-        Residuals& _outResiduals,
-        bool _isDensityConstant) override;
+            std::vector<Concentrations>& _concentrations,
+            TimeOffsets& _times,
+            const IntakeEvent& _intakeEvent,
+            const ParameterSetEvent& _parameters,
+            const Residuals& _inResiduals,
+            bool _isAll,
+            Residuals& _outResiduals,
+            bool _isDensityConstant) override;
 
     /// \brief Compute one single point at the specified time as well as final residuals
     /// \param _concentrations vector of concentrations.
@@ -48,16 +50,15 @@ public:
     /// \param _outResiduals Final residual concentrations
     /// \return Returns an indication if the computation was successful
     ComputingStatus calculateIntakeSinglePoint(
-        std::vector<Concentrations>& _concentrations,
-        const IntakeEvent& _intakeEvent,
-        const ParameterSetEvent& _parameters,
-        const Residuals& _inResiduals,
-        const Value& _atTime,
-        bool _isAll,
-        Residuals& _outResiduals) override;
+            std::vector<Concentrations>& _concentrations,
+            const IntakeEvent& _intakeEvent,
+            const ParameterSetEvent& _parameters,
+            const Residuals& _inResiduals,
+            const Value& _atTime,
+            bool _isAll,
+            Residuals& _outResiduals) override;
 
 protected:
-
     /// \brief Computation of exponentials values that will may be shared by severall successive computations
     /// \param _intakeEvent intake for the cycle (all cyles start with an intake)
     /// \param _parameters Parameters for the cycle (all cycles have constant parameters)
@@ -69,7 +70,11 @@ protected:
     /// \param _inAll Need concentrations for all compartements or not
     /// \param _concentrations vector of concentrations.
     /// \param _outResiduals Final residual concentrations
-    virtual bool computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
+    virtual bool computeConcentrations(
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) = 0;
 
     /// \brief Compute concentrations using a specific algorithm
     /// \param _atTime measure time
@@ -77,10 +82,15 @@ protected:
     /// \param _inAll Need concentrations for all compartements or not
     /// \param _concentrations vector of concentrations.
     /// \param _outResiduals Final residual concentrations
-    virtual bool computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals) = 0;
+    virtual bool computeConcentration(
+            const Value& _atTime,
+            const Residuals& _inResiduals,
+            bool _isAll,
+            std::vector<Concentrations>& _concentrations,
+            Residuals& _outResiduals) = 0;
 
 
-    PrecomputedExponentials m_precomputedExponentials;      /// List of precomputed exponentials
+    PrecomputedExponentials m_precomputedExponentials; /// List of precomputed exponentials
     typedef IntakeCalculatorSingleConcentrations SingleConcentrations;
 
     std::thread::id m_lastThreadId;
@@ -94,38 +104,42 @@ protected:
     std::unique_ptr<IPertinentTimesCalculator> m_pertinentTimesCalculator;
 
 private:
-    CachedExponentials m_cache;                           /// The cache of precomputed exponentials
+    CachedExponentials m_cache; /// The cache of precomputed exponentials
 };
 
 template<unsigned int ResidualSize, typename EParameters>
 class IntakeIntervalCalculatorBase : public IntakeIntervalCalculatorAnalytical
 {
 public:
-    IntakeIntervalCalculatorBase(IPertinentTimesCalculator *_pertinentTimesCalculator) :
-        IntakeIntervalCalculatorAnalytical(_pertinentTimesCalculator) {}
+    IntakeIntervalCalculatorBase(IPertinentTimesCalculator* _pertinentTimesCalculator)
+        : IntakeIntervalCalculatorAnalytical(_pertinentTimesCalculator)
+    {
+    }
 
-    unsigned int getResidualSize() const override {
+    unsigned int getResidualSize() const override
+    {
         return ResidualSize;
     }
 
 protected:
-    void setExponentials(EParameters _param, Eigen::VectorXd &&_logs) {
+    void setExponentials(EParameters _param, Eigen::VectorXd&& _logs)
+    {
         m_precomputedExponentials[static_cast<int>(_param)] = _logs;
-//        m_precomputedExponentials = PrecomputedExponentials(4);
-//        m_precomputedExponentials[0] = _logs;
-//        m_precomputedExponentials[0] = Eigen::VectorXd(_logs.rows(), _logs.cols());
-//        m_precomputedExponentials[static_cast<int>(_param)] = _logs;
+        //        m_precomputedExponentials = PrecomputedExponentials(4);
+        //        m_precomputedExponentials[0] = _logs;
+        //        m_precomputedExponentials[0] = Eigen::VectorXd(_logs.rows(), _logs.cols());
+        //        m_precomputedExponentials[static_cast<int>(_param)] = _logs;
     }
 
 
- //   void setExponentials(EParameters _param, Eigen::VectorXd &_logs) {
- //       m_precomputedExponentials[static_cast<int>(_param)] = _logs;
- //   }
+    //   void setExponentials(EParameters _param, Eigen::VectorXd &_logs) {
+    //       m_precomputedExponentials[static_cast<int>(_param)] = _logs;
+    //   }
 
-    /*const*/ Eigen::VectorXd& exponentials(EParameters _param) {
+    /*const*/ Eigen::VectorXd& exponentials(EParameters _param)
+    {
         return m_precomputedExponentials[static_cast<int>(_param)];
     }
-
 };
 
 

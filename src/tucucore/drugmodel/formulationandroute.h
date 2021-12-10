@@ -8,13 +8,14 @@
 #include <string>
 #include <vector>
 
+#include "tucucommon/unit.h"
+
 #include "tucucore/definitions.h"
-#include "tucucore/drugmodel/parameterdefinition.h"
 #include "tucucore/drugmodel/activesubstance.h"
+#include "tucucore/drugmodel/parameterdefinition.h"
 #include "tucucore/drugmodel/validdose.h"
 #include "tucucore/drugmodel/validduration.h"
 #include "tucucore/invariants.h"
-#include "tucucommon/unit.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -49,18 +50,34 @@ enum class AdministrationRoute
 class StandardTreatment
 {
 public:
-    StandardTreatment(bool _isFixedDuration = false, Value _duration = 0.0, TucuUnit _unit = TucuUnit("h")):
-        m_isFixedDuration(_isFixedDuration), m_duration(_duration), m_unit(std::move(_unit)) {}
+    StandardTreatment(bool _isFixedDuration = false, Value _duration = 0.0, TucuUnit _unit = TucuUnit("h"))
+        : m_isFixedDuration(_isFixedDuration), m_duration(_duration), m_unit(std::move(_unit))
+    {
+    }
 
-    bool getIsFixedDuration() const { return m_isFixedDuration;}
+    bool getIsFixedDuration() const
+    {
+        return m_isFixedDuration;
+    }
     //Tucuxi::Common::Duration getDuration() const { return m_duration;}
-    Value getDuration() const { return m_duration;}
-    TucuUnit getUnit() const { return m_unit;}
+    Value getDuration() const
+    {
+        return m_duration;
+    }
+    TucuUnit getUnit() const
+    {
+        return m_unit;
+    }
 
-    INVARIANTS(
-            INVARIANT(Invariants::INV_STANDARDTREATMENT_0001, ((!m_isFixedDuration) || (m_duration > 0.0)), "A standard treatment duration is negative")
-            INVARIANT(Invariants::INV_STANDARDTREATMENT_0002, ((!m_isFixedDuration) || (Common::UnitManager::isOfType<Common::UnitManager::UnitType::Time>(m_unit))), "A standard treatment duration unit is not correct")
-            )
+    INVARIANTS(INVARIANT(
+                       Invariants::INV_STANDARDTREATMENT_0001,
+                       ((!m_isFixedDuration) || (m_duration > 0.0)),
+                       "A standard treatment duration is negative");
+               INVARIANT(
+                       Invariants::INV_STANDARDTREATMENT_0002,
+                       ((!m_isFixedDuration)
+                        || (Common::UnitManager::isOfType<Common::UnitManager::UnitType::Time>(m_unit))),
+                       "A standard treatment duration unit is not correct");)
 
 protected:
     bool m_isFixedDuration;
@@ -71,21 +88,29 @@ protected:
 class AnalyteSetToAbsorptionAssociation
 {
 public:
-    AnalyteSetToAbsorptionAssociation(const AnalyteSet & _analyteSet) :
-        m_analyteSet(_analyteSet)
-    {}
+    AnalyteSetToAbsorptionAssociation(const AnalyteSet& _analyteSet) : m_analyteSet(_analyteSet) {}
 
-    void setAbsorptionModel(AbsorptionModel _absorptionModel) { m_absorptionModel = _absorptionModel;}
-    void setAbsorptionParameters(std::unique_ptr<ParameterSetDefinition> _parameters) {m_absorptionParameters = std::move(_parameters);}
+    void setAbsorptionModel(AbsorptionModel _absorptionModel)
+    {
+        m_absorptionModel = _absorptionModel;
+    }
+    void setAbsorptionParameters(std::unique_ptr<ParameterSetDefinition> _parameters)
+    {
+        m_absorptionParameters = std::move(_parameters);
+    }
 
-    INVARIANTS(
-            INVARIANT(Invariants::INV_ANALYTESETTOABSORPTIONASSOCIATION_0001, (m_absorptionModel != AbsorptionModel::Undefined), "An absorption model is undefined in an association")
-            INVARIANT(Invariants::INV_ANALYTESETTOABSORPTIONASSOCIATION_0002, (m_absorptionParameters->checkInvariants()), "An association of parameters to absorption model has an error")
-            )
+    INVARIANTS(INVARIANT(
+                       Invariants::INV_ANALYTESETTOABSORPTIONASSOCIATION_0001,
+                       (m_absorptionModel != AbsorptionModel::Undefined),
+                       "An absorption model is undefined in an association");
+               INVARIANT(
+                       Invariants::INV_ANALYTESETTOABSORPTIONASSOCIATION_0002,
+                       (m_absorptionParameters->checkInvariants()),
+                       "An association of parameters to absorption model has an error");)
 
 protected:
-        std::unique_ptr<ParameterSetDefinition> m_absorptionParameters{nullptr};
-    const AnalyteSet &m_analyteSet;
+    std::unique_ptr<ParameterSetDefinition> m_absorptionParameters{nullptr};
+    const AnalyteSet& m_analyteSet;
 
     ///
     /// \brief m_absorptionModel Computation absorption model
@@ -98,21 +123,28 @@ protected:
 class AnalyteConversion
 {
 public:
-    AnalyteConversion(AnalyteId _analyteId, Value _factor) :
-        m_analyteId(std::move(_analyteId)), m_factor(_factor)
-    {}
+    AnalyteConversion(AnalyteId _analyteId, Value _factor) : m_analyteId(std::move(_analyteId)), m_factor(_factor) {}
 
-    AnalyteId getAnalyteId() const { return m_analyteId;}
+    AnalyteId getAnalyteId() const
+    {
+        return m_analyteId;
+    }
 
-    Value getFactor() const { return m_factor;}
+    Value getFactor() const
+    {
+        return m_factor;
+    }
 
-    INVARIANTS(
-            INVARIANT(Invariants::INV_ANALYTECONVERSION_0001, (m_factor >= 0.0), "A factor in an analyte conversion is negative")
-            INVARIANT(Invariants::INV_ANALYTECONVERSION_0002, (!m_analyteId.empty()), "An analyte conversion does not have any analyte Id")
-            )
+    INVARIANTS(INVARIANT(
+                       Invariants::INV_ANALYTECONVERSION_0001,
+                       (m_factor >= 0.0),
+                       "A factor in an analyte conversion is negative");
+               INVARIANT(
+                       Invariants::INV_ANALYTECONVERSION_0002,
+                       (!m_analyteId.empty()),
+                       "An analyte conversion does not have any analyte Id");)
 
-    protected:
-
+protected:
     AnalyteId m_analyteId;
     Value m_factor;
 };
@@ -121,40 +153,52 @@ public:
 class FormulationAndRoute
 {
 public:
-
     // Construction for testing purpose
-    FormulationAndRoute(AbsorptionModel _absorptionModel) :
-        m_formulation(Formulation::Undefined), m_route(AdministrationRoute::Undefined), m_absorptionModel(_absorptionModel),
-        m_administrationName("")
-    {}
+    FormulationAndRoute(AbsorptionModel _absorptionModel)
+        : m_formulation(Formulation::Undefined), m_route(AdministrationRoute::Undefined),
+          m_absorptionModel(_absorptionModel), m_administrationName("")
+    {
+    }
 
     FormulationAndRoute(
             Formulation _formulation,
             AdministrationRoute _route,
             AbsorptionModel _absorptionModel,
-            std::string _administrationName = "") :
-        m_formulation(_formulation), m_route(_route), m_absorptionModel(_absorptionModel),
-        m_administrationName(std::move(_administrationName))
-    {}
+            std::string _administrationName = "")
+        : m_formulation(_formulation), m_route(_route), m_absorptionModel(_absorptionModel),
+          m_administrationName(std::move(_administrationName))
+    {
+    }
 
 
-    Formulation getFormulation() const { return m_formulation;}
+    Formulation getFormulation() const
+    {
+        return m_formulation;
+    }
 
-    AdministrationRoute getAdministrationRoute() const { return m_route;}
+    AdministrationRoute getAdministrationRoute() const
+    {
+        return m_route;
+    }
 
-    AbsorptionModel getAbsorptionModel() const { return m_absorptionModel;}
+    AbsorptionModel getAbsorptionModel() const
+    {
+        return m_absorptionModel;
+    }
 
-    std::string getAdministrationName() const { return m_administrationName;}
+    std::string getAdministrationName() const
+    {
+        return m_administrationName;
+    }
 
     friend bool operator==(const FormulationAndRoute& _v1, const FormulationAndRoute& _v2)
     {
-        return (_v1.m_absorptionModel == _v2.m_absorptionModel) &&
-                (_v1.m_route == _v2.m_route);
+        return (_v1.m_absorptionModel == _v2.m_absorptionModel) && (_v1.m_route == _v2.m_route);
     }
 
 
     /// \brief Is the duration smaller?
-    bool operator<(const FormulationAndRoute &_f) const
+    bool operator<(const FormulationAndRoute& _f) const
     {
         if (m_formulation < _f.m_formulation) {
             return true;
@@ -171,16 +215,24 @@ public:
         return false;
     }
 
-    INVARIANTS(
-            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_formulation != Formulation::Undefined), "A formulation and route has no formulation defined")
-            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_route != AdministrationRoute::Undefined), "A formulation and route has an undefined route of administration")
-            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (m_absorptionModel != AbsorptionModel::Undefined), "A formulation and route has an undefined absorption model")
-            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (!m_administrationName.empty()), "A formulation and route has an empty administration name")
-            )
+    INVARIANTS(INVARIANT(
+                       Invariants::INV_FORMULATIONANDROUTE_0001,
+                       (m_formulation != Formulation::Undefined),
+                       "A formulation and route has no formulation defined");
+               INVARIANT(
+                       Invariants::INV_FORMULATIONANDROUTE_0001,
+                       (m_route != AdministrationRoute::Undefined),
+                       "A formulation and route has an undefined route of administration");
+               INVARIANT(
+                       Invariants::INV_FORMULATIONANDROUTE_0001,
+                       (m_absorptionModel != AbsorptionModel::Undefined),
+                       "A formulation and route has an undefined absorption model");
+               INVARIANT(
+                       Invariants::INV_FORMULATIONANDROUTE_0001,
+                       (!m_administrationName.empty()),
+                       "A formulation and route has an empty administration name");)
 
 protected:
-
-
     /// Formulation, based on an Enum type
     Formulation m_formulation;
 
@@ -195,30 +247,51 @@ protected:
     std::string m_administrationName;
 };
 
-std::vector<FormulationAndRoute> mergeFormulationAndRouteList(const std::vector<FormulationAndRoute> &_v1,
-                                                              const std::vector<FormulationAndRoute> &_v2);
+std::vector<FormulationAndRoute> mergeFormulationAndRouteList(
+        const std::vector<FormulationAndRoute>& _v1, const std::vector<FormulationAndRoute>& _v2);
 
 
 
 class FullFormulationAndRoute
 {
 public:
+    FullFormulationAndRoute(const FormulationAndRoute& _specs, std::string _id) : m_id(std::move(_id)), m_specs(_specs)
+    {
+    }
 
-    FullFormulationAndRoute(const FormulationAndRoute& _specs, std::string _id)
-        : m_id(std::move(_id)), m_specs(_specs)
-    {}
+    void setValidDoses(std::unique_ptr<ValidDoses> _validDoses)
+    {
+        m_validDoses = std::move(_validDoses);
+    }
+    void setValidIntervals(std::unique_ptr<ValidDurations> _validIntervals)
+    {
+        m_validIntervals = std::move(_validIntervals);
+    }
+    void setValidInfusionTimes(std::unique_ptr<ValidDurations> _validInfusionTimes)
+    {
+        m_validInfusionTimes = std::move(_validInfusionTimes);
+    }
+    void addAssociation(std::unique_ptr<AnalyteSetToAbsorptionAssociation> _association)
+    {
+        m_associations.push_back(std::move(_association));
+    }
 
-    void setValidDoses(std::unique_ptr<ValidDoses> _validDoses) {m_validDoses = std::move(_validDoses);}
-    void setValidIntervals(std::unique_ptr<ValidDurations> _validIntervals) {m_validIntervals = std::move(_validIntervals);}
-    void setValidInfusionTimes(std::unique_ptr<ValidDurations> _validInfusionTimes) {m_validInfusionTimes = std::move(_validInfusionTimes);}
-    void addAssociation(std::unique_ptr< AnalyteSetToAbsorptionAssociation > _association) {m_associations.push_back(std::move(_association));}
+    void setStandardTreatment(std::unique_ptr<StandardTreatment> _standardTreatment)
+    {
+        m_standardTreatment = std::move(_standardTreatment);
+    }
 
-    void setStandardTreatment(std::unique_ptr<StandardTreatment> _standardTreatment) {m_standardTreatment = std::move(_standardTreatment);}
-
-    void addAnalyteConversion(std::unique_ptr<AnalyteConversion> _analyteConversion) { m_analyteConversions.push_back(std::move(_analyteConversion));}
-    const std::vector<std::unique_ptr<AnalyteConversion> >& getAnalyteConversions() const { return m_analyteConversions;}
-    const AnalyteConversion *getAnalyteConversion(const AnalyteId& _analyteId) const {
-        for (const auto &analyteConversion : m_analyteConversions) {
+    void addAnalyteConversion(std::unique_ptr<AnalyteConversion> _analyteConversion)
+    {
+        m_analyteConversions.push_back(std::move(_analyteConversion));
+    }
+    const std::vector<std::unique_ptr<AnalyteConversion> >& getAnalyteConversions() const
+    {
+        return m_analyteConversions;
+    }
+    const AnalyteConversion* getAnalyteConversion(const AnalyteId& _analyteId) const
+    {
+        for (const auto& analyteConversion : m_analyteConversions) {
             if (analyteConversion->getAnalyteId() == _analyteId) {
                 return analyteConversion.get();
             }
@@ -226,39 +299,111 @@ public:
         return nullptr;
     }
 
-    const ParameterSetDefinition* getParameterDefinitions(const AnalyteGroupId &_analyteGroupId) const;
+    const ParameterSetDefinition* getParameterDefinitions(const AnalyteGroupId& _analyteGroupId) const;
 
-    AbsorptionModel getAbsorptionModel(const AnalyteGroupId &_analyteGroupId) const;
+    AbsorptionModel getAbsorptionModel(const AnalyteGroupId& _analyteGroupId) const;
 
 
-    std::string getId() const { return m_id;}
+    std::string getId() const
+    {
+        return m_id;
+    }
 
-    const ValidDoses* getValidDoses() const { return m_validDoses.get();}
+    const ValidDoses* getValidDoses() const
+    {
+        return m_validDoses.get();
+    }
 
-    const ValidDurations* getValidIntervals() const { return m_validIntervals.get();}
-    const ValidDurations* getValidInfusionTimes() const { return m_validInfusionTimes.get();}
-    const FormulationAndRoute& getFormulationAndRoute() const { return m_specs;}
+    const ValidDurations* getValidIntervals() const
+    {
+        return m_validIntervals.get();
+    }
+    const ValidDurations* getValidInfusionTimes() const
+    {
+        return m_validInfusionTimes.get();
+    }
+    const FormulationAndRoute& getFormulationAndRoute() const
+    {
+        return m_specs;
+    }
 
-    const StandardTreatment* getStandardTreatment() const { return m_standardTreatment.get();}
+    const StandardTreatment* getStandardTreatment() const
+    {
+        return m_standardTreatment.get();
+    }
 
-    INVARIANTS(
-            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0001, (!m_id.empty()), "A formulation and route has no Id")
-            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0002, (m_validDoses != nullptr), "A formulation and route ha no valid doses")
-            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0003, (m_validDoses->checkInvariants()), "A formulation and route has an error in its valid doses")
-            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0004, (m_validIntervals != nullptr), "A formulation and route has no valid intervals")
-            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0005, (m_validIntervals->checkInvariants()), "A formulation and route has an error in its valid intervals")
-            // INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0006, (m_validInfusionTimes != nullptr))
-            LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0007, {bool ok = true;if (m_validInfusionTimes != nullptr) { ok &= m_validInfusionTimes->checkInvariants();} return ok;}, "There is an error in the valid infusion times")
-            LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0008, {bool ok = true;if (m_standardTreatment != nullptr) { ok &= m_standardTreatment->checkInvariants();} return ok;}, "There is an error in the standard treatment")
-            // To check : do we need at least one association?
-            LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0009, {bool ok = true;for(size_t i = 0; i < m_associations.size(); i++) {ok &= m_associations[i]->checkInvariants();} return ok;}, "There is an error in an absorption model-parameters association")
-            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0010, (!m_analyteConversions.empty()), "A formulation and route has no analyte conversion")
-            LAMBDA_INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0011, {bool ok = true;for(size_t i = 0; i < m_analyteConversions.size(); i++) {ok &= m_analyteConversions[i]->checkInvariants();} return ok;}, "There is an error in an analyte conversion")
-            INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0012, (m_specs.checkInvariants()), "A formulation and route has an error in its specific formulation and route")
-            )
+    INVARIANTS(INVARIANT(
+                       Invariants::INV_FULLFORMULATIONANDROUTE_0001,
+                       (!m_id.empty()),
+                       "A formulation and route has no Id");
+               INVARIANT(
+                       Invariants::INV_FULLFORMULATIONANDROUTE_0002,
+                       (m_validDoses != nullptr),
+                       "A formulation and route ha no valid doses");
+               INVARIANT(
+                       Invariants::INV_FULLFORMULATIONANDROUTE_0003,
+                       (m_validDoses->checkInvariants()),
+                       "A formulation and route has an error in its valid doses");
+               INVARIANT(
+                       Invariants::INV_FULLFORMULATIONANDROUTE_0004,
+                       (m_validIntervals != nullptr),
+                       "A formulation and route has no valid intervals");
+               INVARIANT(
+                       Invariants::INV_FULLFORMULATIONANDROUTE_0005,
+                       (m_validIntervals->checkInvariants()),
+                       "A formulation and route has an error in its valid intervals");
+               // INVARIANT(Invariants::INV_FULLFORMULATIONANDROUTE_0006, (m_validInfusionTimes != nullptr))
+               LAMBDA_INVARIANT(
+                       Invariants::INV_FULLFORMULATIONANDROUTE_0007,
+                       {
+                           bool ok = true;
+                           if (m_validInfusionTimes != nullptr) {
+                               ok &= m_validInfusionTimes->checkInvariants();
+                           }
+                           return ok;
+                       },
+                       "There is an error in the valid infusion times");
+               LAMBDA_INVARIANT(
+                       Invariants::INV_FULLFORMULATIONANDROUTE_0008,
+                       {
+                           bool ok = true;
+                           if (m_standardTreatment != nullptr) {
+                               ok &= m_standardTreatment->checkInvariants();
+                           }
+                           return ok;
+                       },
+                       "There is an error in the standard treatment");
+               // To check : do we need at least one association?
+               LAMBDA_INVARIANT(
+                       Invariants::INV_FULLFORMULATIONANDROUTE_0009,
+                       {
+                           bool ok = true;
+                           for (size_t i = 0; i < m_associations.size(); i++) {
+                               ok &= m_associations[i]->checkInvariants();
+                           }
+                           return ok;
+                       },
+                       "There is an error in an absorption model-parameters association");
+               INVARIANT(
+                       Invariants::INV_FULLFORMULATIONANDROUTE_0010,
+                       (!m_analyteConversions.empty()),
+                       "A formulation and route has no analyte conversion");
+               LAMBDA_INVARIANT(
+                       Invariants::INV_FULLFORMULATIONANDROUTE_0011,
+                       {
+                           bool ok = true;
+                           for (size_t i = 0; i < m_analyteConversions.size(); i++) {
+                               ok &= m_analyteConversions[i]->checkInvariants();
+                           }
+                           return ok;
+                       },
+                       "There is an error in an analyte conversion");
+               INVARIANT(
+                       Invariants::INV_FULLFORMULATIONANDROUTE_0012,
+                       (m_specs.checkInvariants()),
+                       "A formulation and route has an error in its specific formulation and route");)
 
 protected:
-
     /// A unique Id, useful when a DrugModel embeds more than one Formulation
     std::string m_id;
 
@@ -270,7 +415,7 @@ protected:
     std::unique_ptr<ValidDurations> m_validIntervals;
     std::unique_ptr<ValidDurations> m_validInfusionTimes;
 
-    std::vector<std::unique_ptr< AnalyteSetToAbsorptionAssociation > > m_associations;
+    std::vector<std::unique_ptr<AnalyteSetToAbsorptionAssociation> > m_associations;
 
     std::unique_ptr<StandardTreatment> m_standardTreatment;
 
@@ -285,7 +430,6 @@ protected:
 class FormulationAndRoutes
 {
 public:
-
     ///
     /// \brief FormulationAndRoutes Empty constructor
     ///
@@ -336,24 +480,40 @@ public:
     /// \brief begin returns an iterator on the beginning of the list
     /// \return The iterator on the beginning of the list
     ///
-    Iterator begin() const { return m_fars.begin(); }
+    Iterator begin() const
+    {
+        return m_fars.begin();
+    }
 
     ///
     /// \brief end returns an iterator on the end of the list
     /// \return The iterator on the end of the list
     ///
-    Iterator end() const { return m_fars.end(); }
+    Iterator end() const
+    {
+        return m_fars.end();
+    }
 
 
 
     INVARIANTS(
-            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (!m_fars.empty()), "There is no formulation and route")
-            LAMBDA_INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0002, {bool ok = true;for(size_t i = 0; i < m_fars.size(); i++) {ok &= m_fars[i]->checkInvariants();} return ok;}, "There is an error in a formulation and route")
-            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0003, (m_defaultIndex < m_fars.size()), "The default formulation and route does not refer to an existing one")
-            )
+            INVARIANT(Invariants::INV_FORMULATIONANDROUTE_0001, (!m_fars.empty()), "There is no formulation and route");
+            LAMBDA_INVARIANT(
+                    Invariants::INV_FORMULATIONANDROUTE_0002,
+                    {
+                        bool ok = true;
+                        for (size_t i = 0; i < m_fars.size(); i++) {
+                            ok &= m_fars[i]->checkInvariants();
+                        }
+                        return ok;
+                    },
+                    "There is an error in a formulation and route");
+            INVARIANT(
+                    Invariants::INV_FORMULATIONANDROUTE_0003,
+                    (m_defaultIndex < m_fars.size()),
+                    "The default formulation and route does not refer to an existing one");)
 
 private:
-
     //! Vector of formulation and routes
     std::vector<std::unique_ptr<FullFormulationAndRoute> > m_fars;
 

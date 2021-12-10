@@ -7,8 +7,8 @@
 
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/concentrationprediction.h"
-#include "tucucore/multiconcentrationprediction.h"
 #include "tucucore/covariateevent.h"
+#include "tucucore/multiconcentrationprediction.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -30,7 +30,6 @@ class GeneralExtractor;
 class ComputingUtils
 {
 public:
-
     /// An empty constructor
     ComputingUtils();
 
@@ -43,9 +42,9 @@ public:
     /// \return ComputingResult::Ok if everything went well, ComputingResult::ActiveMoietyCalculationError else
     ///
     ComputingStatus computeActiveMoiety(
-            const ActiveMoiety *_activeMoiety,
-            const std::vector<ConcentrationPredictionPtr> &_analytesPredictions,
-            ConcentrationPredictionPtr &_activeMoietyPredictions);
+            const ActiveMoiety* _activeMoiety,
+            const std::vector<ConcentrationPredictionPtr>& _analytesPredictions,
+            ConcentrationPredictionPtr& _activeMoietyPredictions);
 
 
 
@@ -64,14 +63,12 @@ public:
     ///
     /// This function is currently usused
     ///
-    CovariateEvent getCovariateAtTime(const DateTime &_date, const CovariateSeries &_covariates);
+    CovariateEvent getCovariateAtTime(const DateTime& _date, const CovariateSeries& _covariates);
 
     ComputingStatus computeMultiActiveMoiety(
             const std::vector<ActiveMoiety*> _activemoieties,
-            const std::vector<MultiConcentrationPredictionPtr> &_analytesPredictions,
-            MultiConcentrationPredictionPtr &_activeMoietyPredictions);
-
-
+            const std::vector<MultiConcentrationPredictionPtr>& _analytesPredictions,
+            MultiConcentrationPredictionPtr& _activeMoietyPredictions);
 };
 
 

@@ -1,9 +1,9 @@
 #ifndef TUCUXI_QUERY_ADMINISTRATIVEDATA_H
 #define TUCUXI_QUERY_ADMINISTRATIVEDATA_H
 
-#include <string>
-#include <memory>
 #include <map>
+#include <memory>
+#include <string>
 
 namespace Tucuxi {
 namespace Query {
@@ -14,13 +14,7 @@ public:
     // Constructors
     Address() = delete;
 
-    Address(
-        std::string _street,
-        int _postCode,
-        std::string _city,
-        std::string _state,
-        std::string _country
-    );
+    Address(std::string _street, int _postCode, std::string _city, std::string _state, std::string _country);
 
     Address(Address& _other) = delete;
 
@@ -84,14 +78,13 @@ public:
     PersonalContact() = delete;
 
     PersonalContact(
-        std::string& _id,
-        std::string& _title,
-        std::string& _firstName,
-        std::string& _lastName,
-        std::unique_ptr<Address> _pAddress,
-        std::unique_ptr<Phone> _pPhone,
-        std::unique_ptr<Email> _pEmail
-    );
+            std::string& _id,
+            std::string& _title,
+            std::string& _firstName,
+            std::string& _lastName,
+            std::unique_ptr<Address> _pAddress,
+            std::unique_ptr<Phone> _pPhone,
+            std::unique_ptr<Email> _pEmail);
 
     PersonalContact(PersonalContact& _other) = delete;
 
@@ -112,7 +105,6 @@ protected:
     std::unique_ptr<Address> m_pAddress;
     std::unique_ptr<Phone> m_pPhone;
     std::unique_ptr<Email> m_pEmail;
-
 };
 
 class InstituteContact
@@ -122,12 +114,11 @@ public:
     InstituteContact() = delete;
 
     InstituteContact(
-        std::string& _id,
-        std::string& _name,
-        std::unique_ptr<Address> _pAddress,
-        std::unique_ptr<Phone> _pPhone,
-        std::unique_ptr<Email> _pEmail
-    );
+            std::string& _id,
+            std::string& _name,
+            std::unique_ptr<Address> _pAddress,
+            std::unique_ptr<Phone> _pPhone,
+            std::unique_ptr<Email> _pEmail);
 
     InstituteContact(InstituteContact& _other) = delete;
 
@@ -152,10 +143,7 @@ public:
     // Constructors
     Person() = delete;
 
-    Person(
-        std::unique_ptr<PersonalContact> _pPerson,
-        std::unique_ptr<InstituteContact> _pInstitute
-    );
+    Person(std::unique_ptr<PersonalContact> _pPerson, std::unique_ptr<InstituteContact> _pInstitute);
 
     Person(Person& _other) = delete;
 
@@ -174,9 +162,7 @@ public:
     // Constructors
     ClinicalData() = delete;
 
-    ClinicalData(
-        std::map<std::string, std::string>& _data
-    );
+    ClinicalData(std::map<std::string, std::string>& _data);
 
     ClinicalData(ClinicalData& _other) = delete;
 
@@ -194,10 +180,9 @@ public:
     AdministrativeData() = delete;
 
     AdministrativeData(
-        std::unique_ptr<Person> _pMandator,
-        std::unique_ptr<Person> _pPatient,
-        std::unique_ptr<ClinicalData> _pClinicalData
-    );
+            std::unique_ptr<Person> _pMandator,
+            std::unique_ptr<Person> _pPatient,
+            std::unique_ptr<ClinicalData> _pClinicalData);
 
     AdministrativeData(AdministrativeData& _other) = delete;
 

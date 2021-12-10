@@ -5,8 +5,8 @@
 #include <iostream>
 #include <string>
 
-#include "tucucommon/utils.h"
 #include "tucucommon/loggerhelper.h"
+#include "tucucommon/utils.h"
 
 
 /// The following strange way of including files is meant to include all of them
@@ -270,7 +270,8 @@ int main(int argc, char** argv)
 
     // one compartment
     computingComponentConcentrationTests.add_test("Simple1", &TestComputingComponentConcentration::testImatinib1);
-    computingComponentConcentrationTests.add_test("ImatinibSteadyState", &TestComputingComponentConcentration::testImatinibSteadyState);
+    computingComponentConcentrationTests.add_test(
+            "ImatinibSteadyState", &TestComputingComponentConcentration::testImatinibSteadyState);
 
 
 
@@ -280,7 +281,7 @@ int main(int argc, char** argv)
         //std::cerr << "Computing Component Concentration test failed\n";
     }
     else {
-       // std::cout << "Computing Component Concentration test succeeded\n";
+        // std::cout << "Computing Component Concentration test succeeded\n";
     }
 #endif
 
@@ -288,17 +289,33 @@ int main(int argc, char** argv)
     TestComputingComponentAdjusements computingComponentAdjusementsTests;
 
     // one compartment
-    computingComponentAdjusementsTests.add_test("Simple test 1", &TestComputingComponentAdjusements::testImatinibLastFormulationAndRouteAllDosages);
-    computingComponentAdjusementsTests.add_test("Simple test 2", &TestComputingComponentAdjusements::testImatinibDefaultFormulationAndRouteAllDosages);
-    computingComponentAdjusementsTests.add_test("Simple test 3", &TestComputingComponentAdjusements::testImatinibAllFormulationAndRouteAllDosages);
-    computingComponentAdjusementsTests.add_test("Simple test 4", &TestComputingComponentAdjusements::testImatinibLastFormulationAndRouteBestDosage);
-    computingComponentAdjusementsTests.add_test("Simple test 5", &TestComputingComponentAdjusements::testImatinibDefaultFormulationAndRouteBestDosage);
-    computingComponentAdjusementsTests.add_test("Simple test 6", &TestComputingComponentAdjusements::testImatinibAllFormulationAndRouteBestDosage);
-    computingComponentAdjusementsTests.add_test("Simple test 7", &TestComputingComponentAdjusements::testImatinibEmptyTreatmentDefaultFormulationAndRouteAllDosages);
-    computingComponentAdjusementsTests.add_test("Simple test 8", &TestComputingComponentAdjusements::testImatinibSteadyStateLastFormulationAndRouteAllDosages);
-    computingComponentAdjusementsTests.add_test("Simple test 9", &TestComputingComponentAdjusements::testImatinibLastFormulationAndRouteAllDosagesAtSteadyState);
-    computingComponentAdjusementsTests.add_test("Simple test 10", &TestComputingComponentAdjusements::testImatinibAllFormulationAndRouteBestDosageLoadingDose);
-    computingComponentAdjusementsTests.add_test("Simple test 11", &TestComputingComponentAdjusements::testImatinibAllFormulationAndRouteBestDosageRestPeriod);
+    computingComponentAdjusementsTests.add_test(
+            "Simple test 1", &TestComputingComponentAdjusements::testImatinibLastFormulationAndRouteAllDosages);
+    computingComponentAdjusementsTests.add_test(
+            "Simple test 2", &TestComputingComponentAdjusements::testImatinibDefaultFormulationAndRouteAllDosages);
+    computingComponentAdjusementsTests.add_test(
+            "Simple test 3", &TestComputingComponentAdjusements::testImatinibAllFormulationAndRouteAllDosages);
+    computingComponentAdjusementsTests.add_test(
+            "Simple test 4", &TestComputingComponentAdjusements::testImatinibLastFormulationAndRouteBestDosage);
+    computingComponentAdjusementsTests.add_test(
+            "Simple test 5", &TestComputingComponentAdjusements::testImatinibDefaultFormulationAndRouteBestDosage);
+    computingComponentAdjusementsTests.add_test(
+            "Simple test 6", &TestComputingComponentAdjusements::testImatinibAllFormulationAndRouteBestDosage);
+    computingComponentAdjusementsTests.add_test(
+            "Simple test 7",
+            &TestComputingComponentAdjusements::testImatinibEmptyTreatmentDefaultFormulationAndRouteAllDosages);
+    computingComponentAdjusementsTests.add_test(
+            "Simple test 8",
+            &TestComputingComponentAdjusements::testImatinibSteadyStateLastFormulationAndRouteAllDosages);
+    computingComponentAdjusementsTests.add_test(
+            "Simple test 9",
+            &TestComputingComponentAdjusements::testImatinibLastFormulationAndRouteAllDosagesAtSteadyState);
+    computingComponentAdjusementsTests.add_test(
+            "Simple test 10",
+            &TestComputingComponentAdjusements::testImatinibAllFormulationAndRouteBestDosageLoadingDose);
+    computingComponentAdjusementsTests.add_test(
+            "Simple test 11",
+            &TestComputingComponentAdjusements::testImatinibAllFormulationAndRouteBestDosageRestPeriod);
 
     res = computingComponentAdjusementsTests.run(argc, argv);
     tot_res |= res;
@@ -314,24 +331,36 @@ int main(int argc, char** argv)
     TestIntervalCalculator calculatorsTests;
 
     // one compartment
-    calculatorsTests.add_test("1 comp bolus single vs multiple test", &TestIntervalCalculator::test1compBolusSingleVsMultiple);
-    calculatorsTests.add_test("1 comp extra single vs multiple test", &TestIntervalCalculator::test1compExtraSingleVsMultiple);
-    calculatorsTests.add_test("1 comp extra lag single vs multiple test", &TestIntervalCalculator::test1compExtraLagSingleVsMultiple);
-    calculatorsTests.add_test("1 comp infusion single vs multiple test", &TestIntervalCalculator::test1compInfusionSingleVsMultiple);
+    calculatorsTests.add_test(
+            "1 comp bolus single vs multiple test", &TestIntervalCalculator::test1compBolusSingleVsMultiple);
+    calculatorsTests.add_test(
+            "1 comp extra single vs multiple test", &TestIntervalCalculator::test1compExtraSingleVsMultiple);
+    calculatorsTests.add_test(
+            "1 comp extra lag single vs multiple test", &TestIntervalCalculator::test1compExtraLagSingleVsMultiple);
+    calculatorsTests.add_test(
+            "1 comp infusion single vs multiple test", &TestIntervalCalculator::test1compInfusionSingleVsMultiple);
 
-    calculatorsTests.add_test("rk 1 comp extra single vs multiple test", &TestIntervalCalculator::testRK41compExtraSingleVsMultiple);
-    calculatorsTests.add_test("rk 1 comp gamma extra single vs multiple test", &TestIntervalCalculator::testRK41compGammaExtraSingleVsMultiple);
+    calculatorsTests.add_test(
+            "rk 1 comp extra single vs multiple test", &TestIntervalCalculator::testRK41compExtraSingleVsMultiple);
+    calculatorsTests.add_test(
+            "rk 1 comp gamma extra single vs multiple test",
+            &TestIntervalCalculator::testRK41compGammaExtraSingleVsMultiple);
 
     calculatorsTests.add_test("1 comp extra analytical vs Rk4", &TestIntervalCalculator::test1compExtraAnalyticalVsRk4);
     calculatorsTests.add_test("2 comp erlang transit", &TestIntervalCalculator::test2compErlang);
 
 
     // two compartment
-    calculatorsTests.add_test("2 comp bolus single vs multiple test", &TestIntervalCalculator::test2compBolusSingleVsMultiple);
-    calculatorsTests.add_test("2 comp extra single vs multiple test", &TestIntervalCalculator::test2compExtraSingleVsMultiple);
-    calculatorsTests.add_test("2 comp infusion single vs multiple test", &TestIntervalCalculator::test2compInfusionSingleVsMultiple);
-    calculatorsTests.add_test("2 comp extra lag single vs multiple test", &TestIntervalCalculator::test2compExtraLagSingleVsMultiple);
-    calculatorsTests.add_test("2 comp extra lag analytical vs Rk4 test", &TestIntervalCalculator::test2compExtraLagAnalyticalVsRk4);
+    calculatorsTests.add_test(
+            "2 comp bolus single vs multiple test", &TestIntervalCalculator::test2compBolusSingleVsMultiple);
+    calculatorsTests.add_test(
+            "2 comp extra single vs multiple test", &TestIntervalCalculator::test2compExtraSingleVsMultiple);
+    calculatorsTests.add_test(
+            "2 comp infusion single vs multiple test", &TestIntervalCalculator::test2compInfusionSingleVsMultiple);
+    calculatorsTests.add_test(
+            "2 comp extra lag single vs multiple test", &TestIntervalCalculator::test2compExtraLagSingleVsMultiple);
+    calculatorsTests.add_test(
+            "2 comp extra lag analytical vs Rk4 test", &TestIntervalCalculator::test2compExtraLagAnalyticalVsRk4);
 
     // three compartment
     // TODO Active following test after fixing input parameters
@@ -354,7 +383,8 @@ int main(int argc, char** argv)
 #if defined(test_concentrationcalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- ConcentrationCalculator --- //
     TestConcentrationCalculator concentrationCalculatorTests;
-    concentrationCalculatorTests.add_test("linear bolus test", &TestConcentrationCalculator::testConstantEliminationBolus);
+    concentrationCalculatorTests.add_test(
+            "linear bolus test", &TestConcentrationCalculator::testConstantEliminationBolus);
     concentrationCalculatorTests.add_test("1 comp bolus test", &TestConcentrationCalculator::test1compBolus);
     concentrationCalculatorTests.add_test("1 comp extra test", &TestConcentrationCalculator::test1compExtra);
     concentrationCalculatorTests.add_test("1 comp infusion test", &TestConcentrationCalculator::test1compInfusion);
@@ -381,7 +411,8 @@ int main(int argc, char** argv)
 #if defined(test_multiconstanteliminationbolus) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- ConcentrationCalculator --- //
     TestMultiConstantEliminationBolus multiConstantEliminationBolusTests;
-    multiConstantEliminationBolusTests.add_test("multiConstant bolus test", &TestMultiConstantEliminationBolus::testMultiConstantEliminationBolus);
+    multiConstantEliminationBolusTests.add_test(
+            "multiConstant bolus test", &TestMultiConstantEliminationBolus::testMultiConstantEliminationBolus);
 
     res = multiConstantEliminationBolusTests.run(argc, argv);
     tot_res |= res;
@@ -396,14 +427,19 @@ int main(int argc, char** argv)
 #if defined(test_multiconcentrationcalculator) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- ConcentrationCalculator --- //
     TestMultiConcentrationCalculator multiConcentrationCalculatorTests;
-    multiConcentrationCalculatorTests.add_test("constant elimination bolus test", &TestMultiConcentrationCalculator::testConstantEliminationBolus);
+    multiConcentrationCalculatorTests.add_test(
+            "constant elimination bolus test", &TestMultiConcentrationCalculator::testConstantEliminationBolus);
     multiConcentrationCalculatorTests.add_test("1 comp bolus test", &TestMultiConcentrationCalculator::test1compBolus);
     multiConcentrationCalculatorTests.add_test("1 comp extra test", &TestMultiConcentrationCalculator::test1compExtra);
-    multiConcentrationCalculatorTests.add_test("1 comp infusion test", &TestMultiConcentrationCalculator::test1compInfusion);
+    multiConcentrationCalculatorTests.add_test(
+            "1 comp infusion test", &TestMultiConcentrationCalculator::test1compInfusion);
     multiConcentrationCalculatorTests.add_test("2 comp bolus test", &TestMultiConcentrationCalculator::test2compBolus);
     multiConcentrationCalculatorTests.add_test("2 comp extra test", &TestMultiConcentrationCalculator::test2compExtra);
-    multiConcentrationCalculatorTests.add_test("2 comp infusion test", &TestMultiConcentrationCalculator::test2compInfusion);
-    multiConcentrationCalculatorTests.add_test("multiconstant elimination bolus test", &TestMultiConcentrationCalculator::testMultiConstantEliminationBolus);
+    multiConcentrationCalculatorTests.add_test(
+            "2 comp infusion test", &TestMultiConcentrationCalculator::test2compInfusion);
+    multiConcentrationCalculatorTests.add_test(
+            "multiconstant elimination bolus test",
+            &TestMultiConcentrationCalculator::testMultiConstantEliminationBolus);
 
     res = multiConcentrationCalculatorTests.run(argc, argv);
     tot_res |= res;
@@ -427,7 +463,8 @@ int main(int argc, char** argv)
     tot_res |= res;
     if (res != 0) {
         std::cerr << "Dosage test failed\n";
-    } else {
+    }
+    else {
         std::cout << "Dosage test succeeded\n";
     }
 #endif
@@ -464,20 +501,23 @@ int main(int argc, char** argv)
     intakeExtractorTests.add_test("OnceEveryTenDays test", &TestIntakeExtractor::testOnceEveryTenDays);
     intakeExtractorTests.add_test("OnceEvery36Hours test", &TestIntakeExtractor::testOnceEvery36Hours);
     intakeExtractorTests.add_test("FiveTimesEvery12Hours test", &TestIntakeExtractor::testFiveTimesEvery12Hours);
-    intakeExtractorTests.add_test("FiveTimesEvery12HoursEarlyStop test", &TestIntakeExtractor::testFiveTimesEvery12HoursEarlyStop);
+    intakeExtractorTests.add_test(
+            "FiveTimesEvery12HoursEarlyStop test", &TestIntakeExtractor::testFiveTimesEvery12HoursEarlyStop);
     intakeExtractorTests.add_test("TwiceEveryTenDays test", &TestIntakeExtractor::testTwiceEveryTenDays);
     intakeExtractorTests.add_test("OnceEveryDay test", &TestIntakeExtractor::testOnceEveryDay);
     intakeExtractorTests.add_test("ThreeTimesEveryDay test", &TestIntakeExtractor::testThreeTimesEveryDay);
     intakeExtractorTests.add_test("ComplexParallelSequence1 test", &TestIntakeExtractor::testComplexParallelSequence1);
     intakeExtractorTests.add_test("ComplexParallelSequence2 test", &TestIntakeExtractor::testComplexParallelSequence2);
     intakeExtractorTests.add_test("FullWeekExceptMonday test", &TestIntakeExtractor::testFullWeekExceptMonday);
-    intakeExtractorTests.add_test("OnceEvery36HoursAtSteadyState test", &TestIntakeExtractor::testOnceEvery36HoursAtSteadyState);
+    intakeExtractorTests.add_test(
+            "OnceEvery36HoursAtSteadyState test", &TestIntakeExtractor::testOnceEvery36HoursAtSteadyState);
 
     res = intakeExtractorTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
         std::cerr << "IntakeExtractor test failed\n";
-    } else {
+    }
+    else {
         std::cout << "IntakeExtractor test succeeded\n";
     }
 #endif
@@ -502,7 +542,8 @@ int main(int argc, char** argv)
     tot_res |= res;
     if (res != 0) {
         std::cerr << "Operation test failed\n";
-    } else {
+    }
+    else {
         std::cout << "Operation test succeeded\n";
     }
 #endif
@@ -516,7 +557,8 @@ int main(int argc, char** argv)
     tot_res |= res;
     if (res != 0) {
         std::cerr << "OperationCollection test failed\n";
-    } else {
+    }
+    else {
         std::cout << "OperationCollection test succeeded\n";
     }
 
@@ -528,7 +570,8 @@ int main(int argc, char** argv)
     tot_res |= res;
     if (res != 0) {
         std::cerr << "PkModel test failed\n";
-    } else {
+    }
+    else {
         std::cout << "PkModel test succeeded\n";
     }
 #endif
@@ -556,7 +599,8 @@ int main(int argc, char** argv)
 
     if (res != 0) {
         std::cerr << "Covariate Extractor test failed\n";
-    } else {
+    }
+    else {
         std::cout << "Covariate Extractor test succeeded\n";
     }
 #endif
@@ -574,7 +618,8 @@ int main(int argc, char** argv)
 
     if (res != 0) {
         std::cerr << "Parameter Extractor test failed\n";
-    } else {
+    }
+    else {
         std::cout << "Parameter Extractor test succeeded\n";
     }
 #endif
@@ -591,7 +636,8 @@ int main(int argc, char** argv)
 
     if (res != 0) {
         std::cerr << "Operable Graph Manager test failed\n";
-    } else {
+    }
+    else {
         std::cout << "Operable Graph Manager test succeeded\n";
     }
 #endif
@@ -601,10 +647,15 @@ int main(int argc, char** argv)
     TestPercentileCalculator percentileCalculatorTests;
 
     percentileCalculatorTests.add_test("Apriori Monte Carlo Percentile", &TestPercentileCalculator::testApriori);
-    percentileCalculatorTests.add_test("Aposteriori Normal Monte Carlo Percentile", &TestPercentileCalculator::testAposterioriNormal);
-    percentileCalculatorTests.add_test("Aposteriori Matrix cache", &TestPercentileCalculator::testAposterioriMatrixCache);
-    percentileCalculatorTests.add_test("Aposteriori Monte Carlo Percentile", &TestPercentileCalculator::testAposteriori);
-    percentileCalculatorTests.add_test("Aposteriori percentiles with samples far away in time", &TestPercentileCalculator::testAposterioriFarSamples);
+    percentileCalculatorTests.add_test(
+            "Aposteriori Normal Monte Carlo Percentile", &TestPercentileCalculator::testAposterioriNormal);
+    percentileCalculatorTests.add_test(
+            "Aposteriori Matrix cache", &TestPercentileCalculator::testAposterioriMatrixCache);
+    percentileCalculatorTests.add_test(
+            "Aposteriori Monte Carlo Percentile", &TestPercentileCalculator::testAposteriori);
+    percentileCalculatorTests.add_test(
+            "Aposteriori percentiles with samples far away in time",
+            &TestPercentileCalculator::testAposterioriFarSamples);
 
     res = percentileCalculatorTests.run(argc, argv);
     tot_res |= res;
@@ -661,9 +712,12 @@ int main(int argc, char** argv)
     TestComputingComponentPercentiles computingComponentPercentilesTests;
 
     // one compartment
-    computingComponentPercentilesTests.add_test("ImatinibPercentiles", &TestComputingComponentPercentiles::testImatinib1);
-    computingComponentPercentilesTests.add_test("ImatinibSteadyStatePercentiles", &TestComputingComponentPercentiles::testImatinibSteadyState);
-    computingComponentPercentilesTests.add_test("AposterioriPercentiles", &TestComputingComponentPercentiles::testAposterioriPercentiles);
+    computingComponentPercentilesTests.add_test(
+            "ImatinibPercentiles", &TestComputingComponentPercentiles::testImatinib1);
+    computingComponentPercentilesTests.add_test(
+            "ImatinibSteadyStatePercentiles", &TestComputingComponentPercentiles::testImatinibSteadyState);
+    computingComponentPercentilesTests.add_test(
+            "AposterioriPercentiles", &TestComputingComponentPercentiles::testAposterioriPercentiles);
 
 
 
@@ -749,7 +803,8 @@ int main(int argc, char** argv)
     // --- Constant elimination tests --- //
     TestConstantEliminationBolus constantEliminationBolusTests;
 
-    constantEliminationBolusTests.add_test("testConstantEliminationBolus", &TestConstantEliminationBolus::testConstantElimination);
+    constantEliminationBolusTests.add_test(
+            "testConstantEliminationBolus", &TestConstantEliminationBolus::testConstantElimination);
 
     res = constantEliminationBolusTests.run(argc, argv);
     tot_res |= res;
@@ -782,9 +837,14 @@ int main(int argc, char** argv)
     // --- Multi analytes multi active moieties tests --- //
     TestMultiAnalytesSingleActiveMoiety multiAnalytesSingleActiveMoietyTests;
 
-    multiAnalytesSingleActiveMoietyTests.add_test("testMultiAnalytesMultiActiveMoieties", &TestMultiAnalytesSingleActiveMoiety::testMultiAnalytesSingleActiveMoiety);
-    multiAnalytesSingleActiveMoietyTests.add_test("testMultiAnalytesMultiActiveMoietiesConversion", &TestMultiAnalytesSingleActiveMoiety::testMultiAnalytesSingleActiveMoietyConversion);
-    multiAnalytesSingleActiveMoietyTests.add_test("testAdjustments", &TestMultiAnalytesSingleActiveMoiety::testAdjustments);
+    multiAnalytesSingleActiveMoietyTests.add_test(
+            "testMultiAnalytesMultiActiveMoieties",
+            &TestMultiAnalytesSingleActiveMoiety::testMultiAnalytesSingleActiveMoiety);
+    multiAnalytesSingleActiveMoietyTests.add_test(
+            "testMultiAnalytesMultiActiveMoietiesConversion",
+            &TestMultiAnalytesSingleActiveMoiety::testMultiAnalytesSingleActiveMoietyConversion);
+    multiAnalytesSingleActiveMoietyTests.add_test(
+            "testAdjustments", &TestMultiAnalytesSingleActiveMoiety::testAdjustments);
 
     res = multiAnalytesSingleActiveMoietyTests.run(argc, argv);
     tot_res |= res;
@@ -800,9 +860,14 @@ int main(int argc, char** argv)
     // --- Multi analytes multi active moieties tests --- //
     TestMultiAnalytesMultiActiveMoieties multiAnalytesMultiActiveMoietiesTests;
 
-    multiAnalytesMultiActiveMoietiesTests.add_test("testMultiAnalytesMultiActiveMoieties", &TestMultiAnalytesMultiActiveMoieties::testMultiAnalytesMultiActiveMoieties);
-    multiAnalytesMultiActiveMoietiesTests.add_test("testMultiAnalytesMultiActiveMoietiesConversion", &TestMultiAnalytesMultiActiveMoieties::testMultiAnalytesMultiActiveMoietiesConversion);
-    multiAnalytesMultiActiveMoietiesTests.add_test("testAdjustments", &TestMultiAnalytesMultiActiveMoieties::testAdjustments);
+    multiAnalytesMultiActiveMoietiesTests.add_test(
+            "testMultiAnalytesMultiActiveMoieties",
+            &TestMultiAnalytesMultiActiveMoieties::testMultiAnalytesMultiActiveMoieties);
+    multiAnalytesMultiActiveMoietiesTests.add_test(
+            "testMultiAnalytesMultiActiveMoietiesConversion",
+            &TestMultiAnalytesMultiActiveMoieties::testMultiAnalytesMultiActiveMoietiesConversion);
+    multiAnalytesMultiActiveMoietiesTests.add_test(
+            "testAdjustments", &TestMultiAnalytesMultiActiveMoieties::testAdjustments);
 
     res = multiAnalytesMultiActiveMoietiesTests.run(argc, argv);
     tot_res |= res;
@@ -819,7 +884,8 @@ int main(int argc, char** argv)
     // --- Multi analytes multi active moieties tests --- //
     TestMichaelisMenten1comp michaelisMentent1compTests;
 
-    michaelisMentent1compTests.add_test("testMichaelisMenten1comp", &TestMichaelisMenten1comp::testMichaelisMenten1comp);
+    michaelisMentent1compTests.add_test(
+            "testMichaelisMenten1comp", &TestMichaelisMenten1comp::testMichaelisMenten1comp);
 
     res = michaelisMentent1compTests.run(argc, argv);
     tot_res |= res;
@@ -841,7 +907,8 @@ int main(int argc, char** argv)
     michaelisMentent2compTests.add_test("testMichaelisMenten2compExtra", &TestMichaelisMenten2comp::testExtra);
     michaelisMentent2compTests.add_test("testMichaelisMenten2compExtraLag", &TestMichaelisMenten2comp::testExtraLag);
     michaelisMentent2compTests.add_test("testMichaelisMenten2compMix", &TestMichaelisMenten2comp::testMix);
-    michaelisMentent2compTests.add_test("testMichaelisMenten2compMixPercentiles", &TestMichaelisMenten2comp::testMixPercentiles);
+    michaelisMentent2compTests.add_test(
+            "testMichaelisMenten2compMixPercentiles", &TestMichaelisMenten2comp::testMixPercentiles);
 
     res = michaelisMentent2compTests.run(argc, argv);
     tot_res |= res;
@@ -899,7 +966,8 @@ int main(int argc, char** argv)
     TestMichaelisMentenEnzyme1comp michaelisMententEnzyme1compTests;
 
     //michaelisMententEnzyme1compTests.add_test("testMichaelisMenten2compBolus", &TestMichaelisMentenEnzyme1comp::testBolus);
-    michaelisMententEnzyme1compTests.add_test("testMichaelisMenten2compExtra", &TestMichaelisMentenEnzyme1comp::testExtra);
+    michaelisMententEnzyme1compTests.add_test(
+            "testMichaelisMenten2compExtra", &TestMichaelisMentenEnzyme1comp::testExtra);
 
     res = michaelisMententEnzyme1compTests.run(argc, argv);
     tot_res |= res;
@@ -916,7 +984,8 @@ int main(int argc, char** argv)
     // --- Multi analytes multi active moieties tests --- //
     TestTwoCompartmentExtraLag twoCompartmentExtraLagTests;
 
-    twoCompartmentExtraLagTests.add_test("testTwoCompartmentExtraLag", &TestTwoCompartmentExtraLag::test2compExtraLagSingleDose);
+    twoCompartmentExtraLagTests.add_test(
+            "testTwoCompartmentExtraLag", &TestTwoCompartmentExtraLag::test2compExtraLagSingleDose);
 
     res = twoCompartmentExtraLagTests.run(argc, argv);
     tot_res |= res;

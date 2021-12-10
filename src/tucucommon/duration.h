@@ -30,50 +30,51 @@ public:
     /// \brief Construct a duration from a std::chrono::years
     /// This also provide implicit conversions when using all the other methods.
     /// \param _value Duration in years
-    Duration(const years &_value);
+    Duration(const years& _value);
 
     /// \brief Construct a duration from a std::chrono::months
     /// This also provide implicit conversions when using all the other methods.
     /// \param _value Duration in months
-    Duration(const months &_value);
+    Duration(const months& _value);
 
     /// \brief Construct a duration from a std::chrono::days
     /// This also provide implicit conversions when using all the other methods.
     /// \param _value Duration in days
-    Duration(const days &_value);
+    Duration(const days& _value);
 
     /// \brief Construct a duration from a std::chrono::hours
     /// This also provide implicit conversions when using all the other methods.
     /// \param _value Duration in hours
-    Duration(const std::chrono::hours &_value);
+    Duration(const std::chrono::hours& _value);
 
     /// \brief Construct a duration from a std::chrono::minutes
     /// This also provide implicit conversions when using all the other methods.
     /// \param _value Duration in minutes
-    Duration(const std::chrono::minutes &_value);
+    Duration(const std::chrono::minutes& _value);
 
     /// \brief Construct a duration from a std::chrono::seconds
     /// This also provide implicit conversions when using all the other methods.
     /// \param _value Duration in seconds
-    Duration(const std::chrono::seconds &_value);
+    Duration(const std::chrono::seconds& _value);
 
     /// \brief Construct a duration from a std::chrono::milliseconds
     /// This also provide implicit conversions when using all the other methods.
     /// \param _value Duration in milliseconds
-    Duration(const std::chrono::milliseconds &_value);
+    Duration(const std::chrono::milliseconds& _value);
 
     /// \brief Construct a duration from a time expressed in hh, mm, ss
     /// \param _hours Number of hours.
     /// \param _minutes Number of minutes.
     /// \param _seconds Number of seconds.
-    Duration(const std::chrono::hours &_hours,
-             const std::chrono::minutes &_minutes,
-             const std::chrono::seconds &_seconds);
+    Duration(
+            const std::chrono::hours& _hours,
+            const std::chrono::minutes& _minutes,
+            const std::chrono::seconds& _seconds);
 
     /// \brief Is the duration empty?
     /// If the duration has not been set or if the duration equals to 0, returns true.
     /// \return True if the duration is empty
-    bool isEmpty () const;
+    bool isEmpty() const;
 
     /// \brief Checks if the duration is negative.
     /// \return Returns true if the duration is negative, otherwise returns false.
@@ -84,24 +85,25 @@ public:
     void clear();
 
     /// \brief Add two duration
-    Duration operator+(const Duration &_other) const;
+    Duration operator+(const Duration& _other) const;
 
     /// \brief Add the two and assign them
-    Duration& operator+=(const Duration &_other);
+    Duration& operator+=(const Duration& _other);
 
     /// \brief Substract two duration
     /// If the duration to substract is smaller than the duration substracted, the resulting duration will be negative.
-    Duration operator-(const Duration &_other) const;
+    Duration operator-(const Duration& _other) const;
 
     /// \brief Substract the two and assign them
-    Duration& operator-=(const Duration &_other);
+    Duration& operator-=(const Duration& _other);
 
     /// \brief Multiply the duration by this value
     Duration operator*(double _factor) const;
 
     /// \brief Multiply the duration by this value, considering a convertion to double is valid
     template<typename T>
-    Duration operator*(T _factor) const {
+    Duration operator*(T _factor) const
+    {
         return (*this) * static_cast<double>(_factor);
     }
 
@@ -116,31 +118,31 @@ public:
     Duration& operator/=(double _divider);
 
     /// \brief Divide the duration by this duration
-    double operator/(const Duration &_other) const;
+    double operator/(const Duration& _other) const;
 
     /// \brief Obtain the remainder of dividing the duration by the specified one
-    Duration operator%(const Duration &_other) const;
+    Duration operator%(const Duration& _other) const;
 
     /// \brief Obtain the remainder of dividing the duration by the speicifed divider
     Duration operator%(int _divider) const;
 
     /// \brief Is the duration smaller?
-    bool operator<(const Duration &) const;
+    bool operator<(const Duration&) const;
 
     /// \brief Is the duration bigger?
-    bool operator>(const Duration &) const;
+    bool operator>(const Duration&) const;
 
     /// \brief Is the duration bigger or equal?
-    bool operator>=(const Duration &) const;
+    bool operator>=(const Duration&) const;
 
     /// \brief Is the duration smaller or equal?
-    bool operator<=(const Duration &) const;
+    bool operator<=(const Duration&) const;
 
     /// \brief Are these durations equals?
-    bool operator==(const Duration &) const;
+    bool operator==(const Duration&) const;
 
     /// \brief Are these durations not equals?
-    bool operator!=(const Duration &) const;
+    bool operator!=(const Duration&) const;
 
     /// \brief Retrieve the duration as a number of yeras
     /// \return The number of years reprensenting the duration.
@@ -174,7 +176,8 @@ public:
     /// \param _output Output stream.
     /// \param _dt Self reference to the Duration to print.
     /// \return Output stream given as input (for output chaining).
-    friend std::ostream& operator<<(std::ostream &_output, const Duration &_dt) {
+    friend std::ostream& operator<<(std::ostream& _output, const Duration& _dt)
+    {
         _output << "Years: " << _dt.toYears() << ";\n"
                 << "Months: " << _dt.toMonths() << ";\n"
                 << "Days: " << _dt.toDays() << ";\n"
@@ -187,12 +190,13 @@ public:
 private:
     /// \brief Returns the duration in one of the std::chrono duration class (hours, minutes, seconds, ...)
     /// \return The duration in the specified T unit.
-    template<class T> T get() const
+    template<class T>
+    T get() const
     {
         return std::chrono::duration_cast<T>(m_duration);
     }
 
-    std::chrono::duration<ChronoBaseType> m_duration;  /// The encapsulated duration
+    std::chrono::duration<ChronoBaseType> m_duration; /// The encapsulated duration
 
 #ifdef EASY_DEBUG
     std::string m_durationString;

@@ -1,10 +1,12 @@
 #ifndef TUCUXI_QUERY_QUERY_H
 #define TUCUXI_QUERY_QUERY_H
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
+
 #include "tucucommon/datetime.h"
+
 #include "administrativedata.h"
 #include "parametersdata.h"
 #include "requestdata.h"
@@ -43,8 +45,7 @@ public:
             const Tucuxi::Common::DateTime& _pQueryDate,
             const std::string& _language,
             std::unique_ptr<DrugTreatmentData> _pParameters,
-            std::vector< std::unique_ptr< RequestData > >& _requests
-    );
+            std::vector<std::unique_ptr<RequestData> >& _requests);
 
     ///
     /// \brief Copy constructor is not supported.
@@ -59,7 +60,7 @@ public:
     Tucuxi::Common::DateTime getpQueryDate() const;
     std::string getLanguage() const;
     const DrugTreatmentData& getpParameters() const;
-    const std::vector< std::unique_ptr< RequestData > >& getRequests() const;
+    const std::vector<std::unique_ptr<RequestData> >& getRequests() const;
 
 protected:
     /// The unique identifier of the query.
@@ -78,7 +79,7 @@ protected:
     std::unique_ptr<DrugTreatmentData> m_pParameters;
 
     /// The requests the client wants the server to process.
-    std::vector< std::unique_ptr< RequestData > > m_requests;
+    std::vector<std::unique_ptr<RequestData> > m_requests;
 };
 
 } // namespace Query

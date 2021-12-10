@@ -7,7 +7,7 @@ namespace Tucuxi {
 namespace Core {
 
 
-void cloneIntakeSeries(const std::vector<IntakeEvent> &_input, std::vector<IntakeEvent> &_output)
+void cloneIntakeSeries(const std::vector<IntakeEvent>& _input, std::vector<IntakeEvent>& _output)
 {
     for (const auto& intake : _input) {
         IntakeEvent newIntakeEvent = intake;
@@ -19,10 +19,9 @@ void cloneIntakeSeries(const std::vector<IntakeEvent> &_input, std::vector<Intak
 }
 
 void selectRecordedIntakes(
-        IntakeSeries &_selectionSeries, const IntakeSeries &_intakeSeries,
-        DateTime _recordFrom, DateTime _recordTo)
+        IntakeSeries& _selectionSeries, const IntakeSeries& _intakeSeries, DateTime _recordFrom, DateTime _recordTo)
 {
-    for (const auto & intake : _intakeSeries) {
+    for (const auto& intake : _intakeSeries) {
         DateTime eventTime = intake.getEventTime();
         if ((eventTime + intake.getInterval() > _recordFrom) && (eventTime < _recordTo)) {
             _selectionSeries.push_back(IntakeEvent(intake));

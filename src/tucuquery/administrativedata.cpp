@@ -8,15 +8,11 @@ namespace Query {
 
 // Address class
 
-Address::Address(
-        string _street,
-        int _postCode,
-        string _city,
-        string _state,
-        string _country
-) : m_street(std::move(_street)), m_postCode(_postCode), m_city(std::move(_city)),
-    m_state(std::move(_state)), m_country(std::move(_country))
-{}
+Address::Address(string _street, int _postCode, string _city, string _state, string _country)
+    : m_street(std::move(_street)), m_postCode(_postCode), m_city(std::move(_city)), m_state(std::move(_state)),
+      m_country(std::move(_country))
+{
+}
 
 const string& Address::getStreet() const
 {
@@ -45,9 +41,7 @@ const string& Address::getCountry() const
 
 // Phone class
 
-Phone::Phone(string& _number, string& _type)
-    : m_number(_number), m_type(_type)
-{}
+Phone::Phone(string& _number, string& _type) : m_number(_number), m_type(_type) {}
 
 const string& Phone::getNumber() const
 {
@@ -61,9 +55,7 @@ const string& Phone::getType() const
 
 // Email class
 
-Email::Email(string& _address, string& _type)
-    : m_address(_address), m_type(_type)
-{}
+Email::Email(string& _address, string& _type) : m_address(_address), m_type(_type) {}
 
 const string& Email::getAddress() const
 {
@@ -84,11 +76,11 @@ PersonalContact::PersonalContact(
         string& _lastName,
         unique_ptr<Address> _pAddress,
         unique_ptr<Phone> _pPhone,
-        unique_ptr<Email> _pEmail
-) : m_id(_id), m_title(_title), m_firstName(_firstName),
-    m_lastName(_lastName), m_pAddress(move(_pAddress)),
-    m_pPhone(move(_pPhone)), m_pEmail(move(_pEmail))
-{}
+        unique_ptr<Email> _pEmail)
+    : m_id(_id), m_title(_title), m_firstName(_firstName), m_lastName(_lastName), m_pAddress(move(_pAddress)),
+      m_pPhone(move(_pPhone)), m_pEmail(move(_pEmail))
+{
+}
 
 const string& PersonalContact::getId() const
 {
@@ -128,14 +120,10 @@ const Email& PersonalContact::getpEmail() const
 // InstituteContact class
 
 InstituteContact::InstituteContact(
-        string& _id,
-        string& _name,
-        unique_ptr<Address> _pAddress,
-        unique_ptr<Phone> _pPhone,
-        unique_ptr<Email> _pEmail
-) : m_id(_id), m_name(_name), m_pAddress(move(_pAddress)),
-    m_pPhone(move(_pPhone)), m_pEmail(move(_pEmail))
-{}
+        string& _id, string& _name, unique_ptr<Address> _pAddress, unique_ptr<Phone> _pPhone, unique_ptr<Email> _pEmail)
+    : m_id(_id), m_name(_name), m_pAddress(move(_pAddress)), m_pPhone(move(_pPhone)), m_pEmail(move(_pEmail))
+{
+}
 
 const string& InstituteContact::getId() const
 {
@@ -166,7 +154,8 @@ const Email& InstituteContact::getpEmail() const
 
 Person::Person(std::unique_ptr<PersonalContact> _pPerson, std::unique_ptr<InstituteContact> _pInstitute)
     : m_pPerson(move(_pPerson)), m_pInstitute(move(_pInstitute))
-{}
+{
+}
 
 const PersonalContact& Person::getpPerson() const
 {
@@ -180,10 +169,7 @@ const InstituteContact& Person::getpInstitute() const
 
 // ClinicalData class
 
-ClinicalData::ClinicalData(
-        std::map<std::string, std::string>& _data
-) : m_data(_data)
-{}
+ClinicalData::ClinicalData(std::map<std::string, std::string>& _data) : m_data(_data) {}
 
 const std::map<std::string, std::string>& ClinicalData::getData() const
 {
@@ -193,12 +179,10 @@ const std::map<std::string, std::string>& ClinicalData::getData() const
 // AdministrativeData class
 
 AdministrativeData::AdministrativeData(
-        unique_ptr<Person> _pMandator,
-        unique_ptr<Person> _pPatient,
-        unique_ptr<ClinicalData> _pClinicalData
-) : m_pMandator(move(_pMandator)), m_pPatient(move(_pPatient)),
-    m_pClinicalData(move(_pClinicalData))
-{}
+        unique_ptr<Person> _pMandator, unique_ptr<Person> _pPatient, unique_ptr<ClinicalData> _pClinicalData)
+    : m_pMandator(move(_pMandator)), m_pPatient(move(_pPatient)), m_pClinicalData(move(_pClinicalData))
+{
+}
 
 const Person& AdministrativeData::getpMandator() const
 {

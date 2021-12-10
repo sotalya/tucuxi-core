@@ -7,9 +7,7 @@ namespace Query {
 
 
 
-ComputingQuery::ComputingQuery(std::string _queryId) : m_queryId(std::move(_queryId))
-{
-}
+ComputingQuery::ComputingQuery(std::string _queryId) : m_queryId(std::move(_queryId)) {}
 
 void ComputingQuery::addComputingRequest(std::unique_ptr<Tucuxi::Core::ComputingRequest> _computingRequest)
 {

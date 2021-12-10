@@ -24,8 +24,7 @@ template<class iteratorType, class T>
 class StandaloneSTLIterator : public Iterator<T>
 {
 public:
-    StandaloneSTLIterator(iteratorType &_first, iteratorType &_last)
-        : m_first(_first), m_last(_last)
+    StandaloneSTLIterator(iteratorType& _first, iteratorType& _last) : m_first(_first), m_last(_last)
     {
         reset();
     }

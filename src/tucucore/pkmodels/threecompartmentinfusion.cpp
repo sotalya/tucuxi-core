@@ -4,8 +4,10 @@
 
 #include <Eigen/Dense>
 
-#include "tucucommon/loggerhelper.h"
 #include "tucucore/pkmodels/threecompartmentinfusion.h"
+
+#include "tucucommon/loggerhelper.h"
+
 #include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
@@ -15,7 +17,8 @@ namespace Core {
 #define DEBUG
 #endif
 
-ThreeCompartmentInfusionMicro::ThreeCompartmentInfusionMicro() : IntakeIntervalCalculatorBase<3, ThreeCompartmentInfusionExponentials> (new PertinentTimesCalculatorInfusion())
+ThreeCompartmentInfusionMicro::ThreeCompartmentInfusionMicro()
+    : IntakeIntervalCalculatorBase<3, ThreeCompartmentInfusionExponentials>(new PertinentTimesCalculatorInfusion())
 {
 }
 
@@ -36,10 +39,10 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
     m_F = _parameters.getValue(ParameterId::F);
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Ke = _parameters.getValue(ParameterId::Ke);
-    m_K12 =_parameters.getValue(ParameterId::K12);
-    m_K21 =_parameters.getValue(ParameterId::K21);
-    m_K13 =_parameters.getValue(ParameterId::K13);
-    m_K31 =_parameters.getValue(ParameterId::K31);
+    m_K12 = _parameters.getValue(ParameterId::K12);
+    m_K21 = _parameters.getValue(ParameterId::K21);
+    m_K13 = _parameters.getValue(ParameterId::K13);
+    m_K31 = _parameters.getValue(ParameterId::K31);
     m_Tinf = _intakeEvent.getInfusionTime().toHours();
     m_Int = _intakeEvent.getInterval().toHours();
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
@@ -47,15 +50,15 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
     a0 = m_Ke * m_K21 * m_K31;
     a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
     a2 = m_Ke + m_K12 + m_K13 + m_K21 + m_K31;
-    p = a1 - std::pow(a2,2) / 3;
-    q = 2 * std::pow(a2,3) / 27 - a1 * a2 / 3 + a0;
-    r1 = std::sqrt(-(std::pow(p,3) / 27));
-    r2 = 2 * std::pow(r1,1/3);
-    phi = std::acos(- q / (2 * r1)) / 3;
+    p = a1 - std::pow(a2, 2) / 3;
+    q = 2 * std::pow(a2, 3) / 27 - a1 * a2 / 3 + a0;
+    r1 = std::sqrt(-(std::pow(p, 3) / 27));
+    r2 = 2 * std::pow(r1, 1 / 3);
+    phi = std::acos(-q / (2 * r1)) / 3;
 
-    m_Alpha = - (std::cos(phi) * r2 - a2 / 3);
-    m_Beta = - (std::cos(phi + 2 * 3.1428 / 3) * r2 - a2/3);
-    m_Gamma = - (std::cos(phi + 4 * 3.1428/3) * r2 - a2/3);
+    m_Alpha = -(std::cos(phi) * r2 - a2 / 3);
+    m_Beta = -(std::cos(phi + 2 * 3.1428 / 3) * r2 - a2 / 3);
+    m_Gamma = -(std::cos(phi + 4 * 3.1428 / 3) * r2 - a2 / 3);
 
 #ifdef DEBUG
     Tucuxi::Common::LoggerHelper logHelper;
@@ -101,7 +104,11 @@ void ThreeCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
     setExponentials(Exponentials::Gamma, (-m_Gamma * _times).array().exp());
 }
 
-bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentInfusionMicro::computeConcentrations(
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1(m_nbPoints);
     Value concentrations2, concentrations3;
@@ -110,10 +117,13 @@ bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inRe
     size_t thirdCompartment = static_cast<size_t>(Compartments::Third);
     int forcesize;
     if (m_nbPoints == 2) {
-        forcesize = static_cast<int>(std::min(ceil(m_Tinf/m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
+        forcesize = static_cast<int>(std::min(
+                ceil(m_Tinf / m_Int * static_cast<double>(m_nbPoints)), ceil(static_cast<double>(m_nbPoints))));
     }
     else {
-        forcesize = std::min(static_cast<int>(m_nbPoints), std::max(2, static_cast<int>((m_Tinf / m_Int) * static_cast<double>(m_nbPoints))));
+        forcesize = std::min(
+                static_cast<int>(m_nbPoints),
+                std::max(2, static_cast<int>((m_Tinf / m_Int) * static_cast<double>(m_nbPoints))));
     }
     TMP_UNUSED_PARAMETER(_inResiduals);
 
@@ -125,7 +135,7 @@ bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inRe
     _outResiduals[secondCompartment] = concentrations2;
     _outResiduals[thirdCompartment] = concentrations3;
 
-    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());	
+    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
     // TODO: add calcuation concentrations of second and third compartment and condtions
     TMP_UNUSED_PARAMETER(_isAll);
 
@@ -136,7 +146,12 @@ bool ThreeCompartmentInfusionMicro::computeConcentrations(const Residuals& _inRe
     return bOK;
 }
 
-bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, const Residuals& _inResiduals, bool _isAll, std::vector<Concentrations>& _concentrations, Residuals& _outResiduals)
+bool ThreeCompartmentInfusionMicro::computeConcentration(
+        const Value& _atTime,
+        const Residuals& _inResiduals,
+        bool _isAll,
+        std::vector<Concentrations>& _concentrations,
+        Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1(2);
     Value concentrations2, concentrations3;
@@ -151,7 +166,7 @@ bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, c
     TMP_UNUSED_PARAMETER(_inResiduals);
 
     if (_atTime <= m_Tinf) {
-	    forcesize = 1;
+        forcesize = 1;
     }
 
     // Calculate concentrations for comp1 and comp2
@@ -181,8 +196,7 @@ bool ThreeCompartmentInfusionMicro::computeConcentration(const Value& _atTime, c
     return bOK;
 }
 
-ThreeCompartmentInfusionMacro::ThreeCompartmentInfusionMacro()
-= default;
+ThreeCompartmentInfusionMacro::ThreeCompartmentInfusionMacro() = default;
 
 std::vector<std::string> ThreeCompartmentInfusionMacro::getParametersId()
 {
@@ -195,7 +209,7 @@ bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent,
     if (!checkCondition(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
         return false;
     }
-    
+
     Value a0, a1, a2, p, q, r1, r2, phi;
 
     m_D = _intakeEvent.getDose();
@@ -217,15 +231,15 @@ bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent,
     a0 = m_Ke * m_K21 * m_K31;
     a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
     a2 = m_Ke + m_K12 + m_K13 + m_K21 + m_K31;
-    p = a1 - std::pow(a2,2) / 3;
-    q = 2 * std::pow(a2,3) / 27 - a1 * a2 / 3 + a0;
-    r1 = std::sqrt(-(std::pow(p,3) / 27));
-    r2 = 2 * std::pow(r1,1/3);
-    phi = std::acos(- q / (2 * r1)) / 3;
+    p = a1 - std::pow(a2, 2) / 3;
+    q = 2 * std::pow(a2, 3) / 27 - a1 * a2 / 3 + a0;
+    r1 = std::sqrt(-(std::pow(p, 3) / 27));
+    r2 = 2 * std::pow(r1, 1 / 3);
+    phi = std::acos(-q / (2 * r1)) / 3;
 
-    m_Alpha = - (std::cos(phi) * r2 - a2 / 3);
-    m_Beta = - (std::cos(phi + 2 * 3.1428 / 3) * r2 - a2/3);
-    m_Gamma = - (std::cos(phi + 4 * 3.1428/3) * r2 - a2/3);
+    m_Alpha = -(std::cos(phi) * r2 - a2 / 3);
+    m_Beta = -(std::cos(phi + 2 * 3.1428 / 3) * r2 - a2 / 3);
+    m_Gamma = -(std::cos(phi + 4 * 3.1428 / 3) * r2 - a2 / 3);
 
     // check the inputs
     bool bOK = checkPositiveValue(m_D, "The dose");
@@ -246,6 +260,5 @@ bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent,
     return true;
 }
 
-}
-}
-
+} // namespace Core
+} // namespace Tucuxi

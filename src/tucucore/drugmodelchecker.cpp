@@ -5,21 +5,21 @@
 
 #include "tucucommon/datetime.h"
 
-#include "tucucore/drugmodel/drugmodel.h"
-#include "tucucore/pkmodel.h"
-#include "tucucore/drugtreatment/drugtreatment.h"
-#include "tucucore/computingservice/icomputingservice.h"
 #include "tucucore/computingcomponent.h"
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/computingservice/computingresponse.h"
+#include "tucucore/computingservice/icomputingservice.h"
+#include "tucucore/drugmodel/drugmodel.h"
+#include "tucucore/drugtreatment/drugtreatment.h"
+#include "tucucore/pkmodel.h"
 
 namespace Tucuxi {
 namespace Core {
 
-DrugModelChecker::DrugModelChecker()
-= default;
+DrugModelChecker::DrugModelChecker() = default;
 
-DrugModelChecker::CheckerResult_t DrugModelChecker::checkDrugModel(const DrugModel *_drugModel, const PkModelCollection *_pkCollection)
+DrugModelChecker::CheckerResult_t DrugModelChecker::checkDrugModel(
+        const DrugModel* _drugModel, const PkModelCollection* _pkCollection)
 {
     if (_drugModel == nullptr) {
         return {false, "The Error Model is nullptr"};
@@ -34,10 +34,12 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkDrugModel(const DrugMod
     }
 
     // We need a PK model for each analyte group
-    for (const auto &analyteGroup : _drugModel->getAnalyteSets()) {
+    for (const auto& analyteGroup : _drugModel->getAnalyteSets()) {
         std::shared_ptr<PkModel> pkModel = _pkCollection->getPkModelFromId(analyteGroup->getPkModelId());
         if (pkModel == nullptr) {
-            return {false, "There is no PK model corresponding to the one defined in the drug model (" + analyteGroup->getPkModelId() + ")"};
+            return {false,
+                    "There is no PK model corresponding to the one defined in the drug model ("
+                            + analyteGroup->getPkModelId() + ")"};
         }
     }
 
@@ -76,24 +78,27 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkDrugModel(const DrugMod
     return {true, ""};
 }
 
-bool contains(std::vector<std::string> _vector, const std::string& _s) {
+bool contains(std::vector<std::string> _vector, const std::string& _s)
+{
     return std::find(_vector.begin(), _vector.end(), _s) != _vector.end();
 }
 
 template<class T>
-bool contains(std::vector<T> _vector, T _s) {
+bool contains(std::vector<T> _vector, T _s)
+{
     return std::find(_vector.begin(), _vector.end(), _s) != _vector.end();
 }
 
-DrugModelChecker::CheckerResult_t DrugModelChecker::checkAnalytes(const DrugModel *_drugModel)
+DrugModelChecker::CheckerResult_t DrugModelChecker::checkAnalytes(const DrugModel* _drugModel)
 {
     std::vector<AnalyteId> activeMoietiesAnalytes;
 
     // 1. Check that there is no overlap amongst moieties
-    for (const auto &activeMoiety : _drugModel->getActiveMoieties()) {
-        for (const auto &analyteId : activeMoiety->getAnalyteIds()) {
+    for (const auto& activeMoiety : _drugModel->getActiveMoieties()) {
+        for (const auto& analyteId : activeMoiety->getAnalyteIds()) {
             if (contains<AnalyteId>(activeMoietiesAnalytes, analyteId)) {
-                return {false, "The analyte " + analyteId.toString() + " is present at least twice in the active moieties"};
+                return {false,
+                        "The analyte " + analyteId.toString() + " is present at least twice in the active moieties"};
             }
             activeMoietiesAnalytes.push_back(analyteId);
         }
@@ -105,10 +110,12 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkAnalytes(const DrugMode
 
     // 2. Check that there is no overlap amongst the analyte groups
     std::vector<AnalyteId> allAnalytes;
-    for (const auto &analyteSet : _drugModel->m_analyteSets) {
-        for (const auto &analyte : analyteSet->getAnalytes()) {
+    for (const auto& analyteSet : _drugModel->m_analyteSets) {
+        for (const auto& analyte : analyteSet->getAnalytes()) {
             if (contains<AnalyteId>(allAnalytes, analyte->getAnalyteId())) {
-                return {false, "The analyte " + analyte->getAnalyteId().toString() + " is present at least twice in the analyte groups"};
+                return {false,
+                        "The analyte " + analyte->getAnalyteId().toString()
+                                + " is present at least twice in the analyte groups"};
             }
             allAnalytes.push_back(analyte->getAnalyteId());
         }
@@ -122,48 +129,49 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkAnalytes(const DrugMode
     }
 
     // 4. Check that there is an exact match between the conversions and the moieties
-    for (const auto &formulationAndRoute : _drugModel->m_formulationAndRoutes->m_fars) {
+    for (const auto& formulationAndRoute : _drugModel->m_formulationAndRoutes->m_fars) {
 
         std::vector<AnalyteId> analytes;
-        for (const auto &analyteConversion : formulationAndRoute->getAnalyteConversions()) {
+        for (const auto& analyteConversion : formulationAndRoute->getAnalyteConversions()) {
             analytes.push_back(analyteConversion->getAnalyteId());
         }
         std::sort(analytes.begin(), analytes.end());
         if (allAnalytes != analytes) {
-            return {false, "The analytes in the analyte conversions of a formulation and routes are not the same as the full set of analytes"};
+            return {false,
+                    "The analytes in the analyte conversions of a formulation and routes are not the same as the full set of analytes"};
         }
     }
 
     return {true, ""};
 }
 
-DrugModelChecker::CheckerResult_t DrugModelChecker::checkFormulaInputs(const DrugModel *_drugModel)
+DrugModelChecker::CheckerResult_t DrugModelChecker::checkFormulaInputs(const DrugModel* _drugModel)
 {
     // First get the list of covariate Ids
     std::vector<std::string> validInputs;
-    for(const auto &covariate : _drugModel->getCovariates()) {
+    for (const auto& covariate : _drugModel->getCovariates()) {
         validInputs.push_back(covariate->getId());
     }
 
     // Second the disposition parameters
-    for (const auto &analyteGroup : _drugModel->getAnalyteSets()) {
-        for (const auto &parameter : analyteGroup->getDispositionParameters().m_parameters) {
+    for (const auto& analyteGroup : _drugModel->getAnalyteSets()) {
+        for (const auto& parameter : analyteGroup->getDispositionParameters().m_parameters) {
             validInputs.push_back(parameter->getId() + "_population");
         }
     }
 
 
     // Second add the parameters
-//    for (const auto &parameter : _drugModel->getAbsorptionParameters())
+    //    for (const auto &parameter : _drugModel->getAbsorptionParameters())
 
 
-    std::vector<Operation *> operations;
+    std::vector<Operation*> operations;
 
     getAllOperations(_drugModel, operations);
 
-    for(const Operation *operation : operations) {
+    for (const Operation* operation : operations) {
         if (operation != nullptr) {
-            for(const auto &input : operation->getInputs()) {
+            for (const auto& input : operation->getInputs()) {
                 if (!contains(validInputs, input.getName())) {
                     return {false, "The input " + input.getName() + " is not a valid formula input"};
                 }
@@ -174,40 +182,50 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkFormulaInputs(const Dru
 }
 
 
-DrugModelChecker::CheckerResult_t DrugModelChecker::checkParameters(const DrugModel *_drugModel, const PkModelCollection *_pkCollection)
+DrugModelChecker::CheckerResult_t DrugModelChecker::checkParameters(
+        const DrugModel* _drugModel, const PkModelCollection* _pkCollection)
 {
 
     // We need a PK model for each analyte group
-    for (const auto &analyteGroup : _drugModel->getAnalyteSets()) {
+    for (const auto& analyteGroup : _drugModel->getAnalyteSets()) {
         std::shared_ptr<PkModel> pkModel = _pkCollection->getPkModelFromId(analyteGroup->getPkModelId());
         if (pkModel == nullptr) {
-            return {false, "There is no PK model corresponding to the one defined in the drug model (" + analyteGroup->getPkModelId() + ")"};
+            return {false,
+                    "There is no PK model corresponding to the one defined in the drug model ("
+                            + analyteGroup->getPkModelId() + ")"};
         }
 
 
-        const ParameterSetDefinition *dispositionParameters = _drugModel->getDispositionParameters(analyteGroup->getId());
+        const ParameterSetDefinition* dispositionParameters =
+                _drugModel->getDispositionParameters(analyteGroup->getId());
 
 
-        for (const auto &formulation : _drugModel->getFormulationAndRoutes()) {
+        for (const auto& formulation : _drugModel->getFormulationAndRoutes()) {
 
-            std::vector<std::string> requiredParameters = pkModel->getParametersForRoute(formulation->getAbsorptionModel(analyteGroup->getId()));
+            std::vector<std::string> requiredParameters =
+                    pkModel->getParametersForRoute(formulation->getAbsorptionModel(analyteGroup->getId()));
             if (requiredParameters.empty()) {
-                requiredParameters = pkModel->getParametersForRoute(formulation->getFormulationAndRoute().getAbsorptionModel());
+                requiredParameters =
+                        pkModel->getParametersForRoute(formulation->getFormulationAndRoute().getAbsorptionModel());
                 if (requiredParameters.empty()) {
-                    return {false, Tucuxi::Common::Utils::strFormat("It seems that there is no PK model for formulation and route %s", formulation->getId().c_str())};
+                    return {false,
+                            Tucuxi::Common::Utils::strFormat(
+                                    "It seems that there is no PK model for formulation and route %s",
+                                    formulation->getId().c_str())};
                 }
             }
 
             std::sort(requiredParameters.begin(), requiredParameters.end());
 
-            const ParameterSetDefinition *absorptionParameters = formulation->getParameterDefinitions(analyteGroup->getId());
+            const ParameterSetDefinition* absorptionParameters =
+                    formulation->getParameterDefinitions(analyteGroup->getId());
 
             std::vector<std::string> formulationParameters;
-            for (const auto &p : dispositionParameters->m_parameters) {
+            for (const auto& p : dispositionParameters->m_parameters) {
                 formulationParameters.push_back(p->getId());
             }
             if (absorptionParameters != nullptr) {
-                for (const auto &p : absorptionParameters->m_parameters) {
+                for (const auto& p : absorptionParameters->m_parameters) {
                     formulationParameters.push_back(p->getId());
                 }
             }
@@ -217,58 +235,66 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkParameters(const DrugMo
             if (requiredParameters.size() != formulationParameters.size()) {
 
                 std::string reqString;
-                for(const auto & requiredParameter : requiredParameters) {
+                for (const auto& requiredParameter : requiredParameters) {
                     reqString += requiredParameter + "|";
                 }
 
                 std::string forString;
-                for(const auto & formulationParameter : formulationParameters) {
+                for (const auto& formulationParameter : formulationParameters) {
                     forString += formulationParameter + "|";
                 }
 
-                return {false, Tucuxi::Common::Utils::strFormat("The formulation and route %s does not have the same number of parameters. Required : %s. Given : %s", formulation->getId().c_str(), reqString.c_str(), forString.c_str())};
+                return {false,
+                        Tucuxi::Common::Utils::strFormat(
+                                "The formulation and route %s does not have the same number of parameters. Required : %s. Given : %s",
+                                formulation->getId().c_str(),
+                                reqString.c_str(),
+                                forString.c_str())};
             }
 
-            for(size_t i = 0; i < requiredParameters.size(); i++) {
+            for (size_t i = 0; i < requiredParameters.size(); i++) {
                 if (requiredParameters[i] != formulationParameters[i]) {
 
                     std::string reqString;
-                    for(const auto & requiredParameter : requiredParameters) {
+                    for (const auto& requiredParameter : requiredParameters) {
                         reqString += requiredParameter + "|";
                     }
 
                     std::string forString;
-                    for(const auto & formulationParameter : formulationParameters) {
+                    for (const auto& formulationParameter : formulationParameters) {
                         forString += formulationParameter + "|";
                     }
-                    return {false, Tucuxi::Common::Utils::strFormat("The formulation and route %s does not have the right PK parameters. Required : %s. Given : %s", formulation->getId().c_str(), reqString.c_str(), forString.c_str())};
+                    return {false,
+                            Tucuxi::Common::Utils::strFormat(
+                                    "The formulation and route %s does not have the right PK parameters. Required : %s. Given : %s",
+                                    formulation->getId().c_str(),
+                                    reqString.c_str(),
+                                    forString.c_str())};
                 }
             }
-
         }
-
     }
 
     return {true, ""};
 }
 
 
-void DrugModelChecker::getAllOperations(const DrugModel *_drugModel, std::vector<Operation *> &_operations)
+void DrugModelChecker::getAllOperations(const DrugModel* _drugModel, std::vector<Operation*>& _operations)
 {
 
-    for (const auto &analyteGroup : _drugModel->getAnalyteSets()) {
-        for (const auto &parameter : analyteGroup->getDispositionParameters().m_parameters) {
+    for (const auto& analyteGroup : _drugModel->getAnalyteSets()) {
+        for (const auto& parameter : analyteGroup->getDispositionParameters().m_parameters) {
             if (parameter->isComputed()) {
                 _operations.push_back(&parameter->getOperation());
             }
         }
     }
 
-    for (const auto &formulation : _drugModel->getFormulationAndRoutes()) {
-        for (const auto &analyteGroup : _drugModel->getAnalyteSets()) {
+    for (const auto& formulation : _drugModel->getFormulationAndRoutes()) {
+        for (const auto& analyteGroup : _drugModel->getAnalyteSets()) {
             auto parameters = formulation->getParameterDefinitions(analyteGroup->getId());
             if (parameters != nullptr) {
-                for (size_t index = 0; index < parameters->getNbParameters(); index ++) {
+                for (size_t index = 0; index < parameters->getNbParameters(); index++) {
                     const auto parameter = parameters->getParameter(index);
                     if (parameter->isComputed()) {
                         _operations.push_back(&parameter->getOperation());
@@ -278,11 +304,11 @@ void DrugModelChecker::getAllOperations(const DrugModel *_drugModel, std::vector
         }
     }
 
-    for (const auto &constraint : _drugModel->getDomain().getConstraints()) {
+    for (const auto& constraint : _drugModel->getDomain().getConstraints()) {
         _operations.push_back(constraint->getCheckOperationPointer());
     }
 
-    for (const auto &covariate : _drugModel->getCovariates()) {
+    for (const auto& covariate : _drugModel->getCovariates()) {
         auto validation = covariate->getValidation();
         if (validation != nullptr) {
             _operations.push_back(covariate->getValidation());
@@ -291,34 +317,31 @@ void DrugModelChecker::getAllOperations(const DrugModel *_drugModel, std::vector
 }
 
 
-DrugModelChecker::CheckerResult_t DrugModelChecker::checkOperations(const DrugModel *_drugModel)
+DrugModelChecker::CheckerResult_t DrugModelChecker::checkOperations(const DrugModel* _drugModel)
 {
 
-    std::vector<Operation *> operations;
+    std::vector<Operation*> operations;
 
     getAllOperations(_drugModel, operations);
 
-    for(Operation *operation : operations) {
+    for (Operation* operation : operations) {
         if (operation != nullptr) {
             OperationInputList inputList;
-            for(const auto &input : operation->getInputs()) {
+            for (const auto& input : operation->getInputs()) {
                 switch (input.getType()) {
-                case InputType::BOOL :
-                {
+                case InputType::BOOL: {
                     inputList.push_back(OperationInput(input.getName(), true));
                 } break;
-                case InputType::DOUBLE :
-                {
+                case InputType::DOUBLE: {
                     inputList.push_back(OperationInput(input.getName(), 1.0));
                 } break;
-                case InputType::INTEGER :
-                {
+                case InputType::INTEGER: {
                     inputList.push_back(OperationInput(input.getName(), 1));
                 } break;
                 }
             }
 
-            JSOperation *jsOperation = dynamic_cast<JSOperation*>(operation);
+            JSOperation* jsOperation = dynamic_cast<JSOperation*>(operation);
             if (jsOperation != nullptr) {
                 if (!jsOperation->checkOperation(inputList)) {
 
@@ -328,14 +351,16 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkOperations(const DrugMo
                     std::string numberedExp;
 
                     int lineIndex = 0;
-                    while(std::getline(sstream,line,'\n')){
+                    while (std::getline(sstream, line, '\n')) {
                         numberedExp += std::to_string(lineIndex) + " .\t" + line + "\n";
-                        lineIndex ++;
+                        lineIndex++;
                     }
 
 
-                    return {false, "The operation could not be evaluated with input values being 1 (for double and int) and true for booleans. Maybe you forgot to set up some of the required inputs in the input list: \n\n" + numberedExp +
-                                "\n\nSpecific error message: \n" + operation->getLastErrorMessage()};
+                    return {false,
+                            "The operation could not be evaluated with input values being 1 (for double and int) and true for booleans. Maybe you forgot to set up some of the required inputs in the input list: \n\n"
+                                    + numberedExp + "\n\nSpecific error message: \n"
+                                    + operation->getLastErrorMessage()};
                 }
             }
         }
@@ -343,7 +368,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkOperations(const DrugMo
     return {true, ""};
 }
 
-DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugModel *_drugModel)
+DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugModel* _drugModel)
 {
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
@@ -352,27 +377,24 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
 
     // Create a time range starting at the beginning of june 2017, with no upper end (to test that the repetitions
     // are handled correctly)
-    DateTime start(date::year_month_day(date::year(2018), date::month(1), date::day(1)),
-                   Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+    DateTime start(
+            date::year_month_day(date::year(2018), date::month(1), date::day(1)),
+            Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
     auto defaultFormulationAndRoute = _drugModel->getFormulationAndRoutes().getDefault();
-    const auto &formulationAndRoute = defaultFormulationAndRoute->getFormulationAndRoute();
+    const auto& formulationAndRoute = defaultFormulationAndRoute->getFormulationAndRoute();
     auto dose = defaultFormulationAndRoute->getValidDoses()->getDefaultValue();
     auto doseUnit = defaultFormulationAndRoute->getValidDoses()->getUnit();
     auto interval = defaultFormulationAndRoute->getValidIntervals()->getDefaultDuration();
     //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
     // Add a treatment intake every ten days in June
     // 200mg via a intravascular at 08h30, starting the 01.06
-    LastingDose periodicDose(dose,
-                             doseUnit,
-                             formulationAndRoute,
-                             Duration(),
-                             interval);
+    LastingDose periodicDose(dose, doseUnit, formulationAndRoute, Duration(), interval);
     DosageRepeat repeatedDose(periodicDose, 10000);
     auto timeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(start, repeatedDose);
     drugTreatment->getModifiableDosageHistory().addTimeRange(*timeRange);
 
-    IComputingService *componentPtr = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    IComputingService* componentPtr = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
     std::unique_ptr<IComputingService> component = std::unique_ptr<IComputingService>(componentPtr);
 
     {
@@ -402,9 +424,8 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
         Tucuxi::Common::DateTime endPred = startPred + interval * 2;
         double nbPointsPerHour = 10.0;
         ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-        std::unique_ptr<ComputingTraitConcentration> traits =
-                std::make_unique<ComputingTraitConcentration>(
-                    requestResponseId, startPred, endPred, nbPointsPerHour, computingOption);
+        std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                requestResponseId, startPred, endPred, nbPointsPerHour, computingOption);
 
         ComputingRequest request(requestResponseId, *_drugModel, *drugTreatment, std::move(traits));
 
@@ -414,11 +435,12 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
         result = component->compute(request, response);
 
         if (result != ComputingStatus::Ok) {
-            return {false, "A prediction calculation based on the halflife and the multiplier went wrong. Please check these values."};
+            return {false,
+                    "A prediction calculation based on the halflife and the multiplier went wrong. Please check these values."};
         }
 
         const ComputedData* responseData = response->getData();
-        const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+        const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
         std::vector<double> residuals;
         for (const auto& d : resp->getData()) {
@@ -456,10 +478,10 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
 
                 Tucuxi::Common::DateTime endPred = startPred + interval * 500;
                 double nbPointsPerHour = 0.1;
-                ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-                std::unique_ptr<ComputingTraitConcentration> traits =
-                        std::make_unique<ComputingTraitConcentration>(
-                            requestResponseId, startPred, endPred, nbPointsPerHour, computingOption);
+                ComputingOption computingOption(
+                        PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+                std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                        requestResponseId, startPred, endPred, nbPointsPerHour, computingOption);
 
                 ComputingRequest request(requestResponseId, *_drugModel, *drugTreatment, std::move(traits));
 
@@ -469,11 +491,12 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
                 result = component->compute(request, response);
 
                 if (result != ComputingStatus::Ok) {
-                    return {false, "A prediction calculation based on the halflife and the multiplier went wrong. Please check these values."};
+                    return {false,
+                            "A prediction calculation based on the halflife and the multiplier went wrong. Please check these values."};
                 }
 
                 const ComputedData* responseData = response->getData();
-                const SinglePredictionData *resp = dynamic_cast<const SinglePredictionData*>(responseData);
+                const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
                 std::vector<double> residuals;
                 double lastResidual = 10000000.0;
@@ -488,31 +511,30 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
                         Tucuxi::Common::Duration duration = interval * index;
                         int factor = static_cast<int>(std::ceil(duration / realHalfLife));
 
-                        return {false, "The half life and the associated multiplier offer a too short period to reach a reasonable steady state. Please modify the multiplier. As far as I could try, the value " +
-                            std::to_string(factor) + " should be all right."};
+                        return {false,
+                                "The half life and the associated multiplier offer a too short period to reach a reasonable steady state. Please modify the multiplier. As far as I could try, the value "
+                                        + std::to_string(factor) + " should be all right."};
                     }
 
-                    index ++;
-
+                    index++;
                 }
 
 
                 // If less than 0.5% difference, then the values seem OK
                 if ((diff > 1.005) || (diff < 0.995)) {
 
-                    return {false, "The half life and the associated multiplier offer a too short period to reach a reasonable steady state. However I couldn't find a good multiplier to suggest. Is there another problem with the model?"};
+                    return {false,
+                            "The half life and the associated multiplier offer a too short period to reach a reasonable steady state. However I couldn't find a good multiplier to suggest. Is there another problem with the model?"};
                 }
-
             }
 
 
-            return {false, "The half life and the associated multiplier offer a too short period to reach a reasonable steady state. Please modify the multiplier."};
+            return {false,
+                    "The half life and the associated multiplier offer a too short period to reach a reasonable steady state. Please modify the multiplier."};
         }
-
     }
 
     return {true, ""};
-
 }
 
 

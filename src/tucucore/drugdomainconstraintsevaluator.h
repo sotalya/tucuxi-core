@@ -21,11 +21,11 @@ class DrugTreatment;
 class DrugDomainConstraintsEvaluator
 {
 public:
-
     ///
     /// \brief The Result enum returned by the evaluate function
     ///
-    enum class Result {
+    enum class Result
+    {
 
         /// The patient covariates are incompatible with the drug model : hard constraints are not met
         Incompatible,
@@ -40,7 +40,8 @@ public:
         ComputationError
     };
 
-    typedef struct {
+    typedef struct
+    {
         Constraint* m_constraint;
         Result m_result;
     } EvaluationResult;
@@ -70,11 +71,12 @@ public:
     /// this time frame there will be various evaluations of the adequation of covariates with respect to
     /// the constraints of the drug model domain.
     ///
-    Result evaluate(const DrugModelDomain& _drugDomain,
-                    const CovariateSeries& _covariates,
-                    const Common::DateTime &_start,
-                    const Common::DateTime &_end,
-                    std::vector<EvaluationResult> &_results);
+    Result evaluate(
+            const DrugModelDomain& _drugDomain,
+            const CovariateSeries& _covariates,
+            const Common::DateTime& _start,
+            const Common::DateTime& _end,
+            std::vector<EvaluationResult>& _results);
 
 
     ///
@@ -114,12 +116,12 @@ public:
     /// for a specific patient or not. It is not meant to by used within a ComputingComponent, as it is not the
     /// responsibility of a ComputingComponent to take this decision.
     ///
-    Result evaluate(const DrugModel& _drugModel,
-                    const DrugTreatment& _drugTreatment,
-                    const DateTime &_start,
-                    const DateTime &_end,
-                    std::vector<EvaluationResult> &_results);
-
+    Result evaluate(
+            const DrugModel& _drugModel,
+            const DrugTreatment& _drugTreatment,
+            const DateTime& _start,
+            const DateTime& _end,
+            std::vector<EvaluationResult>& _results);
 };
 
 } // namespace Core
