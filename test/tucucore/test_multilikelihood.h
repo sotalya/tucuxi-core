@@ -337,14 +337,17 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         EigenVector etasmd(1);
         etasmd[0] = 0.1;
 
-        double expectedValue =
+        double expectedValue1 =
                 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
                 - residualErrorModel[0]->calculateSampleLikelihood(
                         expectedSampleValue1,
-                        s0.getValue()
-                                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s1.getValue())
-                                - residualErrorModel[0]->calculateSampleLikelihood(
-                                        expectedSampleValue3, s2.getValue()));
+                        s0.getValue());
+        double expectedValue2 = residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s1.getValue());
+        double expectedValue3 = residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue3, s2.getValue());
+        double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
+                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s0.getValue())
+                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s1.getValue())
+                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue3, s2.getValue());
         fructose_assert_double_eq(x, expectedValue);
     }
 
