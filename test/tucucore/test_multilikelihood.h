@@ -310,7 +310,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
                 new Tucuxi::Core::ParameterDefinition("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
         parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+                new Tucuxi::Core::ParameterDefinition("TestS", 0.1, Tucuxi::Core::ParameterVariabilityType::None)));
         Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
         parameters.addParameterSetEvent(parameterset);
 
@@ -337,13 +337,6 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         EigenVector etasmd(1);
         etasmd[0] = 0.1;
 
-        double expectedValue1 =
-                0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-                - residualErrorModel[0]->calculateSampleLikelihood(
-                        expectedSampleValue1,
-                        s0.getValue());
-        double expectedValue2 = residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s1.getValue());
-        double expectedValue3 = residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue3, s2.getValue());
         double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
                 - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s0.getValue())
                 - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s1.getValue())
