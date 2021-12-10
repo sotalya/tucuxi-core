@@ -396,10 +396,8 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         //definition of the samples
         Tucuxi::Core::SampleSeries sampleSeries1;
         DateTime date0 = DateTime(
-                (date::year(2017),
-                 date::month(6),
-                 date::day(6),
-                 Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))));
+                date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s0(date0, 200.0);
         sampleSeries1.push_back(s0);
         samples.push_back(sampleSeries1);
@@ -548,10 +546,8 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
         Tucuxi::Core::SampleSeries sampleSeries2;
         DateTime date0 = DateTime(
-                (date::year(2017),
-                 date::month(6),
-                 date::day(6),
-                 Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))));
+                date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s0(date0, 200.0);
         sampleSeries2.push_back(s0);
         samples.push_back(sampleSeries2);
@@ -690,20 +686,16 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         //definition of the samples
         Tucuxi::Core::SampleSeries sampleSeries1;
         DateTime date0 = DateTime(
-                (date::year(2017),
-                 date::month(6),
-                 date::day(6),
-                 Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))));
+                date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s0(date0, 200.0);
         sampleSeries1.push_back(s0);
         samples.push_back(sampleSeries1);
 
         Tucuxi::Core::SampleSeries sampleSeries2;
         DateTime date1 = DateTime(
-                (date::year(2017),
-                 date::month(6),
-                 date::day(6),
-                 Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0))));
+                date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s1(date1, 200.0);
         sampleSeries2.push_back(s0);
         samples.push_back(sampleSeries2);
@@ -847,20 +839,16 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         //definition of the samples
         Tucuxi::Core::SampleSeries sampleSeries1;
         DateTime date0 = DateTime(
-                (date::year(2017),
-                 date::month(6),
-                 date::day(6),
-                 Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))));
+                date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s0(date0, 200.0);
         sampleSeries1.push_back(s0);
         samples.push_back(sampleSeries1);
 
         Tucuxi::Core::SampleSeries sampleSeries2;
         DateTime date1 = DateTime(
-                (date::year(2017),
-                 date::month(6),
-                 date::day(6),
-                 Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0))));
+                date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s1(date1, 200.0);
         sampleSeries2.push_back(s0);
         samples.push_back(sampleSeries2);
@@ -1005,26 +993,20 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         Tucuxi::Core::SampleSeries sampleSeries1;
 
         DateTime date0 = DateTime(
-                (date::year(2017),
-                 date::month(6),
-                 date::day(6),
-                 Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))));
+                date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s0(date0, 200.0);
         sampleSeries1.push_back(s0);
 
         DateTime date1 = DateTime(
-                (date::year(2017),
-                 date::month(6),
-                 date::day(6),
-                 Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0))));
+                date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s1(date1, 200.0);
         sampleSeries1.push_back(s1);
 
         DateTime date2 = DateTime(
-                (date::year(2017),
-                 date::month(6),
-                 date::day(6),
-                 Duration(std::chrono::hours(17), std::chrono::minutes(30), std::chrono::seconds(0))));
+                date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                Duration(std::chrono::hours(17), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s2(date2, 100.0);
         sampleSeries1.push_back(s2);
 
@@ -1034,26 +1016,20 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         Tucuxi::Core::SampleSeries sampleSeries2;
 
         DateTime date3 = DateTime(
-                (date::year(2017),
-                 date::month(6),
-                 date::day(6),
-                 Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))));
+                date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s3(date3, 200.0);
         sampleSeries1.push_back(s3);
 
         DateTime date4 = DateTime(
-                (date::year(2017),
-                 date::month(7),
-                 date::day(6),
-                 Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0))));
+                date::year_month_day(date::year(2017), date::month(7), date::day(6)),
+                Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s4(date4, 200.0);
         sampleSeries1.push_back(s4);
 
         DateTime date5 = DateTime(
-                (date::year(2017),
-                 date::month(8),
-                 date::day(6),
-                 Duration(std::chrono::hours(17), std::chrono::minutes(30), std::chrono::seconds(0))));
+                date::year_month_day(date::year(2017), date::month(8), date::day(6)),
+                Duration(std::chrono::hours(17), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s5(date5, 100.0);
         sampleSeries1.push_back(s5);
 
