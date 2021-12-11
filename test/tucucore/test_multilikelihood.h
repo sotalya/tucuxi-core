@@ -164,14 +164,14 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
         parameters.addParameterSetEvent(parameterset);
 
@@ -303,19 +303,16 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestS", 0.1, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
         parameters.addParameterSetEvent(parameterset);
-
-
-
 
         Tucuxi::Core::MultiLikelihood aux(
                 omega, residualErrorModel, samples, intakes, parameters, concentrationCalculator);
@@ -338,9 +335,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         etasmd[0] = 0.1;
 
         double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s0.getValue())
-                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s1.getValue())
-                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue3, s2.getValue());
+                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s0.getValue())
+                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s1.getValue())
+                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue3, s2.getValue());
         fructose_assert_double_eq(x, expectedValue);
     }
 
@@ -441,24 +438,22 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(
-                std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition(
-                        "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestM0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(
-                std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition(
-                        "TestA1", 2.0, Tucuxi::Core::ParameterVariabilityType::Additive)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA1", 2.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
         parameters.addParameterSetEvent(parameterset);
 
@@ -588,24 +583,22 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(
-                std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition(
-                        "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestM0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(
-                std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition(
-                        "TestA1", 2.0, Tucuxi::Core::ParameterVariabilityType::Additive)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA1", 2.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
         parameters.addParameterSetEvent(parameterset);
 
@@ -736,24 +729,22 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(
-                std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition(
-                        "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestM0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(
-                std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition(
-                        "TestA1", 2.0, Tucuxi::Core::ParameterVariabilityType::Additive)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA1", 2.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
         parameters.addParameterSetEvent(parameterset);
 
@@ -889,24 +880,22 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(
-                std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition(
-                        "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestM0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(
-                std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition(
-                        "TestA1", 2.0, Tucuxi::Core::ParameterVariabilityType::Additive)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA1", 2.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
         parameters.addParameterSetEvent(parameterset);
 
@@ -1071,24 +1060,22 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
         Tucuxi::Core::ParameterDefinitions parameterDefs;
-        parameterDefs.push_back(
-                std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition(
-                        "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestM0", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(
-                std::unique_ptr<Tucuxi::Core::ParameterDefinition>(new Tucuxi::Core::ParameterDefinition(
-                        "TestA1", 10.0, Tucuxi::Core::ParameterVariabilityType::Additive)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
-        parameterDefs.push_back(std::unique_ptr<Tucuxi::Core::ParameterDefinition>(
-                new Tucuxi::Core::ParameterDefinition("TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None)));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA1", 10.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
         parameters.addParameterSetEvent(parameterset);
 
