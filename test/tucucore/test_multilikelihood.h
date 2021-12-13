@@ -362,8 +362,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         Etas etas;
 
         //definition of the omega matrix
-        omega = Tucuxi::Core::OmegaMatrix(1, 1);
+        omega = Tucuxi::Core::OmegaMatrix(2, 1);
         omega(0, 0) = 0.1; // Variance of A
+        omega(1, 0) = 0.1;
 
 
         //definition of the residualErrorModel
@@ -505,8 +506,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         Etas etas;
 
         //definition of the omega matrix
-        omega = Tucuxi::Core::OmegaMatrix(1, 1);
+        omega = Tucuxi::Core::OmegaMatrix(2, 1);
         omega(0, 0) = 0.1; // Variance of A
+        omega(1, 0) = 0.1;
 
 
 
@@ -645,11 +647,10 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         MultiConcentrationCalculator concentrationCalculator;
         Etas etas;
 
-        //definition of the omega matrix
-        omega = Tucuxi::Core::OmegaMatrix(1, 1);
+
+        omega = Tucuxi::Core::OmegaMatrix(2, 1);
         omega(0, 0) = 0.1; // Variance of A
-
-
+        omega(1, 0) = 0.1;
 
         //definition of the residualErrorModel
 
@@ -797,9 +798,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         Etas etas;
 
         //definition of the omega matrix
-        omega = Tucuxi::Core::OmegaMatrix(1, 1);
+        omega = Tucuxi::Core::OmegaMatrix(1, 2);
         omega(0, 0) = 0.1; // Variance of A
-
+        omega(0, 1) = 0.1;
 
 
         //definition of the residualErrorModel
@@ -948,10 +949,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         Etas etas;
 
         //definition of the omega matrix
-        omega = Tucuxi::Core::OmegaMatrix(1, 1);
+        omega = Tucuxi::Core::OmegaMatrix(1, 2);
         omega(0, 0) = 0.1; // Variance of A
-
-
+        omega(0, 1) = 0.1;
 
         //definition of the residualErrorModel
 
