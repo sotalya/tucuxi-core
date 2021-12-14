@@ -74,8 +74,11 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
 
     for (unsigned int i = 0; i < m_samples.size(); ++i) {
 
-        ComputingStatus result = m_concentrationCalculator->computeConcentrationsAtTimes(
+        ComputingStatus result = ComputingStatus::Undefined;
+        if (m_samples[i].size() != 0){
+            result = m_concentrationCalculator->computeConcentrationsAtTimes(
                 _concentrations, isAll, *m_intakes, *m_parameters, m_samples[i], _etas);
+        }
         if (result != ComputingStatus::Ok) {
             return std::numeric_limits<double>::max();
         }

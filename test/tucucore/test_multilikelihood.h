@@ -362,9 +362,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         Etas etas;
 
         //definition of the omega matrix
-        omega = Tucuxi::Core::OmegaMatrix(2, 1);
+        omega = Tucuxi::Core::OmegaMatrix(2, 2);
         omega(0, 0) = 0.1; // Variance of A
-        omega(1, 0) = 0.1;
+        omega(1, 1) = 0.1;
 
 
         //definition of the residualErrorModel
@@ -475,15 +475,19 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         double expectedSampleValue = 201.1;
         double omegaAdd = static_cast<double>(omega.rows()) * log(2 * PI) + log(omega.determinant());
 
-        EigenVector etasmd(1);
+        EigenVector etasmd(2);
         etasmd[0] = 0.1;
+        etasmd[1] = 0.1;
 
-        double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-                               - residualErrorModel[0]->calculateSampleLikelihood(
+        double expectedValuestep1 = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd);
+
+
+
+        double expectedValuestep2 = expectedValuestep1 - residualErrorModel[0]->calculateSampleLikelihood(
                                        expectedSampleValue, s0.getValue()); //0 as the second sample is empty
 
         fructose_assert_double_ne(x, std::numeric_limits<double>::max());
-        fructose_assert_double_eq(x, expectedValue);
+        fructose_assert_double_eq(x, expectedValuestep2);
     }
 
 
@@ -506,9 +510,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         Etas etas;
 
         //definition of the omega matrix
-        omega = Tucuxi::Core::OmegaMatrix(2, 1);
+        omega = Tucuxi::Core::OmegaMatrix(2, 2);
         omega(0, 0) = 0.1; // Variance of A
-        omega(1, 0) = 0.1;
+        omega(1, 1) = 0.1;
 
 
 
@@ -621,8 +625,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         double expectedSampleValue = 201.1;
         double omegaAdd = static_cast<double>(omega.rows()) * log(2 * PI) + log(omega.determinant());
 
-        EigenVector etasmd(1);
+        EigenVector etasmd(2);
         etasmd[0] = 0.1;
+        etasmd[1] = 0.1;
 
         double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
                                - residualErrorModel[1]->calculateSampleLikelihood(
@@ -648,9 +653,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         Etas etas;
 
 
-        omega = Tucuxi::Core::OmegaMatrix(2, 1);
+        omega = Tucuxi::Core::OmegaMatrix(2, 2);
         omega(0, 0) = 0.1; // Variance of A
-        omega(1, 0) = 0.1;
+        omega(1, 1) = 0.1;
 
         //definition of the residualErrorModel
 
@@ -771,8 +776,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         double expectedSampleValue2 = 41.1;
         double omegaAdd = static_cast<double>(omega.rows()) * log(2 * PI) + log(omega.determinant());
 
-        EigenVector etasmd(1);
+        EigenVector etasmd(2);
         etasmd[0] = 0.1;
+        etasmd[1] = 0.1;
 
         double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
                                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s0.getValue())
@@ -798,9 +804,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         Etas etas;
 
         //definition of the omega matrix
-        omega = Tucuxi::Core::OmegaMatrix(1, 2);
+        omega = Tucuxi::Core::OmegaMatrix(2, 2);
         omega(0, 0) = 0.1; // Variance of A
-        omega(0, 1) = 0.1;
+        omega(1, 1) = 0.1;
 
 
         //definition of the residualErrorModel
@@ -916,8 +922,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         double expectedSampleValue = 201.1;
         double omegaAdd = static_cast<double>(omega.rows()) * log(2 * PI) + log(omega.determinant());
 
-        EigenVector etasmd(1);
+        EigenVector etasmd(2);
         etasmd[0] = 0.1;
+        etasmd[1] = 0.1;
 
         double expectedValue =
                 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
@@ -949,9 +956,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         Etas etas;
 
         //definition of the omega matrix
-        omega = Tucuxi::Core::OmegaMatrix(1, 2);
+        omega = Tucuxi::Core::OmegaMatrix(2, 2);
         omega(0, 0) = 0.1; // Variance of A
-        omega(0, 1) = 0.1;
+        omega(1, 1) = 0.1;
 
         //definition of the residualErrorModel
 
@@ -1102,8 +1109,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         double expectedSampleValue6 = 211;
         double omegaAdd = static_cast<double>(omega.rows()) * log(2 * PI) + log(omega.determinant());
 
-        EigenVector etasmd(1);
+        EigenVector etasmd(2);
         etasmd[0] = 0.1;
+        etasmd[1] = 0.1;
 
         double expectedValue =
                 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
