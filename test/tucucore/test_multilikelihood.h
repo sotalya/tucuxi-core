@@ -430,7 +430,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
                 static_cast<int>(CYCLE_SIZE));
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator =
-                std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
+                std::make_shared<Tucuxi::Core::MultiConstantEliminationBolus>();
         intakes[0].setCalculator(calculator);
         intakes[1].setCalculator(calculator);
 
@@ -580,7 +580,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
                 static_cast<int>(CYCLE_SIZE));
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator =
-                std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
+                std::make_shared<Tucuxi::Core::MultiConstantEliminationBolus>();
         intakes[0].setCalculator(calculator);
         intakes[1].setCalculator(calculator);
 
@@ -726,7 +726,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
                 static_cast<int>(CYCLE_SIZE));
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator =
-                std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
+                std::make_shared<Tucuxi::Core::MultiConstantEliminationBolus>();
         intakes[0].setCalculator(calculator);
         intakes[1].setCalculator(calculator);
 
@@ -878,7 +878,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
                 static_cast<int>(CYCLE_SIZE));
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator =
-                std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
+                std::make_shared<Tucuxi::Core::MultiConstantEliminationBolus>();
         intakes[0].setCalculator(calculator);
         intakes[1].setCalculator(calculator);
 
@@ -1058,7 +1058,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
                 static_cast<int>(CYCLE_SIZE));
         std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator =
-                std::make_shared<Tucuxi::Core::ConstantEliminationBolus>();
+                std::make_shared<Tucuxi::Core::MultiConstantEliminationBolus>();
         intakes[0].setCalculator(calculator);
         intakes[1].setCalculator(calculator);
 

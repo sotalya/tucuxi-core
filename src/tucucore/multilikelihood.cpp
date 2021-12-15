@@ -79,7 +79,7 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
             result = m_concentrationCalculator->computeConcentrationsAtTimes(
                 _concentrations, isAll, *m_intakes, *m_parameters, m_samples[i], _etas);
         }
-        if (result != ComputingStatus::Ok) {
+        if (m_samples[i].size() && result != ComputingStatus::Ok) {
             return std::numeric_limits<double>::max();
         }
     }
@@ -97,11 +97,13 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
         SampleSeries::const_iterator sitEnd = m_samples[i].end();
         size_t sampleCounter = 0;
         while (sit != sitEnd) {
+            if(m_samples[i].size() > 0){
             // SampleEvent s = *sit;
-            gll += calculateSampleNegativeLogLikelihood(
-                    _concentrations[sampleCounter][i], *sit, m_residualErrorModel[i]);
-            sampleCounter++;
-            sit++;
+                gll += calculateSampleNegativeLogLikelihood(
+                        _concentrations[sampleCounter][i], *sit, m_residualErrorModel[i]);
+                sampleCounter++;
+                sit++;
+            }
         }
     }
 
