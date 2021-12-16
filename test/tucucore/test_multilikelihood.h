@@ -326,18 +326,18 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
         // We compute the expected result
 
-        double expectedSampleValue1 = 121.1;
-        double expectedSampleValue2 = 41.1;
-        double expectedSampleValue3 = 21.1;
+        double expectedSampleValue0 = 121.1;
+        double expectedSampleValue1 = 41.1;
+        double expectedSampleValue2 = 21.1;
         double omegaAdd = static_cast<double>(omega.rows()) * log(2 * PI) + log(omega.determinant());
 
         EigenVector etasmd(1);
         etasmd[0] = 0.1;
 
         double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s0.getValue())
-                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s1.getValue())
-                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue3, s2.getValue());
+                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
+                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s1.getValue())
+                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s2.getValue());
         fructose_assert_double_eq(x, expectedValue);
     }
 
@@ -370,6 +370,15 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         //definition of the residualErrorModel
 
 
+        SigmaResidualErrorModel* newErrorModel0 = new SigmaResidualErrorModel();
+        Tucuxi::Core::Sigma sigma0(1);
+        sigma0(0) = 0.3138;
+        newErrorModel0->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel0->setSigma(sigma0);
+        residualErrorModel.push_back(newErrorModel0);
+        //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
+
+
         SigmaResidualErrorModel* newErrorModel1 = new SigmaResidualErrorModel();
         Tucuxi::Core::Sigma sigma1(1);
         sigma1(0) = 0.3138;
@@ -378,26 +387,17 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         residualErrorModel.push_back(newErrorModel1);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
-
-        SigmaResidualErrorModel* newErrorModel2 = new SigmaResidualErrorModel();
-        Tucuxi::Core::Sigma sigma2(1);
-        sigma2(0) = 0.3138;
-        newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel1->setSigma(sigma2);
-        residualErrorModel.push_back(newErrorModel2);
-        //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
-
         //definition of the samples
-        Tucuxi::Core::SampleSeries sampleSeries1;
+        Tucuxi::Core::SampleSeries sampleSeries0;
         DateTime date0 = DateTime(
                 date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                 Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s0(date0, 200.0);
-        sampleSeries1.push_back(s0);
-        samples.push_back(sampleSeries1);
+        sampleSeries0.push_back(s0);
+        samples.push_back(sampleSeries0);
 
-        Tucuxi::Core::SampleSeries sampleSeries2;
-        samples.push_back(sampleSeries2);
+        Tucuxi::Core::SampleSeries sampleSeries1;
+        samples.push_back(sampleSeries1);
 
 
         //definition of the intakes
@@ -442,19 +442,21 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM0", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
+                "TestS0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestM0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+                "TestA1", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestA1", 2.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+                "TestM1", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
-        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+
         Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
         parameters.addParameterSetEvent(parameterset);
 
@@ -479,15 +481,15 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         etasmd[0] = 0.1;
         etasmd[1] = 0.1;
 
-        double expectedValuestep1 = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd);
+        double expectedValuestep0 = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd);
 
 
 
-        double expectedValuestep2 = expectedValuestep1 - residualErrorModel[0]->calculateSampleLikelihood(
+        double expectedValuestep1 = expectedValuestep0 - residualErrorModel[0]->calculateSampleLikelihood(
                                        expectedSampleValue, s0.getValue()); //0 as the second sample is empty
 
         fructose_assert_double_ne(x, std::numeric_limits<double>::max());
-        fructose_assert_double_eq(x, expectedValuestep2);
+        fructose_assert_double_eq(x, expectedValuestep1);
     }
 
 
@@ -519,6 +521,16 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         //definition of the residualErrorModel
 
 
+        SigmaResidualErrorModel* newErrorModel0 = new SigmaResidualErrorModel();
+        Tucuxi::Core::Sigma sigma0(1);
+        sigma0(0) = 0.3138;
+        newErrorModel0->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel0->setSigma(sigma0);
+        residualErrorModel.push_back(newErrorModel0);
+        //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
+
+
+
         SigmaResidualErrorModel* newErrorModel1 = new SigmaResidualErrorModel();
         Tucuxi::Core::Sigma sigma1(1);
         sigma1(0) = 0.3138;
@@ -527,27 +539,17 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         residualErrorModel.push_back(newErrorModel1);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
-
-
-        SigmaResidualErrorModel* newErrorModel2 = new SigmaResidualErrorModel();
-        Tucuxi::Core::Sigma sigma2(1);
-        sigma2(0) = 0.3138;
-        newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel1->setSigma(sigma2);
-        residualErrorModel.push_back(newErrorModel2);
-        //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
-
         //definition of the samples
-        Tucuxi::Core::SampleSeries sampleSeries1;
-        samples.push_back(sampleSeries1);
+        Tucuxi::Core::SampleSeries sampleSeries0;
+        samples.push_back(sampleSeries0);
 
-        Tucuxi::Core::SampleSeries sampleSeries2;
+        Tucuxi::Core::SampleSeries sampleSeries1;
         DateTime date0 = DateTime(
                 date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                 Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0)));
-        Tucuxi::Core::SampleEvent s0(date0, 200.0);
-        sampleSeries2.push_back(s0);
-        samples.push_back(sampleSeries2);
+        Tucuxi::Core::SampleEvent s1(date0, 200.0);
+        sampleSeries1.push_back(s1);
+        samples.push_back(sampleSeries1);
 
 
         //definition of the intakes
@@ -592,23 +594,23 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM0", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
+                "TestS0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestM0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+                "TestA1", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestA1", 2.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+                "TestM1", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
-        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+
         Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
         parameters.addParameterSetEvent(parameterset);
-
-
 
         Tucuxi::Core::MultiLikelihood aux(
                 omega, residualErrorModel, samples, intakes, parameters, concentrationCalculator);
@@ -631,7 +633,8 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
         double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
                                - residualErrorModel[1]->calculateSampleLikelihood(
-                                       expectedSampleValue, s0.getValue()); //0 as the first sample is empty
+                                       expectedSampleValue, s1.getValue()); //0 as the first sample is empty
+        fructose_assert_double_ne(x, std::numeric_limits<double>::max());
         fructose_assert_double_eq(x, expectedValue);
     }
 
@@ -660,6 +663,16 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         //definition of the residualErrorModel
 
 
+        SigmaResidualErrorModel* newErrorModel0 = new SigmaResidualErrorModel();
+        Tucuxi::Core::Sigma sigma0(1);
+        sigma0(0) = 0.3138;
+        newErrorModel0->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel0->setSigma(sigma0);
+        residualErrorModel.push_back(newErrorModel0);
+        //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
+
+
+
         SigmaResidualErrorModel* newErrorModel1 = new SigmaResidualErrorModel();
         Tucuxi::Core::Sigma sigma1(1);
         sigma1(0) = 0.3138;
@@ -668,32 +681,22 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         residualErrorModel.push_back(newErrorModel1);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
-
-
-        SigmaResidualErrorModel* newErrorModel2 = new SigmaResidualErrorModel();
-        Tucuxi::Core::Sigma sigma2(1);
-        sigma2(0) = 0.3138;
-        newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel1->setSigma(sigma2);
-        residualErrorModel.push_back(newErrorModel2);
-        //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
-
         //definition of the samples
-        Tucuxi::Core::SampleSeries sampleSeries1;
+        Tucuxi::Core::SampleSeries sampleSeries0;
         DateTime date0 = DateTime(
                 date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                 Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s0(date0, 200.0);
-        sampleSeries1.push_back(s0);
-        samples.push_back(sampleSeries1);
+        sampleSeries0.push_back(s0);
+        samples.push_back(sampleSeries0);
 
-        Tucuxi::Core::SampleSeries sampleSeries2;
+        Tucuxi::Core::SampleSeries sampleSeries1;
         DateTime date1 = DateTime(
                 date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                 Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s1(date1, 200.0);
-        sampleSeries2.push_back(s0);
-        samples.push_back(sampleSeries2);
+        sampleSeries1.push_back(s1);
+        samples.push_back(sampleSeries1);
 
 
         //definition of the intakes
@@ -738,19 +741,21 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM0", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
+                "TestS0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestM0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+                "TestA1", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestA1", 2.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+                "TestM1", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
-        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+
         Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
         parameters.addParameterSetEvent(parameterset);
 
@@ -763,7 +768,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         // Set initial etas to 0 for CL and V
 
         etas.push_back(0.1);
-        etas.push_back(0.0);
+        etas.push_back(0.1);
 
         Value x = aux.negativeLogLikelihood(etas);
 
@@ -772,8 +777,8 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         // Prior: 0.5 * (etas.transpose() * m_inverseOmega * etas + m_omegaAdd)
         // m_omega = m_omegaAdd(static_cast<double>(_omega.rows()) * log(2 * PI) + log(_omega.determinant()))
         // sample likelihood: - _residualErrorModel.calculateSampleLikelihood(_expected, _observed.getValue());
-        double expectedSampleValue1 = 121.1;
-        double expectedSampleValue2 = 41.1;
+        double expectedSampleValue0 = 121.1;
+        double expectedSampleValue1 = 41.1;
         double omegaAdd = static_cast<double>(omega.rows()) * log(2 * PI) + log(omega.determinant());
 
         EigenVector etasmd(2);
@@ -781,8 +786,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         etasmd[1] = 0.1;
 
         double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s0.getValue())
-                               - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue2, s1.getValue());
+                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
+                               - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue1, s1.getValue());
+        fructose_assert_double_ne(x, std::numeric_limits<double>::max());
         fructose_assert_double_eq(x, expectedValue);
     }
 
@@ -812,6 +818,16 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         //definition of the residualErrorModel
 
 
+        SigmaResidualErrorModel* newErrorModel0 = new SigmaResidualErrorModel();
+        Tucuxi::Core::Sigma sigma0(1);
+        sigma0(0) = 0.3138;
+        newErrorModel0->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel0->setSigma(sigma0);
+        residualErrorModel.push_back(newErrorModel0);
+        //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
+
+
+
         SigmaResidualErrorModel* newErrorModel1 = new SigmaResidualErrorModel();
         Tucuxi::Core::Sigma sigma1(1);
         sigma1(0) = 0.3138;
@@ -820,32 +836,22 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         residualErrorModel.push_back(newErrorModel1);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
-
-
-        SigmaResidualErrorModel* newErrorModel2 = new SigmaResidualErrorModel();
-        Tucuxi::Core::Sigma sigma2(1);
-        sigma2(0) = 0.3138;
-        newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel1->setSigma(sigma2);
-        residualErrorModel.push_back(newErrorModel2);
-        //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
-
         //definition of the samples
-        Tucuxi::Core::SampleSeries sampleSeries1;
+        Tucuxi::Core::SampleSeries sampleSeries0;
         DateTime date0 = DateTime(
                 date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                 Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s0(date0, 200.0);
-        sampleSeries1.push_back(s0);
-        samples.push_back(sampleSeries1);
+        sampleSeries0.push_back(s0);
+        samples.push_back(sampleSeries0);
 
-        Tucuxi::Core::SampleSeries sampleSeries2;
+        Tucuxi::Core::SampleSeries sampleSeries1;
         DateTime date1 = DateTime(
                 date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                 Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s1(date1, 200.0);
-        sampleSeries2.push_back(s0);
-        samples.push_back(sampleSeries2);
+        sampleSeries1.push_back(s0);
+        samples.push_back(sampleSeries1);
 
 
         //definition of the intakes
@@ -890,19 +896,20 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM0", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
+                "TestS0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestM0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+                "TestA1", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestA1", 2.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+                "TestM1", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
-        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
         parameters.addParameterSetEvent(parameterset);
 
@@ -932,6 +939,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
                 - residualErrorModel[1]->calculateSampleLikelihood(
                         expectedSampleValue,
                         s1.getValue()); //WE CAN NOT USE 2.0 * m_residual... as they are 2 different analytes
+        fructose_assert_double_ne(x, std::numeric_limits<double>::max());
         fructose_assert_double_eq(x, expectedValue);
     }
 
@@ -963,6 +971,16 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         //definition of the residualErrorModel
 
 
+        SigmaResidualErrorModel* newErrorModel0 = new SigmaResidualErrorModel();
+        Tucuxi::Core::Sigma sigma0(1);
+        sigma0(0) = 0.3138;
+        newErrorModel0->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel0->setSigma(sigma0);
+        residualErrorModel.push_back(newErrorModel0);
+        //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
+
+
+
         SigmaResidualErrorModel* newErrorModel1 = new SigmaResidualErrorModel();
         Tucuxi::Core::Sigma sigma1(1);
         sigma1(0) = 0.3138;
@@ -971,41 +989,31 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         residualErrorModel.push_back(newErrorModel1);
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
-
-
-        SigmaResidualErrorModel* newErrorModel2 = new SigmaResidualErrorModel();
-        Tucuxi::Core::Sigma sigma2(1);
-        sigma2(0) = 0.3138;
-        newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel1->setSigma(sigma2);
-        residualErrorModel.push_back(newErrorModel2);
-        //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
-
         //definition of the samples
-        Tucuxi::Core::SampleSeries sampleSeries1;
+        Tucuxi::Core::SampleSeries sampleSeries0;
 
         DateTime date0 = DateTime(
                 date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                 Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s0(date0, 200.0);
-        sampleSeries1.push_back(s0);
+        sampleSeries0.push_back(s0);
 
         DateTime date1 = DateTime(
                 date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                 Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s1(date1, 200.0);
-        sampleSeries1.push_back(s1);
+        sampleSeries0.push_back(s1);
 
         DateTime date2 = DateTime(
                 date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                 Duration(std::chrono::hours(17), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s2(date2, 100.0);
-        sampleSeries1.push_back(s2);
+        sampleSeries0.push_back(s2);
 
 
-        samples.push_back(sampleSeries1);
+        samples.push_back(sampleSeries0);
 
-        Tucuxi::Core::SampleSeries sampleSeries2;
+        Tucuxi::Core::SampleSeries sampleSeries1;
 
         DateTime date3 = DateTime(
                 date::year_month_day(date::year(2017), date::month(6), date::day(6)),
@@ -1025,7 +1033,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         Tucuxi::Core::SampleEvent s5(date5, 100.0);
         sampleSeries1.push_back(s5);
 
-        samples.push_back(sampleSeries2);
+        samples.push_back(sampleSeries1);
 
 
         //definition of the intakes
@@ -1070,19 +1078,20 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM0", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
+        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
+                "TestS0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestM0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+                "TestA1", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestA1", 10.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+                "TestM1", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
-        parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestM1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
         parameters.addParameterSetEvent(parameterset);
 
@@ -1101,30 +1110,37 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         // We compute the expected result
 
 
-        double expectedSampleValue1 = 121.1;
-        double expectedSampleValue2 = 41.1;
-        double expectedSampleValue3 = 21.1;
-        double expectedSampleValue4 = 1211;
-        double expectedSampleValue5 = 411;
-        double expectedSampleValue6 = 211;
+        double expectedSampleValue0 = 121.1;
+        double expectedSampleValue1 = 41.1;
+        double expectedSampleValue2 = 21.1;
+        double expectedSampleValue3 = 1211;
+        double expectedSampleValue4 = 411;
+        double expectedSampleValue5 = 211;
         double omegaAdd = static_cast<double>(omega.rows()) * log(2 * PI) + log(omega.determinant());
 
         EigenVector etasmd(2);
         etasmd[0] = 0.1;
         etasmd[1] = 0.1;
 
-        double expectedValue =
+        double expectedValue0 =
                 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s0.getValue())
+                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
                 - residualErrorModel[0]->calculateSampleLikelihood(
-                        expectedSampleValue2,
-                        s1.getValue()
-                                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue3, s2.getValue())
-                                - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue4, s3.getValue())
-                                - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue5, s4.getValue())
+                        expectedSampleValue1,
+                        s1.getValue())
+                 - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s2.getValue());
+
+        double expectedValue1 = expectedValue0
+                                - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue3, s3.getValue());
+
+        double expectedValue2 = expectedValue1
+                                - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue4, s4.getValue());
+        double expectedValue3 = expectedValue2
                                 - residualErrorModel[1]->calculateSampleLikelihood(
-                                        expectedSampleValue6, s5.getValue()));
-        fructose_assert_double_eq(x, expectedValue);
+                                        expectedSampleValue5, s5.getValue());
+
+        fructose_assert_double_ne(x, std::numeric_limits<double>::max());
+        fructose_assert_double_eq(x, expectedValue3);
     }
 };
 
