@@ -64,6 +64,8 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
 { //returns the negative prior of the likelihood
     ValueVector concentrations(m_samples.size());
     std::vector<Concentrations> _concentrations(m_samples.size());
+    std::vector<vector<Concentrations>> _concentrations2(0);
+
     bool isAll = false;
 
     // Getting the concentration values at these _times and m_samples.
@@ -82,6 +84,7 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
         if (m_samples[i].size() != 0 && result != ComputingStatus::Ok) {
             return std::numeric_limits<double>::max();
         }
+        _concentrations2.push_back(_concentrations);
     }
 
     // If the calculation fails, its highly unlikely so we return the largest number we can
@@ -100,7 +103,7 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
             if(m_samples[i].size() > 0){
             // SampleEvent s = *sit;
                 gll += calculateSampleNegativeLogLikelihood(
-                        _concentrations[sampleCounter][i], *sit, m_residualErrorModel[i]);
+                        _concentrations2[i][sampleCounter][i], *sit, m_residualErrorModel[i]);
                 sampleCounter++;
                 sit++;
             }

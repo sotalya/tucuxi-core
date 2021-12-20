@@ -785,9 +785,12 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         etasmd[0] = 0.1;
         etasmd[1] = 0.1;
 
-        double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
-                               - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue1, s1.getValue());
+        double expectedValue =
+                0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
+                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
+                - residualErrorModel[1]->calculateSampleLikelihood(
+                        expectedSampleValue1,
+                        s1.getValue());
         fructose_assert_double_ne(x, std::numeric_limits<double>::max());
         fructose_assert_double_eq(x, expectedValue);
     }
@@ -848,9 +851,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         Tucuxi::Core::SampleSeries sampleSeries1;
         DateTime date1 = DateTime(
                 date::year_month_day(date::year(2017), date::month(6), date::day(6)),
-                Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0)));
+                Duration(std::chrono::hours(12 ), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s1(date1, 200.0);
-        sampleSeries1.push_back(s0);
+        sampleSeries1.push_back(s1);
         samples.push_back(sampleSeries1);
 
 
