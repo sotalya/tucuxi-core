@@ -29,7 +29,7 @@ cxxopts::ParseResult parse(int _argc, char* _argv[])
                 ("l,logfile", "Log file", cxxopts::value<std::string>())
                 ("help", "Print help")
                 ;
-clang-format on
+        // clang-format on
 
         auto result = options.parse(_argc, _argv);
 
