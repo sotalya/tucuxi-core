@@ -18,7 +18,8 @@ namespace Core {
 #endif
 
 TwoCompartmentBolusMicro::TwoCompartmentBolusMicro()
-    : IntakeIntervalCalculatorBase<2, TwoCompartmentBolusExponentials>(new PertinentTimesCalculatorStandard())
+    : IntakeIntervalCalculatorBase<2, TwoCompartmentBolusExponentials>(
+            std::make_unique<PertinentTimesCalculatorStandard>())
 {
 }
 

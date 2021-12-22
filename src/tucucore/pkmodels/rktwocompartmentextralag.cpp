@@ -13,7 +13,8 @@ namespace Tucuxi {
 namespace Core {
 
 RK4TwoCompartmentExtraLagMicro::RK4TwoCompartmentExtraLagMicro()
-    : IntakeIntervalCalculatorRK4Base<3, RK4TwoCompartmentExtraLagMicro>(new PertinentTimesCalculatorStandard())
+    : IntakeIntervalCalculatorRK4Base<3, RK4TwoCompartmentExtraLagMicro>(
+            std::make_unique<PertinentTimesCalculatorStandard>())
 {
 }
 

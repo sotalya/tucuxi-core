@@ -45,7 +45,7 @@ public:
     /// \brief Constructor
     MultiConstantEliminationBolus()
         : IntakeIntervalCalculatorBase<2, MultiConstantEliminationBolusExponentials>(
-                new PertinentTimesCalculatorStandard())
+                std::make_unique<PertinentTimesCalculatorStandard>())
     {
         // By default there is a single analyte. So, set m_nbAnalytes to the correct value for this specific intake interval calculator.
         m_nbAnalytes = 2;

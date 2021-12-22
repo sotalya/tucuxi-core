@@ -15,8 +15,8 @@ class IntakeIntervalCalculatorRK4 : public IntakeIntervalCalculator
 
 public:
     /// \brief Constructor
-    IntakeIntervalCalculatorRK4(IPertinentTimesCalculator* _pertinentTimesCalculator)
-        : m_firstCalculation(true), m_pertinentTimesCalculator(_pertinentTimesCalculator)
+    IntakeIntervalCalculatorRK4(std::unique_ptr<IPertinentTimesCalculator> _pertinentTimesCalculator)
+        : m_firstCalculation(true), m_pertinentTimesCalculator(std::move(_pertinentTimesCalculator))
     {
     }
 
@@ -122,8 +122,8 @@ template<unsigned int ResidualSize, class ImplementationClass>
 class IntakeIntervalCalculatorRK4Base : public IntakeIntervalCalculatorRK4
 {
 public:
-    IntakeIntervalCalculatorRK4Base(IPertinentTimesCalculator* _pertinentTimesCalculator)
-        : IntakeIntervalCalculatorRK4(_pertinentTimesCalculator)
+    IntakeIntervalCalculatorRK4Base(std::unique_ptr<IPertinentTimesCalculator> _pertinentTimesCalculator)
+        : IntakeIntervalCalculatorRK4(std::move(_pertinentTimesCalculator))
     {
     }
 

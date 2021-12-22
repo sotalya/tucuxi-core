@@ -18,7 +18,8 @@ namespace Core {
 #endif
 
 ThreeCompartmentBolusMicro::ThreeCompartmentBolusMicro()
-    : IntakeIntervalCalculatorBase<3, ThreeCompartmentBolusExponentials>(new PertinentTimesCalculatorStandard())
+    : IntakeIntervalCalculatorBase<3, ThreeCompartmentBolusExponentials>(
+            std::make_unique<PertinentTimesCalculatorStandard>())
 {
 }
 

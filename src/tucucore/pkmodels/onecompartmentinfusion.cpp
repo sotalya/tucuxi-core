@@ -21,7 +21,8 @@ namespace Core {
 #endif
 
 OneCompartmentInfusionMicro::OneCompartmentInfusionMicro()
-    : IntakeIntervalCalculatorBase<1, OneCompartmentInfusionExponentials>(new PertinentTimesCalculatorInfusion())
+    : IntakeIntervalCalculatorBase<1, OneCompartmentInfusionExponentials>(
+            std::make_unique<PertinentTimesCalculatorInfusion>())
 {
 }
 

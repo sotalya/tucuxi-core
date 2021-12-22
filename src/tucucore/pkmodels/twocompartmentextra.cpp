@@ -12,7 +12,8 @@ namespace Tucuxi {
 namespace Core {
 
 TwoCompartmentExtraMicro::TwoCompartmentExtraMicro()
-    : IntakeIntervalCalculatorBase<3, TwoCompartmentExtraExponentials>(new PertinentTimesCalculatorStandard())
+    : IntakeIntervalCalculatorBase<3, TwoCompartmentExtraExponentials>(
+            std::make_unique<PertinentTimesCalculatorStandard>())
 {
 }
 

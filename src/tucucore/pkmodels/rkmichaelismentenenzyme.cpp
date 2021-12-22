@@ -7,7 +7,7 @@ namespace Core {
 
 
 RkMichaelisMentenEnzyme::RkMichaelisMentenEnzyme()
-    : IntakeIntervalCalculatorRK4Base<3, RkMichaelisMentenEnzyme>(new PertinentTimesCalculatorStandard())
+    : IntakeIntervalCalculatorRK4Base<3, RkMichaelisMentenEnzyme>(std::make_unique<PertinentTimesCalculatorStandard>())
 {
 }
 

@@ -18,7 +18,8 @@ namespace Core {
 #endif
 
 ThreeCompartmentInfusionMicro::ThreeCompartmentInfusionMicro()
-    : IntakeIntervalCalculatorBase<3, ThreeCompartmentInfusionExponentials>(new PertinentTimesCalculatorInfusion())
+    : IntakeIntervalCalculatorBase<3, ThreeCompartmentInfusionExponentials>(
+            std::make_unique<PertinentTimesCalculatorInfusion>())
 {
 }
 
