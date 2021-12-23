@@ -7,7 +7,7 @@ namespace Core {
 
 
 RkMichaelisMentenOneComp::RkMichaelisMentenOneComp()
-    : IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenOneComp>(new PertinentTimesCalculatorStandard())
+    : IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenOneComp>(std::make_unique<PertinentTimesCalculatorStandard>())
 {
 }
 

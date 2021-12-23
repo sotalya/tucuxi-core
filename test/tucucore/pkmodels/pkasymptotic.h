@@ -132,7 +132,9 @@ class PkAsymptotic : public IntakeIntervalCalculatorBase<1, PkAsymptoticExponent
     INTAKEINTERVALCALCULATOR_UTILS(PkAsymptotic)
 public:
     /// \brief Constructor
-    PkAsymptotic() : IntakeIntervalCalculatorBase<1, PkAsymptoticExponentials>(new PertinentTimesCalculatorAsymptotic())
+    PkAsymptotic()
+        : IntakeIntervalCalculatorBase<1, PkAsymptoticExponentials>(
+                std::make_unique<PertinentTimesCalculatorAsymptotic>())
     {
     }
 

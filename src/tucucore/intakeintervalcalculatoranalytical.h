@@ -13,8 +13,8 @@ class IntakeIntervalCalculatorAnalytical : public IntakeIntervalCalculator
 
 public:
     /// \brief Constructor
-    IntakeIntervalCalculatorAnalytical(IPertinentTimesCalculator* _pertinentTimesCalculator)
-        : m_firstCalculation(true), m_pertinentTimesCalculator(_pertinentTimesCalculator)
+    IntakeIntervalCalculatorAnalytical(std::unique_ptr<IPertinentTimesCalculator> _pertinentTimesCalculator)
+        : m_firstCalculation(true), m_pertinentTimesCalculator(std::move(_pertinentTimesCalculator))
     {
     }
 
@@ -111,8 +111,8 @@ template<unsigned int ResidualSize, typename EParameters>
 class IntakeIntervalCalculatorBase : public IntakeIntervalCalculatorAnalytical
 {
 public:
-    IntakeIntervalCalculatorBase(IPertinentTimesCalculator* _pertinentTimesCalculator)
-        : IntakeIntervalCalculatorAnalytical(_pertinentTimesCalculator)
+    IntakeIntervalCalculatorBase(std::unique_ptr<IPertinentTimesCalculator> _pertinentTimesCalculator)
+        : IntakeIntervalCalculatorAnalytical(std::move(_pertinentTimesCalculator))
     {
     }
 

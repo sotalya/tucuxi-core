@@ -18,7 +18,8 @@ namespace Core {
 #endif
 
 ThreeCompartmentExtraMicro::ThreeCompartmentExtraMicro()
-    : IntakeIntervalCalculatorBase<3, ThreeCompartmentExtraExponentials>(new PertinentTimesCalculatorStandard())
+    : IntakeIntervalCalculatorBase<3, ThreeCompartmentExtraExponentials>(
+            std::make_unique<PertinentTimesCalculatorStandard>())
 {
 }
 

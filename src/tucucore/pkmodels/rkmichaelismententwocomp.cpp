@@ -7,7 +7,7 @@ namespace Core {
 
 
 RkMichaelisMentenTwoComp::RkMichaelisMentenTwoComp()
-    : IntakeIntervalCalculatorRK4Base<3, RkMichaelisMentenTwoComp>(new PertinentTimesCalculatorStandard())
+    : IntakeIntervalCalculatorRK4Base<3, RkMichaelisMentenTwoComp>(std::make_unique<PertinentTimesCalculatorStandard>())
 {
     m_Tinf = 0.0;
     m_Tlag = 0.0;

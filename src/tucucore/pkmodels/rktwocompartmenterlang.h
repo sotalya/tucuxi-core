@@ -130,7 +130,8 @@ public:
     RK4TwoCompartmentErlangMicro()
         : IntakeIntervalCalculatorRK4Base<
                 NbTransitCompartment + 3,
-                RK4TwoCompartmentErlangMicro<NbTransitCompartment> >(new PertinentTimesCalculatorStandard())
+                RK4TwoCompartmentErlangMicro<NbTransitCompartment> >(
+                std::make_unique<PertinentTimesCalculatorStandard>())
     {
     }
 

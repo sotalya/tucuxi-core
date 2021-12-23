@@ -29,7 +29,7 @@ public:
     /// \return an error number. 0 if everything went well
     /// This method is the single entry point exploited by the Command Line Interface
     ///
-    QueryStatus compute(
+    Tucuxi::Query::QueryStatus compute(
             const std::string& _inputFileName, const std::string& _outputFileName, const std::string& _dataFilePath);
 };
 

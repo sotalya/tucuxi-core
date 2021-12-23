@@ -1,5 +1,9 @@
-#ifndef QUERYSTATUS_H
-#define QUERYSTATUS_H
+#ifndef TUCUXI_QUERY_QUERYSTATUS_H
+#define TUCUXI_QUERY_QUERYSTATUS_H
+
+
+namespace Tucuxi {
+namespace Query {
 
 enum class [[nodiscard]] QueryStatus{/// Everything fine
                                      Ok = 0,
@@ -14,4 +18,7 @@ enum class [[nodiscard]] QueryStatus{/// Everything fine
                                      /// Undefined (should not be observed when exporting a query)
                                      Undefined};
 
-#endif // QUERYSTATUS_H
+} // namespace Query
+} // namespace Tucuxi
+
+#endif // TUCUXI_QUERY_QUERYSTATUS_H
