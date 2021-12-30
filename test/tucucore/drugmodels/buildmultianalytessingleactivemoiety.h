@@ -44,17 +44,17 @@ public:
 
 
 
-        model->addCovariate(std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                new Tucuxi::Core::CovariateDefinition("covS", "0.0", nullptr, CovariateType::Standard)));
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covS", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                new Tucuxi::Core::CovariateDefinition("covA", "0.0", nullptr, CovariateType::Standard)));
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covA", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                new Tucuxi::Core::CovariateDefinition("covR", "0.0", nullptr, CovariateType::Standard)));
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covR", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                new Tucuxi::Core::CovariateDefinition("covM", "1.0", nullptr, CovariateType::Standard)));
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covM", "1.0", nullptr, CovariateType::Standard));
 
         // Build analyteSet0
         {

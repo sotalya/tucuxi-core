@@ -192,6 +192,19 @@ class DrugModel //Some modifications required for checking the structure of the 
                     Invariants::INV_DRUGMODEL_0014,
                     (m_timeConsiderations->checkInvariants()),
                     "There is an error in a drug model time consideration");
+            LAMBDA_INVARIANT(
+                    Invariants::INV_DRUGMODEL_0015,
+                    {
+                        bool ok = true;
+                        for (size_t i = 0; i < m_activeMoieties.size(); i++) {
+                            for (size_t j = i + 1; j < m_activeMoieties.size(); j++) {
+                                std::cout << i << ", " << j << " : " << m_activeMoieties.size() << std::endl;
+                                ok &= (m_activeMoieties[i]->getActiveMoietyId() == m_activeMoieties[j]->getActiveMoietyId());
+                            }
+                        }
+                        return ok;
+                    },
+                    "Two active moieties share the same Id");
             // No invariant on m_metadata
 
     )

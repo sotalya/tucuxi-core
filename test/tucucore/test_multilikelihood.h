@@ -949,6 +949,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
     void test7(const std::string& /* _testName */)
     {
+        // Test not yet finalized
+        fructose_assert(false);
+        return;
 
         //A 2-analyte with three samples per analyte, with one of them at the same time, the others at different times.
 

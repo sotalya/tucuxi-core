@@ -393,13 +393,23 @@ public:
                        {
                            bool ok = true;
                            for (size_t i = 0; i < m_analyteConversions.size(); i++) {
+                               ok &= m_analyteConversions[i] != nullptr;
+                           }
+                           return ok;
+                       },
+                       "There is an error in an analyte conversion. It is nullptr");
+               LAMBDA_INVARIANT(
+                       Invariants::INV_FULLFORMULATIONANDROUTE_0012,
+                       {
+                           bool ok = true;
+                           for (size_t i = 0; i < m_analyteConversions.size(); i++) {
                                ok &= m_analyteConversions[i]->checkInvariants();
                            }
                            return ok;
                        },
                        "There is an error in an analyte conversion");
                INVARIANT(
-                       Invariants::INV_FULLFORMULATIONANDROUTE_0012,
+                       Invariants::INV_FULLFORMULATIONANDROUTE_0013,
                        (m_specs.checkInvariants()),
                        "A formulation and route has an error in its specific formulation and route");)
 

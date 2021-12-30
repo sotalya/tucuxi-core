@@ -317,13 +317,23 @@ public:
                        {
                            bool ok = true;
                            for (size_t i = 0; i < m_parameters.size(); i++) {
+                               ok &= m_parameters[i] != nullptr;
+                           }
+                           return ok;
+                       },
+                       "There is an error in a parameter of an inter-parameter set correlation. It is nullptr...");
+               LAMBDA_INVARIANT(
+                       Invariants::INV_PARAMETERSETDEFINITION_0002,
+                       {
+                           bool ok = true;
+                           for (size_t i = 0; i < m_parameters.size(); i++) {
                                ok &= m_parameters[i]->checkInvariants();
                            }
                            return ok;
                        },
                        "There is an error in a parameter of an inter-parameter set correlation");
                LAMBDA_INVARIANT(
-                       Invariants::INV_PARAMETERSETDEFINITION_0002,
+                       Invariants::INV_PARAMETERSETDEFINITION_0003,
                        {
                            bool ok = true;
                            for (size_t i = 0; i < m_correlations.size(); i++) {

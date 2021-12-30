@@ -49,29 +49,29 @@ public:
 
 
 
-        model->addCovariate(std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                new Tucuxi::Core::CovariateDefinition("covS0", "0.0", nullptr, CovariateType::Standard)));
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covS0", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                new Tucuxi::Core::CovariateDefinition("covA0", "0.0", nullptr, CovariateType::Standard)));
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covA0", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                new Tucuxi::Core::CovariateDefinition("covR0", "0.0", nullptr, CovariateType::Standard)));
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covR0", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                new Tucuxi::Core::CovariateDefinition("covM0", "1.0", nullptr, CovariateType::Standard)));
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covM0", "1.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                new Tucuxi::Core::CovariateDefinition("covS1", "0.0", nullptr, CovariateType::Standard)));
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covS1", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                new Tucuxi::Core::CovariateDefinition("covA1", "0.0", nullptr, CovariateType::Standard)));
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covA1", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                new Tucuxi::Core::CovariateDefinition("covR1", "0.0", nullptr, CovariateType::Standard)));
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covR1", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::unique_ptr<Tucuxi::Core::CovariateDefinition>(
-                new Tucuxi::Core::CovariateDefinition("covM1", "1.0", nullptr, CovariateType::Standard)));
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covM1", "1.0", nullptr, CovariateType::Standard));
 
         // Build analyteSet0
         {
@@ -101,8 +101,7 @@ public:
             std::unique_ptr<ParameterSetDefinition> dispositionParameters(new ParameterSetDefinition());
 
             Operation* opS0 = new JSOperation(
-                    " \
-                                             return covS0;",
+                    "return covS0;",
                     {OperationInput("covS", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PS0(new Tucuxi::Core::ParameterDefinition(
                     "TestS0",
@@ -111,8 +110,7 @@ public:
                     std::make_unique<ParameterVariability>(_variabilityTypeS, _variabilityValueS0)));
             dispositionParameters->addParameter(std::move(PS0));
             Operation* opA0 = new JSOperation(
-                    " \
-                                             return covA0;",
+                    "return covA0;",
                     {OperationInput("covA", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PA0(new Tucuxi::Core::ParameterDefinition(
                     "TestA0",
@@ -121,8 +119,7 @@ public:
                     std::make_unique<ParameterVariability>(_variabilityTypeA, _variabilityValueA0)));
             dispositionParameters->addParameter(std::move(PA0));
             Operation* opR0 = new JSOperation(
-                    " \
-                                             return covR0;",
+                    "return covR0;",
                     {OperationInput("covR", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PR0(new Tucuxi::Core::ParameterDefinition(
                     "TestR0",
@@ -131,8 +128,7 @@ public:
                     std::make_unique<ParameterVariability>(_variabilityTypeR, _variabilityValueR0)));
             dispositionParameters->addParameter(std::move(PR0));
             Operation* opM0 = new JSOperation(
-                    " \
-                                             return covM0;",
+                    "return covM0;",
                     {OperationInput("covM", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PM0(new Tucuxi::Core::ParameterDefinition(
                     "TestM0",
@@ -236,19 +232,23 @@ public:
         std::unique_ptr<Analyte> analyte3 = std::make_unique<Analyte>(
                 "analyte3", TucuUnit("ug/l"), std::make_unique<MolarMass>(10.0, TucuUnit("mol/l")));
 
-
-        ErrorModel* errorModel = new ErrorModel();
-
-        errorModel->setErrorModel(_errorModelType);
+        // TODO : Here we use the same error model for all analytes. That should be changed
+        //        to allow different error models, thanks to the function parameters
+        auto errorModel2 = std::make_unique<ErrorModel>();
         for (size_t i = 0; i < _sigmas.size(); i++) {
             std::string sigmaName = "sigma" + std::to_string(i);
-            errorModel->addOriginalSigma(std::make_unique<PopulationValue>(sigmaName, _sigmas[i]));
+            errorModel2->addOriginalSigma(std::make_unique<PopulationValue>(sigmaName, _sigmas[i]));
         }
+        analyte2->setResidualErrorModel(std::move(errorModel2));
 
-        std::unique_ptr<ErrorModel> err(errorModel);
+        auto errorModel3 = std::make_unique<ErrorModel>();
+        errorModel3->setErrorModel(_errorModelType);
+        for (size_t i = 0; i < _sigmas.size(); i++) {
+            std::string sigmaName = "sigma" + std::to_string(i);
+            errorModel3->addOriginalSigma(std::make_unique<PopulationValue>(sigmaName, _sigmas[i]));
+        }
+        analyte3->setResidualErrorModel(std::move(errorModel3));
 
-        analyte2->setResidualErrorModel(std::move(err));
-        analyte3->setResidualErrorModel(std::move(err));
         analyteSet2->addAnalyte(std::move(analyte2));
         analyteSet2->addAnalyte(std::move(analyte3));
 
@@ -289,28 +289,28 @@ public:
                 {OperationInput("covS1", InputType::DOUBLE)});
         std::unique_ptr<ParameterDefinition> PS1(new Tucuxi::Core::ParameterDefinition(
                 "TestS0", 0.0, opS1, std::make_unique<ParameterVariability>(_variabilityTypeS, _variabilityValueS1)));
-        dispositionParameters->addParameter(std::move(PS0));
+        dispositionParameters->addParameter(std::move(PS1));
         Operation* opA1 = new JSOperation(
                 " \
                                          return covA1;",
                 {OperationInput("covA1", InputType::DOUBLE)});
         std::unique_ptr<ParameterDefinition> PA1(new Tucuxi::Core::ParameterDefinition(
                 "TestA0", 0.0, opA1, std::make_unique<ParameterVariability>(_variabilityTypeA, _variabilityValueA1)));
-        dispositionParameters->addParameter(std::move(PA0));
+        dispositionParameters->addParameter(std::move(PA1));
         Operation* opR1 = new JSOperation(
                 " \
                                          return covR1;",
                 {OperationInput("covR1", InputType::DOUBLE)});
         std::unique_ptr<ParameterDefinition> PR1(new Tucuxi::Core::ParameterDefinition(
                 "TestR0", 0.0, opR1, std::make_unique<ParameterVariability>(_variabilityTypeR, _variabilityValueR1)));
-        dispositionParameters->addParameter(std::move(PR0));
+        dispositionParameters->addParameter(std::move(PR1));
         Operation* opM1 = new JSOperation(
                 " \
                                          return covM1;",
                 {OperationInput("covM1", InputType::DOUBLE)});
         std::unique_ptr<ParameterDefinition> PM1(new Tucuxi::Core::ParameterDefinition(
                 "TestM0", 1.0, opM1, std::make_unique<ParameterVariability>(_variabilityTypeM, _variabilityValueM1)));
-        dispositionParameters->addParameter(std::move(PM0));
+        dispositionParameters->addParameter(std::move(PM1));
 
         analyteSet2->setDispositionParameters(std::move(dispositionParameters));
 
@@ -363,10 +363,10 @@ public:
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion1));
             std::unique_ptr<AnalyteConversion> analyteConversion2 =
                     std::make_unique<AnalyteConversion>(AnalyteId("analyte2"), conversionFactor1);
-            formulationAndRoute->addAnalyteConversion(std::move(analyteConversion1));
+            formulationAndRoute->addAnalyteConversion(std::move(analyteConversion2));
             std::unique_ptr<AnalyteConversion> analyteConversion3 =
                     std::make_unique<AnalyteConversion>(AnalyteId("analyte3"), conversionFactor1);
-            formulationAndRoute->addAnalyteConversion(std::move(analyteConversion1));
+            formulationAndRoute->addAnalyteConversion(std::move(analyteConversion3));
 
             ValidDoses* validDoses = new ValidDoses(TucuUnit("mg"), std::make_unique<PopulationValue>(400));
             std::unique_ptr<ValidValuesFixed> specificDoses = std::make_unique<ValidValuesFixed>();
@@ -418,20 +418,21 @@ public:
         collection.populate();
         std::shared_ptr<Operation> sharedOperation = collection.getOperationFromId("sum2");
 
-        std::unique_ptr<Operation> activeMoietyOperation = std::unique_ptr<Operation>(sharedOperation->clone());
+        std::unique_ptr<Operation> activeMoietyOperation0 = std::unique_ptr<Operation>(sharedOperation->clone());
+        std::unique_ptr<Operation> activeMoietyOperation1 = std::unique_ptr<Operation>(sharedOperation->clone());
 
         std::vector<AnalyteId> analyteList0;
         analyteList0.push_back(AnalyteId("analyte0"));
         analyteList0.push_back(AnalyteId("analyte1"));
 
         std::unique_ptr<ActiveMoiety> activeMoiety0 = std::make_unique<ActiveMoiety>(
-                ActiveMoietyId("activeMoietyMulti"), TucuUnit("ug/l"), analyteList0, std::move(activeMoietyOperation));
+                ActiveMoietyId("activeMoietyMulti"), TucuUnit("ug/l"), analyteList0, std::move(activeMoietyOperation0));
 
         std::vector<AnalyteId> analyteList1;
         analyteList1.push_back(AnalyteId("analyte2"));
         analyteList1.push_back(AnalyteId("analyte3"));
         std::unique_ptr<ActiveMoiety> activeMoiety1 = std::make_unique<ActiveMoiety>(
-                ActiveMoietyId("activeMoietyMulti"), TucuUnit("ug/l"), analyteList1, std::move(activeMoietyOperation));
+                ActiveMoietyId("activeMoietyMulti"), TucuUnit("ug/l"), analyteList1, std::move(activeMoietyOperation1));
 
         Tucuxi::Common::TranslatableString activeMoietyName0;
         activeMoietyName0.setString("Active moiety name 2");

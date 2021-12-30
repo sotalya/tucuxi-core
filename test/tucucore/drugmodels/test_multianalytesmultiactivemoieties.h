@@ -92,7 +92,8 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
-        collection->addPkModel(sharedPkModel);
+        defaultPopulate(*collection.get());
+//        collection->addPkModel(sharedPkModel);
         DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
 
         fructose_assert(checkerResult.m_ok);
