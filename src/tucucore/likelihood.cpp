@@ -59,7 +59,7 @@ Value Likelihood::operator()(const ValueVector& _etas)
 
 Value Likelihood::negativeLogLikelihood(const ValueVector& _etas) const
 {
-    ValueVector concentrations(m_samples->size());
+    Concentrations concentrations(m_samples->size());
     bool isAll = false;
 
     // Getting the concentration values at these _times and m_samples.

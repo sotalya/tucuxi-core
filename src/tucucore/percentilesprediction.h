@@ -51,9 +51,9 @@ public:
 
         PercentileRanks::iterator itRank = m_ranks.begin();
         while (itRank != m_ranks.end()) {
-            std::vector<std::vector<Concentration> > vec;
+            std::vector<Concentrations> vec;
             for (size_t cycle = 0; cycle < _intakes.size(); cycle++) {
-                vec.push_back(std::vector<Concentration>(_intakes[cycle].getNbPoints()));
+                vec.push_back(Concentrations(_intakes[cycle].getNbPoints()));
             }
             m_values.push_back(vec);
             itRank++;
@@ -68,7 +68,7 @@ public:
     {
         return m_times;
     }
-    const std::vector<std::vector<std::vector<Value> > >& getValues() const
+    const std::vector<std::vector<Concentrations> >& getValues() const
     {
         return m_values;
     }
@@ -81,7 +81,7 @@ public:
 private:
     std::vector<TimeOffsets> m_times;
     PercentileRanks m_ranks;
-    std::vector<std::vector<std::vector<Value> > > m_values; // Cycles->Points->Value
+    std::vector<std::vector<Concentrations> > m_values; // Cycles->Points->Value
 };
 typedef std::unique_ptr<PercentilesPrediction> PercentilesPredictionPtr;
 

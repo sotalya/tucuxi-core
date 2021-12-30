@@ -67,7 +67,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
             unsigned int residualSize = calculator->getResidualSize();
             bool isAll = false;
 
-            std::vector<Tucuxi::Core::Concentrations> concentrations;
+            MultiCompConcentrations concentrations;
             concentrations.resize(residualSize);
 
             Tucuxi::Core::TimeOffsets times;
@@ -144,7 +144,7 @@ struct TestConcentrationCalculator : public fructose::test_base<TestConcentratio
 
             unsigned int residualSize = calculator.getResidualSize();
             bool isAll = false;
-            std::vector<Tucuxi::Core::Concentrations> concentrations;
+            MultiCompConcentrations concentrations;
             concentrations.resize(residualSize);
             Tucuxi::Core::TimeOffsets times;
             {

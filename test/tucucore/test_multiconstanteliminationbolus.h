@@ -68,7 +68,7 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
             unsigned int residualSize = calculator->getResidualSize();
             bool isAll = false;
 
-            std::vector<Tucuxi::Core::Concentrations> concentrations;
+            MultiCompConcentrations concentrations;
             concentrations.resize(residualSize);
 
             Tucuxi::Core::TimeOffsets times;
@@ -145,7 +145,7 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
 
             unsigned int residualSize = calculator.getResidualSize();
             bool isAll = false;
-            std::vector<Tucuxi::Core::Concentrations> concentrations;
+            MultiCompConcentrations concentrations;
             concentrations.resize(residualSize);
             Tucuxi::Core::TimeOffsets times;
             {
@@ -354,9 +354,9 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
 
         MultiConstantEliminationBolus aux;
         Tucuxi::Core::ComputingStatus res;
-        auto concentrations = std::vector<Concentrations>();
-        concentrations.push_back(std::vector<double>(CYCLE_SIZE, -1));
-        concentrations.push_back(std::vector<double>(CYCLE_SIZE, -1));
+        MultiCompConcentrations concentrations;
+        concentrations.push_back(Concentrations(CYCLE_SIZE, -1));
+        concentrations.push_back(Concentrations(CYCLE_SIZE, -1));
 
         TimeOffsets times;
 

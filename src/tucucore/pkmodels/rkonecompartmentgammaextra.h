@@ -31,7 +31,7 @@ public:
     static std::vector<std::string> getParametersId();
 
 
-    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0];
     }
@@ -45,12 +45,12 @@ public:
         return pow(m_b, m_a) / std::tgamma(m_a) * pow(_t, m_a - 1) * exp(-m_b * _t);
     }
 
-    inline void derive(double _t, const std::vector<double>& _c, std::vector<double>& _dcdt)
+    inline void derive(double _t, const MultiCompConcentration& _c, MultiCompConcentration& _dcdt)
     {
         _dcdt[0] = m_F * m_D * probDensityAbsorptionTimes(_t) - m_Ke * _c[0];
     }
 
-    inline void addFixedValue(double _t, std::vector<double>& _concentrations)
+    inline void addFixedValue(double _t, MultiCompConcentration& _concentrations)
     {
         FINAL_UNUSED_PARAMETER(_t);
         FINAL_UNUSED_PARAMETER(_concentrations);

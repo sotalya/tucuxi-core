@@ -895,7 +895,7 @@ ComputingStatus ComputingAdjustments::addRest(
     Duration interval = dosage->getTimeStep();
     auto dose = dosage->getDose();
 
-    const std::vector<double>& lastConcentrations = _dosage.getData().back().m_concentrations[0];
+    const Concentrations& lastConcentrations = _dosage.getData().back().m_concentrations[0];
     double steadyStateResidual = lastConcentrations.back();
 
     FormulationAndRoute formulationAndRoute = dosage->getLastFormulationAndRoute();
@@ -947,7 +947,7 @@ ComputingStatus ComputingAdjustments::addRest(
             return generateResult;
         }
 
-        const std::vector<double>& concentrations = loadingDosage.getData()[0].m_concentrations[0];
+        const Concentrations& concentrations = loadingDosage.getData()[0].m_concentrations[0];
         double residual = concentrations.back();
         double score = steadyStateResidual - residual;
         loadingCandidates.push_back({loadingDosage, score, candidate.m_interval});
@@ -986,7 +986,7 @@ ComputingStatus ComputingAdjustments::addRest(
             return generateResult;
         }
 
-        const std::vector<double>& concentrations = loadingDosage.getData()[0].m_concentrations[0];
+        const Concentrations& concentrations = loadingDosage.getData()[0].m_concentrations[0];
         double residual = concentrations.back();
         existingDosageScore = steadyStateResidual - residual;
     }
@@ -1065,7 +1065,7 @@ ComputingStatus ComputingAdjustments::addLoad(
     auto dose = dosage->getDose();
 
 
-    const std::vector<double>& lastConcentrations = _dosage.getData().back().m_concentrations[0];
+    const Concentrations& lastConcentrations = _dosage.getData().back().m_concentrations[0];
     double steadyStateResidual = lastConcentrations.back();
 
     FormulationAndRoute formulationAndRoute = dosage->getLastFormulationAndRoute();
@@ -1120,7 +1120,7 @@ ComputingStatus ComputingAdjustments::addLoad(
             return generateResult;
         }
 
-        const std::vector<double>& concentrations = loadingDosage.getData()[0].m_concentrations[0];
+        const Concentrations& concentrations = loadingDosage.getData()[0].m_concentrations[0];
         double residual = concentrations.back();
         double score = steadyStateResidual - residual;
         loadingCandidates.push_back({loadingDosage, score, candidate.m_interval});
@@ -1160,7 +1160,7 @@ ComputingStatus ComputingAdjustments::addLoad(
             return generateResult;
         }
 
-        const std::vector<double>& concentrations = loadingDosage.getData()[0].m_concentrations[0];
+        const Concentrations& concentrations = loadingDosage.getData()[0].m_concentrations[0];
         double residual = concentrations.back();
         existingDosageScore = steadyStateResidual - residual;
     }

@@ -67,7 +67,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                                             : maxResidualSize;
         bool isAll = false;
 
-        std::vector<Tucuxi::Core::Concentrations> concentrations;
+        MultiCompConcentrations concentrations;
         concentrations.resize(residualSize);
 
         Tucuxi::Core::TimeOffsets times;
@@ -157,16 +157,16 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                                             : maxResidualSize;
         bool isAll = false;
 
-        std::vector<Tucuxi::Core::Concentrations> concentrations;
+        MultiCompConcentrations concentrations;
         concentrations.resize(residualSize);
 
-        std::vector<Tucuxi::Core::Concentrations> concentrationsInterval2;
+        MultiCompConcentrations concentrationsInterval2;
         concentrationsInterval2.resize(residualSize);
 
-        std::vector<Tucuxi::Core::Concentrations> concentrations2;
+        MultiCompConcentrations concentrations2;
         concentrations2.resize(residualSize);
 
-        std::vector<Tucuxi::Core::Concentrations> concentrations2Interval2;
+        MultiCompConcentrations concentrations2Interval2;
         concentrations2Interval2.resize(residualSize);
 
         Tucuxi::Core::TimeOffsets times;
@@ -282,7 +282,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         // Then a full check on all points
         for (size_t t = 0; t < times.size(); t++) {
 
-            std::vector<Tucuxi::Core::Concentrations> concentrations3;
+            MultiCompConcentrations concentrations3;
             concentrations3.resize(residualSize);
 
             Tucuxi::Core::Residuals outResiduals(residualSize);
@@ -324,7 +324,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         // Then a full check on all points
         for (size_t t = 0; t < times.size(); t++) {
 
-            std::vector<Tucuxi::Core::Concentrations> concentrations3;
+            MultiCompConcentrations concentrations3;
             concentrations3.resize(residualSize);
 
             res = macroCalculator.calculateIntakeSinglePoint(
@@ -368,7 +368,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
                                             : maxResidualSize;
         bool isAll = false;
 
-        std::vector<Tucuxi::Core::Concentrations> concentrations0;
+        MultiCompConcentrations concentrations0;
         concentrations0.resize(residualSize);
 
         Tucuxi::Core::TimeOffsets times;
@@ -395,7 +395,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
 
 
-        std::vector<Tucuxi::Core::Concentrations> concentrations1;
+        MultiCompConcentrations concentrations1;
         concentrations1.resize(residualSize);
 
         // Calculation of second Class
@@ -604,7 +604,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
         unsigned int residualSize = calculator0.getResidualSize();
         bool isAll = false;
 
-        std::vector<Tucuxi::Core::Concentrations> concentrations0;
+        MultiCompConcentrations concentrations0;
         concentrations0.resize(residualSize);
 
         Tucuxi::Core::TimeOffsets times;

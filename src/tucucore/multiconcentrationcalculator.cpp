@@ -71,7 +71,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
 
             // Compute concentrations for the current cycle
             TimeOffsets times;
-            std::vector<Concentrations> concentrations;
+            MultiCompConcentrations concentrations;
             concentrations.resize(residualSize);
 
             _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
@@ -114,7 +114,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrations(
 
             // Compute concentrations for the current cycle
             TimeOffsets times;
-            std::vector<Concentrations> concentrations;
+            MultiCompConcentrations concentrations;
             concentrations.resize(residualSize);
 
             _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
@@ -213,7 +213,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
 
                 // Compute concentrations for the current cycle
                 TimeOffsets times;
-                std::vector<Concentrations> concentrations;
+                MultiCompConcentrations concentrations;
                 concentrations.resize(residualSize);
 
                 _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
@@ -255,7 +255,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
 
                 // Compute concentrations for the current cycle
                 TimeOffsets times;
-                std::vector<Concentrations> concentrations;
+                MultiCompConcentrations concentrations;
                 concentrations.resize(residualSize);
 
                 _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
@@ -314,7 +314,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtSteadyState
 
 
 ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
-        std::vector<Concentrations>& _concentrations,
+        MultiCompConcentrations& _concentrations,
         bool _isAll,
         const IntakeSeries& _intakes,
         const ParameterSetSeries& _parameters,
@@ -339,7 +339,7 @@ ComputingStatus MultiConcentrationCalculator::computeConcentrationsAtTimes(
     std::fill(inResiduals.begin(), inResiduals.end(), 0);
 
 
-    std::vector<Concentrations> concentrations;
+    MultiCompConcentrations concentrations;
     concentrations.resize(residualSize);
 
     IntakeSeries::const_iterator it;

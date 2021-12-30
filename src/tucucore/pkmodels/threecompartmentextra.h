@@ -49,14 +49,14 @@ protected:
     bool computeConcentrations(
             const Residuals& _inResiduals,
             bool _isAll,
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             Residuals& _outResiduals) override;
 
     bool computeConcentration(
             const Value& _atTime,
             const Residuals& _inResiduals,
             bool _isAll,
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             Residuals& _outResiduals) override;
 
     void compute(

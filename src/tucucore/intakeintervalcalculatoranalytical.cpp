@@ -8,7 +8,7 @@ namespace Core {
 IntakeIntervalCalculatorAnalytical::~IntakeIntervalCalculatorAnalytical() = default;
 
 ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
-        std::vector<Concentrations>& _concentrations,
+        MultiCompConcentrations& _concentrations,
         TimeOffsets& _times,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
@@ -67,7 +67,7 @@ ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakePoints(
 
 
 ComputingStatus IntakeIntervalCalculatorAnalytical::calculateIntakeSinglePoint(
-        std::vector<Concentrations>& _concentrations,
+        MultiCompConcentrations& _concentrations,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,

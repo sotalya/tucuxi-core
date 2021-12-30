@@ -9,7 +9,7 @@ IntakeIntervalCalculatorRK4::~IntakeIntervalCalculatorRK4() = default;
 
 
 ComputingStatus IntakeIntervalCalculatorRK4::calculateIntakePoints(
-        std::vector<Concentrations>& _concentrations,
+        MultiCompConcentrations& _concentrations,
         TimeOffsets& _times,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
@@ -53,7 +53,7 @@ ComputingStatus IntakeIntervalCalculatorRK4::calculateIntakePoints(
 
 
 ComputingStatus IntakeIntervalCalculatorRK4::calculateIntakeSinglePoint(
-        std::vector<Concentrations>& _concentrations,
+        MultiCompConcentrations& _concentrations,
         const IntakeEvent& _intakeEvent,
         const ParameterSetEvent& _parameters,
         const Residuals& _inResiduals,

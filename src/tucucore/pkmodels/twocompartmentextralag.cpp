@@ -423,10 +423,7 @@ void TwoCompartmentExtraLagMicro::computeExponentials(Eigen::VectorXd& _times)
 
 
 bool TwoCompartmentExtraLagMicro::computeConcentrations(
-        const Residuals& _inResiduals,
-        bool _isAll,
-        std::vector<Concentrations>& _concentrations,
-        Residuals& _outResiduals)
+        const Residuals& _inResiduals, bool _isAll, MultiCompConcentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
     Eigen::VectorXd concentrations2;
@@ -459,7 +456,7 @@ bool TwoCompartmentExtraLagMicro::computeConcentration(
         const Value& _atTime,
         const Residuals& _inResiduals,
         bool _isAll,
-        std::vector<Concentrations>& _concentrations,
+        MultiCompConcentrations& _concentrations,
         Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;

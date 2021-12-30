@@ -132,7 +132,7 @@ public:
     /// \param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
     /// \return An indication if the computation was successful
     virtual ComputingStatus calculateIntakePoints(
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             TimeOffsets& _times,
             const IntakeEvent& _intakeEvent,
             const ParameterSetEvent& _parameters,
@@ -150,7 +150,7 @@ public:
     /// \param _outResiduals Final residual concentrations
     /// \return Returns an indication if the computation was successful
     virtual ComputingStatus calculateIntakeSinglePoint(
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             const IntakeEvent& _intakeEvent,
             const ParameterSetEvent& _parameters,
             const Residuals& _inResiduals,

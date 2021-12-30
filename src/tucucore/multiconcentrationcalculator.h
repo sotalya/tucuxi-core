@@ -106,7 +106,7 @@ public:
     /// \return The status of computation
     ///
     virtual ComputingStatus computeConcentrationsAtTimes(
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             bool _isAll,
             const IntakeSeries& _intakes,
             const ParameterSetSeries& _parameters,
@@ -205,7 +205,7 @@ public:
     /// \return The status of computation
     ///
     ComputingStatus computeConcentrationsAtTimes(
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             bool _isAll,
             const IntakeSeries& _intakes,
             const ParameterSetSeries& _parameters,

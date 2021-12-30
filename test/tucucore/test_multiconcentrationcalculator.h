@@ -75,7 +75,7 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
             unsigned int residualSize = calculator->getResidualSize();
             bool isAll = false;
 
-            std::vector<Tucuxi::Core::Concentrations> concentrations;
+            MultiCompConcentrations concentrations;
             concentrations.resize(residualSize);
 
             Tucuxi::Core::TimeOffsets times;
@@ -126,8 +126,7 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
 
             //int analytes = getNbAnalytes();
             for (size_t i = 0; i < _nbPoints; i++) {
-                std::vector<Tucuxi::Core::Concentrations> concentration2;
-                concentration2 = predictionPtr->getValues()[0];
+                MultiCompConcentrations concentration2 = predictionPtr->getValues()[0];
                 // std::cout << i <<  " :: " << concentrations[0][i] << " : " << concentration2[i] << std::endl;
                 // compare concentrations of compartment 1
                 fructose_assert_double_eq(concentrations[0][i], concentration2[0][i]);
@@ -155,7 +154,7 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
 
             unsigned int residualSize = calculator.getResidualSize();
             bool isAll = false;
-            std::vector<Tucuxi::Core::Concentrations> concentrations;
+            MultiCompConcentrations concentrations;
             concentrations.resize(residualSize);
             Tucuxi::Core::TimeOffsets times;
             {
@@ -234,8 +233,7 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
             if (!(typeid(CalculatorClass) == typeid(ConstantEliminationBolus)
                   or typeid(CalculatorClass) == typeid(MultiConstantEliminationBolus))) {
                 for (size_t cycle = 0; cycle < nbCycles; cycle++) {
-                    std::vector<Tucuxi::Core::Concentrations> concentration2;
-                    concentration2 = predictionPtr->getValues()[cycle];
+                    MultiCompConcentrations concentration2 = predictionPtr->getValues()[cycle];
                     for (CycleSize i = 0; i < _nbPoints - 1; i++) {
                         double sumConcentration = 0.0;
                         for (size_t c = 0; c < cycle + 1; c++) {
@@ -264,7 +262,7 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
             Tucuxi::Common::Duration infusionTime = _infusionTime;
 
 
-            std::vector<Tucuxi::Core::Concentrations> concentrations;
+            MultiCompConcentrations concentrations;
             Tucuxi::Core::TimeOffsets times;
             Tucuxi::Core::IntakeEvent intakeEvent(
                     now,

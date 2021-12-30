@@ -75,10 +75,7 @@ void OneCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 
 
 bool OneCompartmentInfusionMicro::computeConcentrations(
-        const Residuals& _inResiduals,
-        bool _isAll,
-        std::vector<Concentrations>& _concentrations,
-        Residuals& _outResiduals)
+        const Residuals& _inResiduals, bool _isAll, MultiCompConcentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
@@ -111,7 +108,7 @@ bool OneCompartmentInfusionMicro::computeConcentration(
         const Value& _atTime,
         const Residuals& _inResiduals,
         bool _isAll,
-        std::vector<Concentrations>& _concentrations,
+        MultiCompConcentrations& _concentrations,
         Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations;
