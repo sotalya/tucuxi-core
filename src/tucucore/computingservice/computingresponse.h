@@ -49,7 +49,7 @@ public:
     {
     }
 
-    void addData(const TimeOffsets& _offsets, const std::vector<Concentration>& _concentrations)
+    void addData(const TimeOffsets& _offsets, const Concentrations& _concentrations)
     {
         m_times.push_back(_offsets);
         m_concentrations.push_back(_concentrations);
@@ -60,7 +60,7 @@ public:
         return m_times;
     }
 
-    const std::vector<Concentrations>& getConcentrations()
+    const MultiCompConcentrations& getConcentrations()
     {
         return m_concentrations;
     }
@@ -79,7 +79,7 @@ public:
     /// \brief A vector of vector of concentrations
     /// Each inner vector contains the concentrations of an analyte or a compartment
     /// The size of each inner vector has to be the same as m_times.
-    std::vector<Concentrations> m_concentrations;
+    MultiCompConcentrations m_concentrations;
 
     /// \brief Unit of concentrations
     /// The area under curve corresponds to this unit times hours

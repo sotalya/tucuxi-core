@@ -118,7 +118,7 @@ ComputingStatus ComputingUtils::computeMultiActiveMoiety(
         }
 
         size_t nbConcentrations = analyteC[0].size();
-        std::vector<Concentrations> concentration(nbConcentrations);
+        MultiCompConcentrations concentration(nbConcentrations);
 
         for (size_t i = 0; i < _activemoieties.size(); ++i) {
 

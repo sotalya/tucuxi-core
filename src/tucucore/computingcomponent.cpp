@@ -794,7 +794,7 @@ ComputingStatus ComputingComponent::preparePercentilesResponse(
         std::unique_ptr<PercentilesData> resp = std::make_unique<PercentilesData>(_request.getId());
         resp->setNbPointsPerHour(_traits->getNbPointsPerHour());
 
-        const std::vector<std::vector<std::vector<Value> > >& allValues = _percentiles.getValues();
+        const std::vector<std::vector<Concentrations> >& allValues = _percentiles.getValues();
 
 
         // The final unit depends on the computing options

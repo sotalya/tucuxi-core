@@ -26,7 +26,7 @@ public:
     /// \return The list of required PK parameters Ids
     static std::vector<std::string> getParametersId();
 
-    inline void derive(double _t, const std::vector<double>& _c, std::vector<double>& _dcdt)
+    inline void derive(double _t, const MultiCompConcentration& _c, MultiCompConcentration& _dcdt)
     {
         FINAL_UNUSED_PARAMETER(_t);
         // This function _dcdt[0] needs to be checked. I used the one of ADAPT5-User-Guide, but used
@@ -47,7 +47,7 @@ public:
         }
     }
 
-    inline void addFixedValue(double _t, std::vector<double>& _concentrations)
+    inline void addFixedValue(double _t, MultiCompConcentration& _concentrations)
     {
         if (m_isWithLag) {
             if ((!m_delivered) && (_t >= m_Tlag)) {
@@ -96,7 +96,7 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1];
@@ -122,7 +122,7 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1];
@@ -150,7 +150,7 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0] + m_D / m_V1;
         _concentrations[1] = _inResiduals[1];
@@ -175,7 +175,7 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
         m_infusionRate = m_D / m_V1 / m_Tinf;
         _concentrations[0] = _inResiduals[0];

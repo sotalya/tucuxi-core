@@ -106,10 +106,7 @@ void ThreeCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 }
 
 bool ThreeCompartmentInfusionMicro::computeConcentrations(
-        const Residuals& _inResiduals,
-        bool _isAll,
-        std::vector<Concentrations>& _concentrations,
-        Residuals& _outResiduals)
+        const Residuals& _inResiduals, bool _isAll, MultiCompConcentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1(m_nbPoints);
     Value concentrations2, concentrations3;
@@ -151,7 +148,7 @@ bool ThreeCompartmentInfusionMicro::computeConcentration(
         const Value& _atTime,
         const Residuals& _inResiduals,
         bool _isAll,
-        std::vector<Concentrations>& _concentrations,
+        MultiCompConcentrations& _concentrations,
         Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1(2);

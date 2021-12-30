@@ -36,7 +36,7 @@ public:
     /// \return An indication if the computation was successful
     ///
     ComputingStatus calculateIntakePoints(
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             TimeOffsets& _times,
             const IntakeEvent& _intakeEvent,
             const ParameterSetEvent& _parameters,
@@ -56,7 +56,7 @@ public:
     /// \return Returns an indication if the computation was successful
     ///
     ComputingStatus calculateIntakeSinglePoint(
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             const IntakeEvent& _intakeEvent,
             const ParameterSetEvent& _parameters,
             const Residuals& _inResiduals,
@@ -77,7 +77,7 @@ protected:
             Eigen::VectorXd& _times,
             const Residuals& _inResiduals,
             bool _isAll,
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             Residuals& _outResiduals) = 0;
 
     ///
@@ -92,7 +92,7 @@ protected:
             const Value& _atTime,
             const Residuals& _inResiduals,
             bool _isAll,
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             Residuals& _outResiduals) = 0;
 
     ///
@@ -102,7 +102,7 @@ protected:
     ///
     /// In a typical use cas, this function uses the dose and the residuals to set the new concentration.
     ///
-    virtual void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) = 0;
+    virtual void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) = 0;
 
 
     typedef IntakeCalculatorSingleConcentrations SingleConcentrations;
@@ -142,10 +142,10 @@ protected:
             Eigen::VectorXd& _times,
             const Residuals& _inResiduals,
             bool _isAll,
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             Residuals& _outResiduals) override
     {
-        std::vector<Concentrations> concentrations;
+        MultiCompConcentrations concentrations;
         for (unsigned int i = 0; i < ResidualSize; i++) {
             concentrations.push_back(Concentrations(m_nbPoints));
         }
@@ -181,10 +181,10 @@ protected:
             const Value& _atTime,
             const Residuals& _inResiduals,
             bool _isAll,
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             Residuals& _outResiduals) override
     {
-        std::vector<Concentrations> concentrations;
+        MultiCompConcentrations concentrations;
         for (size_t i = 0; i < ResidualSize; i++) {
             concentrations.push_back(Concentrations(m_nbPoints));
         }
@@ -248,9 +248,9 @@ protected:
         static inline void apply(
                 std::vector<double>& _k1,
                 double _h,
-                std::vector<double>& _dcdt,
-                std::vector<double>& _c,
-                std::vector<double>& _concentrations)
+                MultiCompConcentration& _dcdt,
+                MultiCompConcentration& _c,
+                MultiCompConcentration& _concentrations)
         {
             // Set k1's
             _k1[from] = _h * _dcdt[from];
@@ -266,9 +266,9 @@ protected:
         static inline void apply(
                 std::vector<double>& _k1,
                 double _h,
-                std::vector<double>& _dcdt,
-                std::vector<double>& _c,
-                std::vector<double>& _concentrations)
+                MultiCompConcentration& _dcdt,
+                MultiCompConcentration& _c,
+                MultiCompConcentration& _concentrations)
         {
             _k1[from] = _h * _dcdt[from];
             _c[from] = _concentrations[from] + _k1[from] / 2.0;
@@ -281,9 +281,9 @@ protected:
         static inline void apply(
                 std::vector<double>& _k2,
                 double _h,
-                std::vector<double>& _dcdt,
-                std::vector<double>& _c,
-                std::vector<double>& _concentrations)
+                MultiCompConcentration& _dcdt,
+                MultiCompConcentration& _c,
+                MultiCompConcentration& _concentrations)
         {
             // Set k1's
             _k2[from] = _h * _dcdt[from];
@@ -299,9 +299,9 @@ protected:
         static inline void apply(
                 std::vector<double>& _k2,
                 double _h,
-                std::vector<double>& _dcdt,
-                std::vector<double>& _c,
-                std::vector<double>& _concentrations)
+                MultiCompConcentration& _dcdt,
+                MultiCompConcentration& _c,
+                MultiCompConcentration& _concentrations)
         {
             _k2[from] = _h * _dcdt[from];
             _c[from] = _concentrations[from] + _k2[from] / 2.0;
@@ -314,9 +314,9 @@ protected:
         static inline void apply(
                 std::vector<double>& _k3,
                 double _h,
-                std::vector<double>& _dcdt,
-                std::vector<double>& _c,
-                std::vector<double>& _concentrations)
+                MultiCompConcentration& _dcdt,
+                MultiCompConcentration& _c,
+                MultiCompConcentration& _concentrations)
         {
             // Set k1's
             _k3[from] = _h * _dcdt[from];
@@ -332,9 +332,9 @@ protected:
         static inline void apply(
                 std::vector<double>& _k3,
                 double _h,
-                std::vector<double>& _dcdt,
-                std::vector<double>& _c,
-                std::vector<double>& _concentrations)
+                MultiCompConcentration& _dcdt,
+                MultiCompConcentration& _c,
+                MultiCompConcentration& _concentrations)
         {
             _k3[from] = _h * _dcdt[from];
             _c[from] = _concentrations[from] + _k3[from];
@@ -350,8 +350,8 @@ protected:
                 std::vector<double>& _k3,
                 std::vector<double>& _k4,
                 double _h,
-                std::vector<double>& _dcdt,
-                std::vector<double>& _concentrations)
+                MultiCompConcentration& _dcdt,
+                MultiCompConcentration& _concentrations)
         {
             _k4[from] = _h * _dcdt[from];
             // and directly compute the concentration of each compartment
@@ -371,8 +371,8 @@ protected:
                 std::vector<double>& _k3,
                 std::vector<double>& _k4,
                 double _h,
-                std::vector<double>& _dcdt,
-                std::vector<double>& _concentrations)
+                MultiCompConcentration& _dcdt,
+                MultiCompConcentration& _concentrations)
         {
             _k4[from] = _h * _dcdt[from];
             // and directly compute the concentration of each compartment
@@ -384,7 +384,7 @@ protected:
 
 
     void computeUnroll(
-            const Eigen::VectorXd& _times, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations)
+            const Eigen::VectorXd& _times, const Residuals& _inResiduals, MultiCompConcentrations& _concentrations)
     {
         // By default, we advance minute per minute
         const double stdH = 1.0 / 60.0;
@@ -396,18 +396,18 @@ protected:
         Eigen::Index nbPoints = _times.size();
 
         // The vectors of concentrations
-        std::vector<double> concentrations(ResidualSize);
+        MultiCompConcentration concentrations(ResidualSize);
 
         // We initialize the first concentration
         initConcentrations(_inResiduals, concentrations);
 
         // The values used by RK4 during one iteration
-        std::vector<double> dcdt(ResidualSize);
+        MultiCompConcentration dcdt(ResidualSize);
         std::vector<double> k1(ResidualSize);
         std::vector<double> k2(ResidualSize);
         std::vector<double> k3(ResidualSize);
         std::vector<double> k4(ResidualSize);
-        std::vector<double> c(ResidualSize);
+        MultiCompConcentration c(ResidualSize);
 
         // Time t used for calculating the derivative
         double t = 0.0;
@@ -476,8 +476,7 @@ protected:
     }
 
 
-    void compute(
-            const Eigen::VectorXd& _times, const Residuals& _inResiduals, std::vector<Concentrations>& _concentrations)
+    void compute(const Eigen::VectorXd& _times, const Residuals& _inResiduals, MultiCompConcentrations& _concentrations)
     {
         // By default, we advance minute per minute
         const double stdH = 1.0 / 60.0;
@@ -489,13 +488,13 @@ protected:
         Eigen::Index nbPoints = _times.size();
 
         // The vectors of concentrations
-        std::vector<double> concentrations(ResidualSize);
+        MultiCompConcentration concentrations(ResidualSize);
 
         // We initialize the first concentration
         initConcentrations(_inResiduals, concentrations);
 
         // The values used by RK4 during one iteration
-        std::vector<double> dcdt(ResidualSize);
+        MultiCompConcentration dcdt(ResidualSize);
         std::vector<double> k1(ResidualSize);
         std::vector<double> k2(ResidualSize);
         std::vector<double> k3(ResidualSize);

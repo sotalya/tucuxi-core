@@ -614,7 +614,8 @@ ComputingStatus MultiComputingAdjustments::compute(
                 }
                 for (size_t i = 0; i < pPrediction->getValues().size(); i++) {
                     Tucuxi::Common::UnitManager::updateAndConvertToUnit<
-                            Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                            Tucuxi::Common::UnitManager::UnitType::Concentration,
+                            Concentrations>(
                             pPrediction->getModifiableValues()[i],
                             _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
                             finalUnit);
@@ -894,7 +895,7 @@ ComputingStatus MultiComputingAdjustments::addRest(
     auto dose = dosage->getDose();
 
 
-    const std::vector<double>& lastConcentrations = _dosage.getData().back().m_concentrations[0];
+    const Concentrations& lastConcentrations = _dosage.getData().back().m_concentrations[0];
     double steadyStateResidual = lastConcentrations.back();
 
     FormulationAndRoute formulationAndRoute = dosage->getLastFormulationAndRoute();
@@ -945,7 +946,7 @@ ComputingStatus MultiComputingAdjustments::addRest(
             return generateResult;
         }
 
-        const std::vector<double>& concentrations = loadingDosage.getData()[0].m_concentrations[0];
+        const Concentrations& concentrations = loadingDosage.getData()[0].m_concentrations[0];
         double residual = concentrations.back();
         double score = steadyStateResidual - residual;
         loadingCandidates.push_back({loadingDosage, score, candidate.m_interval});
@@ -984,7 +985,7 @@ ComputingStatus MultiComputingAdjustments::addRest(
             return generateResult;
         }
 
-        const std::vector<double>& concentrations = loadingDosage.getData()[0].m_concentrations[0];
+        const Concentrations& concentrations = loadingDosage.getData()[0].m_concentrations[0];
         double residual = concentrations.back();
         existingDosageScore = steadyStateResidual - residual;
     }
@@ -1045,7 +1046,7 @@ ComputingStatus MultiComputingAdjustments::addLoad(
     auto dose = dosage->getDose();
 
 
-    const std::vector<double>& lastConcentrations = _dosage.getData().back().m_concentrations[0];
+    const Concentrations& lastConcentrations = _dosage.getData().back().m_concentrations[0];
     double steadyStateResidual = lastConcentrations.back();
 
     FormulationAndRoute formulationAndRoute = dosage->getLastFormulationAndRoute();
@@ -1100,7 +1101,7 @@ ComputingStatus MultiComputingAdjustments::addLoad(
             return generateResult;
         }
 
-        const std::vector<double>& concentrations = loadingDosage.getData()[0].m_concentrations[0];
+        const Concentrations& concentrations = loadingDosage.getData()[0].m_concentrations[0];
         double residual = concentrations.back();
         double score = steadyStateResidual - residual;
         loadingCandidates.push_back({loadingDosage, score, candidate.m_interval});
@@ -1140,7 +1141,7 @@ ComputingStatus MultiComputingAdjustments::addLoad(
             return generateResult;
         }
 
-        const std::vector<double>& concentrations = loadingDosage.getData()[0].m_concentrations[0];
+        const Concentrations& concentrations = loadingDosage.getData()[0].m_concentrations[0];
         double residual = concentrations.back();
         existingDosageScore = steadyStateResidual - residual;
     }

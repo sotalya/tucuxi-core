@@ -103,7 +103,7 @@ protected:
     bool computeConcentrations(
             const Residuals& _inResiduals,
             bool _isAll,
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             Residuals& _outResiduals) override
     {
         Eigen::VectorXd concentrations;
@@ -128,7 +128,7 @@ protected:
             const Value& _atTime,
             const Residuals& _inResiduals,
             bool _isAll,
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             Residuals& _outResiduals) override
     {
         TMP_UNUSED_PARAMETER(_atTime);

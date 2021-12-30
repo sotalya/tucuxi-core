@@ -41,7 +41,7 @@ public:
             unsigned int _residualSize,
             CycleSize _nbPoints,
             TimeOffsets& _times,
-            std::vector<Concentrations>& _values) const
+            MultiCompConcentrations& _values) const
     {
         _times.reserve(_nbPoints);
         for (unsigned int compartement = 0; compartement < _residualSize; compartement++) {
@@ -69,18 +69,18 @@ public:
     {
         return m_times;
     }
-    const std::vector<Concentrations>& getValues() const
+    const MultiCycleConcentrations& getValues() const
     {
         return m_values;
     }
-    std::vector<Concentrations>& getModifiableValues()
+    MultiCycleConcentrations& getModifiableValues()
     {
         return m_values;
     }
 
 private:
     std::vector<TimeOffsets> m_times;
-    std::vector<Concentrations> m_values;
+    MultiCycleConcentrations m_values;
 };
 typedef std::unique_ptr<ConcentrationPrediction> ConcentrationPredictionPtr;
 

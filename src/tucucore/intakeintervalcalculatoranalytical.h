@@ -32,7 +32,7 @@ public:
     /// \param _isDensityConstant Flag to indicate if initial number of points should be used with a constant density
     /// \return An indication if the computation was successful
     ComputingStatus calculateIntakePoints(
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             TimeOffsets& _times,
             const IntakeEvent& _intakeEvent,
             const ParameterSetEvent& _parameters,
@@ -50,7 +50,7 @@ public:
     /// \param _outResiduals Final residual concentrations
     /// \return Returns an indication if the computation was successful
     ComputingStatus calculateIntakeSinglePoint(
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             const IntakeEvent& _intakeEvent,
             const ParameterSetEvent& _parameters,
             const Residuals& _inResiduals,
@@ -73,7 +73,7 @@ protected:
     virtual bool computeConcentrations(
             const Residuals& _inResiduals,
             bool _isAll,
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             Residuals& _outResiduals) = 0;
 
     /// \brief Compute concentrations using a specific algorithm
@@ -86,7 +86,7 @@ protected:
             const Value& _atTime,
             const Residuals& _inResiduals,
             bool _isAll,
-            std::vector<Concentrations>& _concentrations,
+            MultiCompConcentrations& _concentrations,
             Residuals& _outResiduals) = 0;
 
 

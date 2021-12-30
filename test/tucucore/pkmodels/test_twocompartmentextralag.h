@@ -47,13 +47,13 @@ struct TestTwoCompartmentExtraLag : public fructose::test_base<TestTwoCompartmen
                                             : maxResidualSize;
         bool isAll = false;
 
-        std::vector<Tucuxi::Core::Concentrations> concentrations;
+        MultiCompConcentrations concentrations;
         concentrations.resize(residualSize);
 
         std::vector<Tucuxi::Core::Concentrations> concentrationsInterval2;
         concentrationsInterval2.resize(residualSize);
 
-        std::vector<Tucuxi::Core::Concentrations> concentrations2;
+        MultiCompConcentrations concentrations2;
         concentrations2.resize(residualSize);
 
         std::vector<Tucuxi::Core::Concentrations> concentrations2Interval2;

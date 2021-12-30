@@ -30,14 +30,14 @@ public:
     /// \return The list of required PK parameters Ids
     static std::vector<std::string> getParametersId();
 
-    inline void derive(double _t, const std::vector<double>& _c, std::vector<double>& _dcdt)
+    inline void derive(double _t, const MultiCompConcentration& _c, MultiCompConcentration& _dcdt)
     {
         FINAL_UNUSED_PARAMETER(_t);
         _dcdt[0] = m_Ka * _c[1] - m_Ke * _c[0];
         _dcdt[1] = -m_Ka * _c[1];
     }
 
-    inline void addFixedValue(double _t, std::vector<double>& _concentrations)
+    inline void addFixedValue(double _t, MultiCompConcentration& _concentrations)
     {
         FINAL_UNUSED_PARAMETER(_t);
         FINAL_UNUSED_PARAMETER(_concentrations);
@@ -46,7 +46,7 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1] + m_D / m_V;

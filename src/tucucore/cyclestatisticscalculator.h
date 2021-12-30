@@ -61,7 +61,7 @@ private:
     // The list of statistics for each compartments (e.g m_stats[0][]: 1st compartment, m_stats[1][]: 2nd compartment etc)
     std::vector<std::vector<CycleStatistic> > m_stats;
     void calculate(
-            const std::vector<Concentrations>& _concentrations,
+            const MultiCompConcentrations& _concentrations,
             const std::vector<TimeOffsets>& _times,
             std::vector<Value>& _cumulativeAuc);
 };

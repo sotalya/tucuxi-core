@@ -117,7 +117,7 @@ public:
 
         return _value / conversionMap.at(finalKey) * conversionMap.at(initialKey);
     }
-
+    /*
     ///
     /// \brief Converts a specific unit type to another unit of the same type on a vector
     /// \param _value
@@ -148,6 +148,37 @@ public:
 
         return result;
     }
+*/
+
+    ///
+    /// \brief Converts a specific unit type to another unit of the same type on a vector
+    /// \param _value
+    /// \param _initialUnit
+    /// \param _finalUnit
+    /// \return converted vector
+    ///
+    template<UnitType unitType, typename TVector>
+    static TVector convertToUnit(const TVector& _value, const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
+    {
+        TVector result(_value.size());
+        const auto conversionMap = getConversionMap().at(unitType);
+
+        std::string initialKey = _initialUnit.toString();
+        std::string finalKey = _finalUnit.toString();
+
+        if ((conversionMap.count(initialKey) == 0) || (conversionMap.count(finalKey) == 0)) {
+            logConversionError(_initialUnit, _finalUnit);
+            throw std::invalid_argument("Error in unit conversion");
+        }
+
+        double factor = 1.0 / conversionMap.at(finalKey) * conversionMap.at(initialKey);
+
+        for (size_t i = 0; i < _value.size(); i++) {
+            result[i] = _value[i] * factor;
+        }
+
+        return result;
+    }
 
     ///
     /// \brief Converts a specific unit type to another unit of the same type on a vector
@@ -155,9 +186,8 @@ public:
     /// \param _initialUnit
     /// \param _finalUnit
     ///
-    template<UnitType unitType>
-    static void updateAndConvertToUnit(
-            std::vector<double>& _value, const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
+    template<UnitType unitType, typename TVector>
+    static void updateAndConvertToUnit(TVector& _value, const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
     {
         const auto conversionMap = getConversionMap().at(unitType);
 
@@ -175,6 +205,35 @@ public:
             _value[i] = _value[i] * factor;
         }
     }
+
+    /*
+     *
+    ///
+    /// \brief Converts a specific unit type to another unit of the same type on a vector
+    /// \param _value
+    /// \param _initialUnit
+    /// \param _finalUnit
+    ///
+    template<UnitType unitType>
+    static void updateAndConvertToUnit(
+            std::vector<double>& _value, const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
+    {
+        const auto conversionMap = getConversionMap().at(unitType);
+
+    std::string initialKey = _initialUnit.toString();
+    std::string finalKey = _finalUnit.toString();
+
+    if ((conversionMap.count(initialKey) == 0) || (conversionMap.count(finalKey) == 0)) {
+        logConversionError(_initialUnit, _finalUnit);
+        throw std::invalid_argument("Error in unit conversion");
+    }
+
+    double factor = 1.0 / conversionMap.at(finalKey) * conversionMap.at(initialKey);
+
+    for (size_t i = 0; i < _value.size(); i++) {
+        _value[i] = _value[i] * factor;
+    }
+}*/
 
     template<UnitType unitType>
     static bool isOfType(const TucuUnit& _unit)

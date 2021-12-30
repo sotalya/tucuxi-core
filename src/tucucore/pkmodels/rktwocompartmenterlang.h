@@ -28,7 +28,7 @@ namespace Core {
 ///
 ///template<int from, int to>
 ///struct TransitComps {
-///    static inline void init(const Residuals& _inResiduals,  std::vector<double> &_concentrations) {
+///    static inline void init(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) {
 ///        _concentrations[from] = _inResiduals[from];
 ///        TransitComps<from+1,to>:: apply(_inResiduals, _concentrations);
 ///    }
@@ -42,7 +42,7 @@ namespace Core {
 ///// Terminal case
 ///template<int from>
 ///struct TransitComps<from, from> {
-///    static inline void init(const Residuals& _inResiduals,  std::vector<double> &_concentrations) {
+///    static inline void init(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) {
 ///        _concentrations[from] = _inResiduals[from];
 ///    }
 ///
@@ -74,13 +74,13 @@ namespace Core {
 template<int from, int to>
 struct TransitComps
 {
-    static inline void init(const Residuals& _inResiduals, std::vector<double>& _concentrations)
+    static inline void init(const Residuals& _inResiduals, MultiCompConcentration& _concentrations)
     {
         _concentrations[from] = _inResiduals[from];
         TransitComps<from + 1, to>::init(_inResiduals, _concentrations);
     }
 
-    static inline void derive(Value _ktr, const std::vector<double>& _c, std::vector<double>& _dcdt)
+    static inline void derive(Value _ktr, const MultiCompConcentration& _c, MultiCompConcentration& _dcdt)
     {
         _dcdt[from] = _ktr * _c[from - 1] - _ktr * _c[from];
         TransitComps<from + 1, to>::derive(_ktr, _c, _dcdt);
@@ -91,12 +91,12 @@ struct TransitComps
 template<int from>
 struct TransitComps<from, from>
 {
-    static inline void init(const Residuals& _inResiduals, std::vector<double>& _concentrations)
+    static inline void init(const Residuals& _inResiduals, MultiCompConcentration& _concentrations)
     {
         _concentrations[from] = _inResiduals[from];
     }
 
-    static inline void derive(Value _ktr, const std::vector<double>& _c, std::vector<double>& _dcdt)
+    static inline void derive(Value _ktr, const MultiCompConcentration& _c, MultiCompConcentration& _dcdt)
     {
         _dcdt[from] = _ktr * _c[from - 1] - _ktr * _c[from];
     }
@@ -154,7 +154,7 @@ public:
     };
 
 
-    inline void derive(double _t, const std::vector<double>& _c, std::vector<double>& _dcdt)
+    inline void derive(double _t, const MultiCompConcentration& _c, MultiCompConcentration& _dcdt)
     {
         FINAL_UNUSED_PARAMETER(_t);
         _dcdt[0] = m_Ktr * _c[3 + NbTransitCompartment - 1] - m_Ke * _c[0] + m_K21 * _c[1] - m_K12 * _c[0];
@@ -167,7 +167,7 @@ public:
         //        _dcdt[6] = m_Ktr * _c[5] - m_Ktr * _c[6];
     }
 
-    inline void addFixedValue(double _t, std::vector<double>& _concentrations)
+    inline void addFixedValue(double _t, MultiCompConcentration& _concentrations)
     {
         FINAL_UNUSED_PARAMETER(_t);
         FINAL_UNUSED_PARAMETER(_concentrations);
@@ -207,7 +207,7 @@ protected:
     }
 
 
-    void initConcentrations(const Residuals& _inResiduals, std::vector<double>& _concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1];

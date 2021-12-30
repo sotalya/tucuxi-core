@@ -58,10 +58,173 @@ typedef Value Concentration;
 /// \brief The type used to represent a serie of times exrpressed as offsets in hours to the start of a cycle
 typedef std::vector<double> TimeOffsets;
 
+
+#ifdef CHECK_TYPES
+
+// Idea taken from https://stackoverflow.com/questions/6806173/subclass-inherit-standard-containers
+
+/// The behavior of Concentrations is exactly the same as a std::vecto<>.
+/// Its purpose is to avoid casts to/from std::vector, for a better code safety.
+/// It should not be used in Release mode, as it just adds a small overhead for nothing.
+
+///
 /// \ingroup TucuCore
 /// \brief The type used to represent a serie of concentrations
-typedef std::vector<Concentration> Concentrations;
+///
+/// A vector of concentrations, meant to represent a single compartment concentration over time.
+///
+class Concentrations : private std::vector<Concentration>
+{
+private:
+    // in case I changed to boost or something later, I don't have to update everything below
+    typedef std::vector<Concentration> base_vector;
 
+public:
+    Concentrations(size_t _size, Concentration _value) : std::vector<Concentration>(_size, _value) {}
+    Concentrations(size_t _size = 0) : std::vector<Concentration>(_size) {}
+    Concentrations(std::initializer_list<Concentration> init) : std::vector<Concentration>(init) {}
+
+    typedef typename base_vector::size_type size_type;
+    typedef typename base_vector::iterator iterator;
+    typedef typename base_vector::const_iterator const_iterator;
+
+    using base_vector::operator[];
+
+    using base_vector::assign;
+    using base_vector::back;
+    using base_vector::begin;
+    using base_vector::clear;
+    using base_vector::data;
+    using base_vector::empty;
+    using base_vector::end;
+    using base_vector::erase;
+    using base_vector::pop_back;
+    using base_vector::push_back;
+    using base_vector::reserve;
+    using base_vector::resize;
+    using base_vector::size;
+};
+
+///
+/// \ingroup TucuCore
+/// \brief The MultiCompConcentration class
+///
+/// The concentrations of multiple compartments at a single time.
+///
+class MultiCompConcentration : private std::vector<Concentration>
+{
+private:
+    // in case I changed to boost or something later, I don't have to update everything below
+    typedef std::vector<Concentration> base_vector;
+
+public:
+    MultiCompConcentration(size_t _size, Concentration _value) : std::vector<Concentration>(_size, _value) {}
+    MultiCompConcentration(size_t _size = 0) : std::vector<Concentration>(_size) {}
+    MultiCompConcentration(std::initializer_list<Concentration> init) : std::vector<Concentration>(init) {}
+
+    typedef typename base_vector::size_type size_type;
+    typedef typename base_vector::iterator iterator;
+    typedef typename base_vector::const_iterator const_iterator;
+
+    using base_vector::operator[];
+
+    using base_vector::assign;
+    using base_vector::back;
+    using base_vector::begin;
+    using base_vector::clear;
+    using base_vector::data;
+    using base_vector::empty;
+    using base_vector::end;
+    using base_vector::erase;
+    using base_vector::pop_back;
+    using base_vector::push_back;
+    using base_vector::reserve;
+    using base_vector::resize;
+    using base_vector::size;
+};
+
+///
+/// \ingroup TucuCore
+/// \brief The MultiCompConcentrations class
+///
+/// Embeds an outer vector of compartments. For each compartments the inner vector contains the concentrations of
+/// a single compartment.
+///
+class MultiCompConcentrations : private std::vector<Concentrations>
+{
+private:
+    // in case I changed to boost or something later, I don't have to update everything below
+    typedef std::vector<Concentrations> base_vector;
+
+public:
+    MultiCompConcentrations(size_t _size, Concentrations _value) : std::vector<Concentrations>(_size, _value) {}
+    MultiCompConcentrations(size_t _size = 0) : std::vector<Concentrations>(_size) {}
+
+    typedef typename base_vector::size_type size_type;
+    typedef typename base_vector::iterator iterator;
+    typedef typename base_vector::const_iterator const_iterator;
+
+    using base_vector::operator[];
+
+    using base_vector::assign;
+    using base_vector::back;
+    using base_vector::begin;
+    using base_vector::clear;
+    using base_vector::data;
+    using base_vector::empty;
+    using base_vector::end;
+    using base_vector::erase;
+    using base_vector::pop_back;
+    using base_vector::push_back;
+    using base_vector::reserve;
+    using base_vector::resize;
+    using base_vector::size;
+};
+
+///
+/// \ingroup TucuCore
+/// \brief The MultiCycleConcentrations class
+///
+/// Embeds an outer vector of cycles. For each cycle the inner vector contains the concentrations of
+/// a single compartment.
+///
+class MultiCycleConcentrations : private std::vector<Concentrations>
+{
+private:
+    // in case I changed to boost or something later, I don't have to update everything below
+    typedef std::vector<Concentrations> base_vector;
+
+public:
+    MultiCycleConcentrations(size_t _size, Concentrations _value) : std::vector<Concentrations>(_size, _value) {}
+    MultiCycleConcentrations(size_t _size = 0) : std::vector<Concentrations>(_size) {}
+
+    typedef typename base_vector::size_type size_type;
+    typedef typename base_vector::iterator iterator;
+    typedef typename base_vector::const_iterator const_iterator;
+
+    using base_vector::operator[];
+
+    using base_vector::assign;
+    using base_vector::back;
+    using base_vector::begin;
+    using base_vector::clear;
+    using base_vector::data;
+    using base_vector::empty;
+    using base_vector::end;
+    using base_vector::erase;
+    using base_vector::pop_back;
+    using base_vector::push_back;
+    using base_vector::reserve;
+    using base_vector::resize;
+    using base_vector::size;
+};
+
+#else  // CHECK_TYPES
+typedef std::vector<Concentration> Concentrations;
+typedef std::vector<Concentration> MultiCompConcentration;
+typedef std::vector<Concentrations> MultiCompConcentrations;
+typedef std::vector<Concentrations> MultiCycleConcentrations;
+#endif // CHECK_TYPES
 
 /// \ingroup TucuCore
 /// Percentile rank, between 0.0 and 100.0
@@ -105,7 +268,7 @@ constexpr unsigned int SATURDAY = 6U;
 
 /// \ingroup TucuCore
 /// \brief The type used to represent a serie of residuals.
-typedef std::vector<Concentration> Residuals;
+typedef MultiCompConcentration Residuals;
 
 /// \ingroup TucuCore
 /// \brief The number of points in the cycle.

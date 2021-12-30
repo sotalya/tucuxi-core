@@ -63,7 +63,7 @@ Value MultiLikelihood::operator()(const ValueVector& _etas)
 Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
 { //returns the negative prior of the likelihood
     ValueVector concentrations(m_samples.size());
-    std::vector<Concentrations> _concentrations(m_samples.size());
+    MultiCompConcentrations _concentrations(m_samples.size());
     bool isAll = false;
 
     // Getting the concentration values at these _times and m_samples.

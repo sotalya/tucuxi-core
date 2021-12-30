@@ -67,7 +67,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrations(
 
             // Compute concentrations for the current cycle
             TimeOffsets times;
-            std::vector<Concentrations> concentrations;
+            MultiCompConcentrations concentrations;
             concentrations.resize(residualSize);
 
             _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
@@ -109,7 +109,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrations(
 
             // Compute concentrations for the current cycle
             TimeOffsets times;
-            std::vector<Concentrations> concentrations;
+            MultiCompConcentrations concentrations;
             concentrations.resize(residualSize);
 
             _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
@@ -205,7 +205,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
 
                 // Compute concentrations for the current cycle
                 TimeOffsets times;
-                std::vector<Concentrations> concentrations;
+                MultiCompConcentrations concentrations;
                 concentrations.resize(residualSize);
 
                 _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
@@ -245,7 +245,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
 
                 // Compute concentrations for the current cycle
                 TimeOffsets times;
-                std::vector<Concentrations> concentrations;
+                MultiCompConcentrations concentrations;
                 concentrations.resize(residualSize);
 
                 _prediction->allocate(residualSize, intake.getNbPoints(), times, concentrations);
@@ -327,7 +327,7 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtTimes(
     std::fill(inResiduals.begin(), inResiduals.end(), 0);
 
 
-    std::vector<Concentrations> concentrations;
+    MultiCompConcentrations concentrations;
     concentrations.resize(residualSize);
 
     IntakeSeries::const_iterator it;

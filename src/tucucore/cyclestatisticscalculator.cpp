@@ -24,7 +24,7 @@ CycleStatistic::CycleStatistic(const DateTime& _cycleStartDate, const CycleStati
 
 
 void CycleStatistics::calculate(
-        const std::vector<Concentrations>& _concentrations,
+        const MultiCompConcentrations& _concentrations,
         const std::vector<TimeOffsets>& _times,
         std::vector<Value>& _cumulativeAuc)
 {
