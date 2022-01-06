@@ -745,7 +745,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestS0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+                "TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
 
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestA1", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
@@ -754,7 +754,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+                "TestS1", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
 
         Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
         parameters.addParameterSetEvent(parameterset);
@@ -949,9 +949,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
     void test7(const std::string& /* _testName */)
     {
-        // Test not yet finalized
-        fructose_assert(false);
-        return;
+
 
         //A 2-analyte with three samples per analyte, with one of them at the same time, the others at different times.
 
@@ -1028,14 +1026,14 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         sampleSeries1.push_back(s3);
 
         DateTime date4 = DateTime(
-                date::year_month_day(date::year(2017), date::month(7), date::day(6)),
-                Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0)));
+                date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                Duration(std::chrono::hours(21), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s4(date4, 200.0);
         sampleSeries1.push_back(s4);
 
         DateTime date5 = DateTime(
-                date::year_month_day(date::year(2017), date::month(8), date::day(6)),
-                Duration(std::chrono::hours(17), std::chrono::minutes(30), std::chrono::seconds(0)));
+                date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                Duration(std::chrono::hours(23), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s5(date5, 100.0);
         sampleSeries1.push_back(s5);
 
@@ -1088,7 +1086,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestS0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+                "TestS0", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
 
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestA1", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
@@ -1097,7 +1095,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+                "TestS1", 0.1, Tucuxi::Core::ParameterVariabilityType::None));
         Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
         parameters.addParameterSetEvent(parameterset);
 
