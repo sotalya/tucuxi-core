@@ -8,7 +8,7 @@
 
 #include <date/date.h>
 
-#include "tucucore/computingcomponent.h"
+#include "tucucore/multicomputingcomponent.h"
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/drugmodelchecker.h"
 #include "tucucore/drugmodelimport.h"
@@ -16,7 +16,7 @@
 #include "tucucore/drugtreatment/patientcovariate.h"
 #include "tucucore/pkmodel.h"
 
-#include "../pkmodels/constanteliminationbolus.h"
+#include "../pkmodels/multiconstanteliminationbolus.h"
 #include "../testutils.h"
 #include "buildmultianalytesmultiactivemoieties.h"
 #include "fructose/fructose.h"
@@ -84,12 +84,12 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
+        sharedPkModel = std::make_shared<PkModel>("test.multiconstantelimination", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
-                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+                AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         defaultPopulate(*collection.get());
@@ -105,11 +105,11 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         // Now the drug model is ready to be used
 
 
-        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(MultiComputingComponent::createComponent());
 
         fructose_assert(component != nullptr);
 
-        static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+        static_cast<MultiComputingComponent*>(component)->setPkModelCollection(collection);
 
 
         {
@@ -248,9 +248,9 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
-                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+                AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
@@ -265,11 +265,11 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         // Now the drug model is ready to be used
 
 
-        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(MultiComputingComponent::createComponent());
 
         fructose_assert(component != nullptr);
 
-        static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+        static_cast<MultiComputingComponent*>(component)->setPkModelCollection(collection);
 
 
         {
@@ -441,12 +441,12 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         DrugModelChecker checker;
 
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
+        sharedPkModel = std::make_shared<PkModel>("test.multipleconstantelimination", PkModel::AllowMultipleRoutes::No);
 
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
-                AbsorptionModel::Extravascular, ConstantEliminationBolus::getCreator());
+                AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, ConstantEliminationBolus::getParametersId());
+        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
@@ -461,11 +461,11 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         // Now the drug model is ready to be used
 
 
-        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        IComputingService* component = dynamic_cast<IComputingService*>(MultiComputingComponent::createComponent());
 
         fructose_assert(component != nullptr);
 
-        static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+        static_cast<MultiComputingComponent*>(component)->setPkModelCollection(collection);
 
 
         {

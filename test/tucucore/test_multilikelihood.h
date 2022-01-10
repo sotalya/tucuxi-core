@@ -1027,13 +1027,13 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
         DateTime date4 = DateTime(
                 date::year_month_day(date::year(2017), date::month(6), date::day(6)),
-                Duration(std::chrono::hours(21), std::chrono::minutes(30), std::chrono::seconds(0)));
+                Duration(std::chrono::hours(13), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s4(date4, 200.0);
         sampleSeries1.push_back(s4);
 
         DateTime date5 = DateTime(
                 date::year_month_day(date::year(2017), date::month(6), date::day(6)),
-                Duration(std::chrono::hours(23), std::chrono::minutes(30), std::chrono::seconds(0)));
+                Duration(std::chrono::hours(15), std::chrono::minutes(57), std::chrono::seconds(44)));
         Tucuxi::Core::SampleEvent s5(date5, 100.0);
         sampleSeries1.push_back(s5);
 
