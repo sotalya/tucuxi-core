@@ -1033,7 +1033,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
         DateTime date5 = DateTime(
                 date::year_month_day(date::year(2017), date::month(6), date::day(6)),
-                Duration(std::chrono::hours(15), std::chrono::minutes(57), std::chrono::seconds(44)));
+                Duration(std::chrono::hours(15), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s5(date5, 100.0);
         sampleSeries1.push_back(s5);
 
@@ -1091,7 +1091,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestA1", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestM1", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
+                "TestM1", 10.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -1117,9 +1117,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         double expectedSampleValue0 = 121.1;
         double expectedSampleValue1 = 41.1;
         double expectedSampleValue2 = 21.1;
-        double expectedSampleValue3 = 1211;
-        double expectedSampleValue4 = 411;
-        double expectedSampleValue5 = 211;
+        double expectedSampleValue3 = 1201.1;
+        double expectedSampleValue4 = 1001.1;
+        double expectedSampleValue5 = 601.1;
         double omegaAdd = static_cast<double>(omega.rows()) * log(2 * PI) + log(omega.determinant());
 
         EigenVector etasmd(2);
