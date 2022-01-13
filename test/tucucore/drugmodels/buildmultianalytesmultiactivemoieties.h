@@ -18,6 +18,8 @@ public:
             //the method buildDrugModel() takes a certain number of arguments, that were relevant for other drug models. Do not hesitate to add some (for instance we could have 4 times a conversionFactor instead of 2, ...).
             double conversionFactor0 = 1.0,
             double conversionFactor1 = 1.0,
+            double conversionFactor2 = 1.0,
+            double conversionFactor3 = 1.0,
             ResidualErrorType _errorModelType = ResidualErrorType::NONE,
             std::vector<Value> _sigmas = {0.0},
             Tucuxi::Core::ParameterVariabilityType _variabilityTypeA = Tucuxi::Core::ParameterVariabilityType::None,
@@ -362,10 +364,10 @@ public:
                     std::make_unique<AnalyteConversion>(AnalyteId("analyte1"), conversionFactor1);
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion1));
             std::unique_ptr<AnalyteConversion> analyteConversion2 =
-                    std::make_unique<AnalyteConversion>(AnalyteId("analyte2"), conversionFactor1);
+                    std::make_unique<AnalyteConversion>(AnalyteId("analyte2"), conversionFactor2);
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion2));
             std::unique_ptr<AnalyteConversion> analyteConversion3 =
-                    std::make_unique<AnalyteConversion>(AnalyteId("analyte3"), conversionFactor1);
+                    std::make_unique<AnalyteConversion>(AnalyteId("analyte3"), conversionFactor3);
             formulationAndRoute->addAnalyteConversion(std::move(analyteConversion3));
 
             ValidDoses* validDoses = new ValidDoses(TucuUnit("mg"), std::make_unique<PopulationValue>(400));

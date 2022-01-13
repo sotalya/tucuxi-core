@@ -45,6 +45,12 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
     std::vector<Value> percentileRanks = {5, 10, 25, 50, 75, 90, 95};
 
+    FormulationAndRoute getBolusFormulationAndRoute()
+    {
+        return FormulationAndRoute(
+                Formulation::Test, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+    }
+
     void buildDrugTreatment(DrugTreatment*& _drugTreatment, FormulationAndRoute _route)
     {
         //all the two active moieties with two different activeMoietyId, else there will be some issues. You will also have to check the PK parameters for this new analyte group. As it will use the MultiConstantEliminationBolus, there should be 8 parameters instead of 4.
@@ -72,8 +78,17 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         _drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
     }
 
+
+    //THE IMPORTANT FUNCTION
+
     void testMultiAnalytesMultiActiveMoieties(const std::string& /* _testName */)
     {
+
+        if (verbose()) {
+            std::cout << __FUNCTION__ << std::endl;
+        }
+
+
         BuildMultiAnalytesMultiActiveMoieties builder;
         DrugModel* drugModel = builder.buildDrugModel();
 
@@ -121,11 +136,23 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
             buildDrugTreatment(drugTreatment, route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
-                    "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+                    "covS0", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
-                    "covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+                    "covA0", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
-                    "covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+                    "covR0", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covM0", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covS1", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covA1", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covR1", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covM1", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
@@ -161,8 +188,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
                 fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{5});
                 fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "activeMoietyMulti");
-                fructose_assert(
-                        resp->getCompartmentInfos()[0].getType() == CompartmentInfo::CompartmentType::ActiveMoiety);
+                fructose_assert(resp->getCompartmentInfos()[0].getType() == CompartmentInfo::CompartmentType::ActiveMoiety);
                 fructose_assert_eq(resp->getCompartmentInfos()[1].getId(), "analyte0");
                 fructose_assert(resp->getCompartmentInfos()[1].getType() == CompartmentInfo::CompartmentType::Analyte);
                 fructose_assert_eq(resp->getCompartmentInfos()[2].getId(), "analyte1");
@@ -175,8 +201,8 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
                 std::vector<CycleData> data = resp->getData();
                 fructose_assert(data.size() == 16);
-                fructose_assert(data[0].m_concentrations.size() == 3);
-                fructose_assert_double_eq(data[0].m_concentrations[0][0], 400000.0);
+                fructose_assert(data[0].m_concentrations.size() == 5);
+                fructose_assert_double_eq(data[0].m_concentrations[0][0], 800000.0);
                 fructose_assert_double_eq(data[0].m_concentrations[1][0], 200000.0);
                 fructose_assert_double_eq(data[0].m_concentrations[2][0], 200000.0);
                 fructose_assert_double_eq(data[0].m_concentrations[3][0], 200000.0);
@@ -226,6 +252,97 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             delete drugTreatment;
         }
+
+
+
+
+        {
+            //second test, using samples and intakes
+            if (verbose()) {
+                std::cout << __FUNCTION__ << std::endl;
+            }
+
+            std::vector<SampleSeries> samples;
+            IntakeSeries intakes;
+
+            Tucuxi::Core::SampleSeries sampleSeries0;
+            DateTime date0 = DateTime(
+                    date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                    Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0)));
+            Tucuxi::Core::SampleEvent s0(date0, 200.0);
+            sampleSeries0.push_back(s0);
+            samples.push_back(sampleSeries0);
+
+            Tucuxi::Core::SampleSeries sampleSeries1;
+            DateTime date1 = DateTime(
+                    date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                    Duration(std::chrono::hours(16), std::chrono::minutes(30), std::chrono::seconds(0)));
+            Tucuxi::Core::SampleEvent s1(date1, 200.0);
+            sampleSeries1.push_back(s1);
+            samples.push_back(sampleSeries1);
+
+            //definition of the intakes
+
+
+            intakes.emplace_back(
+                    DateTime(
+                            date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                            Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
+                    Duration(),
+                    DoseValue(200.0),
+                    TucuUnit("mg"),
+                    Duration(std::chrono::hours(24)),
+                    getBolusFormulationAndRoute(),
+                    getBolusFormulationAndRoute().getAbsorptionModel(),
+                    Duration(std::chrono::minutes(20)),
+                    static_cast<int>(251));
+            intakes.emplace_back(
+                    DateTime(
+                            date::year_month_day(date::year(2017), date::month(6), date::day(7)),
+                            Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
+                    Duration(),
+                    DoseValue(200.0),
+                    TucuUnit("mg"),
+                    Duration(std::chrono::hours(24)),
+                    getBolusFormulationAndRoute(),
+                    getBolusFormulationAndRoute().getAbsorptionModel(),
+                    Duration(std::chrono::minutes(20)),
+                    static_cast<int>(251));
+
+            // Associate the intake calculator to the intakes
+            std::shared_ptr<MultiConstantEliminationBolus> intakeCalculator = std::make_shared<MultiConstantEliminationBolus>();
+            intakes[0].setCalculator(intakeCalculator);
+            intakes[1].setCalculator(intakeCalculator);
+
+
+            Tucuxi::Core::ParameterDefinitions parameterDefs;
+            parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                    "TestA0", 0.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+            parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                    "TestM0", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
+            parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                    "TestR0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+            parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                    "TestS0", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+
+            parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                    "TestA1", 0.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+            parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                    "TestM1", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
+            parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                    "TestR1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+            parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                    "TestS1", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+
+
+            Tucuxi::Core::ParameterSetEvent parameterset(DateTime::now(), parameterDefs);
+
+            ParameterSetSeries parameters;
+            parameters.addParameterSetEvent(parameterset);
+
+        }
+
+
 
         // Delete all dynamically allocated objects
         delete component;
@@ -280,12 +397,24 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             buildDrugTreatment(drugTreatment, route);
 
+
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
-                    "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+                    "covS0", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
-                    "covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+                    "covA0", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
-                    "covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+                    "covR0", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covM0", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covS1", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covA1", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covR1", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covM1", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
@@ -476,12 +605,24 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             buildDrugTreatment(drugTreatment, route);
 
+
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
-                    "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+                    "covS0", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
-                    "covA", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+                    "covA0", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
-                    "covR", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+                    "covR0", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covM0", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covS1", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covA1", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covR1", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+            drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                    "covM1", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
             RequestResponseId requestResponseId = "1";
             Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
