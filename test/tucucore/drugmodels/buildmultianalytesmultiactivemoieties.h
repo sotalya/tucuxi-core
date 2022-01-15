@@ -50,6 +50,17 @@ public:
         model->setMetadata(std::move(metaData));
 
 
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covS", "0.0", nullptr, CovariateType::Standard));
+
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covA", "0.0", nullptr, CovariateType::Standard));
+
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covR", "0.0", nullptr, CovariateType::Standard));
+
+        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                "covM", "1.0", nullptr, CovariateType::Standard));
 
         model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
                 "covS0", "0.0", nullptr, CovariateType::Standard));
@@ -80,7 +91,7 @@ public:
             std::unique_ptr<AnalyteSet> analyteSet0(new AnalyteSet());
 
             analyteSet0->setId("analyteSet0");
-            analyteSet0->setPkModelId("test.multiconstantelimination");
+            analyteSet0->setPkModelId("test.constantelimination");
 
             std::unique_ptr<Analyte> analyte0 = std::make_unique<Analyte>(
                     "analyte0", TucuUnit("ug/l"), std::make_unique<MolarMass>(10.0, TucuUnit("mol/l")));
@@ -103,37 +114,37 @@ public:
             std::unique_ptr<ParameterSetDefinition> dispositionParameters(new ParameterSetDefinition());
 
             Operation* opS0 = new JSOperation(
-                    "return covS0;",
+                    "return covS;",
                     {OperationInput("covS", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PS0(new Tucuxi::Core::ParameterDefinition(
-                    "TestS0",
+                    "TestS",
                     0.0,
                     opS0,
                     std::make_unique<ParameterVariability>(_variabilityTypeS, _variabilityValueS0)));
             dispositionParameters->addParameter(std::move(PS0));
             Operation* opA0 = new JSOperation(
-                    "return covA0;",
+                    "return covA;",
                     {OperationInput("covA", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PA0(new Tucuxi::Core::ParameterDefinition(
-                    "TestA0",
+                    "TestA",
                     0.0,
                     opA0,
                     std::make_unique<ParameterVariability>(_variabilityTypeA, _variabilityValueA0)));
             dispositionParameters->addParameter(std::move(PA0));
             Operation* opR0 = new JSOperation(
-                    "return covR0;",
+                    "return covR;",
                     {OperationInput("covR", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PR0(new Tucuxi::Core::ParameterDefinition(
-                    "TestR0",
+                    "TestR",
                     0.0,
                     opR0,
                     std::make_unique<ParameterVariability>(_variabilityTypeR, _variabilityValueR0)));
             dispositionParameters->addParameter(std::move(PR0));
             Operation* opM0 = new JSOperation(
-                    "return covM0;",
+                    "return covM;",
                     {OperationInput("covM", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PM0(new Tucuxi::Core::ParameterDefinition(
-                    "TestM0",
+                    "TestM",
                     1.0,
                     opM0,
                     std::make_unique<ParameterVariability>(_variabilityTypeM, _variabilityValueM0)));
@@ -175,40 +186,40 @@ public:
 
             Operation* opS0 = new JSOperation(
                     " \
-                                             return covS0;",
+                                             return covS;",
                     {OperationInput("covS", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PS0(new Tucuxi::Core::ParameterDefinition(
-                    "TestS0",
+                    "TestS",
                     0.0,
                     opS0,
                     std::make_unique<ParameterVariability>(_variabilityTypeS, _variabilityValueS0)));
             dispositionParameters->addParameter(std::move(PS0));
             Operation* opA0 = new JSOperation(
                     " \
-                                             return covA0;",
+                                             return covA;",
                     {OperationInput("covA", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PA0(new Tucuxi::Core::ParameterDefinition(
-                    "TestA0",
+                    "TestA",
                     0.0,
                     opA0,
                     std::make_unique<ParameterVariability>(_variabilityTypeA, _variabilityValueA0)));
             dispositionParameters->addParameter(std::move(PA0));
             Operation* opR0 = new JSOperation(
                     " \
-                                             return covR0;",
+                                             return covR;",
                     {OperationInput("covR", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PR0(new Tucuxi::Core::ParameterDefinition(
-                    "TestR0",
+                    "TestR",
                     0.0,
                     opR0,
                     std::make_unique<ParameterVariability>(_variabilityTypeR, _variabilityValueR0)));
             dispositionParameters->addParameter(std::move(PR0));
             Operation* opM0 = new JSOperation(
                     " \
-                                             return covM0;",
+                                             return covM;",
                     {OperationInput("covM", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PM0(new Tucuxi::Core::ParameterDefinition(
-                    "TestM0",
+                    "TestM",
                     1.0,
                     opM0,
                     std::make_unique<ParameterVariability>(_variabilityTypeM, _variabilityValueM0)));
@@ -290,28 +301,28 @@ public:
 
                 {OperationInput("covS1", InputType::DOUBLE)});
         std::unique_ptr<ParameterDefinition> PS1(new Tucuxi::Core::ParameterDefinition(
-                "TestS0", 0.0, opS1, std::make_unique<ParameterVariability>(_variabilityTypeS, _variabilityValueS1)));
+                "TestS1", 0.0, opS1, std::make_unique<ParameterVariability>(_variabilityTypeS, _variabilityValueS1)));
         dispositionParameters->addParameter(std::move(PS1));
         Operation* opA1 = new JSOperation(
                 " \
                                          return covA1;",
                 {OperationInput("covA1", InputType::DOUBLE)});
         std::unique_ptr<ParameterDefinition> PA1(new Tucuxi::Core::ParameterDefinition(
-                "TestA0", 0.0, opA1, std::make_unique<ParameterVariability>(_variabilityTypeA, _variabilityValueA1)));
+                "TestA1", 0.0, opA1, std::make_unique<ParameterVariability>(_variabilityTypeA, _variabilityValueA1)));
         dispositionParameters->addParameter(std::move(PA1));
         Operation* opR1 = new JSOperation(
                 " \
                                          return covR1;",
                 {OperationInput("covR1", InputType::DOUBLE)});
         std::unique_ptr<ParameterDefinition> PR1(new Tucuxi::Core::ParameterDefinition(
-                "TestR0", 0.0, opR1, std::make_unique<ParameterVariability>(_variabilityTypeR, _variabilityValueR1)));
+                "TestR1", 0.0, opR1, std::make_unique<ParameterVariability>(_variabilityTypeR, _variabilityValueR1)));
         dispositionParameters->addParameter(std::move(PR1));
         Operation* opM1 = new JSOperation(
                 " \
                                          return covM1;",
                 {OperationInput("covM1", InputType::DOUBLE)});
         std::unique_ptr<ParameterDefinition> PM1(new Tucuxi::Core::ParameterDefinition(
-                "TestM0", 1.0, opM1, std::make_unique<ParameterVariability>(_variabilityTypeM, _variabilityValueM1)));
+                "TestM1", 1.0, opM1, std::make_unique<ParameterVariability>(_variabilityTypeM, _variabilityValueM1)));
         dispositionParameters->addParameter(std::move(PM1));
 
         analyteSet2->setDispositionParameters(std::move(dispositionParameters));

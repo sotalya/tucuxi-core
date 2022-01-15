@@ -840,13 +840,13 @@ int main(int argc, char** argv)
     TestMultiAnalytesSingleActiveMoiety multiAnalytesSingleActiveMoietyTests;
 
     multiAnalytesSingleActiveMoietyTests.add_test(
-            "testMultiAnalytesMultiActiveMoieties",
+            "testMultiAnalytesSingleActiveMoieties",
             &TestMultiAnalytesSingleActiveMoiety::testMultiAnalytesSingleActiveMoiety);
     multiAnalytesSingleActiveMoietyTests.add_test(
-            "testMultiAnalytesMultiActiveMoietiesConversion",
+            "testMultiAnalytesSingleActiveMoietiesConversion",
             &TestMultiAnalytesSingleActiveMoiety::testMultiAnalytesSingleActiveMoietyConversion);
     multiAnalytesSingleActiveMoietyTests.add_test(
-            "testAdjustments", &TestMultiAnalytesSingleActiveMoiety::testAdjustments);
+            "testMultiAnalytesSingleActiveMoietyAdjustments", &TestMultiAnalytesSingleActiveMoiety::testAdjustments);
 
     res = multiAnalytesSingleActiveMoietyTests.run(argc, argv);
     tot_res |= res;
@@ -869,7 +869,7 @@ int main(int argc, char** argv)
             "testMultiAnalytesMultiActiveMoietiesConversion",
             &TestMultiAnalytesMultiActiveMoieties::testMultiAnalytesMultiActiveMoietiesConversion);
     multiAnalytesMultiActiveMoietiesTests.add_test(
-            "testAdjustments", &TestMultiAnalytesMultiActiveMoieties::testAdjustments);
+            "testMultiAnalytesMultiActiveMoietyAdjustments", &TestMultiAnalytesMultiActiveMoieties::testAdjustments);
 
     res = multiAnalytesMultiActiveMoietiesTests.run(argc, argv);
     tot_res |= res;

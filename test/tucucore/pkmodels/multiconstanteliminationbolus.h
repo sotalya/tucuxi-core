@@ -56,7 +56,7 @@ public:
 
     static std::vector<std::string> getParametersId()
     {
-        return {"TestS0", "TestA0", "TestR0", "TestM0, TestS1, TestA1, TestR1, TestM1"};
+        return {"TestS0", "TestA0", "TestR0", "TestM0", "TestS1", "TestA1", "TestR1", "TestM1"};
     }
 
 protected:

@@ -210,8 +210,9 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkParameters(
                 if (requiredParameters.empty()) {
                     return {false,
                             Tucuxi::Common::Utils::strFormat(
-                                    "It seems that there is no PK model for formulation and route %s",
-                                    formulation->getId().c_str())};
+                                    "It seems that there is no PK model for formulation and route %s, for analyte group %s",
+                                    formulation->getId().c_str(),
+                                    analyteGroup->getId().toString().c_str())};
                 }
             }
 
@@ -246,8 +247,9 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkParameters(
 
                 return {false,
                         Tucuxi::Common::Utils::strFormat(
-                                "The formulation and route %s does not have the same number of parameters. Required : %s. Given : %s",
+                                "The formulation and route %s does not have the same number of parameters for the analyte group %s. Required : %s. Given : %s",
                                 formulation->getId().c_str(),
+                                analyteGroup->getId().toString().c_str(),
                                 reqString.c_str(),
                                 forString.c_str())};
             }
@@ -266,8 +268,9 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkParameters(
                     }
                     return {false,
                             Tucuxi::Common::Utils::strFormat(
-                                    "The formulation and route %s does not have the right PK parameters. Required : %s. Given : %s",
+                                    "The formulation and route %s does not have the right PK parameters for the analyte group %s. Required : %s. Given : %s",
                                     formulation->getId().c_str(),
+                                    analyteGroup->getId().toString().c_str(),
                                     reqString.c_str(),
                                     forString.c_str())};
                 }
