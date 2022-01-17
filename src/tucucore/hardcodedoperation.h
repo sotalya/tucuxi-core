@@ -24,7 +24,7 @@ namespace Core {
         }                                                                               \
         virtual std::unique_ptr<Operation> clone() const                                \
         {                                                                               \
-            return std::unique_ptr<Operation>(new (NAME)(*this));                       \
+            return std::make_unique<NAME>(*this);                                       \
         }                                                                               \
                                                                                         \
     protected:                                                                          \

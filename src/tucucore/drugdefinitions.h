@@ -64,8 +64,8 @@ public:
     /// \param _value Default value.
     /// \param _operation Operation associated with the parameter.
     /// The operation has a default value of nullptr
-    PopulationValue(const std::string& _id, const Value _value, Operation* _operation = nullptr)
-        : m_id(_id), m_value(_value), m_operation(_operation)
+    PopulationValue(const std::string& _id, const Value _value, std::unique_ptr<Operation> _operation = nullptr)
+        : m_id(_id), m_value(_value), m_operation(std::move(_operation))
     {
     }
 

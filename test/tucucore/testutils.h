@@ -157,10 +157,10 @@
 /// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
 #define ADD_OP2_CDEF(NAME, OPERATION, OP1, OP2, CD_VEC)                                                       \
     do {                                                                                                      \
-        Operation* op = new JSOperation(                                                                      \
-                OPERATION, {OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)}); \
+        auto op = std::make_unique<JSOperation>(                                                                      \
+                OPERATION, OperationInputList{OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)}); \
         std::unique_ptr<CovariateDefinition> tmp(                                                             \
-                new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(0), op));                   \
+                new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(0), std::move(op)));                   \
         CD_VEC.push_back(std::move(tmp));                                                                     \
     } while (0);
 
@@ -173,10 +173,10 @@
 /// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
 #define ADD_EXPR2_CDEF(NAME, EXPRESSION, OP1, OP2, CD_VEC)                                                     \
     do {                                                                                                       \
-        Operation* op = new JSExpression(                                                                      \
-                EXPRESSION, {OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)}); \
+        auto op = std::make_unique<JSExpression>(                                                                      \
+                EXPRESSION, OperationInputList{OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)}); \
         std::unique_ptr<CovariateDefinition> tmp(                                                              \
-                new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(0), op));                    \
+                new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(0), std::move(op)));                    \
         CD_VEC.push_back(std::move(tmp));                                                                      \
     } while (0);
 
@@ -191,13 +191,13 @@
 /// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
 #define ADD_OP3_CDEF(NAME, OPERATION, OP1, OP2, OP3, CD_VEC)                                \
     do {                                                                                    \
-        Operation* op = new JSOperation(                                                    \
+        auto op = std::make_unique<JSOperation>(                                                    \
                 OPERATION,                                                                  \
-                {OperationInput(OP1, InputType::DOUBLE),                                    \
+                OperationInputList{OperationInput(OP1, InputType::DOUBLE),                                    \
                  OperationInput(OP2, InputType::DOUBLE),                                    \
                  OperationInput(OP3, InputType::DOUBLE)});                                  \
         std::unique_ptr<CovariateDefinition> tmp(                                           \
-                new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(0), op)); \
+                new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(0), std::move(op))); \
         CD_VEC.push_back(std::move(tmp));                                                   \
     } while (0);
 
@@ -211,13 +211,13 @@
 /// \param CD_VEC Covariate definitions vector in which the covariate has to be pushed.
 #define ADD_EXPR3_CDEF(NAME, EXPRESSION, OP1, OP2, OP3, CD_VEC)                             \
     do {                                                                                    \
-        Operation* op = new JSExpression(                                                   \
+        auto op = std::make_unique<JSExpression>(                                                   \
                 EXPRESSION,                                                                 \
-                {OperationInput(OP1, InputType::DOUBLE),                                    \
+                OperationInputList{OperationInput(OP1, InputType::DOUBLE),                                    \
                  OperationInput(OP2, InputType::DOUBLE),                                    \
                  OperationInput(OP3, InputType::DOUBLE)});                                  \
         std::unique_ptr<CovariateDefinition> tmp(                                           \
-                new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(0), op)); \
+                new CovariateDefinition(#NAME, Tucuxi::Common::Utils::varToString(0), std::move(op))); \
         CD_VEC.push_back(std::move(tmp));                                                   \
     } while (0);
 
@@ -241,10 +241,10 @@
 /// \param PD_VEC Parameter definitions vector in which the parameter has to be pushed.
 #define ADD_OP2_PDEF(NAME, OPERATION, OP1, OP2, PD_VEC)                                                       \
     do {                                                                                                      \
-        Operation* op = new JSOperation(                                                                      \
-                OPERATION, {OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)}); \
+        auto op = std::make_unique<JSOperation>(                                                                      \
+                OPERATION, OperationInputList{OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)}); \
         std::unique_ptr<ParameterDefinition> tmp(                                                             \
-                new ParameterDefinition(#NAME, 0, op, ParameterVariabilityType::None));                       \
+                new ParameterDefinition(#NAME, 0, std::move(op), ParameterVariabilityType::None));                       \
         PD_VEC.push_back(std::move(tmp));                                                                     \
     } while (0);
 
@@ -257,10 +257,10 @@
 /// \param PD_VEC Parameter definitions vector in which the parameter has to be pushed.
 #define ADD_EXPR2_PDEF(NAME, EXPRESSION, OP1, OP2, PD_VEC)                                                     \
     do {                                                                                                       \
-        Operation* op = new JSExpression(                                                                      \
-                EXPRESSION, {OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)}); \
+        auto op = std::make_unique<JSExpression>(                                                                      \
+                EXPRESSION, OperationInputList{OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)}); \
         std::unique_ptr<ParameterDefinition> tmp(                                                              \
-                new ParameterDefinition(#NAME, 0, op, ParameterVariabilityType::None));                        \
+                new ParameterDefinition(#NAME, 0, std::move(op), ParameterVariabilityType::None));                        \
         PD_VEC.push_back(std::move(tmp));                                                                      \
     } while (0);
 #endif // TESTUTILS_H

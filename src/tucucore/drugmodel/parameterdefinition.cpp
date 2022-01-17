@@ -24,15 +24,15 @@ ParameterDefinition::ParameterDefinition(const std::string _id, Value _value, Pa
 ParameterDefinition::ParameterDefinition(
         const std::string _name,
         Value _value,
-        Operation* _operation,
+        std::unique_ptr<Operation> _operation,
         std::unique_ptr<ParameterVariability> _variabilityType)
-    : PopulationValue(_name, _value, _operation), m_variability(std::move(_variabilityType))
+    : PopulationValue(_name, _value, std::move(_operation)), m_variability(std::move(_variabilityType))
 {
 }
 
 ParameterDefinition::ParameterDefinition(
-        std::string _name, Value _value, Operation* _operation, ParameterVariabilityType _variabilityType)
-    : PopulationValue(_name, _value, _operation),
+        std::string _name, Value _value, std::unique_ptr<Operation> _operation, ParameterVariabilityType _variabilityType)
+    : PopulationValue(_name, _value, std::move(_operation)),
       m_variability(std::make_unique<ParameterVariability>(_variabilityType))
 {
 }

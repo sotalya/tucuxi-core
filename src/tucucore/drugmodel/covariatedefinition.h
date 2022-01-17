@@ -34,11 +34,11 @@ public:
     CovariateDefinition(
             const std::string& _id,
             const std::string& _value,
-            Operation* _operation,
+            std::unique_ptr<Operation> _operation,
             const CovariateType _type = CovariateType::Standard,
             const DataType _dataType = DataType::Double,
             const Tucuxi::Common::TranslatableString& _name = Tucuxi::Common::TranslatableString())
-        : PopulationValue(_id, Tucuxi::Common::Utils::stringToValue(_value, _dataType), _operation), m_type{_type},
+        : PopulationValue(_id, Tucuxi::Common::Utils::stringToValue(_value, _dataType), std::move(_operation)), m_type{_type},
           m_dataType{_dataType}, m_interpolationType{InterpolationType::Direct}, m_name(_name)
     {
         if (_type != CovariateType::Standard) {

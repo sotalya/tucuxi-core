@@ -22,8 +22,8 @@ class TargetExtractor;
 class SubTargetDefinition : public PopulationValue
 {
 public:
-    SubTargetDefinition(const std::string& _id, Value _value, Operation* _operation)
-        : PopulationValue(_id, _value, _operation)
+    SubTargetDefinition(const std::string& _id, Value _value, std::unique_ptr<Operation> _operation)
+        : PopulationValue(_id, _value, std::move(_operation))
     {
     }
 
