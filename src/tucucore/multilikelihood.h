@@ -15,7 +15,7 @@
 #include "parameter.h"
 #include "sampleevent.h"
 
-using namespace  std;
+using namespace std;
 namespace Tucuxi {
 namespace Core {
 

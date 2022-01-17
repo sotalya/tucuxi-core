@@ -50,53 +50,53 @@ public:
         model->setMetadata(std::move(metaData));
 
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covS", "0.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covS", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covA", "0.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covA", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covR", "0.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covR", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covM", "1.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covM", "1.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covS0", "0.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covS0", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covA0", "0.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covA0", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covR0", "0.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covR0", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covM0", "1.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covM0", "1.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covS1", "0.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covS1", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covA1", "0.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covA1", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covR1", "0.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covR1", "0.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covM1", "1.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covM1", "1.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covS2", "1.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covS2", "1.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covA2", "1.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covA2", "1.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covR2", "1.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covR2", "1.0", nullptr, CovariateType::Standard));
 
-        model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-                "covM2", "1.0", nullptr, CovariateType::Standard));
+        model->addCovariate(
+                std::make_unique<Tucuxi::Core::CovariateDefinition>("covM2", "1.0", nullptr, CovariateType::Standard));
 
         // Build analyteSet0
         {
@@ -125,36 +125,28 @@ public:
 
             std::unique_ptr<ParameterSetDefinition> dispositionParameters(new ParameterSetDefinition());
 
-            Operation* opS0 = new JSOperation(
-                    "return covS;",
-                    {OperationInput("covS", InputType::DOUBLE)});
+            Operation* opS0 = new JSOperation("return covS;", {OperationInput("covS", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PS0(new Tucuxi::Core::ParameterDefinition(
                     "TestS",
                     0.0,
                     opS0,
                     std::make_unique<ParameterVariability>(_variabilityTypeS, _variabilityValueS0)));
             dispositionParameters->addParameter(std::move(PS0));
-            Operation* opA0 = new JSOperation(
-                    "return covA;",
-                    {OperationInput("covA", InputType::DOUBLE)});
+            Operation* opA0 = new JSOperation("return covA;", {OperationInput("covA", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PA0(new Tucuxi::Core::ParameterDefinition(
                     "TestA",
                     0.0,
                     opA0,
                     std::make_unique<ParameterVariability>(_variabilityTypeA, _variabilityValueA0)));
             dispositionParameters->addParameter(std::move(PA0));
-            Operation* opR0 = new JSOperation(
-                    "return covR;",
-                    {OperationInput("covR", InputType::DOUBLE)});
+            Operation* opR0 = new JSOperation("return covR;", {OperationInput("covR", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PR0(new Tucuxi::Core::ParameterDefinition(
                     "TestR",
                     0.0,
                     opR0,
                     std::make_unique<ParameterVariability>(_variabilityTypeR, _variabilityValueR0)));
             dispositionParameters->addParameter(std::move(PR0));
-            Operation* opM0 = new JSOperation(
-                    "return covM;",
-                    {OperationInput("covM", InputType::DOUBLE)});
+            Operation* opM0 = new JSOperation("return covM;", {OperationInput("covM", InputType::DOUBLE)});
             std::unique_ptr<ParameterDefinition> PM0(new Tucuxi::Core::ParameterDefinition(
                     "TestM",
                     1.0,

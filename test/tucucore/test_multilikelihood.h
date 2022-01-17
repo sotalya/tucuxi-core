@@ -485,8 +485,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
 
-        double expectedValuestep1 = expectedValuestep0 - residualErrorModel[0]->calculateSampleLikelihood(
-                                       expectedSampleValue, s0.getValue()); //0 as the second sample is empty
+        double expectedValuestep1 = expectedValuestep0
+                                    - residualErrorModel[0]->calculateSampleLikelihood(
+                                            expectedSampleValue, s0.getValue()); //0 as the second sample is empty
 
         fructose_assert_double_ne(x, std::numeric_limits<double>::max());
         fructose_assert_double_eq(x, expectedValuestep1);
@@ -785,12 +786,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         etasmd[0] = 0.1;
         etasmd[1] = 0.1;
 
-        double expectedValue =
-                0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
-                - residualErrorModel[1]->calculateSampleLikelihood(
-                        expectedSampleValue1,
-                        s1.getValue());
+        double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
+                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
+                               - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue1, s1.getValue());
         fructose_assert_double_ne(x, std::numeric_limits<double>::max());
         fructose_assert_double_eq(x, expectedValue);
     }
@@ -851,7 +849,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         Tucuxi::Core::SampleSeries sampleSeries1;
         DateTime date1 = DateTime(
                 date::year_month_day(date::year(2017), date::month(6), date::day(6)),
-                Duration(std::chrono::hours(12 ), std::chrono::minutes(30), std::chrono::seconds(0)));
+                Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0)));
         Tucuxi::Core::SampleEvent s1(date1, 200.0);
         sampleSeries1.push_back(s1);
         samples.push_back(sampleSeries1);
@@ -1126,22 +1124,18 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         etasmd[0] = 0.1;
         etasmd[1] = 0.1;
 
-        double expectedValue0 =
-                0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
-                - residualErrorModel[0]->calculateSampleLikelihood(
-                        expectedSampleValue1,
-                        s1.getValue())
-                 - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s2.getValue());
+        double expectedValue0 = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
+                                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
+                                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s1.getValue())
+                                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s2.getValue());
 
-        double expectedValue1 = expectedValue0
-                                - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue3, s3.getValue());
+        double expectedValue1 =
+                expectedValue0 - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue3, s3.getValue());
 
-        double expectedValue2 = expectedValue1
-                                - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue4, s4.getValue());
-        double expectedValue3 = expectedValue2
-                                - residualErrorModel[1]->calculateSampleLikelihood(
-                                        expectedSampleValue5, s5.getValue());
+        double expectedValue2 =
+                expectedValue1 - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue4, s4.getValue());
+        double expectedValue3 =
+                expectedValue2 - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue5, s5.getValue());
 
         fructose_assert_double_ne(x, std::numeric_limits<double>::max());
         fructose_assert_double_eq(x, expectedValue3);

@@ -44,10 +44,10 @@ struct TestMultiAnalytesSingleActiveMoiety : public fructose::test_base<TestMult
 
     std::vector<Value> percentileRanks = {5, 10, 25, 50, 75, 90, 95};
 
-    void buildDrugTreatment(DrugTreatment*& _drugTreatment, FormulationAndRoute _route)
+    std::unique_ptr<DrugTreatment> buildDrugTreatment(FormulationAndRoute _route)
     {
 
-        _drugTreatment = new DrugTreatment();
+        auto drugTreatment = std::make_unique<DrugTreatment>();
 
         // List of time ranges that will be pushed into the history
         DosageTimeRangeList timeRangeList;
@@ -64,17 +64,17 @@ struct TestMultiAnalytesSingleActiveMoiety : public fructose::test_base<TestMult
         // 200mg via a intravascular at 08h30, starting the 01.06
         LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), _route, Duration(), Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 16);
-        std::unique_ptr<Tucuxi::Core::DosageTimeRange> sept2018(
-                new Tucuxi::Core::DosageTimeRange(startSept2018, repeatedDose));
+        std::unique_ptr<Tucuxi::Core::DosageTimeRange> sept2018 =
+                std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
-
-        _drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
+        return drugTreatment;
     }
 
     void testMultiAnalytesSingleActiveMoiety(const std::string& /* _testName */)
     {
         BuildMultiAnalytesSingleActiveMoiety builder;
-        DrugModel* drugModel = builder.buildDrugModel();
+        auto drugModel = builder.buildDrugModel();
 
         fructose_assert(drugModel != nullptr);
 
@@ -92,7 +92,7 @@ struct TestMultiAnalytesSingleActiveMoiety : public fructose::test_base<TestMult
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -111,12 +111,10 @@ struct TestMultiAnalytesSingleActiveMoiety : public fructose::test_base<TestMult
 
 
         {
-
-            DrugTreatment* drugTreatment;
             const FormulationAndRoute route(
                     Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
                     "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -212,20 +210,17 @@ struct TestMultiAnalytesSingleActiveMoiety : public fructose::test_base<TestMult
                 data[1].m_statistics.getStatistic(2, CycleStatisticType::Mean).getValue(statTime, statValue);
                 fructose_assert_double_eq(statValue, 200000.0);
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
     }
 
 
     void testMultiAnalytesSingleActiveMoietyConversion(const std::string& /* _testName */)
     {
         BuildMultiAnalytesSingleActiveMoiety builder;
-        DrugModel* drugModel = builder.buildDrugModel(0.3, 0.5);
+        auto drugModel = builder.buildDrugModel(0.3, 0.5);
 
         fructose_assert(drugModel != nullptr);
 
@@ -243,7 +238,7 @@ struct TestMultiAnalytesSingleActiveMoiety : public fructose::test_base<TestMult
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -262,12 +257,10 @@ struct TestMultiAnalytesSingleActiveMoiety : public fructose::test_base<TestMult
 
 
         {
-
-            DrugTreatment* drugTreatment;
             const FormulationAndRoute route(
                     Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
                     "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -390,26 +383,23 @@ struct TestMultiAnalytesSingleActiveMoiety : public fructose::test_base<TestMult
                 data[0].m_statistics.getStatistic(2, CycleStatisticType::Mean).getValue(statTime, statValue);
                 fructose_assert_double_eq(statValue, 200000.0 * 0.5);
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
     }
 
 
     void testAdjustments(const std::string& /* _testName */)
     {
         BuildMultiAnalytesSingleActiveMoiety builder;
-        DrugModel* drugModel = builder.buildDrugModel(0.3, 0.7);
+        auto drugModel = builder.buildDrugModel(0.3, 0.7);
 
         fructose_assert(drugModel != nullptr);
 
 
         // Add targets
-        TargetDefinition* target = new TargetDefinition(
+        auto target = std::make_unique<TargetDefinition>(
                 TargetType::Residual,
                 Unit("mg/l"),
                 ActiveMoietyId("analyte"),
@@ -423,7 +413,7 @@ struct TestMultiAnalytesSingleActiveMoiety : public fructose::test_base<TestMult
                 std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
                 std::make_unique<SubTargetDefinition>("inefficacy", 000.0, nullptr));
 
-        drugModel->m_activeMoieties[0]->addTarget(std::unique_ptr<TargetDefinition>(target));
+        drugModel->m_activeMoieties[0]->addTarget(std::move(target));
 
         fructose_assert(drugModel->checkInvariants());
 
@@ -439,7 +429,7 @@ struct TestMultiAnalytesSingleActiveMoiety : public fructose::test_base<TestMult
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
-        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
+        DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
         fructose_assert(checkerResult.m_ok);
 
@@ -458,12 +448,10 @@ struct TestMultiAnalytesSingleActiveMoiety : public fructose::test_base<TestMult
 
 
         {
-
-            DrugTreatment* drugTreatment;
             const FormulationAndRoute route(
                     Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
-            buildDrugTreatment(drugTreatment, route);
+            auto drugTreatment = buildDrugTreatment(route);
 
             drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
                     "covS", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -543,13 +531,10 @@ struct TestMultiAnalytesSingleActiveMoiety : public fructose::test_base<TestMult
                     }
                 }
             }
-
-            delete drugTreatment;
         }
 
         // Delete all dynamically allocated objects
         delete component;
-        delete drugModel;
     }
 };
 

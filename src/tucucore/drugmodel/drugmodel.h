@@ -199,7 +199,8 @@ class DrugModel //Some modifications required for checking the structure of the 
                         for (size_t i = 0; i < m_activeMoieties.size(); i++) {
                             for (size_t j = i + 1; j < m_activeMoieties.size(); j++) {
                                 std::cout << i << ", " << j << " : " << m_activeMoieties.size() << std::endl;
-                                ok &= (m_activeMoieties[i]->getActiveMoietyId() == m_activeMoieties[j]->getActiveMoietyId());
+                                ok &= (m_activeMoieties[i]->getActiveMoietyId()
+                                       == m_activeMoieties[j]->getActiveMoietyId());
                             }
                         }
                         return ok;
