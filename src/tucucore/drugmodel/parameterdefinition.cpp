@@ -31,7 +31,10 @@ ParameterDefinition::ParameterDefinition(
 }
 
 ParameterDefinition::ParameterDefinition(
-        std::string _name, Value _value, std::unique_ptr<Operation> _operation, ParameterVariabilityType _variabilityType)
+        std::string _name,
+        Value _value,
+        std::unique_ptr<Operation> _operation,
+        ParameterVariabilityType _variabilityType)
     : PopulationValue(_name, _value, std::move(_operation)),
       m_variability(std::make_unique<ParameterVariability>(_variabilityType))
 {

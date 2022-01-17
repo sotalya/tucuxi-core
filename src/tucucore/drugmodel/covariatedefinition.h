@@ -38,8 +38,8 @@ public:
             const CovariateType _type = CovariateType::Standard,
             const DataType _dataType = DataType::Double,
             const Tucuxi::Common::TranslatableString& _name = Tucuxi::Common::TranslatableString())
-        : PopulationValue(_id, Tucuxi::Common::Utils::stringToValue(_value, _dataType), std::move(_operation)), m_type{_type},
-          m_dataType{_dataType}, m_interpolationType{InterpolationType::Direct}, m_name(_name)
+        : PopulationValue(_id, Tucuxi::Common::Utils::stringToValue(_value, _dataType), std::move(_operation)),
+          m_type{_type}, m_dataType{_dataType}, m_interpolationType{InterpolationType::Direct}, m_name(_name)
     {
         if (_type != CovariateType::Standard) {
             // For the age, reset all the values set by the user to appropriate ones.

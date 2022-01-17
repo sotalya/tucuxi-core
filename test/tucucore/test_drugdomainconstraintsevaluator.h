@@ -31,16 +31,17 @@ using namespace Tucuxi::Common::Utils;
 /// \param OP1 Name of the first operand.
 /// \param OP2 Name of the second operand.
 /// \param TYPE Type of the constraint (hard or soft).
-#define ADD_OP2_CONSTRAINT(DOMAIN, OPERATION, OP1, OP2, TYPE)                                                 \
-    do {                                                                                                      \
-        Operation* op = new JSOperation(                                                                      \
-                OPERATION, {OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)}); \
-        auto c = std::make_unique<Constraint>();                                                              \
-        c->addRequiredCovariateId(OP1);                                                                       \
-        c->addRequiredCovariateId(OP2);                                                                       \
-        c->setType(TYPE);                                                                                     \
-        c->setCheckOperation(std::unique_ptr<Operation>(op));                                                 \
-        DOMAIN.addConstraint(std::move(c));                                                                   \
+#define ADD_OP2_CONSTRAINT(DOMAIN, OPERATION, OP1, OP2, TYPE)                                                        \
+    do {                                                                                                             \
+        auto op = std::make_unique<JSOperation>(                                                                     \
+                OPERATION,                                                                                           \
+                OperationInputList{OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)}); \
+        auto c = std::make_unique<Constraint>();                                                                     \
+        c->addRequiredCovariateId(OP1);                                                                              \
+        c->addRequiredCovariateId(OP2);                                                                              \
+        c->setType(TYPE);                                                                                            \
+        c->setCheckOperation(std::move(op));                                                                         \
+        DOMAIN.addConstraint(std::move(c));                                                                          \
     } while (0);
 
 /// \brief Add a constraint to a drug model domain.
@@ -50,26 +51,28 @@ using namespace Tucuxi::Common::Utils;
 /// \param OP1 Name of the first operand.
 /// \param OP2 Name of the second operand.
 /// \param TYPE Type of the constraint (hard or soft).
-#define ADD_OP_CONSTRAINT(DOMAIN, OPERATION, OP1, OP2, TYPE)                                                  \
-    do {                                                                                                      \
-        Operation* op = new JSOperation(                                                                      \
-                OPERATION, {OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)}); \
-        auto c = std::make_unique<Constraint>();                                                              \
-        c->addRequiredCovariateId(OP1);                                                                       \
-        c->addRequiredCovariateId(OP2);                                                                       \
-        c->setType(TYPE);                                                                                     \
-        c->setCheckOperation(std::unique_ptr<Operation>(op));                                                 \
-        DOMAIN->addConstraint(std::move(c));                                                                  \
+#define ADD_OP_CONSTRAINT(DOMAIN, OPERATION, OP1, OP2, TYPE)                                                         \
+    do {                                                                                                             \
+        auto op = std::make_unique<JSOperation>(                                                                     \
+                OPERATION,                                                                                           \
+                OperationInputList{OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)}); \
+        auto c = std::make_unique<Constraint>();                                                                     \
+        c->addRequiredCovariateId(OP1);                                                                              \
+        c->addRequiredCovariateId(OP2);                                                                              \
+        c->setType(TYPE);                                                                                            \
+        c->setCheckOperation(std::move(op));                                                                         \
+        DOMAIN->addConstraint(std::move(c));                                                                         \
     } while (0);
 
-#define ADD_OP1_CONSTRAINT(DOMAIN, OPERATION, OP1, TYPE)                                      \
-    do {                                                                                      \
-        Operation* op = new JSOperation(OPERATION, {OperationInput(OP1, InputType::DOUBLE)}); \
-        auto c = std::make_unique<Constraint>();                                              \
-        c->addRequiredCovariateId(OP1);                                                       \
-        c->setType(TYPE);                                                                     \
-        c->setCheckOperation(std::unique_ptr<Operation>(op));                                 \
-        DOMAIN->addConstraint(std::move(c));                                                  \
+#define ADD_OP1_CONSTRAINT(DOMAIN, OPERATION, OP1, TYPE)                                                              \
+    do {                                                                                                              \
+        auto op =                                                                                                     \
+                std::make_unique<JSOperation>(OPERATION, OperationInputList{OperationInput(OP1, InputType::DOUBLE)}); \
+        auto c = std::make_unique<Constraint>();                                                                      \
+        c->addRequiredCovariateId(OP1);                                                                               \
+        c->setType(TYPE);                                                                                             \
+        c->setCheckOperation(std::move(op));                                                                          \
+        DOMAIN->addConstraint(std::move(c));                                                                          \
     } while (0);
 
 void compatibleTests();

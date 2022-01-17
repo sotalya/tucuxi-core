@@ -18,14 +18,12 @@ public:
         auto model = std::make_unique<Tucuxi::Core::DrugModel>();
 
         // The following constraint is for tests only. Needs to be modified according to the paper
-        Tucuxi::Core::Operation* operationConstraint = new Tucuxi::Core::JSOperation(
-                " \
-                                                return (age > 0);",
-                {OperationInput("age", InputType::DOUBLE)});
+        auto operationConstraint = std::make_unique<Tucuxi::Core::JSOperation>(
+                "return (age > 0);", OperationInputList{OperationInput("age", InputType::DOUBLE)});
 
         auto constraint = std::make_unique<Constraint>();
         constraint->addRequiredCovariateId("age");
-        constraint->setCheckOperation(std::unique_ptr<Operation>(operationConstraint));
+        constraint->setCheckOperation(std::move(operationConstraint));
         constraint->setType(ConstraintType::HARD);
 
         auto drugDomain = std::make_unique<DrugModelDomain>(std::move(constraint));
@@ -85,7 +83,8 @@ public:
         // Imatinib parameters, as in the XML drug file
         auto opV = std::make_unique<JSOperation>(
                 "theta2=V_population; theta8=46.2; tvv = theta2+theta8*sex-theta8*(1-sex); V = tvv; return V;",
-                OperationInputList{OperationInput("V_population", InputType::DOUBLE), OperationInput("sex", InputType::DOUBLE)});
+                OperationInputList{
+                        OperationInput("V_population", InputType::DOUBLE), OperationInput("sex", InputType::DOUBLE)});
 
         auto PV = std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "V",
@@ -112,11 +111,12 @@ public:
                                             \
                                             Cl = theta1+theta4*FBW+theta5*MALE-theta5*(1-MALE)+theta6*FAGE + theta7*PATH-theta7*(1-PATH);\
                                             return Cl;",
-                OperationInputList{OperationInput("CL_population", InputType::DOUBLE),
-                 OperationInput("sex", InputType::DOUBLE),
-                 OperationInput("bodyweight", InputType::DOUBLE),
-                 OperationInput("age", InputType::DOUBLE),
-                 OperationInput("gist", InputType::BOOL)});
+                OperationInputList{
+                        OperationInput("CL_population", InputType::DOUBLE),
+                        OperationInput("sex", InputType::DOUBLE),
+                        OperationInput("bodyweight", InputType::DOUBLE),
+                        OperationInput("age", InputType::DOUBLE),
+                        OperationInput("gist", InputType::BOOL)});
 
         auto PCL = std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "CL",
