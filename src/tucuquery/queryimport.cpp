@@ -209,6 +209,7 @@ unique_ptr<Core::PatientCovariate> QueryImport::createCovariateData(Common::XmlN
     if ((covariateId == "birthdate") && (value == "0")) {
         // This case is only here for the web front end who's got issues with the birthdate
         value = Tucuxi::Common::Utils::varToString(date);
+        dataType = Core::DataType::Date;
     }
     else {
         // If the covariate is a date, go through a DateTime to reconvert it to a string
