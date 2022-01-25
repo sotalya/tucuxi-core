@@ -15,6 +15,44 @@
 #include "parameter.h"
 #include "sampleevent.h"
 
+#include "tucucore/concentrationcalculator.h"
+#include "tucucore/dosage.h"
+#include "tucucore/drugmodel/formulationandroute.h"
+#include "tucucore/intakeevent.h"
+#include "tucucore/intakeextractor.h"
+#include "tucucore/intakeintervalcalculator.h"
+#include "tucucore/likelihood.h"
+#include "tucucore/multiconcentrationcalculator.h"
+#include "tucucore/multilikelihood.h"
+#include "tucucore/pkmodels/onecompartmentbolus.h"
+#include "tucucore/pkmodels/onecompartmentextra.h"
+#include "tucucore/pkmodels/onecompartmentextralag.h"
+#include "tucucore/pkmodels/onecompartmentinfusion.h"
+#include "tucucore/pkmodels/rkonecompartmentextra.h"
+#include "tucucore/pkmodels/rkonecompartmentgammaextra.h"
+#include "tucucore/pkmodels/rktwocompartmenterlang.h"
+#include "tucucore/pkmodels/threecompartmentbolus.h"
+#include "tucucore/pkmodels/threecompartmentextra.h"
+#include "tucucore/pkmodels/threecompartmentinfusion.h"
+#include "tucucore/pkmodels/twocompartmentbolus.h"
+#include "tucucore/pkmodels/twocompartmentextra.h"
+#include "tucucore/pkmodels/twocompartmentinfusion.h"
+#include "tucucore/residualerrormodel.h"
+
+
+#include "pkmodels/constanteliminationbolus.h"
+#include "pkmodels/multiconstanteliminationbolus.h"
+
+
+#include "fructose/fructose.h"
+
+
+#include <iostream>
+#include <memory>
+
+#include "tucucommon/duration.h"
+#include "tucucommon/general.h"
+
 using namespace  std;
 namespace Tucuxi {
 namespace Core {
@@ -33,7 +71,7 @@ class MultiLikelihood
 public:
     MultiLikelihood(
             const OmegaMatrix& _omega,
-            const std::vector<IResidualErrorModel*>& _residualErrorModel,
+            const std::vector<SigmaResidualErrorModel>& _residualErrorModel,
             const std::vector<SampleSeries>& _samples,
             const IntakeSeries& _intakes,
             const ParameterSetSeries& _parameters,
@@ -115,7 +153,7 @@ public:
     /// \param _residualErrorModel Residual error model to be used for calculation
     /// \return the negative log-likelihood of a concentration at the sample time
     Value calculateSampleNegativeLogLikelihood(
-            Value _expected, const SampleEvent& _observed, const IResidualErrorModel* _residualErrorModel) const;
+            Value _expected, const SampleEvent& _observed, const SigmaResidualErrorModel _residualErrorModel) const;
 
     /// Sets the bounds on etas to extreme values of normal distribution
     /// using the equation for the inverse of the cdf for normal distribution
@@ -150,7 +188,7 @@ private:
     // const OmegaMatrix* m_omega;
 
     /// intra-individual error model
-    const std::vector<IResidualErrorModel*> m_residualErrorModel;
+    const std::vector<SigmaResidualErrorModel> m_residualErrorModel;
 
     /// multi-index of samples for entire curve
     const std::vector<SampleSeries> m_samples;
