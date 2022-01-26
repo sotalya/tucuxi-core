@@ -33,7 +33,7 @@ class MultiLikelihood
 public:
     MultiLikelihood(
             const OmegaMatrix& _omega,
-            const std::vector<IResidualErrorModel*>& _residualErrorModel,
+            const std::vector<SigmaResidualErrorModel>& _residualErrorModel,
             const std::vector<SampleSeries>& _samples,
             const IntakeSeries& _intakes,
             const ParameterSetSeries& _parameters,
@@ -115,7 +115,7 @@ public:
     /// \param _residualErrorModel Residual error model to be used for calculation
     /// \return the negative log-likelihood of a concentration at the sample time
     Value calculateSampleNegativeLogLikelihood(
-            Value _expected, const SampleEvent& _observed, const IResidualErrorModel* _residualErrorModel) const;
+            Value _expected, const SampleEvent& _observed, const SigmaResidualErrorModel _residualErrorModel) const;
 
     /// Sets the bounds on etas to extreme values of normal distribution
     /// using the equation for the inverse of the cdf for normal distribution
@@ -150,7 +150,7 @@ private:
     // const OmegaMatrix* m_omega;
 
     /// intra-individual error model
-    const std::vector<IResidualErrorModel*> m_residualErrorModel;
+    const std::vector<SigmaResidualErrorModel> m_residualErrorModel;
 
     /// multi-index of samples for entire curve
     const std::vector<SampleSeries> m_samples;

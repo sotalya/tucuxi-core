@@ -22,8 +22,8 @@ namespace Core {
 
 MultiLikelihood::MultiLikelihood(
         const OmegaMatrix& _omega,
-        const std::vector<IResidualErrorModel*>& _residualErrorModel, //we need a vector of residual error models
-        const std::vector<SampleSeries>& _samples, //we need a vector of samples to know what sample is for each analyte
+        const std::vector<SigmaResidualErrorModel>& _residualErrorModel,
+        const std::vector<SampleSeries>& _samples,
         const IntakeSeries& _intakes,
         const ParameterSetSeries& _parameters,
         MultiConcentrationCalculator& _multiconcentrationCalculator)
@@ -74,18 +74,24 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
     //here i need to add a loop that works for all samples, iterating on each index of the vector
 
 
-    for (unsigned int i = 0; i < m_samples.size(); ++i) {
+    Tucuxi::Core::SampleSeries sampless;
+
+
+    for(unsigned int i = 0; i < m_samples.size(); ++i){
+        for(unsigned int j = 0; j < m_samples[i].size(); ++j){
+               if (m_samples[i].size() != 0) sampless.push_back(m_samples[i][j]);
+            }
+    }
 
         ComputingStatus result = ComputingStatus::Undefined;
-        if (m_samples[i].size() != 0) {
             result = m_concentrationCalculator->computeConcentrationsAtTimes(
-                    _concentrations, isAll, *m_intakes, *m_parameters, m_samples[i], _etas);
-        }
-        if (m_samples[i].size() != 0 && result != ComputingStatus::Ok) {
+                    _concentrations, isAll, *m_intakes, *m_parameters, sampless, _etas);
+
+        if (sampless.size() != 0 && result != ComputingStatus::Ok) {
             return std::numeric_limits<double>::max();
         }
         _concentrations2.push_back(_concentrations);
-    }
+
 
     // If the calculation fails, its highly unlikely so we return the largest number we can
 
@@ -95,15 +101,17 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
     Value logPrior = negativeLogPrior(
             Eigen::Map<const EigenVector>(&_etas[0], static_cast<Eigen::Index>(_etas.size())) /*, *m_omega*/);
 
+    size_t sampleCounter = 0;
+
     for (unsigned int i = 0; i < m_samples.size(); ++i) {
         SampleSeries::const_iterator sit = m_samples[i].begin();
         SampleSeries::const_iterator sitEnd = m_samples[i].end();
-        size_t sampleCounter = 0;
+
         while (sit != sitEnd) {
             if (m_samples[i].size() > 0) {
                 // SampleEvent s = *sit;
                 gll += calculateSampleNegativeLogLikelihood(
-                        _concentrations2[i][sampleCounter][i], *sit, m_residualErrorModel[i]);
+                        _concentrations2[0][sampleCounter][i], *sit, m_residualErrorModel[i]);
                 sampleCounter++;
                 sit++;
             }
@@ -122,10 +130,10 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
 }
 
 Value MultiLikelihood::calculateSampleNegativeLogLikelihood(
-        Value _expected, const SampleEvent& _observed, const IResidualErrorModel* _residualErrorModel) const
+        Value _expected, const SampleEvent& _observed, const SigmaResidualErrorModel _residualErrorModel) const
 {
 
-    return -_residualErrorModel->calculateSampleLikelihood(_expected, _observed.getValue());
+    return -_residualErrorModel.calculateSampleLikelihood(_expected, _observed.getValue());
 }
 
 Value MultiLikelihood::negativeLogPrior(const EigenVector& _etas /*, const OmegaMatrix &_omega*/) const

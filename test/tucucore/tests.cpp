@@ -477,7 +477,7 @@ int main(int argc, char** argv)
     multilikelihoodTests.add_test("multilikelihoodTest1", &TestMultiLikeliHood::test1analyte1sample);
     multilikelihoodTests.add_test("multilikelihoodTest2", &TestMultiLikeliHood::test1analyte3samples);
     multilikelihoodTests.add_test("multilikelihoodTest3", &TestMultiLikeliHood::test2analytes1sampleonanalyte1);
-    multilikelihoodTests.add_test("multilikelihoodTest4", &TestMultiLikeliHood::test2analytesonesampleonanalyte2);
+    multilikelihoodTests.add_test("multilikelihoodTest4", &TestMultiLikeliHood::test2analytes1sampleonanalyte2);
     multilikelihoodTests.add_test("multilikelihoodTest5", &TestMultiLikeliHood::test2analytes2samplesdifferenttimes);
     multilikelihoodTests.add_test("multilikelihoodTest6", &TestMultiLikeliHood::test2analytes2samplessametime);
     multilikelihoodTests.add_test("multilikelihoodTest7", &TestMultiLikeliHood::test2analytes6samples);
