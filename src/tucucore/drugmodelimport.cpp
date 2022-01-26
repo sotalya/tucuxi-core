@@ -493,7 +493,7 @@ std::unique_ptr<Operation> DrugModelImport::extractOperation(Tucuxi::Common::Xml
             collection.populate();
             std::shared_ptr<Operation> sharedOperation = collection.getOperationFromId(it->getValue());
             if (sharedOperation != nullptr) {
-                operation = std::unique_ptr<Operation>(sharedOperation->clone().release());
+                operation = sharedOperation->clone();
             }
         }
         else if (nodeName == "multiFormula") {
@@ -543,7 +543,7 @@ std::unique_ptr<LightPopulationValue> DrugModelImport::extractPopulationValue(Tu
 
     auto populationValue = std::make_unique<LightPopulationValue>();
     populationValue->m_value = value;
-    populationValue->m_operation = operation.release();
+    populationValue->m_operation = std::move(operation);
 
     return populationValue;
 }

@@ -306,7 +306,7 @@ JSExpression::JSExpression(const std::string& _expression, const OperationInputL
 
 std::unique_ptr<Operation> JSOperation::clone() const
 {
-    return std::unique_ptr<Operation>(new JSOperation(*this));
+    return std::make_unique<JSOperation>(*this);
 }
 
 
@@ -521,7 +521,7 @@ DynamicOperation::DynamicOperation(const DynamicOperation& _other) : Operation(_
 
 std::unique_ptr<Operation> DynamicOperation::clone() const
 {
-    return std::unique_ptr<Operation>(new DynamicOperation(*this));
+    return std::make_unique<DynamicOperation>(*this);
 }
 
 

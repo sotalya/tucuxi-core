@@ -45,23 +45,23 @@ enum class ExtractionOption
 
 /// \brief Implement the extract and clone operations for Dosage subclasses.
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define DOSAGE_UTILS(BaseClassName, ClassName)                       \
-    friend IntakeExtractor;                                          \
-    int extract(                                                     \
-            IntakeExtractor& _extractor,                             \
-            const DateTime& _start,                                  \
-            const DateTime& _end,                                    \
-            double _nbPointsPerHour,                                 \
-            const TucuUnit& _toUnit,                                 \
-            IntakeSeries& _series,                                   \
-            ExtractionOption _option) const override;                \
-    std::unique_ptr<BaseClassName> clone() const override            \
-    {                                                                \
-        return std::unique_ptr<BaseClassName>(new ClassName(*this)); \
-    }                                                                \
-    std::unique_ptr<Dosage> cloneDosage() const override             \
-    {                                                                \
-        return clone();                                              \
+#define DOSAGE_UTILS(BaseClassName, ClassName)            \
+    friend IntakeExtractor;                               \
+    int extract(                                          \
+            IntakeExtractor& _extractor,                  \
+            const DateTime& _start,                       \
+            const DateTime& _end,                         \
+            double _nbPointsPerHour,                      \
+            const TucuUnit& _toUnit,                      \
+            IntakeSeries& _series,                        \
+            ExtractionOption _option) const override;     \
+    std::unique_ptr<BaseClassName> clone() const override \
+    {                                                     \
+        return std::make_unique<ClassName>(*this);        \
+    }                                                     \
+    std::unique_ptr<Dosage> cloneDosage() const override  \
+    {                                                     \
+        return clone();                                   \
     }
 
 

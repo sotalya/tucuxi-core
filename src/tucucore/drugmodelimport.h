@@ -52,16 +52,16 @@ class LightPopulationValue
 public:
     LightPopulationValue() : m_operation(nullptr), m_value(0.0) {}
 
-    Operation* getOperation()
+    std::unique_ptr<Operation> getOperation()
     {
-        return m_operation;
+        return std::move(m_operation);
     }
     Value getValue()
     {
         return m_value;
     }
 
-    Operation* m_operation;
+    std::unique_ptr<Operation> m_operation;
     Value m_value;
 };
 

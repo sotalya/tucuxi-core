@@ -8,12 +8,12 @@
 
 #include <date/date.h>
 
-#include "tucucore/multicomputingcomponent.h"
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/drugmodelchecker.h"
 #include "tucucore/drugmodelimport.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/drugtreatment/patientcovariate.h"
+#include "tucucore/multicomputingcomponent.h"
 #include "tucucore/pkmodel.h"
 
 #include "../pkmodels/multiconstanteliminationbolus.h"
@@ -104,11 +104,12 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
                 AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
+        sharedPkModel->addParameterList(
+                AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         defaultPopulate(*collection.get());
-//        collection->addPkModel(sharedPkModel);
+        //        collection->addPkModel(sharedPkModel);
         DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel, collection.get());
 
         fructose_assert(checkerResult.m_ok);
@@ -188,7 +189,8 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
                 fructose_assert_eq(resp->getCompartmentInfos().size(), size_t{5});
                 fructose_assert_eq(resp->getCompartmentInfos()[0].getId(), "activeMoietyMulti");
-                fructose_assert(resp->getCompartmentInfos()[0].getType() == CompartmentInfo::CompartmentType::ActiveMoiety);
+                fructose_assert(
+                        resp->getCompartmentInfos()[0].getType() == CompartmentInfo::CompartmentType::ActiveMoiety);
                 fructose_assert_eq(resp->getCompartmentInfos()[1].getId(), "analyte0");
                 fructose_assert(resp->getCompartmentInfos()[1].getType() == CompartmentInfo::CompartmentType::Analyte);
                 fructose_assert_eq(resp->getCompartmentInfos()[2].getId(), "analyte1");
@@ -310,7 +312,8 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
                     static_cast<int>(251));
 
             // Associate the intake calculator to the intakes
-            std::shared_ptr<MultiConstantEliminationBolus> intakeCalculator = std::make_shared<MultiConstantEliminationBolus>();
+            std::shared_ptr<MultiConstantEliminationBolus> intakeCalculator =
+                    std::make_shared<MultiConstantEliminationBolus>();
             intakes[0].setCalculator(intakeCalculator);
             intakes[1].setCalculator(intakeCalculator);
 
@@ -339,7 +342,6 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
             ParameterSetSeries parameters;
             parameters.addParameterSetEvent(parameterset);
-
         }
 
 
@@ -367,7 +369,8 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
                 AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
+        sharedPkModel->addParameterList(
+                AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);
@@ -575,7 +578,8 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
                 AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getCreator());
         fructose_assert(addResult);
-        sharedPkModel->addParameterList(AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
+        sharedPkModel->addParameterList(
+                AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
 
         std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
         collection->addPkModel(sharedPkModel);

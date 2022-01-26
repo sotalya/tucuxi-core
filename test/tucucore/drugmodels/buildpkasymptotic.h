@@ -77,19 +77,21 @@ public:
 
         auto dispositionParameters = std::make_unique<ParameterSetDefinition>();
 
-        Operation* opT = new JSOperation(
-                " \
-                                            return covT;",
-                {OperationInput("covT", InputType::DOUBLE)});
+        auto opT = std::make_unique<JSOperation>(
+                "return covT;", OperationInputList{OperationInput("covT", InputType::DOUBLE)});
         auto PT = std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestT", 1.0, opT, std::make_unique<ParameterVariability>(_variabilityTypeT, _variabilityValueT));
+                "TestT",
+                1.0,
+                std::move(opT),
+                std::make_unique<ParameterVariability>(_variabilityTypeT, _variabilityValueT));
         dispositionParameters->addParameter(std::move(PT));
-        Operation* opR = new JSOperation(
-                " \
-                                            return covR;",
-                {OperationInput("covR", InputType::DOUBLE)});
+        auto opR = std::make_unique<JSOperation>(
+                "return covR;", OperationInputList{OperationInput("covR", InputType::DOUBLE)});
         auto PR = std::make_unique<Tucuxi::Core::ParameterDefinition>(
-                "TestR", 0.5, opR, std::make_unique<ParameterVariability>(_variabilityTypeR, _variabilityValueR));
+                "TestR",
+                0.5,
+                std::move(opR),
+                std::make_unique<ParameterVariability>(_variabilityTypeR, _variabilityValueR));
         dispositionParameters->addParameter(std::move(PR));
 
         analyteSet->setDispositionParameters(std::move(dispositionParameters));

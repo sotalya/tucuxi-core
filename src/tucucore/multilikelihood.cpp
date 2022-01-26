@@ -4,37 +4,14 @@
 
 
 #include <iostream>
-#include <memory>
 
-#include "tucucommon/duration.h"
-#include "tucucommon/general.h"
+#include <Eigen/LU>
+#include <boost/math/special_functions/erf.hpp>
 
-#include "tucucore/concentrationcalculator.h"
-#include "tucucore/dosage.h"
-#include "tucucore/drugmodel/formulationandroute.h"
-#include "tucucore/intakeevent.h"
-#include "tucucore/intakeextractor.h"
-#include "tucucore/intakeintervalcalculator.h"
-#include "tucucore/likelihood.h"
-#include "tucucore/multiconcentrationcalculator.h"
-#include "tucucore/multilikelihood.h"
-#include "tucucore/pkmodels/onecompartmentbolus.h"
-#include "tucucore/pkmodels/onecompartmentextra.h"
-#include "tucucore/pkmodels/onecompartmentextralag.h"
-#include "tucucore/pkmodels/onecompartmentinfusion.h"
-#include "tucucore/pkmodels/rkonecompartmentextra.h"
-#include "tucucore/pkmodels/rkonecompartmentgammaextra.h"
-#include "tucucore/pkmodels/rktwocompartmenterlang.h"
-#include "tucucore/pkmodels/threecompartmentbolus.h"
-#include "tucucore/pkmodels/threecompartmentextra.h"
-#include "tucucore/pkmodels/threecompartmentinfusion.h"
-#include "tucucore/pkmodels/twocompartmentbolus.h"
-#include "tucucore/pkmodels/twocompartmentextra.h"
-#include "tucucore/pkmodels/twocompartmentinfusion.h"
-#include "tucucore/residualerrormodel.h"
+#include "multilikelihood.h"
 
-#include "fructose/fructose.h"
-
+#include "multiconcentrationcalculator.h"
+#include "residualerrormodel.h"
 
 
 namespace Tucuxi {
@@ -45,8 +22,8 @@ namespace Core {
 
 MultiLikelihood::MultiLikelihood(
         const OmegaMatrix& _omega,
-        const std::vector<SigmaResidualErrorModel>& _residualErrorModel,
-        const std::vector<SampleSeries>& _samples,
+        const std::vector<IResidualErrorModel*>& _residualErrorModel, //we need a vector of residual error models
+        const std::vector<SampleSeries>& _samples, //we need a vector of samples to know what sample is for each analyte
         const IntakeSeries& _intakes,
         const ParameterSetSeries& _parameters,
         MultiConcentrationCalculator& _multiconcentrationCalculator)
@@ -96,22 +73,19 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
 
     //here i need to add a loop that works for all samples, iterating on each index of the vector
 
-    Tucuxi::Core::SampleSeries sampless;
 
-        for(unsigned int i = 0; i < m_samples.size(); ++i){
-
-            if (m_samples[i].size() != 0) sampless.push_back(m_samples[i]);
-         }
+    for (unsigned int i = 0; i < m_samples.size(); ++i) {
 
         ComputingStatus result = ComputingStatus::Undefined;
-        result = m_concentrationCalculator->computeConcentrationsAtTimes(
-            _concentrations, isAll, *m_intakes, *m_parameters, sampless, _etas);
-
-        if (sampless.size() != 0 && result != ComputingStatus::Ok) {
+        if (m_samples[i].size() != 0) {
+            result = m_concentrationCalculator->computeConcentrationsAtTimes(
+                    _concentrations, isAll, *m_intakes, *m_parameters, m_samples[i], _etas);
+        }
+        if (m_samples[i].size() != 0 && result != ComputingStatus::Ok) {
             return std::numeric_limits<double>::max();
-
-          _concentrations2.push_back(_concentrations);
-
+        }
+        _concentrations2.push_back(_concentrations);
+    }
 
     // If the calculation fails, its highly unlikely so we return the largest number we can
 
@@ -126,8 +100,8 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
         SampleSeries::const_iterator sitEnd = m_samples[i].end();
         size_t sampleCounter = 0;
         while (sit != sitEnd) {
-            if(m_samples[i].size() > 0){
-            // SampleEvent s = *sit;
+            if (m_samples[i].size() > 0) {
+                // SampleEvent s = *sit;
                 gll += calculateSampleNegativeLogLikelihood(
                         _concentrations2[i][sampleCounter][i], *sit, m_residualErrorModel[i]);
                 sampleCounter++;

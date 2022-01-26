@@ -115,11 +115,14 @@ public:
     ParameterDefinition(
             std::string _name,
             Value _value,
-            Operation* _operation,
+            std::unique_ptr<Operation> _operation,
             std::unique_ptr<ParameterVariability> _variabilityType);
 
     ParameterDefinition(
-            std::string _name, Value _value, Operation* _operation, ParameterVariabilityType _variabilityType);
+            std::string _name,
+            Value _value,
+            std::unique_ptr<Operation> _operation,
+            ParameterVariabilityType _variabilityType);
 
     ~ParameterDefinition() override;
 

@@ -1385,7 +1385,6 @@ ComputingStatus MultiComputingAdjustments::generatePrediction(
 }
 
 */
-
-} // namespace Core
+}
 } // namespace Core
 } // namespace Tucuxi

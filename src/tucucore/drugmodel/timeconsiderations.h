@@ -13,8 +13,13 @@ namespace Core {
 class HalfLife : public PopulationValue
 {
 public:
-    HalfLife(const std::string& _id, Value _value, TucuUnit _unit, double _multiplier, Operation* _operation = nullptr)
-        : PopulationValue(_id, _value, _operation), m_multiplier(_multiplier), m_unit(std::move(_unit))
+    HalfLife(
+            const std::string& _id,
+            Value _value,
+            TucuUnit _unit,
+            double _multiplier,
+            std::unique_ptr<Operation> _operation = nullptr)
+        : PopulationValue(_id, _value, std::move(_operation)), m_multiplier(_multiplier), m_unit(std::move(_unit))
     {
     }
 
@@ -45,8 +50,9 @@ public:
     /// \param _operation Operation associated with the parameter.
     /// \param _unit Unit associated to the value.
     /// The operation has a default value of nullptr
-    OutdatedMeasure(const std::string& _id, const Value _value, TucuUnit _unit, Operation* _operation = nullptr)
-        : PopulationValue(_id, _value, _operation), m_unit(std::move(_unit))
+    OutdatedMeasure(
+            const std::string& _id, const Value _value, TucuUnit _unit, std::unique_ptr<Operation> _operation = nullptr)
+        : PopulationValue(_id, _value, std::move(_operation)), m_unit(std::move(_unit))
     {
     }
 
