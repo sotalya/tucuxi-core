@@ -22,7 +22,7 @@ namespace Core {
 
 MultiLikelihood::MultiLikelihood(
         const OmegaMatrix& _omega,
-        const std::vector<SigmaResidualErrorModel>& _residualErrorModel,
+        const std::vector<IResidualErrorModel*>& _residualErrorModel,
         const std::vector<SampleSeries>& _samples,
         const IntakeSeries& _intakes,
         const ParameterSetSeries& _parameters,
@@ -76,10 +76,19 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
 
     Tucuxi::Core::SampleSeries sampless;
 
-
+    int k = 0;
     for(unsigned int i = 0; i < m_samples.size(); ++i){
         for(unsigned int j = 0; j < m_samples[i].size(); ++j){
-               if (m_samples[i].size() != 0) sampless.push_back(m_samples[i][j]);
+               if ((m_samples[i].size() != 0)){
+                   if(k==0) sampless.push_back(m_samples[i][j]);
+                   else{
+                       if(m_samples[i][j].getEventTime() >= (m_samples[min(i,j)][max(i,j)-1].getEventTime())){
+                           sampless.push_back(m_samples[i][j]);
+                       }
+                   }
+                   k++;
+
+               }
             }
     }
 
@@ -130,10 +139,10 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
 }
 
 Value MultiLikelihood::calculateSampleNegativeLogLikelihood(
-        Value _expected, const SampleEvent& _observed, const SigmaResidualErrorModel _residualErrorModel) const
+        Value _expected, const SampleEvent& _observed, const IResidualErrorModel* _residualErrorModel) const
 {
 
-    return -_residualErrorModel.calculateSampleLikelihood(_expected, _observed.getValue());
+    return -_residualErrorModel->calculateSampleLikelihood(_expected, _observed.getValue());
 }
 
 Value MultiLikelihood::negativeLogPrior(const EigenVector& _etas /*, const OmegaMatrix &_omega*/) const

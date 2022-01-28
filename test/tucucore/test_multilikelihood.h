@@ -88,7 +88,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
         Tucuxi::Core::OmegaMatrix omega;
-        std::vector<SigmaResidualErrorModel> residualErrorModel;
+        std::vector<IResidualErrorModel*> residualErrorModel;
         std::vector<SampleSeries> samples;
         IntakeSeries intakes;
         ParameterSetSeries parameters;
@@ -104,12 +104,12 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         //definition of the residualErrorModel
 
 
-        SigmaResidualErrorModel newErrorModel;
+        std::unique_ptr<SigmaResidualErrorModel> newErrorModel = std::make_unique<SigmaResidualErrorModel>();
         Tucuxi::Core::Sigma sigma(1);
         sigma(0) = 0.3138;
-        newErrorModel.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel.setSigma(sigma);
-        residualErrorModel.push_back(newErrorModel);
+        newErrorModel->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel->setSigma(sigma);
+        residualErrorModel.push_back(newErrorModel.get());
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
@@ -197,7 +197,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         etasmd[0] = 0.1;
 
         double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-                               - residualErrorModel[0].calculateSampleLikelihood(expectedSampleValue, s0.getValue());
+                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue, s0.getValue());
         fructose_assert_double_eq(x, expectedValue);
     }
 
@@ -215,7 +215,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
         Tucuxi::Core::OmegaMatrix omega;
-        std::vector<SigmaResidualErrorModel> residualErrorModel;
+        std::vector<IResidualErrorModel*> residualErrorModel;
         std::vector<SampleSeries> samples;
         IntakeSeries intakes;
         ParameterSetSeries parameters;
@@ -231,12 +231,12 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         //definition of the residualErrorModel
 
 
-        SigmaResidualErrorModel newErrorModel;
+        std::unique_ptr<SigmaResidualErrorModel> newErrorModel = std::make_unique<SigmaResidualErrorModel>();
         Tucuxi::Core::Sigma sigma(1);
         sigma(0) = 0.3138;
-        newErrorModel.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel.setSigma(sigma);
-        residualErrorModel.push_back(newErrorModel);
+        newErrorModel->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel->setSigma(sigma);
+        residualErrorModel.push_back(newErrorModel.get());
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
@@ -335,9 +335,9 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         etasmd[0] = 0.1;
 
         double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-                               - residualErrorModel[0].calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
-                               - residualErrorModel[0].calculateSampleLikelihood(expectedSampleValue1, s1.getValue())
-                               - residualErrorModel[0].calculateSampleLikelihood(expectedSampleValue2, s2.getValue());
+                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
+                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s1.getValue())
+                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s2.getValue());
         fructose_assert_double_eq(x, expectedValue);
     }
 
@@ -354,7 +354,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
         Tucuxi::Core::OmegaMatrix omega;
-        std::vector<SigmaResidualErrorModel> residualErrorModel;
+        std::vector<IResidualErrorModel*> residualErrorModel;
         std::vector<SampleSeries> samples;
         IntakeSeries intakes;
         ParameterSetSeries parameters;
@@ -370,21 +370,21 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         //definition of the residualErrorModel
 
 
-        SigmaResidualErrorModel newErrorModel0;
+        std::unique_ptr<SigmaResidualErrorModel> newErrorModel0 = std::make_unique<SigmaResidualErrorModel>();
         Tucuxi::Core::Sigma sigma0(1);
         sigma0(0) = 0.3138;
-        newErrorModel0.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel0.setSigma(sigma0);
-        residualErrorModel.push_back(newErrorModel0);
+        newErrorModel0->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel0->setSigma(sigma0);
+        residualErrorModel.push_back(newErrorModel0.get());
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
 
-        SigmaResidualErrorModel newErrorModel1;
+        std::unique_ptr<SigmaResidualErrorModel> newErrorModel1 = std::make_unique<SigmaResidualErrorModel>();
         Tucuxi::Core::Sigma sigma1(1);
         sigma1(0) = 0.3138;
-        newErrorModel1.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel1.setSigma(sigma1);
-        residualErrorModel.push_back(newErrorModel1);
+        newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel1->setSigma(sigma0);
+        residualErrorModel.push_back(newErrorModel1.get());
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
@@ -486,7 +486,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
         double expectedValuestep1 = expectedValuestep0
-                                    - residualErrorModel[0].calculateSampleLikelihood(
+                                    - residualErrorModel[0]->calculateSampleLikelihood(
                                             expectedSampleValue, s0.getValue()); //0 as the second sample is empty
 
         fructose_assert_double_ne(x, std::numeric_limits<double>::max());
@@ -505,7 +505,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
         Tucuxi::Core::OmegaMatrix omega;
-        std::vector<SigmaResidualErrorModel> residualErrorModel;
+        std::vector<IResidualErrorModel*> residualErrorModel;
         std::vector<SampleSeries> samples;
         IntakeSeries intakes;
         ParameterSetSeries parameters;
@@ -522,22 +522,21 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         //definition of the residualErrorModel
 
 
-        SigmaResidualErrorModel newErrorModel0;
+        std::unique_ptr<SigmaResidualErrorModel> newErrorModel0 = std::make_unique<SigmaResidualErrorModel>();
         Tucuxi::Core::Sigma sigma0(1);
         sigma0(0) = 0.3138;
-        newErrorModel0.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel0.setSigma(sigma0);
-        residualErrorModel.push_back(newErrorModel0);
+        newErrorModel0->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel0->setSigma(sigma0);
+        residualErrorModel.push_back(newErrorModel0.get());
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
 
-
-        SigmaResidualErrorModel newErrorModel1;
+        std::unique_ptr<SigmaResidualErrorModel> newErrorModel1 = std::make_unique<SigmaResidualErrorModel>();
         Tucuxi::Core::Sigma sigma1(1);
         sigma1(0) = 0.3138;
-        newErrorModel1.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel1.setSigma(sigma1);
-        residualErrorModel.push_back(newErrorModel1);
+        newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel1->setSigma(sigma0);
+        residualErrorModel.push_back(newErrorModel1.get());
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
@@ -633,7 +632,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         etasmd[1] = 0.1;
 
         double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-                               - residualErrorModel[1].calculateSampleLikelihood(
+                               - residualErrorModel[1]->calculateSampleLikelihood(
                                        expectedSampleValue, s1.getValue()); //0 as the first sample is empty
         fructose_assert_double_ne(x, std::numeric_limits<double>::max());
         fructose_assert_double_eq(x, expectedValue);
@@ -649,7 +648,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
         Tucuxi::Core::OmegaMatrix omega;
-        std::vector<SigmaResidualErrorModel> residualErrorModel;
+        std::vector<IResidualErrorModel*> residualErrorModel;
         std::vector<SampleSeries> samples;
         IntakeSeries intakes;
         ParameterSetSeries parameters;
@@ -664,22 +663,21 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         //definition of the residualErrorModel
 
 
-        SigmaResidualErrorModel newErrorModel0;
+        std::unique_ptr<SigmaResidualErrorModel> newErrorModel0 = std::make_unique<SigmaResidualErrorModel>();
         Tucuxi::Core::Sigma sigma0(1);
         sigma0(0) = 0.3138;
-        newErrorModel0.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel0.setSigma(sigma0);
-        residualErrorModel.push_back(newErrorModel0);
+        newErrorModel0->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel0->setSigma(sigma0);
+        residualErrorModel.push_back(newErrorModel0.get());
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
 
-
-        SigmaResidualErrorModel newErrorModel1;
+        std::unique_ptr<SigmaResidualErrorModel> newErrorModel1 = std::make_unique<SigmaResidualErrorModel>();
         Tucuxi::Core::Sigma sigma1(1);
         sigma1(0) = 0.3138;
-        newErrorModel1.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel1.setSigma(sigma1);
-        residualErrorModel.push_back(newErrorModel1);
+        newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel1->setSigma(sigma0);
+        residualErrorModel.push_back(newErrorModel1.get());
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
@@ -787,8 +785,8 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         etasmd[1] = 0.1;
 
         double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-                               - residualErrorModel[0].calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
-                               - residualErrorModel[1].calculateSampleLikelihood(expectedSampleValue1, s1.getValue());
+                               - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
+                               - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue1, s1.getValue());
         fructose_assert_double_ne(x, std::numeric_limits<double>::max());
         fructose_assert_double_eq(x, expectedValue);
     }
@@ -803,7 +801,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
         Tucuxi::Core::OmegaMatrix omega;
-        std::vector<SigmaResidualErrorModel> residualErrorModel;
+        std::vector<IResidualErrorModel*> residualErrorModel;
         std::vector<SampleSeries> samples;
         IntakeSeries intakes;
         ParameterSetSeries parameters;
@@ -819,22 +817,21 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         //definition of the residualErrorModel
 
 
-        SigmaResidualErrorModel newErrorModel0;
+        std::unique_ptr<SigmaResidualErrorModel> newErrorModel0 = std::make_unique<SigmaResidualErrorModel>();
         Tucuxi::Core::Sigma sigma0(1);
         sigma0(0) = 0.3138;
-        newErrorModel0.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel0.setSigma(sigma0);
-        residualErrorModel.push_back(newErrorModel0);
+        newErrorModel0->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel0->setSigma(sigma0);
+        residualErrorModel.push_back(newErrorModel0.get());
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
 
-
-        SigmaResidualErrorModel newErrorModel1;
+        std::unique_ptr<SigmaResidualErrorModel> newErrorModel1 = std::make_unique<SigmaResidualErrorModel>();
         Tucuxi::Core::Sigma sigma1(1);
         sigma1(0) = 0.3138;
-        newErrorModel1.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel1.setSigma(sigma1);
-        residualErrorModel.push_back(newErrorModel1);
+        newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel1->setSigma(sigma0);
+        residualErrorModel.push_back(newErrorModel1.get());
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
@@ -936,8 +933,8 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
         double expectedValue =
                 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-                - residualErrorModel[0].calculateSampleLikelihood(expectedSampleValue, s0.getValue())
-                - residualErrorModel[1].calculateSampleLikelihood(
+                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue, s0.getValue())
+                - residualErrorModel[1]->calculateSampleLikelihood(
                         expectedSampleValue,
                         s1.getValue()); //WE CAN NOT USE 2.0 * m_residual... as they are 2 different analytes
         fructose_assert_double_ne(x, std::numeric_limits<double>::max());
@@ -958,7 +955,7 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
 
 
         Tucuxi::Core::OmegaMatrix omega;
-        std::vector<SigmaResidualErrorModel> residualErrorModel;
+        std::vector<IResidualErrorModel*> residualErrorModel;
         std::vector<SampleSeries> samples;
         IntakeSeries intakes;
         ParameterSetSeries parameters;
@@ -973,22 +970,21 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         //definition of the residualErrorModel
 
 
-        SigmaResidualErrorModel newErrorModel0;
+        std::unique_ptr<SigmaResidualErrorModel> newErrorModel0 = std::make_unique<SigmaResidualErrorModel>();
         Tucuxi::Core::Sigma sigma0(1);
         sigma0(0) = 0.3138;
-        newErrorModel0.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel0.setSigma(sigma0);
-        residualErrorModel.push_back(newErrorModel0);
+        newErrorModel0->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel0->setSigma(sigma0);
+        residualErrorModel.push_back(newErrorModel0.get());
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
 
-
-        SigmaResidualErrorModel newErrorModel1;
+        std::unique_ptr<SigmaResidualErrorModel> newErrorModel1 = std::make_unique<SigmaResidualErrorModel>();
         Tucuxi::Core::Sigma sigma1(1);
         sigma1(0) = 0.3138;
-        newErrorModel1.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
-        newErrorModel1.setSigma(sigma1);
-        residualErrorModel.push_back(newErrorModel1);
+        newErrorModel1->setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        newErrorModel1->setSigma(sigma0);
+        residualErrorModel.push_back(newErrorModel1.get());
         //here i'm supposed to use a vector of pointers of IResidualErrorModel or a vector of pointers of SigmaResidualErrorModel
 
         //definition of the samples
@@ -1125,17 +1121,17 @@ struct TestMultiLikeliHood : public fructose::test_base<TestMultiLikeliHood>
         etasmd[1] = 0.1;
 
         double expectedValue0 = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-                                - residualErrorModel[0].calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
-                                - residualErrorModel[0].calculateSampleLikelihood(expectedSampleValue1, s1.getValue())
-                                - residualErrorModel[0].calculateSampleLikelihood(expectedSampleValue2, s2.getValue());
+                                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
+                                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue1, s1.getValue())
+                                - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue2, s2.getValue());
 
         double expectedValue1 =
-                expectedValue0 - residualErrorModel[1].calculateSampleLikelihood(expectedSampleValue3, s3.getValue());
+                expectedValue0 - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue3, s3.getValue());
 
         double expectedValue2 =
-                expectedValue1 - residualErrorModel[1].calculateSampleLikelihood(expectedSampleValue4, s4.getValue());
+                expectedValue1 - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue4, s4.getValue());
         double expectedValue3 =
-                expectedValue2 - residualErrorModel[1].calculateSampleLikelihood(expectedSampleValue5, s5.getValue());
+                expectedValue2 - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue5, s5.getValue());
 
         fructose_assert_double_ne(x, std::numeric_limits<double>::max());
         fructose_assert_double_eq(x, expectedValue3);
