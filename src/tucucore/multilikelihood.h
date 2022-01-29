@@ -167,8 +167,28 @@ private:
     /// Value to add for the negative log prior calculation
     const double m_omegaAdd{0};
 
-    // Concentration calculator used for all calculations
+    /// Concentration calculator used for all calculations
     MultiConcentrationCalculator* m_concentrationCalculator;
+
+    ///
+    /// This structure allows to store references to existing samples
+    /// and indexes on the vector of times required for the concentration calculator.
+    ///
+    typedef struct
+    {
+        /// Analyte index
+        size_t analyteIndex;
+        /// Sample index for its analyte
+        size_t sampleIndex;
+        /// Index in the merged array
+        size_t mergedIndex;
+    } SampleSorting_t;
+
+    /// A vector of indices to link the samples to the times required for concentration calculation
+    std::vector<SampleSorting_t> m_sortingVector;
+
+    /// The vector of times for concentration calculation
+    Tucuxi::Core::SampleSeries m_timeSeries;
 };
 
 

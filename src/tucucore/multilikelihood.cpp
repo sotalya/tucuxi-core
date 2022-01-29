@@ -34,6 +34,33 @@ MultiLikelihood::MultiLikelihood(
       m_concentrationCalculator(&_multiconcentrationCalculator) //i have to fix that
 {
     initBounds(_omega, m_omax, m_omin);
+
+    // Build the vector of association between the real samples and the time series
+    // First the time index is 0
+    for (size_t i = 0; i < m_samples.size(); ++i) {
+        for (size_t j = 0; j < m_samples[i].size(); ++j) {
+            m_sortingVector.emplace_back(SampleSorting_t{i, j, 0});
+        }
+    }
+
+    // Sort the vector of associations chronologically
+    std::sort(m_sortingVector.begin(), m_sortingVector.end(), [this](SampleSorting_t a, SampleSorting_t b) {
+        return this->m_samples[a.analyteIndex][a.sampleIndex].getEventTime()
+               < this->m_samples[b.analyteIndex][b.sampleIndex].getEventTime();
+    });
+
+    // Build the time series and avoids duplicates
+    size_t added = 0;
+    for (auto& sorted : m_sortingVector) {
+        // Only add a time if it is the first one or not a duplicate
+        if ((added == 0)
+            || (m_timeSeries.back().getEventTime()
+                != m_samples[sorted.analyteIndex][sorted.sampleIndex].getEventTime())) {
+            m_timeSeries.emplace_back(SampleEvent(m_samples[sorted.analyteIndex][sorted.sampleIndex]));
+            sorted.mergedIndex = added;
+            added++;
+        }
+    }
 }
 
 void MultiLikelihood::initBounds(
@@ -60,46 +87,21 @@ Value MultiLikelihood::operator()(const ValueVector& _etas)
     return negativeLogLikelihood(_etas);
 }
 
+
 Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
-{ //returns the negative prior of the likelihood
-    ValueVector concentrations(m_samples.size());
-    MultiCompConcentrations _concentrations(m_samples.size());
-    std::vector<MultiCompConcentrations> _concentrations2(0);
+{
+    //returns the negative prior of the likelihood
+    MultiCompConcentrations concentrations(m_samples.size());
 
     bool isAll = false;
 
-    // Getting the concentration values at these _times and m_samples.
+    ComputingStatus result = ComputingStatus::Undefined;
+    result = m_concentrationCalculator->computeConcentrationsAtTimes(
+            concentrations, isAll, *m_intakes, *m_parameters, m_timeSeries, _etas);
 
-
-    //here i need to add a loop that works for all samples, iterating on each index of the vector
-
-
-    Tucuxi::Core::SampleSeries sampless;
-
-    int k = 0;
-    for(unsigned int i = 0; i < m_samples.size(); ++i){
-        for(unsigned int j = 0; j < m_samples[i].size(); ++j){
-               if ((m_samples[i].size() != 0)){
-                   if(k==0) sampless.push_back(m_samples[i][j]);
-                   else{
-                       if(m_samples[i][j].getEventTime() >= (m_samples[min(i,j)][max(i,j)-1].getEventTime())){
-                           sampless.push_back(m_samples[i][j]);
-                       }
-                   }
-                   k++;
-
-               }
-            }
+    if (m_timeSeries.size() != 0 && result != ComputingStatus::Ok) {
+        return std::numeric_limits<double>::max();
     }
-
-        ComputingStatus result = ComputingStatus::Undefined;
-            result = m_concentrationCalculator->computeConcentrationsAtTimes(
-                    _concentrations, isAll, *m_intakes, *m_parameters, sampless, _etas);
-
-        if (sampless.size() != 0 && result != ComputingStatus::Ok) {
-            return std::numeric_limits<double>::max();
-        }
-        _concentrations2.push_back(_concentrations);
 
 
     // If the calculation fails, its highly unlikely so we return the largest number we can
@@ -110,21 +112,11 @@ Value MultiLikelihood::negativeLogLikelihood(const Etas& _etas) const
     Value logPrior = negativeLogPrior(
             Eigen::Map<const EigenVector>(&_etas[0], static_cast<Eigen::Index>(_etas.size())) /*, *m_omega*/);
 
-    size_t sampleCounter = 0;
-
-    for (unsigned int i = 0; i < m_samples.size(); ++i) {
-        SampleSeries::const_iterator sit = m_samples[i].begin();
-        SampleSeries::const_iterator sitEnd = m_samples[i].end();
-
-        while (sit != sitEnd) {
-            if (m_samples[i].size() > 0) {
-                // SampleEvent s = *sit;
-                gll += calculateSampleNegativeLogLikelihood(
-                        _concentrations2[0][sampleCounter][i], *sit, m_residualErrorModel[i]);
-                sampleCounter++;
-                sit++;
-            }
-        }
+    for (const auto& sorted : m_sortingVector) {
+        gll += calculateSampleNegativeLogLikelihood(
+                concentrations[sorted.mergedIndex][sorted.analyteIndex],
+                m_samples[sorted.analyteIndex][sorted.sampleIndex],
+                m_residualErrorModel[sorted.analyteIndex]);
     }
 
     gll += logPrior;
