@@ -99,9 +99,9 @@ ComputingStatus ComputingUtils::computeMultiActiveMoiety(
         const std::vector<MultiConcentrationPredictionPtr>& _analytesPredictions,
         MultiConcentrationPredictionPtr& _activeMoietyPredictions)
 {
-    std::vector<Operation*> op = std::vector<Operation*>();
+    std::vector<Operation*> op(_activemoieties.size());
     for (size_t i = 0; i < _activemoieties.size(); ++i)
-        op[i] = _activemoieties[i]->getFormula(); //i don't understand why it doesn't work
+        op[i] = _activemoieties[i]->getFormula();
 
 
     size_t fullSize = _analytesPredictions[0]->getValues().size();
@@ -118,16 +118,19 @@ ComputingStatus ComputingUtils::computeMultiActiveMoiety(
         }
 
         size_t nbConcentrations = analyteC[0].size();
-        MultiCompConcentrations concentration(nbConcentrations);
+        MultiCompConcentrations concentration(_activemoieties.size());
 
         for (size_t i = 0; i < _activemoieties.size(); ++i) {
+            concentration[i].resize(nbConcentrations);
+            /*
+            // Potentially a future optimization
 
             if (op[i] == nullptr) {
                 for (size_t c = 0; c < nbConcentrations; c++) {
                     concentration[c][1] = analyteC[1][c];
                 }
             }
-            else {
+            else */ {
 
                 OperationInputList inputList;
                 for (size_t an = 0; an < nbAnalytes; an++) {
@@ -143,8 +146,7 @@ ComputingStatus ComputingUtils::computeMultiActiveMoiety(
                         // Something went wrong
                         return ComputingStatus::MultiActiveMoietyCalculationError;
                     }
-                    concentration[c][0] = result;
-                    concentration[c][1] = result;
+                    concentration[i][c] = result;
                 }
             }
         }

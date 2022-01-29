@@ -14,7 +14,7 @@ class BuildMultiAnalytesMultiActiveMoieties
 public:
     BuildMultiAnalytesMultiActiveMoieties() {}
 
-    Tucuxi::Core::DrugModel* buildDrugModel(
+    std::unique_ptr<Tucuxi::Core::DrugModel> buildDrugModel(
             //the method buildDrugModel() takes a certain number of arguments, that were relevant for other drug models. Do not hesitate to add some (for instance we could have 4 times a conversionFactor instead of 2, ...).
             double conversionFactor0 = 1.0,
             double conversionFactor1 = 1.0,
@@ -35,8 +35,7 @@ public:
             Value _variabilityValueR1 = 0.0,
             Value _variabilityValueS1 = 0.0)
     {
-        Tucuxi::Core::DrugModel* model;
-        model = new Tucuxi::Core::DrugModel();
+        auto model = std::make_unique<Tucuxi::Core::DrugModel>();
 
         model->setDrugId("drugTestMultiAnalytesMultiActiveMoieties");
         model->setDrugModelId("MultiAnalytesMultiActiveMoieties");
