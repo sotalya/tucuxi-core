@@ -206,14 +206,20 @@ unique_ptr<Core::PatientCovariate> QueryImport::createCovariateData(Common::XmlN
         dataType = Core::DataType::Double;
     }
 
-    // If the covariate is a date, go through a DateTime to reconvert it to a string
-    // to be sure it has the correct format
-    if (dataType == Core::DataType::Date) {
-        Common::DateTime valueAsDate;
-        valueAsDate = getChildDateTime(_covariateDataRootIterator, VALUE_NODE_NAME);
-        value = Tucuxi::Common::Utils::varToString(valueAsDate);
+    if ((covariateId == "birthdate") && (value == "0")) {
+        // This case is only here for the web front end who's got issues with the birthdate
+        value = Tucuxi::Common::Utils::varToString(date);
+        dataType = Core::DataType::Date;
     }
-
+    else {
+        // If the covariate is a date, go through a DateTime to reconvert it to a string
+        // to be sure it has the correct format
+        if (dataType == Core::DataType::Date) {
+            Common::DateTime valueAsDate;
+            valueAsDate = getChildDateTime(_covariateDataRootIterator, VALUE_NODE_NAME);
+            value = Tucuxi::Common::Utils::varToString(valueAsDate);
+        }
+    }
     string nature = getChildString(_covariateDataRootIterator, NATURE_NODE_NAME); // WARNING NOT USED BY SOFT
 
     return make_unique<Core::PatientCovariate>(covariateId, value, dataType, unit, date);
