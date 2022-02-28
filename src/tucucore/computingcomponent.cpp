@@ -703,8 +703,8 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
         ComputingStatus sampleExtractionResult = sampleExtractor.extract(
                 _request.getDrugTreatment().getSamples(),
                 _request.getDrugModel().getAnalyteSet(analyteGroupId),
-                DateTime::min(),
-                DateTime::max(),
+                DateTime::minimumDateTime(),
+                DateTime::maximumDateTime(),
                 _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(),
                 sampleSeries);
         //sampleExtractor.extract(_request.getDrugTreatment().getSamples(), _request.getDrugModel().getAnalyteSet(analyteGroupId), calculationStartTime, _traits->getEnd(), _request.getDrugModel().getAnalyteSet(analyteGroupId)->getConcentrationUnit(), sampleSeries);

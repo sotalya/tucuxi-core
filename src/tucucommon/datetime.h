@@ -231,14 +231,14 @@ public:
     ///
     /// This function can be used to initialize a date when then looking
     /// for events in time.
-    static DateTime max();
+    static DateTime maximumDateTime();
 
     /// \brief Returns the first date possible
     /// \return The minimum representable date
     ///
     /// This function can be used to initialize a date when then looking
     /// for events in time.
-    static DateTime min();
+    static DateTime minimumDateTime();
 
 private:
     /// \brief Build a date from a system clock

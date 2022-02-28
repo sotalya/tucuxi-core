@@ -451,14 +451,14 @@ double DateTime::toDays() const
 }
 
 
-DateTime DateTime::max()
+DateTime DateTime::maximumDateTime()
 {
     DateTime result;
     result.m_date = std::chrono::time_point<std::chrono::system_clock>::max();
     return result;
 }
 
-DateTime DateTime::min()
+DateTime DateTime::minimumDateTime()
 {
     DateTime result;
     result.m_date = std::chrono::time_point<std::chrono::system_clock>::min();
