@@ -58,6 +58,12 @@ bool CacheComputing::getSpecificIntervalFromCache(
     for (const auto& data : m_data) {
         PercentilesData* pData = dynamic_cast<PercentilesData*>(data.get());
         if (pData != nullptr) {
+            // This check is required if something went strangely with the insertion of percentiles.
+            // It happens when we ask for data in a far future, where the computation ended up with
+            // values very close to 0
+            if (pData->getPercentileData(0).size() == 0) {
+                continue;
+            }
             // We have cycles of the first percentiles through pData->getPercentileData(0)
             const auto firstCycle = pData->getPercentileData(0).front();
             const auto lastCycle = pData->getPercentileData(0).back();
