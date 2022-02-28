@@ -135,9 +135,8 @@
 #include <stdio.h>
 #include <fstream>
 
-#ifndef COMPILE_JMY
 // support both windows and linux
-#ifdef _MSC_VER
+#ifndef __linux__
 #include <windows.h>
 
 #define GETLIB(a,b) LoadLibrary(a)
@@ -155,8 +154,6 @@
 #define GETBUILDERROR "%s\n", dlerror()
 #define FREELIB(a) dlclose(a)
 #endif
-
-#endif // COMPILE_JMY
 
 using namespace std;
 
