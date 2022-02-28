@@ -72,8 +72,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target* _target, const 
                         _target->m_valueBest, _target->m_unit, getConcentrationTimeUnit(_concentrationUnit)),
                 UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(
                         _target->m_valueMax, _target->m_unit, getConcentrationTimeUnit(_concentrationUnit)),
-                UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(
-                        _target->m_mic, _target->m_micUnit, getConcentrationTimeUnit(_concentrationUnit)),
+                UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(
+                        _target->m_mic, _target->m_micUnit, _concentrationUnit),
                 _target->m_micUnit,
                 _target->m_tMin,
                 _target->m_tBest,
