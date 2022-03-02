@@ -43,7 +43,7 @@
 #include <vector>
 #include <unordered_map>
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 #include <windows.h>
 #define LIBHANDLE HMODULE
 #else

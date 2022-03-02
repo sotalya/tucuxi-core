@@ -2203,7 +2203,7 @@ void CTinyJS::compile(CScriptVarLink* function)
     stree->compile(outfile);
     outfile.close();
     // yes, yes, it's a system() call, blah blah blah
-#ifdef _MSC_VER
+#ifdef _WIN32
     // ship off the actual compilation to cl.exe
     // this line is a hell of a doozy. it's made longer by the fact that
     // the development environment has to be activated with this bat script.
