@@ -240,7 +240,8 @@ static const std::string test_mm_2comp_tdd = R"(
                                 <comments/>
                             </validation>
                             <comments/>
-                        </parameter>
+                        </parameter>)"
+                                             R"(
                                              <parameter>
                                                  <parameterId>K12</parameterId>
                                                  <unit>l/h</unit>
@@ -365,7 +366,8 @@ static const std::string test_mm_2comp_tdd = R"(
 
                 <absorptionParameters/>
             </formulationAndRoute>
-
+)"
+                                             R"(
 
                                        <formulationAndRoute>
                                            <formulationAndRouteId>id1</formulationAndRouteId>
@@ -600,7 +602,8 @@ static const std::string test_mm_2comp_tdd = R"(
                                                </availableIntervals>
                                                <comments/>
                                            </dosages>
-
+)"
+                                             R"(
 
                                            <absorptionParameters>
                                                <parameterSetAnalyteGroup>
