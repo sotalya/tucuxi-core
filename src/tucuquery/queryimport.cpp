@@ -497,7 +497,13 @@ unique_ptr<Core::DosageTimeRange> QueryImport::createDosageTimeRange(
         start = DateTime::undefinedDateTime();
     }
 
-    return make_unique<Core::DosageTimeRange>(start, end, *pDosage);
+    try {
+        return make_unique<Core::DosageTimeRange>(start, end, *pDosage);
+    }
+    catch (std::invalid_argument& e) {
+        setNodeError(_dosageTimeRangeRootIterator, "Error with start or end date of a dosage time range");
+        return nullptr;
+    }
 }
 
 unique_ptr<Core::Dosage> QueryImport::createDosage(Common::XmlNodeIterator& _dosageRootIterator)

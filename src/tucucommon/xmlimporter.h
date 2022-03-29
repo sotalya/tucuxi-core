@@ -37,7 +37,49 @@ protected:
 
     virtual const std::vector<std::string>& ignoredTags() const = 0;
 
-    void setNodeError(Common::XmlNodeIterator _node);
+    template<typename T>
+    void setNodeError(T _nodeIterator)
+    {
+        std::string errorMessage;
+        Tucuxi::Common::XmlNode node = _nodeIterator->getParent();
+        while (node.isValid()) {
+            if (!node.getName().empty()) {
+                errorMessage = "<" + node.getName() + ">" + errorMessage;
+            }
+            node = node.getParent();
+        }
+
+
+        if (_nodeIterator->getValue().empty()) {
+            errorMessage += '<' + _nodeIterator->getName() + "> contains an empty value.";
+        }
+        else {
+            errorMessage +=
+                    "<" + _nodeIterator->getName() + "> contains an invalid value : " + _nodeIterator->getValue();
+        }
+
+
+        setStatus(Status::Error, errorMessage);
+    }
+
+
+    template<typename T>
+    void setNodeError(T _nodeIterator, std::string _message)
+    {
+        std::string errorMessage;
+        Tucuxi::Common::XmlNode node = _nodeIterator->getParent();
+        while (node.isValid()) {
+            if (!node.getName().empty()) {
+                errorMessage = "<" + node.getName() + ">" + errorMessage;
+            }
+            node = node.getParent();
+        }
+
+        errorMessage += '<' + _nodeIterator->getName() + "> " + _message;
+
+        setStatus(Status::Error, errorMessage);
+    }
+
 
     void setErrorMessage(std::string _errorMessage);
 

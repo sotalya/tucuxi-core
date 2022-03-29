@@ -50,28 +50,6 @@ std::string XMLImporter::getErrorMessage() const
     return m_errorMessage;
 }
 
-void XMLImporter::setNodeError(Tucuxi::Common::XmlNodeIterator _nodeIterator)
-{
-    std::string errorMessage;
-    Tucuxi::Common::XmlNode node = _nodeIterator->getParent();
-    while (node.isValid()) {
-        if (!node.getName().empty()) {
-            errorMessage = "<" + node.getName() + ">" + errorMessage;
-        }
-        node = node.getParent();
-    }
-
-
-    if (_nodeIterator->getValue().empty()) {
-        errorMessage += '<' + _nodeIterator->getName() + "> contains an empty value.";
-    }
-    else {
-        errorMessage += "<" + _nodeIterator->getName() + "> contains an invalid value : " + _nodeIterator->getValue();
-    }
-
-
-    setStatus(Status::Error, errorMessage);
-}
 
 TucuUnit XMLImporter::extractUnit(Tucuxi::Common::XmlNodeIterator _rootIterator, CheckUnit _checkUnit)
 {
