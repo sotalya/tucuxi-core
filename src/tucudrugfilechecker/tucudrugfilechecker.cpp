@@ -8,6 +8,7 @@
 #include "tucucommon/loggerhelper.h"
 #include "tucucommon/utils.h"
 
+#include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugmodelchecker.h"
 #include "tucucore/drugmodelimport.h"
 #include "tucucore/pkmodel.h"
@@ -71,7 +72,7 @@ cxxopts::ParseResult parse(int _argc, char* _argv[])
 
         //Scan the drug
 
-        Tucuxi::Core::DrugModel* dModel;
+        std::unique_ptr<Tucuxi::Core::DrugModel> dModel;
 
         Tucuxi::Core::DrugModelImport importer;
 
@@ -100,7 +101,8 @@ cxxopts::ParseResult parse(int _argc, char* _argv[])
             exit(2);
         }
 
-        Tucuxi::Core::DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(dModel, &pkCollection);
+        Tucuxi::Core::DrugModelChecker::CheckerResult_t checkerResult =
+                checker.checkDrugModel(dModel.get(), &pkCollection);
         if (!checkerResult.m_ok) {
             std::cout << checkerResult.m_errorMessage << std::endl;
             exit(4);
