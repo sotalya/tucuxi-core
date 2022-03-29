@@ -1082,6 +1082,61 @@ static const std::string drug1 =
 )";
 
 
+const std::string operationXml = R"(
+        <something>
+            <softFormula>
+                                        <inputs>
+                                            <input>
+                                                <id>CL_population</id>
+                                                <type>double</type>
+                                            </input>
+                                            <input>
+                                                <id>bodyweight</id>
+                                                <type>double</type>
+                                            </input>
+                                            <input>
+                                                <id>age</id>
+                                                <type>double</type>
+                                            </input>
+                                            <input>
+                                                <id>gist</id>
+                                                <type>bool</type>
+                                            </input>
+                                            <input>
+                                                <id>sex</id>
+                                                <type>double</type>
+                                            </input>
+                                        </inputs>
+                                        <code>
+                                            <![CDATA[
+                                            theta1 = CL_population;
+                                            theta4 = 5.42;
+                                            theta5 = 1.49;
+                                            theta6 = -5.81;
+                                            theta7 = -0.806;
+
+                                            MEANBW = 70;
+                                            FBW = (bodyweight - MEANBW) / MEANBW;
+
+                                            MEANAG = 50;
+                                            FAGE = (age - MEANAG) / MEANAG;
+
+                                            if (gist)
+                                              PATH = 1;
+                                            else
+                                              PATH = 0;
+
+                                            MALE = sex;
+
+                                            TVCL = theta1 + theta4 * FBW + theta5 * MALE-theta5 * (1-MALE) + theta6 * FAGE + theta7 * PATH - theta7 * (1 - PATH);
+
+                                            return TVCL;
+                                                                     ]]>
+                                        </code>
+                                    </softFormula>
+                                 </something>
+                                 )";
+
 struct TestDrugModelImport : public fructose::test_base<TestDrugModelImport>
 {
     TestDrugModelImport() {}
@@ -1116,6 +1171,18 @@ struct TestDrugModelImport : public fructose::test_base<TestDrugModelImport>
         fructose_assert(status == DrugModelImport::Status::Ok);
 
         fructose_assert(busulfan != nullptr);
+    }
+
+    void testOperation(const std::string& /* _testName */)
+    {
+        std::unique_ptr<Operation> operation;
+        auto importer = std::make_unique<DrugModelImport>();
+
+        DrugModelImport::Status status = importer->importOperationFromString(operation, operationXml);
+
+        fructose_assert(status == DrugModelImport::Status::Ok);
+
+        fructose_assert(operation != nullptr);
     }
 };
 

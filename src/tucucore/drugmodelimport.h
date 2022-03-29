@@ -94,6 +94,17 @@ public:
     ///
     Status importFromString(std::unique_ptr<DrugModel>& _drugModel, const std::string& _xml);
 
+    ///
+    /// \brief importOperationFromString
+    /// \param _operation A reference to an Operation unique pointer that will be allocated within the function
+    /// \param _xml A string in which the operation is stored
+    /// \return Result_Ok if the import went well, another Result else.
+    /// This function is reentrant.
+    /// It is meant to be used by the the DrugModelChecker to help the online drug model editor.
+    ///
+    DrugModelImport::Status importOperationFromString(
+            std::unique_ptr<Tucuxi::Core::Operation>& _operation, const std::string& _xml);
+
 protected:
     const std::vector<std::string>& ignoredTags() const override;
 
@@ -163,7 +174,9 @@ protected:
     std::vector<std::unique_ptr<CovariateDefinition> > extractCovariates(Tucuxi::Common::XmlNodeIterator _node);
     std::unique_ptr<CovariateDefinition> extractCovariate(Tucuxi::Common::XmlNodeIterator _node);
     std::unique_ptr<LightPopulationValue> extractPopulationValue(Tucuxi::Common::XmlNodeIterator _node);
-    std::unique_ptr<Operation> extractOperation(Tucuxi::Common::XmlNodeIterator _node);
+
+    template<typename T>
+    std::unique_ptr<Operation> extractOperation(T _node);
     std::unique_ptr<JSOperation> extractJSOperation(Tucuxi::Common::XmlNodeIterator _node);
     Tucuxi::Common::TranslatableString extractTranslatableString(
             Tucuxi::Common::XmlNodeIterator _node, const std::string& _insideName);

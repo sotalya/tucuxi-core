@@ -130,7 +130,8 @@ ComputingStatus ComputingUtils::computeMultiActiveMoiety(
                     concentration[c][1] = analyteC[1][c];
                 }
             }
-            else */ {
+            else */
+            {
 
                 OperationInputList inputList;
                 for (size_t an = 0; an < nbAnalytes; an++) {

@@ -256,6 +256,7 @@ int main(int argc, char** argv)
     TestDrugModelImport drugModelImportTests;
     drugModelImportTests.add_test("DrugModelImportFake", &TestDrugModelImport::testFake);
     drugModelImportTests.add_test("DrugModelImportBusulfan1", &TestDrugModelImport::testBusulfan1);
+    drugModelImportTests.add_test("DrugModelImportOperation", &TestDrugModelImport::testOperation);
 
     res = drugModelImportTests.run(argc, argv);
     tot_res |= res;

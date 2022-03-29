@@ -90,6 +90,37 @@ DrugModelImport::Status DrugModelImport::importFromString(
     return importDocument(_drugModel, document);
 }
 
+DrugModelImport::Status DrugModelImport::importOperationFromString(
+        std::unique_ptr<Tucuxi::Core::Operation>& _operation, const std::string& _xml)
+{
+    // Ensure the function is reentrant
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    setStatus(Status::Ok);
+    _operation = nullptr;
+
+    XmlDocument document;
+
+    if (!document.fromString(_xml)) {
+        setStatus(Status::Error, "The XML is not valid.");
+        return Status::Error;
+    }
+
+    XmlNode root = document.getRoot();
+
+    //    XmlNodeIterator iterator = root;
+    /*
+    checkNodeIterator(iterator, "softFormula");
+
+    if (getStatus() == Status::Error) {
+        return getStatus();
+    }
+*/
+    _operation = extractOperation(&root);
+
+    return getStatus();
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /// General methods
@@ -474,8 +505,8 @@ std::unique_ptr<JSOperation> DrugModelImport::extractJSOperation(Tucuxi::Common:
     return operation;
 }
 
-
-std::unique_ptr<Operation> DrugModelImport::extractOperation(Tucuxi::Common::XmlNodeIterator _node)
+template<typename T>
+std::unique_ptr<Operation> DrugModelImport::extractOperation(T _node)
 {
     std::unique_ptr<Operation> operation;
 
@@ -510,7 +541,7 @@ std::unique_ptr<Operation> DrugModelImport::extractOperation(Tucuxi::Common::Xml
     }
 
     if (operation == nullptr) {
-        setNodeError(_node);
+        setNodeError<T>(_node);
     }
 
     return operation;
