@@ -313,9 +313,9 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_Int = (_intakeEvent.getInterval()).toHours();
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
 
-    if (m_Tinf == 1.0) {
-        std::cout << "O" << std::endl;
-    }
+    // if (m_Tinf == 1.0) {
+    //     std::cout << "O" << std::endl;
+    // }
 
     // Only used for debugging purpose
     // m_V2 = v2;
