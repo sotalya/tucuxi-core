@@ -130,6 +130,15 @@ bool TwoCompartmentInfusionMicro::computeConcentrations(
                 concentrations2.data(), concentrations2.data() + concentrations2.size());
     }
 
+    for (auto& val : _concentrations[firstCompartment]) {
+        // This check is here because for some medical drugs the variability on V1 is
+        // too big (typically 0.5 proportional), and ends up with infinite values
+        if (std::isnan(val)) {
+            val = 0.0000001;
+            return false;
+        }
+    }
+
     // Check output
     bool bOK = checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
     bOK &= checkCondition(_outResiduals[secondCompartment] >= 0, "The concentration2 is negative.");
@@ -303,6 +312,15 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
     m_Int = (_intakeEvent.getInterval()).toHours();
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
+
+    if (m_Tinf == 1.0) {
+        std::cout << "O" << std::endl;
+    }
+
+    // Only used for debugging purpose
+    // m_V2 = v2;
+    // m_Cl = cl;
+    // m_Q = q;
 
 #ifdef DEBUG
     Tucuxi::Common::LoggerHelper logHelper;

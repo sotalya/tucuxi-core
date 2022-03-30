@@ -26,7 +26,7 @@ bool TreatmentDrugModelCompatibilityChecker::checkCompatibility(
 
     for (const auto& formulationAndRoute : treatmentList) {
         bool found = false;
-        // Try to get a formulation and route compabible within the drug model
+        // Try to get a formulation and route compatible within the drug model
         for (const auto& f : _drugModel->getFormulationAndRoutes().getList()) {
             if (f->getFormulationAndRoute() == formulationAndRoute) {
                 found = true;

@@ -82,6 +82,11 @@ protected:
     Value m_Int;             /// Interval (Hours)
     Eigen::Index m_nbPoints; /// number measure points during interval
 
+    // Only used for debugging purpose
+    // Value m_V2;
+    // Value m_Q;
+    // Value m_Cl;
+
 private:
     typedef TwoCompartmentInfusionCompartments Compartments;
 };
