@@ -396,6 +396,11 @@ ComputingStatus MultiComputingComponent::compute(
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response)
 {
+    // Not yet implemented, so let's avoid compilation warnings
+    TMP_UNUSED_PARAMETER(_traits);
+    TMP_UNUSED_PARAMETER(_request);
+    TMP_UNUSED_PARAMETER(_response);
+    return ComputingStatus::MultipleFormulationAndRoutesNotSupported;
 #ifdef NO_PERCENTILES
     return ComputingStatus::NoPercentilesCalculation;
 #endif

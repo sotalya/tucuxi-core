@@ -189,8 +189,8 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                 Value(5),                             //min
                 Value(25),                            //best
                 Value(100),                           //max
-                Value(0),                             //not used
-                TucuUnit("ug*h/l"),                   //not used
+                Value(0),                             // mic not used
+                TucuUnit("ug/l"),                     // mic unit not used
                 Duration(std::chrono::minutes(0)),    //min
                 Duration(std::chrono::minutes(60)),   //best
                 Duration(std::chrono::minutes(120))); //max
@@ -235,7 +235,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                 Value(250),                           //best
                 Value(500),                           //max
                 Value(0),                             //not used
-                TucuUnit("ug*h/l"),                   //not used
+                TucuUnit("ug/l"),                     //not used
                 Duration(std::chrono::minutes(0)),    //min
                 Duration(std::chrono::minutes(60)),   //best
                 Duration(std::chrono::minutes(120))); //max
@@ -282,7 +282,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                 Value(50),                            //best
                 Value(100),                           //max
                 Value(0),                             //not used
-                TucuUnit("ug*h/l"),                   //not used
+                TucuUnit("ug/l"),                     //not used
                 Duration(std::chrono::minutes(0)),    //min
                 Duration(std::chrono::minutes(60)),   //best
                 Duration(std::chrono::minutes(120))); //max
@@ -329,7 +329,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                 Value(25),                            //best
                 Value(100),                           //max
                 Value(15),                            //mic
-                TucuUnit("ug*h/l"),                   //mic Unit
+                TucuUnit("ug/l"),                     //mic Unit
                 Duration(std::chrono::minutes(0)),    //min
                 Duration(std::chrono::minutes(60)),   //best
                 Duration(std::chrono::minutes(120))); //max
@@ -375,7 +375,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
                 Value(15),                            //best
                 Value(30),                            //max
                 Value(15),                            //mic
-                TucuUnit("ug*h/l"),                   //mic Unit
+                TucuUnit("ug/l"),                     //mic Unit
                 Duration(std::chrono::minutes(0)),    //min
                 Duration(std::chrono::minutes(60)),   //best
                 Duration(std::chrono::minutes(120))); //max

@@ -82,7 +82,8 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
 
     //THE IMPORTANT FUNCTION
 
-    void testMultiAnalytesMultiActiveMoieties(const std::string& /* _testName */)
+    /*
+    void testMultiAnalytesMultiActiveMoieties(const std::string& _testName)
     {
 
         if (verbose()) {
@@ -349,9 +350,10 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         // Delete all dynamically allocated objects
         delete component;
     }
+*/
 
-
-    void testMultiAnalytesMultiActiveMoietiesConversion(const std::string& /* _testName */)
+    /*
+    void testMultiAnalytesMultiActiveMoietiesConversion(const std::string& _testName)
     {
         BuildMultiAnalytesMultiActiveMoieties builder;
         auto drugModel = builder.buildDrugModel(0.3, 0.5);
@@ -535,9 +537,10 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         // Delete all dynamically allocated objects
         delete component;
     }
+*/
 
-
-    void testAdjustments(const std::string& /* _testName */)
+    /*
+    void testAdjustments(const std::string& _testName)
     {
         BuildMultiAnalytesMultiActiveMoieties builder;
         auto drugModel = builder.buildDrugModel(0.3, 0.7);
@@ -696,6 +699,7 @@ struct TestMultiAnalytesMultiActiveMoieties : public fructose::test_base<TestMul
         // Delete all dynamically allocated objects
         delete component;
     }
+*/
 };
 
 

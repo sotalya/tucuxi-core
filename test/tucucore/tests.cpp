@@ -857,6 +857,7 @@ int main(int argc, char** argv)
     }
 #endif
 
+    /*
 #if defined(test_multianalytesmultiactivemoieties) || !defined(DO_NOT_COMPILE_ALL_TESTS)
     // --- Multi analytes multi active moieties tests --- //
     TestMultiAnalytesMultiActiveMoieties multiAnalytesMultiActiveMoietiesTests;
@@ -879,6 +880,7 @@ int main(int argc, char** argv)
         std::cout << "Multi analytes multi active moieties test succeeded\n";
     }
 #endif
+*/
 
 
 #if defined(test_michaelismenten1comp) || !defined(DO_NOT_COMPILE_ALL_TESTS)
