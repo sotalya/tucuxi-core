@@ -21,7 +21,7 @@ std::string toString(TargetType _type)
             {TargetType::Auc24DividedByMic, "auc24DividedByMic"},
             {TargetType::PeakDividedByMic, "peakDividedByMic"},
             {TargetType::ResidualDividedByMic, "residualDividedByMic"},
-    };
+            {TargetType::FractionTimeOverMic, "fractionTimeOverMic"}};
     return map.at(_type);
 }
 

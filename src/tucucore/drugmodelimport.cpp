@@ -273,7 +273,8 @@ TargetType DrugModelImport::extractTargetType(Tucuxi::Common::XmlNodeIterator _n
             {"aucDividedByMic", TargetType::AucDividedByMic},
             {"auc24DividedByMic", TargetType::Auc24DividedByMic},
             {"peakDividedByMic", TargetType::PeakDividedByMic},
-            {"residualDividedByMic", TargetType::ResidualDividedByMic}};
+            {"residualDividedByMic", TargetType::ResidualDividedByMic},
+            {"fractionTimeOverMic", TargetType::FractionTimeOverMic}};
 
     auto it = m.find(_node->getValue());
     if (it != m.end()) {

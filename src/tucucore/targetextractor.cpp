@@ -83,6 +83,7 @@ TargetEvent TargetExtractor::targetEventFromTarget(const Target* _target, const 
 
     case TargetType::PeakDividedByMic:
     case TargetType::ResidualDividedByMic:
+    case TargetType::FractionTimeOverMic:
 
     {
         //TODO : VERIFY VALUE
@@ -236,7 +237,8 @@ TargetEvent TargetExtractor::targetEventFromTarget(
     } break;
 
     case TargetType::PeakDividedByMic:
-    case TargetType::ResidualDividedByMic: {
+    case TargetType::ResidualDividedByMic:
+    case TargetType::FractionTimeOverMic: {
 
 
         return TargetEvent::createTargetEventWithMicAndTime(
@@ -410,6 +412,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(
 
     case TargetType::PeakDividedByMic:
     case TargetType::ResidualDividedByMic:
+    case TargetType::FractionTimeOverMic:
 
 
         return TargetEvent::createTargetEventWithMicAndTime(

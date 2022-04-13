@@ -46,7 +46,8 @@ enum class TargetType
     AucDividedByMic,
     Auc24DividedByMic,
     PeakDividedByMic,
-    ResidualDividedByMic
+    ResidualDividedByMic,
+    FractionTimeOverMic,
 };
 
 std::string toString(TargetType _type);

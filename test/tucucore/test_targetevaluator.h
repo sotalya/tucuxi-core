@@ -111,7 +111,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         Concentrations concentrations = {24000, 29000, 16000, 9000, 20000}; // in ug/l
 
 
-        double empiriqueValue = 29.0; // in mg/l
+        double expectedValue = 29.0; // in mg/l
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -126,7 +126,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         if (status != ComputingStatus::InvalidCandidate) {
             fructose_assert(targetEvaluationResult.getUnit() == TucuUnit("mg/l"));
             fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Peak);
-            fructose_assert_double_eq(targetEvaluationResult.getValue(), empiriqueValue);
+            fructose_assert_double_eq(targetEvaluationResult.getValue(), expectedValue);
         }
     }
 
@@ -157,7 +157,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Concentrations concentrations = {24, 29, 16, 9, 60};
 
-        double empiriqueValue = (24.0 / 2.0 + 29.0 + 16.0 + 9.0 + 60.0 / 2.0) / 4.0;
+        double expectedValue = (24.0 / 2.0 + 29.0 + 16.0 + 9.0 + 60.0 / 2.0) / 4.0;
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -172,7 +172,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         if (status != ComputingStatus::InvalidCandidate) {
             fructose_assert(targetEvaluationResult.getUnit() == TucuUnit("ug/l"));
             fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Mean);
-            fructose_assert_eq(targetEvaluationResult.getValue(), empiriqueValue);
+            fructose_assert_eq(targetEvaluationResult.getValue(), expectedValue);
         }
     }
 
@@ -202,7 +202,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Concentrations concentrations = {17, 18, 19, 18, 17};
 
-        double empiriqueValue = 4 * 17 + ((4 * (19 - 17)) / 2);
+        double expectedValue = 4 * 17 + ((4 * (19 - 17)) / 2);
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -217,7 +217,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         if (status != ComputingStatus::InvalidCandidate) {
             fructose_assert(targetEvaluationResult.getUnit() == TucuUnit("ug*h/l"));
             fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Auc);
-            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            fructose_assert(targetEvaluationResult.getValue() == expectedValue);
         }
     }
 
@@ -249,7 +249,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         Concentrations concentrations = {17, 18, 19, 18, 17};
 
         double empiriqueAuc = 4 * 17 + ((4 * (19 - 17)) / 2);
-        double empiriqueValue = empiriqueAuc * 24 / 4; // * 24heures / intervale
+        double expectedValue = empiriqueAuc * 24 / 4; // * 24heures / intervale
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -264,7 +264,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         if (status != ComputingStatus::InvalidCandidate) {
             fructose_assert(targetEvaluationResult.getUnit() == TucuUnit("ug*h/l"));
             fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Auc24);
-            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            fructose_assert(targetEvaluationResult.getValue() == expectedValue);
         }
     }
 
@@ -296,7 +296,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Concentrations concentrations = {17, 18, 19, 18, 17};
 
-        double empiriqueValue = 4 * 17 + ((4 * (19 - 17)) / 2); // Demander Yann
+        double expectedValue = 4 * 17 + ((4 * (19 - 17)) / 2); // Demander Yann
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -311,7 +311,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         if (status != ComputingStatus::InvalidCandidate) {
             fructose_assert(targetEvaluationResult.getUnit() == TucuUnit("ug*h/l"));
             fructose_assert(targetEvaluationResult.getTargetType() == TargetType::CumulativeAuc);
-            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            fructose_assert(targetEvaluationResult.getValue() == expectedValue);
         }
     }
 
@@ -342,7 +342,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         Concentrations concentrations = {12, 16, 15, 13, 15, 17, 12, 22};
 
 
-        double empiriqueValue = 4.475;
+        double expectedValue = 4.475;
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -357,7 +357,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         if (status != ComputingStatus::InvalidCandidate) {
             fructose_assert(targetEvaluationResult.getUnit() == TucuUnit("ug*h/l"));
             fructose_assert(targetEvaluationResult.getTargetType() == TargetType::AucOverMic);
-            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            fructose_assert(targetEvaluationResult.getValue() == expectedValue);
         }
     }
 
@@ -387,7 +387,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Concentrations concentrations = {12, 16, 15, 13, 15, 17, 12, 22};
 
-        double empiriqueValue =
+        double expectedValue =
                 4.475 * 24.0 / (static_cast<double>(timeOffsets.size() - 1)); // divisé par le nombre d'intervales
 
         ConcentrationPrediction concentrationPrediction;
@@ -403,7 +403,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         if (status != ComputingStatus::InvalidCandidate) {
             fructose_assert(targetEvaluationResult.getUnit() == TucuUnit("ug*h/l"));
             fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Auc24OverMic);
-            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            fructose_assert(targetEvaluationResult.getValue() == expectedValue);
         }
     }
 
@@ -438,7 +438,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
             Concentrations concentrations = {12, 17, 13, 18, 12, 17, 15, 16, 15, 10};
 
 
-            double empiriqueValue = 27.0;
+            double expectedValue = 27.0;
 
 
             ConcentrationPrediction concentrationPrediction;
@@ -454,7 +454,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
             if (status != ComputingStatus::InvalidCandidate) {
                 fructose_assert(targetEvaluationResult.getUnit() == TucuUnit("h"));
                 fructose_assert(targetEvaluationResult.getTargetType() == TargetType::TimeOverMic);
-                fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+                fructose_assert(targetEvaluationResult.getValue() == expectedValue);
             }
         }
 
@@ -463,7 +463,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
             Concentrations concentrations = {12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
 
-            double empiriqueValue = 30.0;
+            double expectedValue = 30.0;
 
 
             ConcentrationPrediction concentrationPrediction;
@@ -480,7 +480,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
             if (status != ComputingStatus::InvalidCandidate) {
                 fructose_assert(targetEvaluationResult.getUnit() == TucuUnit("h"));
                 fructose_assert(targetEvaluationResult.getTargetType() == TargetType::TimeOverMic);
-                fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+                fructose_assert(targetEvaluationResult.getValue() == expectedValue);
             }
         }
 
@@ -488,7 +488,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         {
             Concentrations concentrations = {19, 18, 17, 16, 14, 13, 12, 11, 10, 9};
 
-            double empiriqueValue = 17.5;
+            double expectedValue = 17.5;
 
 
             ConcentrationPrediction concentrationPrediction;
@@ -504,7 +504,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
             if (status != ComputingStatus::InvalidCandidate) {
                 fructose_assert(targetEvaluationResult.getUnit() == TucuUnit("h"));
                 fructose_assert(targetEvaluationResult.getTargetType() == TargetType::TimeOverMic);
-                fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+                fructose_assert(targetEvaluationResult.getValue() == expectedValue);
             }
         }
 
@@ -528,7 +528,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
             Concentrations concentrations = {14, 13, 13, 12, 11, 13, 14, 12, 13, 11};
 
-            double empiriqueValue = 0.0;
+            double expectedValue = 0.0;
 
 
             ConcentrationPrediction concentrationPrediction;
@@ -544,7 +544,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
             if (status != ComputingStatus::InvalidCandidate) {
                 fructose_assert(targetEvaluationResult.getUnit() == TucuUnit("h"));
                 fructose_assert(targetEvaluationResult.getTargetType() == TargetType::TimeOverMic);
-                fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+                fructose_assert(targetEvaluationResult.getValue() == expectedValue);
             }
         }
 
@@ -570,7 +570,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
             Concentrations concentrations = {16, 19, 21, 17, 16, 18, 20, 17, 18, 22};
 
-            double empiriqueValue = 45.0;
+            double expectedValue = 45.0;
 
 
             ConcentrationPrediction concentrationPrediction;
@@ -586,7 +586,191 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
             if (status != ComputingStatus::InvalidCandidate) {
                 fructose_assert(targetEvaluationResult.getUnit() == TucuUnit("h"));
                 fructose_assert(targetEvaluationResult.getTargetType() == TargetType::TimeOverMic);
-                fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+                fructose_assert(targetEvaluationResult.getValue() == expectedValue);
+            }
+        }
+    }
+
+    void testFractionTimeOverMic(const std::string& /* _testName */)
+    {
+        IntakeSeries expectedIntakes = createIntakeSeries();
+
+        TargetEvaluationResult targetEvaluationResult;
+
+        Target target(
+                ActiveMoietyId("imatinib"),
+                TargetType::FractionTimeOverMic,
+                TucuUnit(""),                         //unit
+                Value(0.0),                           //min
+                Value(0.5),                           //best
+                Value(1.0),                           //max
+                Value(15),                            //mic
+                TucuUnit("ug/l"),                     //mic Unit
+                Duration(std::chrono::minutes(0)),    //min
+                Duration(std::chrono::minutes(60)),   //best
+                Duration(std::chrono::minutes(120))); //max
+
+        TargetExtractor extractor;
+        TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
+
+        double lastTime = 50;
+        TimeOffsets timeOffsets = fillTimeOffsets(lastTime);
+
+        //test1 (oscillation around mic)
+        {
+
+            Concentrations concentrations = {12, 17, 13, 18, 12, 17, 15, 16, 15, 10};
+
+
+            double expectedValue = 27.0 / (50.0 / 10.0 * 9.0);
+
+
+            ConcentrationPrediction concentrationPrediction;
+            concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
+
+            TargetEvaluator targetEvaluator;
+            ComputingStatus status = targetEvaluator.evaluate(
+                    concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
+
+
+            fructose_assert(status == ComputingStatus::Ok);
+
+            if (status != ComputingStatus::InvalidCandidate) {
+                fructose_assert(targetEvaluationResult.getUnit() == TucuUnit(""));
+                fructose_assert(targetEvaluationResult.getTargetType() == TargetType::FractionTimeOverMic);
+                fructose_assert_double_eq(targetEvaluationResult.getValue(), expectedValue);
+            }
+        }
+
+        //test2 (concentration values increasing)
+        {
+
+            Concentrations concentrations = {12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
+
+            double expectedValue = 30.0 / (50.0 / 10.0 * 9.0);
+
+
+            ConcentrationPrediction concentrationPrediction;
+            concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
+
+
+            TargetEvaluator targetEvaluator;
+            ComputingStatus status = targetEvaluator.evaluate(
+                    concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
+
+
+            fructose_assert(status == ComputingStatus::Ok);
+
+            if (status != ComputingStatus::InvalidCandidate) {
+                fructose_assert(targetEvaluationResult.getUnit() == TucuUnit(""));
+                fructose_assert(targetEvaluationResult.getTargetType() == TargetType::FractionTimeOverMic);
+                fructose_assert_double_eq(targetEvaluationResult.getValue(), expectedValue);
+            }
+        }
+
+        //test3 (concentration values descreasing)
+        {
+            Concentrations concentrations = {19, 18, 17, 16, 14, 13, 12, 11, 10, 9};
+
+            double expectedValue = 17.5 / (50.0 / 10.0 * 9.0);
+
+
+            ConcentrationPrediction concentrationPrediction;
+            concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
+
+
+            TargetEvaluator targetEvaluator;
+            ComputingStatus status = targetEvaluator.evaluate(
+                    concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
+
+            fructose_assert(status == ComputingStatus::Ok);
+
+            if (status != ComputingStatus::InvalidCandidate) {
+                fructose_assert(targetEvaluationResult.getUnit() == TucuUnit(""));
+                fructose_assert(targetEvaluationResult.getTargetType() == TargetType::FractionTimeOverMic);
+                fructose_assert_double_eq(targetEvaluationResult.getValue(), expectedValue);
+            }
+        }
+
+        //test4 (concentration values under mic)
+        {
+            Target target(
+                    ActiveMoietyId("imatinib"),
+                    TargetType::FractionTimeOverMic,
+                    TucuUnit(""),                         //unit
+                    Value(0.0),                           //min
+                    Value(0.5),                           //best
+                    Value(1.0),                           //max
+                    Value(15),                            //mic
+                    TucuUnit("ug/l"),                     //mic Unit
+                    Duration(std::chrono::minutes(0)),    //min
+                    Duration(std::chrono::minutes(60)),   //best
+                    Duration(std::chrono::minutes(120))); //max
+
+            TargetExtractor extractor;
+            TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
+
+            Concentrations concentrations = {14, 13, 13, 12, 11, 13, 14, 12, 13, 11};
+
+            double expectedValue = 0.0 / (50.0 / 10.0 * 9.0);
+
+
+            ConcentrationPrediction concentrationPrediction;
+            concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
+
+
+            TargetEvaluator targetEvaluator;
+            ComputingStatus status = targetEvaluator.evaluate(
+                    concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
+
+            fructose_assert(status == ComputingStatus::Ok);
+
+            if (status != ComputingStatus::InvalidCandidate) {
+                fructose_assert(targetEvaluationResult.getUnit() == TucuUnit(""));
+                fructose_assert(targetEvaluationResult.getTargetType() == TargetType::FractionTimeOverMic);
+                fructose_assert_double_eq(targetEvaluationResult.getValue(), expectedValue);
+            }
+        }
+
+        //test5 (concentration values over mic)
+        {
+            Target target(
+                    ActiveMoietyId("imatinib"),
+                    TargetType::FractionTimeOverMic,
+                    TucuUnit(""),                         //unit
+                    Value(0.0),                           //min
+                    Value(0.5),                           //best
+                    Value(1.0),                           //max
+                    Value(15),                            //mic
+                    TucuUnit("ug/l"),                     //mic Unit
+                    Duration(std::chrono::minutes(0)),    //min
+                    Duration(std::chrono::minutes(60)),   //best
+                    Duration(std::chrono::minutes(120))); //max
+
+            TargetExtractor extractor;
+            TargetEvent targetEvent = extractor.targetEventFromTarget(&target, TucuUnit("ug/l"));
+
+
+
+            Concentrations concentrations = {16, 19, 21, 17, 16, 18, 20, 17, 18, 22};
+
+            double expectedValue = 45.0 / (50.0 / 10.0 * 9.0);
+
+
+            ConcentrationPrediction concentrationPrediction;
+            concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
+
+
+            TargetEvaluator targetEvaluator;
+            ComputingStatus status = targetEvaluator.evaluate(
+                    concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
+
+            fructose_assert(status == ComputingStatus::Ok);
+
+            if (status != ComputingStatus::InvalidCandidate) {
+                fructose_assert(targetEvaluationResult.getUnit() == TucuUnit(""));
+                fructose_assert(targetEvaluationResult.getTargetType() == TargetType::FractionTimeOverMic);
+                fructose_assert_double_eq(targetEvaluationResult.getValue(), expectedValue);
             }
         }
     }
@@ -617,7 +801,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Concentrations concentrations = {17, 18, 19, 18, 17};
 
-        double empiriqueValue = (4 * 17 + ((4 * (19 - 17)) / 2)) / 15.0; // auc / mic
+        double expectedValue = (4 * 17 + ((4 * (19 - 17)) / 2)) / 15.0; // auc / mic
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -632,7 +816,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         if (status != ComputingStatus::InvalidCandidate) {
             fructose_assert(targetEvaluationResult.getUnit() == TucuUnit("h"));
             fructose_assert(targetEvaluationResult.getTargetType() == TargetType::AucDividedByMic);
-            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            fructose_assert(targetEvaluationResult.getValue() == expectedValue);
         }
     }
 
@@ -662,7 +846,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Concentrations concentrations = {17, 18, 19, 18, 17};
 
-        double empiriqueValue = 28.8; // auc / mic * 24heures / intervale
+        double expectedValue = 28.8; // auc / mic * 24heures / intervale
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -677,7 +861,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         if (status != ComputingStatus::InvalidCandidate) {
             fructose_assert(targetEvaluationResult.getUnit() == TucuUnit("h"));
             fructose_assert(targetEvaluationResult.getTargetType() == TargetType::Auc24DividedByMic);
-            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            fructose_assert(targetEvaluationResult.getValue() == expectedValue);
         }
     }
 
@@ -707,7 +891,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Concentrations concentrations = {17, 18, 19, 18, 17};
 
-        double empiriqueValue = 19 / 15.0; // peak value / mic value
+        double expectedValue = 19 / 15.0; // peak value / mic value
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -722,7 +906,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         if (status != ComputingStatus::InvalidCandidate) {
             fructose_assert(targetEvaluationResult.getUnit() == TucuUnit(""));
             fructose_assert(targetEvaluationResult.getTargetType() == TargetType::PeakDividedByMic);
-            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            fructose_assert(targetEvaluationResult.getValue() == expectedValue);
         }
     }
 
@@ -752,7 +936,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
 
         Concentrations concentrations = {17, 18, 19, 18, 13};
 
-        double empiriqueValue = 13 / 15.0; // resdidual value / mic value
+        double expectedValue = 13 / 15.0; // resdidual value / mic value
 
         ConcentrationPrediction concentrationPrediction;
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -767,7 +951,7 @@ struct TestTargetEvaluator : public fructose::test_base<TestTargetEvaluator>
         if (status != ComputingStatus::InvalidCandidate) {
             fructose_assert(targetEvaluationResult.getUnit() == TucuUnit(""));
             fructose_assert(targetEvaluationResult.getTargetType() == TargetType::ResidualDividedByMic);
-            fructose_assert(targetEvaluationResult.getValue() == empiriqueValue);
+            fructose_assert(targetEvaluationResult.getValue() == expectedValue);
         }
     }
 

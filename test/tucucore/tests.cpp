@@ -241,6 +241,7 @@ int main(int argc, char** argv)
     targetEvaluatorTests.add_test("testAucDividedByMic", &TestTargetEvaluator::testAucDividedByMic);
     targetEvaluatorTests.add_test("testAuc24DividedByMic", &TestTargetEvaluator::testAuc24DividedByMic);
     targetEvaluatorTests.add_test("testPeakDividedByMic", &TestTargetEvaluator::testPeakDividedByMic);
+    targetEvaluatorTests.add_test("testFractionTimeOverMic", &TestTargetEvaluator::testFractionTimeOverMic);
 
     res = targetEvaluatorTests.run(argc, argv);
     tot_res |= res;

@@ -334,6 +334,66 @@ ComputingStatus TargetEvaluator::evaluate(
 
     } break;
 
+    case TargetType::FractionTimeOverMic: {
+
+        double intervalInHours = 0.0;
+        CycleStatistic cycleStatisticForCycleInterval =
+                statisticsCalculator.getStatistic(0, CycleStatisticType::CycleInterval);
+        bOk &= cycleStatisticForCycleInterval.getValue(dateTime, intervalInHours);
+
+        //intervalInHours vaut la dernièe valeur des TimeOffsets (47.5)
+
+        if (bOk) {
+            // Calculate the time when over mic
+            double timeOverMic = 0.0;
+            Concentrations concentrations =
+                    cycle.getConcentrations()
+                            [0]; // [0] because only one concentrations (vector of concentration) in CycleData
+            for (size_t i = 0; i < concentrations.size(); i++) {
+
+                if (concentrations[i] > _targetEvent.m_mic) {
+                    if (i == 0) {
+                        timeOverMic += cycle.getTimes()[0][i]; // needed if time not starting at 0
+                    }
+                    else {
+
+                        if (concentrations[i - 1] < _targetEvent.m_mic) {
+                            double deltaX = cycle.getTimes()[0][i] - cycle.getTimes()[0][i - 1];
+                            double difference = concentrations[i] - concentrations[i - 1];
+                            double coefficient = (concentrations[i] - _targetEvent.m_mic) / difference;
+                            timeOverMic += deltaX * coefficient;
+                        }
+                        else {
+                            timeOverMic += cycle.getTimes()[0][i] - cycle.getTimes()[0][i - 1];
+                        }
+                    }
+                }
+                else if (concentrations[i] == _targetEvent.m_mic) {
+                    if (i > 0) {
+                        if (concentrations[i - 1] > _targetEvent.m_mic) {
+                            timeOverMic += cycle.getTimes()[0][i] - cycle.getTimes()[0][i - 1];
+                        }
+                    }
+                }
+                else {
+                    if (i > 0) {
+                        if (concentrations[i - 1] > _targetEvent.m_mic) {
+                            double deltaX = cycle.getTimes()[0][i] - cycle.getTimes()[0][i - 1];
+                            double difference = concentrations[i - 1] - concentrations[i];
+                            double coefficient = (concentrations[i - 1] - _targetEvent.m_mic) / difference;
+                            timeOverMic += deltaX * coefficient;
+                        }
+                    }
+                }
+            }
+
+            double fractionTimeOverMic = timeOverMic / intervalInHours;
+
+            evaluateValue(fractionTimeOverMic, _targetEvent, bOk, score, value);
+        }
+
+    } break;
+
     case TargetType::PeakDividedByMic: {
         double peakConcentration = 0.0;
         CycleStatistic cycleStatistic = statisticsCalculator.getStatistic(0, CycleStatisticType::Peak);

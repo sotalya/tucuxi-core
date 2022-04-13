@@ -194,6 +194,8 @@ public:
     friend bool operator==(const FormulationAndRoute& _v1, const FormulationAndRoute& _v2)
     {
         return (_v1.m_absorptionModel == _v2.m_absorptionModel) && (_v1.m_route == _v2.m_route);
+        return (_v1.m_absorptionModel == _v2.m_absorptionModel) && (_v1.m_route == _v2.m_route)
+               && (_v1.m_formulation == _v2.m_formulation);
     }
 
 
