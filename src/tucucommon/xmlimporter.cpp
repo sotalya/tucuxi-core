@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "xmlimporter.h"
 
 using namespace std;

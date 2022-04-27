@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "targetevaluator.h"
 
 #include "tucucore/concentrationprediction.h"

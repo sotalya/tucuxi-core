@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "computingaborter.h"
 
 namespace Tucuxi {

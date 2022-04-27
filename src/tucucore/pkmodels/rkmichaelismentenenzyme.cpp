@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "rkmichaelismentenenzyme.h"
 
 #include "tucucore/intakeevent.h"

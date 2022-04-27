@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "intakeintervalcalculatoranalytical.h"
 
 #include "intakeevent.h"

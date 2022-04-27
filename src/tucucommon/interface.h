@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@lisence@@
 
 #ifndef TUCUXI_TUCUCOMMON_INTERFACE_H
 #define TUCUXI_TUCUCOMMON_INTERFACE_H

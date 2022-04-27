@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #ifndef QUERYTOCOREEXTRACTOR_H
 #define QUERYTOCOREEXTRACTOR_H
 

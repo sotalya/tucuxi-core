@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "activemoiety.h"
 
 namespace Tucuxi {

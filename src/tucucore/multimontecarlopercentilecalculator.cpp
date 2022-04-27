@@ -1,7 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
-
+//@@lisence@@
 #include <algorithm>
 #include <mutex>
 #include <random>

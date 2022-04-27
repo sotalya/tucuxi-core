@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include <utility>
 
 #include "computingqueryresponse.h"

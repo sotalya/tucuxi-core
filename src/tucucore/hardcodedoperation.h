@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #ifndef HARDCODEDOPERATION_H
 #define HARDCODEDOPERATION_H
 

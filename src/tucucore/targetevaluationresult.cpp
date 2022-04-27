@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "targetevaluationresult.h"
 
 namespace Tucuxi {

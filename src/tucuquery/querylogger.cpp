@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "querylogger.h"
 
 #include "tucucommon/datetime.h"

@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "generalextractor.h"
 
 #include "tucucore/aposteriorietascalculator.h"

@@ -1,3 +1,4 @@
+//@@lisence@@
 
 #include "intakeevent.h"
 

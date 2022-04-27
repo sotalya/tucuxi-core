@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@lisence@@
 
 #ifndef TARGETDEFINITION_H
 #define TARGETDEFINITION_H

@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "icomputingservice.h"
 
 namespace Tucuxi {

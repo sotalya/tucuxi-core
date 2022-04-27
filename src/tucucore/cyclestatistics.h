@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #ifndef TUCUXI_CORE_CYCLESTATISTICS_H
 #define TUCUXI_CORE_CYCLESTATISTICS_H
 

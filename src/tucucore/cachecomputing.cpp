@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "cachecomputing.h"
 
 #include "computingservice/computingrequest.h"

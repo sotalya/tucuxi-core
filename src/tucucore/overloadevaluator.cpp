@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include <sstream>
 
 #include "overloadevaluator.h"

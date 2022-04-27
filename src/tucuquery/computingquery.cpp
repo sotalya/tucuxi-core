@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "computingquery.h"
 
 #include "tucucore/computingservice/computingrequest.h"

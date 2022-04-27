@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #ifndef TUCUXI_CORE_ERRORMODEL_H
 #define TUCUXI_CORE_ERRORMODEL_H
 

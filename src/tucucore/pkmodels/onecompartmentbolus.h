@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@lisence@@
 
 #ifndef TUCUXI_CORE_ONECOMPARTMENTBOLUS_H
 #define TUCUXI_CORE_ONECOMPARTMENTBOLUS_H

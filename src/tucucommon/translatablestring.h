@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #ifndef TRANSLATABLESTRING_H
 #define TRANSLATABLESTRING_H
 

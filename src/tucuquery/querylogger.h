@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #ifndef QUERYLOGGER_H
 #define QUERYLOGGER_H
 

@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include <iostream>
 
 #include "drugmodelimport.h"

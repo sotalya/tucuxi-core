@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "querydata.h"
 
 using namespace std;

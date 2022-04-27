@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "drugmodelmetadata.h"
 
 

@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include <chrono>
 
 #include "validduration.h"

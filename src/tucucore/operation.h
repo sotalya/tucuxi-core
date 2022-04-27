@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #ifndef TUCUXI_OPERATION_H
 #define TUCUXI_OPERATION_H
 

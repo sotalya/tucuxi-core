@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "cyclestatistics.h"
 
 namespace Tucuxi {

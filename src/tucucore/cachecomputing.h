@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #ifndef CACHECOMPUTING_H
 #define CACHECOMPUTING_H
 

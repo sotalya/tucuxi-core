@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "multicomputingadjustments.h"
 
 #include "tucucommon/datetime.h"

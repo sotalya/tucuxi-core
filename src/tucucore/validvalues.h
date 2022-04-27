@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #ifndef VALIDVALUES_H
 #define VALIDVALUES_H
 

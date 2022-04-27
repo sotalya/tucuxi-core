@@ -1,3 +1,4 @@
+//@@lisence@@
 
 #include "tucucore/operation.h"
 

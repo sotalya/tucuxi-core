@@ -1,7 +1,4 @@
-
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@lisence@@
 
 #include "tucucore/drugmodel/drugmodel.h"
 

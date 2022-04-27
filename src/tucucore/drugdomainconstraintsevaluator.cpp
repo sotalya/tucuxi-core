@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "drugdomainconstraintsevaluator.h"
 
 #include "tucucore/covariateevent.h"

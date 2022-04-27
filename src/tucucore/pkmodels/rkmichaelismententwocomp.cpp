@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "rkmichaelismententwocomp.h"
 
 #include "tucucore/intakeevent.h"

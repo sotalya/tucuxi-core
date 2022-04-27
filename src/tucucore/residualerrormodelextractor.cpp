@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #include "residualerrormodelextractor.h"
 
 #include "tucucore/drugmodel/errormodel.h"

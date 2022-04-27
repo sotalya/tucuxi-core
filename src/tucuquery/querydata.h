@@ -1,3 +1,5 @@
+//@@lisence@@
+
 #ifndef TUCUXI_QUERY_QUERY_H
 #define TUCUXI_QUERY_QUERY_H
 
