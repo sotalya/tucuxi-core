@@ -257,7 +257,8 @@ std::vector<FormulationAndRoute> mergeFormulationAndRouteList(
 class FullFormulationAndRoute
 {
 public:
-    FullFormulationAndRoute(const FormulationAndRoute& _specs, std::string _id) : m_id(std::move(_id)), m_specs(_specs)
+    FullFormulationAndRoute(const FormulationAndRoute& _specs, std::string _id)
+        : m_id(std::move(_id)), m_specs(_specs), m_loadingDoseRecommended(true), m_restPeriodRecommended(true)
     {
     }
 
@@ -332,6 +333,26 @@ public:
     const StandardTreatment* getStandardTreatment() const
     {
         return m_standardTreatment.get();
+    }
+
+    void setLoadingDoseRecommended(bool _recommend)
+    {
+        m_loadingDoseRecommended = _recommend;
+    }
+
+    void setRestPeriodRecommended(bool _recommend)
+    {
+        m_restPeriodRecommended = _recommend;
+    }
+
+    bool isLoadingDoseRecommended() const
+    {
+        return m_loadingDoseRecommended;
+    }
+
+    bool isRestPeriodRecommended() const
+    {
+        return m_restPeriodRecommended;
     }
 
     INVARIANTS(INVARIANT(
@@ -428,6 +449,12 @@ protected:
     std::unique_ptr<ValidDurations> m_validInfusionTimes;
 
     std::vector<std::unique_ptr<AnalyteSetToAbsorptionAssociation> > m_associations;
+
+    /// \brief m_loadingDoseRecommended indicates if a loading dose should be proposed if the dosage is too low
+    bool m_loadingDoseRecommended;
+
+    /// \brief m_restPeriodRecommended indicates if a rest period should be proposed if the dosage is too high
+    bool m_restPeriodRecommended;
 
     std::unique_ptr<StandardTreatment> m_standardTreatment;
 

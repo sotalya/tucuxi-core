@@ -1836,6 +1836,8 @@ std::unique_ptr<FullFormulationAndRoute> DrugModelImport::extractFullFormulation
     std::unique_ptr<ValidDurations> intervals = nullptr;
     std::unique_ptr<ValidDurations> infusions = nullptr;
     std::unique_ptr<StandardTreatment> standardTreatment = nullptr;
+    bool loadingDoseRecommended = true;
+    bool restPeriodRecommended = true;
 
     XmlNodeIterator it = _node->getChildren();
 
@@ -1861,7 +1863,13 @@ std::unique_ptr<FullFormulationAndRoute> DrugModelImport::extractFullFormulation
 
             while (dosageIt != XmlNodeIterator::none()) {
                 std::string nName = dosageIt->getName();
-                if (nName == "standardTreatment") {
+                if (nName == "loadingDoseRecommended") {
+                    loadingDoseRecommended = extractBool(dosageIt);
+                }
+                else if (nName == "restPeriodRecommended") {
+                    restPeriodRecommended = extractBool(dosageIt);
+                }
+                else if (nName == "standardTreatment") {
                     XmlNodeIterator stdIt = dosageIt->getChildren();
                     bool isFixedDuration = false;
                     TucuUnit unit;
@@ -2010,6 +2018,8 @@ std::unique_ptr<FullFormulationAndRoute> DrugModelImport::extractFullFormulation
     FormulationAndRoute spec(formulation, administrationRoute, absorptionModel, administrationName);
 
     auto formulationAndRoute = std::make_unique<FullFormulationAndRoute>(spec, formulationAndRouteId);
+    formulationAndRoute->setLoadingDoseRecommended(loadingDoseRecommended);
+    formulationAndRoute->setRestPeriodRecommended(restPeriodRecommended);
     formulationAndRoute->setValidDoses(std::move(availableDoses));
     formulationAndRoute->setValidIntervals(std::move(intervals));
     formulationAndRoute->setValidInfusionTimes(std::move(infusions));
