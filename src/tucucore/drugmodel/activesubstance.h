@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef ACTIVESUBSTANCE_H
 #define ACTIVESUBSTANCE_H

@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef TARGETDEFINITION_H
 #define TARGETDEFINITION_H

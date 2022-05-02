@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TEST_RESIDUALERRORMODEL_H
 #define TEST_RESIDUALERRORMODEL_H
 

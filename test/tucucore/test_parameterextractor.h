@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef TEST_PARAMETEREXTRACTOR_H
 #define TEST_PARAMETEREXTRACTOR_H

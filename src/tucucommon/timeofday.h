@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef TUCUXI_TUCUCOMMON_TIME_H
 #define TUCUXI_TUCUCOMMON_TIME_H

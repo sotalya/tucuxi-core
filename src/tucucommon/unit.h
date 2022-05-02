@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef TUCUXI_COMMON_UNIT_H
 #define TUCUXI_COMMON_UNIT_H

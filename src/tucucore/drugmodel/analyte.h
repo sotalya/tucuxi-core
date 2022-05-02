@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef ANALYTE_H
 #define ANALYTE_H

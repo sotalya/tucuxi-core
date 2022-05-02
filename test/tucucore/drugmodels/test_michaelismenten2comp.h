@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TEST_MICHAELISMENTEN2COMP_H
 #define TEST_MICHAELISMENTEN2COMP_H
 

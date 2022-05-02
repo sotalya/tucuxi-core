@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef DRUGMODELDOMAIN_H
 #define DRUGMODELDOMAIN_H

@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 
 #ifndef TUCUXI_CORE_LIKELIHOOD_H

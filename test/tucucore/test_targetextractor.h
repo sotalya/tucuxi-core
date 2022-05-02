@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TEST_TARGETEXTRACTOR_H
 #define TEST_TARGETEXTRACTOR_H
 

@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef TUCUXI_CORE_ONECOMPARTMENTINFUSION_H
 #define TUCUXI_CORE_ONECOMPARTMENTINFUSION_H

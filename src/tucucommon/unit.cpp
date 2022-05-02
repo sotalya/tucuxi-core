@@ -1,6 +1,6 @@
-//@@lisence@@
+//@@license@@
 
-include <iostream>
+#include <iostream>
 
 #include "unit.h"
 

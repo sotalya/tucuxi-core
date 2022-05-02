@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef TUCUXI_COMMON_LOOGER
 #define TUCUXI_COMMON_LOOGER

@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef TRANSLATABLESTRING_H
 #define TRANSLATABLESTRING_H

@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef COMPUTINGQUERYRESPONSE_H
 #define COMPUTINGQUERYRESPONSE_H

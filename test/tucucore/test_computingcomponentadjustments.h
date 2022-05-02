@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef TEST_COMPUTINGCOMPONENTADJUSTMENTS_H
 #define TEST_COMPUTINGCOMPONENTADJUSTMENTS_H

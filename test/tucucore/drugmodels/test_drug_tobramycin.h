@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef TEST_DRUG_TOBRAMYCIN_H
 #define TEST_DRUG_TOBRAMYCIN_H

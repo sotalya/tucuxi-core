@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef APOSTERIORIETASCALCULATOR_H
 #define APOSTERIORIETASCALCULATOR_H

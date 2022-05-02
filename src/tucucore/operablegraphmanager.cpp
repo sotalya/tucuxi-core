@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #include "tucucore/operablegraphmanager.h"
 

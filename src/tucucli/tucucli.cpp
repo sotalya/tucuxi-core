@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #include "tucucommon/general.h"
 #include "tucucommon/loggerhelper.h"

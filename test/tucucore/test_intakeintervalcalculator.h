@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef TEST_INTAKEINTERVALCALCULATOR_H
 #define TEST_INTAKEINTERVALCALCULATOR_H

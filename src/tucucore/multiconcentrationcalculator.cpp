@@ -1,5 +1,4 @@
-//@@lisence@@
-
+//@@license@@
 
 #include <chrono>
 

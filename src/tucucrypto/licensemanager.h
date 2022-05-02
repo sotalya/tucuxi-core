@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef TUCUXI_TUCUCOMMON_LICENSEMANAGER_H
 #define TUCUXI_TUCUCOMMON_LICENSEMANAGER_H

@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #include <chrono> // for high_resolution_clock
 

@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TEST_DRUGMODELIMPORT_H
 #define TEST_DRUGMODELIMPORT_H
 

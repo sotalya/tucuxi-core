@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TEST_SAMPLEEXTRACTOR_H
 #define TEST_SAMPLEEXTRACTOR_H
 

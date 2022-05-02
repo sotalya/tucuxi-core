@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TEST_MULTILIKELIHOOD_H
 #define TEST_MULTILIKELIHOOD_H
 

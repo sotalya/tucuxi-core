@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef VALIDVALUES_H
 #define VALIDVALUES_H

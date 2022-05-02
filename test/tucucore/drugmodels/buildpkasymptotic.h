@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef BUILDPKASYMPTOTIC_H
 #define BUILDPKASYMPTOTIC_H
 

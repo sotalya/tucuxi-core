@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef CACHECOMPUTING_H
 #define CACHECOMPUTING_H

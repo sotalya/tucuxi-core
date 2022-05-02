@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef COMPUTINGRESPONSEXMLEXPORT_H
 #define COMPUTINGRESPONSEXMLEXPORT_H

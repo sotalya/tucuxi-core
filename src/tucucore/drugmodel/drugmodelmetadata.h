@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef TUCUXI_CORE_DRUGMODELMETADATA_H
 #define TUCUXI_CORE_DRUGMODELMETADATA_H

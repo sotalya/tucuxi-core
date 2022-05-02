@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef TUCUXI_CORE_COMPUTINGTRAIT_H
 #define TUCUXI_CORE_COMPUTINGTRAIT_H

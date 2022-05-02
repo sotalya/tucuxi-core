@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef TUCUXI_QUERY_QUERYIMPORT_H
 #define TUCUXI_QUERY_QUERYIMPORT_H

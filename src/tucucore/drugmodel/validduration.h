@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef VALIDDURATION_H
 #define VALIDDURATION_H

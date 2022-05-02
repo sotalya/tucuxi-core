@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef TUCUXI_ROOT_RESIDUALERRORMODEL_H
 #define TUCUXI_ROOT_RESIDUALERRORMODEL_H

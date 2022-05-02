@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef CLICOMPUTER_H
 #define CLICOMPUTER_H

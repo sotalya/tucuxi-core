@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef PARAMETERDEFINITION_H
 #define PARAMETERDEFINITION_H

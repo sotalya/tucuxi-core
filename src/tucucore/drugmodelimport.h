@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef DRUGMODELIMPORT_H
 #define DRUGMODELIMPORT_H

@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef TUCUXI_TUCUCOMMON_XMLATTRIBUTE_H
 #define TUCUXI_TUCUCOMMON_XMLATTRIBUTE_H

@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef VALIDDOSE_H
 #define VALIDDOSE_H

@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef ICOMPUTINGSERVICE_H
 #define ICOMPUTINGSERVICE_H

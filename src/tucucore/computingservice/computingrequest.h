@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef COMPUTINGREQUEST_H
 #define COMPUTINGREQUEST_H

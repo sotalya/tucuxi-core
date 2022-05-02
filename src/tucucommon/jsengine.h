@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef TUCUXI_TUCUCOMMON_JSENGINE_H
 #define TUCUXI_TUCUCOMMON_JSENGINE_H

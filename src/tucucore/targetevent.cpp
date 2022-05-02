@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #include "targetevent.h"
 

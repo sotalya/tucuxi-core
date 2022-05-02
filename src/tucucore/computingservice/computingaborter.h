@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef COMPUTINGABORTER_H
 #define COMPUTINGABORTER_H

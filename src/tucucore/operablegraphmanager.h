@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef OPERABLEGRAPHMANAGER_H
 #define OPERABLEGRAPHMANAGER_H

@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef COVARIATEDEFINITION_H
 #define COVARIATEDEFINITION_H

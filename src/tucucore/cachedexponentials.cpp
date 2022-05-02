@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #include <boost/functional/hash.hpp>
 

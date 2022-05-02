@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TEST_PARAMETER_H
 #define TEST_PARAMETER_H
 

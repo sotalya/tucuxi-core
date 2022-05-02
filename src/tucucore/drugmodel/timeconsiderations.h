@@ -1,4 +1,4 @@
-//@@lisence@@
+//@@license@@
 
 #ifndef TIMECONSIDERATIONS_H
 #define TIMECONSIDERATIONS_H

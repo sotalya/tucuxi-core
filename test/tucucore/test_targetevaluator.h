@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TEST_TARGETEVALUATOR_H
 #define TEST_TARGETEVALUATOR_H
 

@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef TEST_MULTICONCENTRATIONCALCULATOR_H
 #define TEST_MULTICONCENTRATIONCALCULATOR_H
