@@ -1,3 +1,5 @@
+//@@license@@
+
 #include "errormodel.h"
 
 namespace Tucuxi {

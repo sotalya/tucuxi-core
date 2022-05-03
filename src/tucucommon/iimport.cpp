@@ -1,3 +1,5 @@
+//@@license@@
+
 #include "iimport.h"
 
 namespace Tucuxi {

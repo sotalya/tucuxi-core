@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TESTUTILS_H
 #define TESTUTILS_H
 

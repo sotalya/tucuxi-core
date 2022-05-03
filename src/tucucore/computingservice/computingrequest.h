@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef COMPUTINGREQUEST_H
 #define COMPUTINGREQUEST_H

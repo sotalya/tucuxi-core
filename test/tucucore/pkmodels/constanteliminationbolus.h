@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef LINEARBOLUS_H
 #define LINEARBOLUS_H

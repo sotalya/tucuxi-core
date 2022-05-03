@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef TUCUXI_CORE_PERCENTILESPREDICTION_H
 #define TUCUXI_CORE_PERCENTILESPREDICTION_H

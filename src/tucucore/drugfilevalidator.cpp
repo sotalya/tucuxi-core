@@ -1,3 +1,5 @@
+//@@license@@
+
 #include <cstdio>
 #include <fstream>
 #include <iosfwd>

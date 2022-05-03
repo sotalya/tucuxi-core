@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TEST_UNIT_H
 #define TEST_UNIT_H
 

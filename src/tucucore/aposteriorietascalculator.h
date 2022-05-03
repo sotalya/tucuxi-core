@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef APOSTERIORIETASCALCULATOR_H
 #define APOSTERIORIETASCALCULATOR_H

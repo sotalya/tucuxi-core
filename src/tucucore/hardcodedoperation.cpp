@@ -1,3 +1,5 @@
+//@@license@@
+
 #include "tucucore/hardcodedoperation.h"
 
 using namespace Tucuxi::Core;

@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef ACTIVEMOIETY_H
 #define ACTIVEMOIETY_H
 

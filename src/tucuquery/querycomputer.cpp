@@ -1,3 +1,5 @@
+//@@license@@
+
 #include "querycomputer.h"
 
 #include "tucucore/computingcomponent.h"

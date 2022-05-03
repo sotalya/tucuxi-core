@@ -1,3 +1,5 @@
+//@@license@@
+
 #include "querytocoreextractor.h"
 
 #include "tucucommon/componentmanager.h"

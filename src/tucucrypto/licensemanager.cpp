@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2017 Tucuxi SA
- */
+//@@license@@
 
 #include <fstream>
 #include <iostream>

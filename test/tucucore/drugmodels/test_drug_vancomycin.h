@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef TEST_DRUG_VANCOMYCIN_H
 #define TEST_DRUG_VANCOMYCIN_H

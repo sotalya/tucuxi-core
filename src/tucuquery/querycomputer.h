@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef QUERYCOMPUTER_H
 #define QUERYCOMPUTER_H
 

@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef PATIENTCOVARIATE_H
 #define PATIENTCOVARIATE_H
 

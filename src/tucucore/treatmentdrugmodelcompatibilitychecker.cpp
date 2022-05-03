@@ -1,3 +1,5 @@
+//@@license@@
+
 #include "treatmentdrugmodelcompatibilitychecker.h"
 
 #include "tucucore/drugmodel/drugmodel.h"

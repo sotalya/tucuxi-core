@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TUCUXI_QUERY_PARAMETERSDATA_H
 #define TUCUXI_QUERY_PARAMETERSDATA_H
 

@@ -1,3 +1,5 @@
+//@@license@@
+
 #include "activesubstance.h"
 
 

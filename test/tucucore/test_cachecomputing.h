@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TEST_CACHECOMPUTING_H
 #define TEST_CACHECOMPUTING_H
 

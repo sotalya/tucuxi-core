@@ -1,3 +1,5 @@
+//@@license@@
+
 #include "clicomputer.h"
 
 #include "tucucore/computingcomponent.h"

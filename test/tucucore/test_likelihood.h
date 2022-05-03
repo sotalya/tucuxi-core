@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef TEST_LIKELIHOOD_H
 #define TEST_LIKELIHOOD_H

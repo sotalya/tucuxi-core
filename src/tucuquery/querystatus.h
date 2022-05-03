@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TUCUXI_QUERY_QUERYSTATUS_H
 #define TUCUXI_QUERY_QUERYSTATUS_H
 

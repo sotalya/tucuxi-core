@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef PARAMETERDEFINITION_H
 #define PARAMETERDEFINITION_H

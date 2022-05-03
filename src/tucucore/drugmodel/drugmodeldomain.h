@@ -1,7 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
-
+//@@license@@
 
 #ifndef DRUGMODELDOMAIN_H
 #define DRUGMODELDOMAIN_H

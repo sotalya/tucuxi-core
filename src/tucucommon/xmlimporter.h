@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef XMLIMPORTER_H
 #define XMLIMPORTER_H
 

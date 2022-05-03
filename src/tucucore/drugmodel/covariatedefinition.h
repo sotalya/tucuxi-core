@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef COVARIATEDEFINITION_H
 #define COVARIATEDEFINITION_H

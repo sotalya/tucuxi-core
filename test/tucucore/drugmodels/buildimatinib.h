@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef BUILDIMATINIB_H
 #define BUILDIMATINIB_H
 

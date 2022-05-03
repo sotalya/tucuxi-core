@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #include "tucucommon/general.h"
 #include "tucucommon/loggerhelper.h"

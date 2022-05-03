@@ -1,3 +1,5 @@
+//@@license@@
+
 #include "computingutils.h"
 
 #include "tucucore/drugmodel/activemoiety.h"

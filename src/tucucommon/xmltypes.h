@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TUCUXI_TUCUCOMMON_XMLTYPES_H
 #define TUCUXI_TUCUCOMMON_XMLTYPES_H
 

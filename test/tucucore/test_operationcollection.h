@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef TEST_OPERATIONCOLLECTION_H
 #define TEST_OPERATIONCOLLECTION_H

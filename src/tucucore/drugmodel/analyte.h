@@ -1,7 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
-
+//@@license@@
 
 #ifndef ANALYTE_H
 #define ANALYTE_H

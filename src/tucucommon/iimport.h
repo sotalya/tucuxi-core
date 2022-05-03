@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef IIMPORT_H
 #define IIMPORT_H
 

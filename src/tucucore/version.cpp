@@ -1,3 +1,5 @@
+//@@license@@
+
 #include "version.h"
 
 // The following 3 lines are here to avoid linting messages

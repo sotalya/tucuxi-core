@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef OPERABLEGRAPHMANAGER_H
 #define OPERABLEGRAPHMANAGER_H

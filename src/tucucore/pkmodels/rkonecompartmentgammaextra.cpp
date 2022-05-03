@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2018 Tucuxi SA
-*/
+//@@license@@
 
 #include <Eigen/Dense>
 #include <Eigen/LU>

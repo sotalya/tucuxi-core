@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef ICOMPUTINGSERVICE_H
 #define ICOMPUTINGSERVICE_H

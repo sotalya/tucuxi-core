@@ -1,3 +1,5 @@
+//@@license@@
+
 #include "analyte.h"
 
 

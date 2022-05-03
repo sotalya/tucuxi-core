@@ -1,6 +1,4 @@
-/*
-* Copyright (C) 2017 Tucuxi SA
-*/
+//@@license@@
 
 #ifndef TUCUXI_ROOT_RESIDUALERRORMODEL_H
 #define TUCUXI_ROOT_RESIDUALERRORMODEL_H

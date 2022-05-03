@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TEST_PKASYMPTOTIC_H
 #define TEST_PKASYMPTOTIC_H
 

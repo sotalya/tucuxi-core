@@ -1,3 +1,5 @@
+//@@license@@
+
 #include <chrono>
 
 #include "validduration.h"

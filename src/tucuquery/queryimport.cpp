@@ -1,3 +1,5 @@
+//@@license@@
+
 #include "queryimport.h"
 
 #include "tucucommon/utils.h"

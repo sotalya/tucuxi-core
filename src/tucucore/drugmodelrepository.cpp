@@ -1,3 +1,5 @@
+//@@license@@
+
 #include "drugmodelrepository.h"
 
 #include "tucucommon/loggerhelper.h"

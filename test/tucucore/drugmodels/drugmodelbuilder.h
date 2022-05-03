@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef DRUGMODELBUILDER_H
 #define DRUGMODELBUILDER_H
 

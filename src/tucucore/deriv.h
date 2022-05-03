@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef TUCUXI_CORE_DERIV_H
 #define TUCUXI_CORE_DERIV_H
 
