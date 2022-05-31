@@ -928,6 +928,8 @@ std::unique_ptr<CovariateDefinition> DrugModelImport::extractCovariate(Tucuxi::C
     std::unique_ptr<LightPopulationValue> value = nullptr;
     std::unique_ptr<Operation> validation = nullptr;
     TranslatableString name;
+    TranslatableString description;
+    TranslatableString validationErrorMessage;
     TucuUnit refreshPeriodUnit;
     double refreshPeriodValue = 0.0;
 
@@ -943,6 +945,9 @@ std::unique_ptr<CovariateDefinition> DrugModelImport::extractCovariate(Tucuxi::C
         }
         else if (nodeName == "covariateName") {
             name = extractTranslatableString(it, "name");
+        }
+        else if (nodeName == "description") {
+            description = extractTranslatableString(it, "desc");
         }
         else if (nodeName == "covariateType") {
             type = extractCovariateType(it);
@@ -981,6 +986,9 @@ std::unique_ptr<CovariateDefinition> DrugModelImport::extractCovariate(Tucuxi::C
                 if (validationIt->getName() == "operation") {
                     validation = extractOperation(validationIt);
                 }
+                else if (validationIt->getName() == "errorMessage") {
+                    validationErrorMessage = extractTranslatableString(validationIt, "text");
+                }
                 else {
                     unexpectedTag(validationIt->getName());
                 }
@@ -1012,6 +1020,8 @@ std::unique_ptr<CovariateDefinition> DrugModelImport::extractCovariate(Tucuxi::C
     covariate->setValidation(std::move(validation));
     covariate->setName(name);
     covariate->setRefreshPeriod(castDuration(refreshPeriodValue, refreshPeriodUnit));
+    covariate->setDescription(description);
+    covariate->setValidationErrorMessage(validationErrorMessage);
 
     return covariate;
 }
