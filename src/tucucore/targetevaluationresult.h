@@ -5,6 +5,7 @@
 
 #include "tucucore/definitions.h"
 #include "tucucore/drugmodel/targetdefinition.h"
+#include "tucucore/targetevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -17,11 +18,14 @@ namespace Core {
 class TargetEvaluationResult
 {
 public:
+    //TargetEvaluationResult(TargetEvaluationResult&) = default;
+
     explicit TargetEvaluationResult()
         : m_targetType(TargetType::UnknownTarget), m_score(0.0), m_value(0.0), m_unit(TucuUnit())
     {
     }
     explicit TargetEvaluationResult(TargetType _targetType, double _score, Value _value, TucuUnit _unit);
+
 
     TargetType getTargetType() const
     {
@@ -43,6 +47,16 @@ public:
         return m_unit;
     }
 
+    void setTarget(TargetEvent _target)
+    {
+        m_target = _target;
+    }
+
+    const TargetEvent getTarget() const
+    {
+        return m_target;
+    }
+
 protected:
     //! Type of target, as there should be only a single one of each type it is sufficient to discriminate
     TargetType m_targetType;
@@ -55,6 +69,9 @@ protected:
 
     //! Unit of the target
     TucuUnit m_unit;
+
+    //! The target used for this evaluation
+    TargetEvent m_target;
 };
 
 

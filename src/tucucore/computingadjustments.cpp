@@ -667,6 +667,7 @@ ComputingStatus ComputingAdjustments::compute(
 
                 // If the candidate is valid:
                 if (evaluationResult == ComputingStatus::Ok) {
+                    localResult.setTarget(target);
                     candidateResults.push_back(localResult);
                 }
                 else {

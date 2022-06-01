@@ -832,9 +832,9 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     calculateSubomega(_omega, _etas, logLikelihood, subomega);
 
     // Checks that subomega is valid. An error could be caused if the parameters are invalid
-    for(int i = 0; i < subomega.cols(); i++) {
-        for (int j = 0; j < subomega.rows(); j++) {
-            if (isnan(subomega(j, i))) {
+    for (int col = 0; col < subomega.cols(); col++) {
+        for (int row = 0; row < subomega.rows(); row++) {
+            if (isnan(subomega(row, col))) {
                 return ComputingStatus::PercentilesNoValidPrediction;
             }
         }

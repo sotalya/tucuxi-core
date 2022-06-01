@@ -24,7 +24,10 @@ class Target;
 class TargetEvent
 {
 public:
-    TargetEvent() = delete;
+    TargetEvent() : m_activeMoietyId("") {}
+    //TargetEvent() = delete;
+    //TargetEvent(TargetEvent&) = default;
+    //TargetEvent(TargetEvent&&) = default;
 
     ActiveMoietyId getActiveMoietyId() const
     {
