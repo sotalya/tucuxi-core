@@ -365,6 +365,13 @@ public:
         }
     }
 
+    DosageSequence(const DosageBoundedList& _list)
+    {
+        for (auto& dosage : _list) {
+            m_dosages.emplace_back(dosage->clone());
+        }
+    }
+
     ~DosageSequence() override {}
 
     /// \brief Add a dosage to the sequence.
