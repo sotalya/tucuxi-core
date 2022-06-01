@@ -106,7 +106,9 @@ enum class [[nodiscard]] ComputingStatus{
         /// The multicomputing component has not been initialized
         MultiComputingComponentNotInitialized,
         /// Error during calculation of multi active moiety concentration values
-        MultiActiveMoietyCalculationError};
+        MultiActiveMoietyCalculationError,
+        /// Error during percentiles calculation. Caused by no valid prediction being computed
+        PercentilesNoValidPrediction};
 
 std::ostream& operator<<(std::ostream& _stream, const ComputingStatus& _e);
 

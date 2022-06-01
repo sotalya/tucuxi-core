@@ -595,7 +595,7 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(
             dosageSequenceIterator++;
         }
 
-        pDosageBounded = make_unique<Core::DosageSequence>(*(dosageBoundedList.at(0)));
+        pDosageBounded = make_unique<Core::DosageSequence>(dosageBoundedList);
     }
     else if (_dosageBoundedIterator->getName() == LASTING_DOSAGE_NODE_NAME) {
         static const string INTERVAL_NODE_NAME = "interval";
