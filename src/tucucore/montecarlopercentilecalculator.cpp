@@ -362,6 +362,7 @@ foundFalse:
     }
 
     if (realPatientNumber == 0) {
+        return ComputingStatus::PercentilesNoValidPrediction;
         // Should be because of no samples
         //return ComputingStatus::AposterioriPercentilesNoSamplesError;
 
@@ -829,6 +830,15 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
 
     // 1. Calculate hessian metrix and subomega
     calculateSubomega(_omega, _etas, logLikelihood, subomega);
+
+    // Checks that subomega is valid. An error could be caused if the parameters are invalid
+    for(int i = 0; i < subomega.cols(); i++) {
+        for (int j = 0; j < subomega.rows(); j++) {
+            if (isnan(subomega(j, i))) {
+                return ComputingStatus::PercentilesNoValidPrediction;
+            }
+        }
+    }
 
     // 2. Get meanEtas and lower cholesky of omega
     // TODO check Map functions correctly or not when test MC

@@ -646,6 +646,9 @@ int main(int argc, char** argv)
     // --- percentile calculator --- //
     TestPercentileCalculator percentileCalculatorTests;
 
+    percentileCalculatorTests.add_test(
+            "Apriori Monte Carlo Percentile with invalid parameters",
+            &TestPercentileCalculator::testAprioriInvalidParameters);
     percentileCalculatorTests.add_test("Apriori Monte Carlo Percentile", &TestPercentileCalculator::testApriori);
     percentileCalculatorTests.add_test(
             "Aposteriori Normal Monte Carlo Percentile", &TestPercentileCalculator::testAposterioriNormal);
@@ -653,6 +656,9 @@ int main(int argc, char** argv)
             "Aposteriori Matrix cache", &TestPercentileCalculator::testAposterioriMatrixCache);
     percentileCalculatorTests.add_test(
             "Aposteriori Monte Carlo Percentile", &TestPercentileCalculator::testAposteriori);
+    percentileCalculatorTests.add_test(
+            "Aposteriori Monte Carlo Percentile with invalid parameters",
+            &TestPercentileCalculator::testAposterioriInvalidParameters);
     percentileCalculatorTests.add_test(
             "Aposteriori percentiles with samples far away in time",
             &TestPercentileCalculator::testAposterioriFarSamples);

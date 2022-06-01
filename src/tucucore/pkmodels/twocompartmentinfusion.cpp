@@ -70,6 +70,7 @@ bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkStrictlyPositiveValue(m_Ke, "Ke");
     bOK &= checkStrictlyPositiveValue(m_K12, "K12");
     bOK &= checkStrictlyPositiveValue(m_K21, "K21");
+    bOK &= checkStrictlyPositiveValue(m_V1, "V1");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkCondition(m_Tinf >= 0, "The infusion time is negative.");
