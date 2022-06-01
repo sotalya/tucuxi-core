@@ -123,9 +123,49 @@ public:
         m_name = _name;
     }
 
+    ///
+    /// \brief Get the name of the covariate
+    /// \return A TranslatableString corresponding to the name of the covariate
+    ///
     const Tucuxi::Common::TranslatableString& getName() const
     {
         return m_name;
+    }
+
+    ///
+    /// \brief Set the description of the covariate
+    /// \param _description TranslatableString describing the covariate
+    ///
+    void setDescription(const Tucuxi::Common::TranslatableString& _description)
+    {
+        m_description = _description;
+    }
+
+    ///
+    /// \brief Get the description of the covariate
+    /// \return A TranslatableString describing the covariate
+    ///
+    const Tucuxi::Common::TranslatableString& getDescription() const
+    {
+        return m_description;
+    }
+
+    ///
+    /// \brief Set the validation error message
+    /// \param _validationErrorMessage TranslatableString corresponding to the error message
+    ///
+    void setValidationErrorMessage(const Tucuxi::Common::TranslatableString& _validationErrorMessage)
+    {
+        m_validationErrorMessage = _validationErrorMessage;
+    }
+
+    ///
+    /// \brief Get the validation error message
+    /// \return A TranslatableString representing the validation error message
+    ///
+    const Tucuxi::Common::TranslatableString& getValidationErrorMessage() const
+    {
+        return m_validationErrorMessage;
     }
 
 
@@ -145,6 +185,10 @@ protected:
     std::unique_ptr<Operation> m_validation;
     /// \brief Name of the covariate
     Tucuxi::Common::TranslatableString m_name;
+    /// \brief Description of the covariate
+    Tucuxi::Common::TranslatableString m_description;
+    /// \brief Error message for the validation of the covariate
+    Tucuxi::Common::TranslatableString m_validationErrorMessage;
 };
 
 /// \brief List of covariate definitions.

@@ -591,7 +591,7 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(
         Core::DosageBoundedList dosageBoundedList;
         Common::XmlNodeIterator dosageSequenceIterator = _dosageBoundedIterator->getChildren();
         while (dosageSequenceIterator != Common::XmlNodeIterator::none()) {
-            dosageBoundedList.push_back(createDosageBounded(dosageSequenceIterator));
+            dosageBoundedList.push_back(createDosageBoundedFromIterator(dosageSequenceIterator));
             dosageSequenceIterator++;
         }
 
