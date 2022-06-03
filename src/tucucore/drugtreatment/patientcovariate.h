@@ -123,7 +123,7 @@ public:
     /// \brief Get the value as a date. Useful for birthdate
     /// \return The date stored
     ///
-    DateTime getValueAsDate()
+    DateTime getValueAsDate() const
     {
         return Tucuxi::Common::Utils::ValueToDate(Tucuxi::Common::Utils::stringToValue(m_value, DataType::Date));
     }
