@@ -78,6 +78,7 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
             {
                 {"g/l", 1.0},
                 {"mg/l", 0.001},
+                {"mg/dl", 0.01},
                 {"ug/l", 0.000001},
                 {"g/ml", 1000},
                 {"mg/ml", 1.0},
