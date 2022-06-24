@@ -206,5 +206,10 @@ char* XmlNode::allocateString(const std::string& _string)
     return nullptr;
 }
 
+void XmlNode::removeChildren(const XmlNode& node) const
+{
+   m_pNode->remove_node(node.m_pNode);
+}
+
 } // namespace Common
 } // namespace Tucuxi

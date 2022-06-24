@@ -118,6 +118,8 @@ public:
     /// \return False if both objects are sharing the same reference.
     bool operator!=(const XmlNode& _other) const;
 
+				void removeChildren(const XmlNode& root) const;
+
 private:
     /// \brief Create a new node and initialize it with a pointer to a rapidxml node.
     XmlNode(rapidxml::xml_node<char>* _pNode);
