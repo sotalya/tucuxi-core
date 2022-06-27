@@ -15,6 +15,8 @@
 #include "tucucore/drugtreatment/sample.h"
 #include "tucucore/drugtreatment/target.h"
 
+#include "tucuquery/fullsample.h"
+
 namespace Tucuxi {
 namespace Query {
 
@@ -194,7 +196,7 @@ public:
             std::string& _brandName,
             std::string& _atc,
             std::unique_ptr<Treatment> _pTreatment,
-            std::vector<std::unique_ptr<Tucuxi::Core::Sample> >& _samples,
+            std::vector<std::unique_ptr<Tucuxi::Query::FullSample> >& _samples,
             std::vector<std::unique_ptr<Tucuxi::Core::Target> >& _targets);
 
     DrugData(DrugData& _other) = delete;
@@ -205,7 +207,7 @@ public:
     const std::string& getBrandName() const;
     const std::string& getAtc() const;
     const Treatment& getpTreatment() const;
-    const std::vector<std::unique_ptr<Tucuxi::Core::Sample> >& getSamples() const;
+    const std::vector<std::unique_ptr<Tucuxi::Query::FullSample> >& getSamples() const;
     const std::vector<std::unique_ptr<Tucuxi::Core::Target> >& getTargets() const;
 
 protected:
@@ -214,7 +216,7 @@ protected:
     const std::string m_brandName;
     const std::string m_atc;
     std::unique_ptr<Treatment> m_pTreatment;
-    std::vector<std::unique_ptr<Tucuxi::Core::Sample> > m_samples;
+    std::vector<std::unique_ptr<Tucuxi::Query::FullSample> > m_samples;
     std::vector<std::unique_ptr<Tucuxi::Core::Target> > m_targets;
 };
 

@@ -14,11 +14,10 @@
 #include "tucucore/treatmentdrugmodelcompatibilitychecker.h"
 
 #include "tucuquery/computingquery.h"
+#include "tucuquery/fullsample.h"
 
 namespace Tucuxi {
 namespace Query {
-
-
 
 QueryToCoreExtractor::QueryToCoreExtractor() = default;
 
@@ -112,16 +111,16 @@ Tucuxi::Core::Targets QueryToCoreExtractor::extractTargets(const QueryData& _que
 }
 
 
-Tucuxi::Core::Samples QueryToCoreExtractor::extractSamples(const QueryData& _query, size_t _drugPosition) const
+Tucuxi::Query::FullSamples QueryToCoreExtractor::extractSamples(const QueryData& _query, size_t _drugPosition) const
 {
-    Tucuxi::Core::Samples samples;
+    Tucuxi::Query::FullSamples samples;
 
-    const std::vector<std::unique_ptr<Tucuxi::Core::Sample> >& samplesData =
+    const std::vector<std::unique_ptr<Tucuxi::Query::FullSample> >& samplesData =
             _query.getpParameters().getDrugs().at(_drugPosition)->getSamples();
 
-    for (const std::unique_ptr<Tucuxi::Core::Sample>& sd : samplesData) {
-        samples.push_back(std::make_unique<Tucuxi::Core::Sample>(
-                sd->getDate(), sd->getAnalyteID(), sd->getValue(), sd->getUnit()));
+    for (const std::unique_ptr<Tucuxi::Query::FullSample>& sd : samplesData) {
+        samples.push_back(std::make_unique<Tucuxi::Query::FullSample>(
+                sd->getSampleId(), sd->getDate(), sd->getAnalyteID(), sd->getValue(), sd->getUnit()));
     }
 
     return samples;
@@ -162,7 +161,7 @@ std::unique_ptr<Tucuxi::Core::DrugTreatment> QueryToCoreExtractor::extractDrugTr
     }
 
     // Getting the samples for the drug treatment
-    Tucuxi::Core::Samples samples = extractSamples(_query, drugPosition);
+    Tucuxi::Query::FullSamples samples = extractSamples(_query, drugPosition);
     for (auto& sample : samples) {
         drugTreatment->addSample(move(sample));
     }

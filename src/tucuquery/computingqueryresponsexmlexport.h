@@ -41,7 +41,7 @@ protected:
 
     bool exportPercentiles(const Tucuxi::Core::PercentilesData* _prediction, Tucuxi::Common::XmlNode& _rootNode);
 
-    bool exportCycleData(const Tucuxi::Core::CycleData& _cycleData, Tucuxi::Common::XmlNode& _rootNode);
+    virtual bool exportCycleData(const Tucuxi::Core::CycleData& _cycleData, Tucuxi::Common::XmlNode& _rootNode);
 
     bool exportCycleDatas(const std::vector<Tucuxi::Core::CycleData>& _cycleDatas, Tucuxi::Common::XmlNode& _rootNode);
 
@@ -56,7 +56,7 @@ protected:
     void exportDose(const Tucuxi::Core::SingleDose& _dosage, Tucuxi::Common::XmlNode& _rootNode);
 
 
-    void exportSingleDose(const Tucuxi::Core::SingleDose& _dosage, Tucuxi::Common::XmlNode& _rootNode);
+    virtual void exportSingleDose(const Tucuxi::Core::SingleDose& _dosage, Tucuxi::Common::XmlNode& _rootNode);
 
 
     std::string formulationEnumToString(const Tucuxi::Core::Formulation& _formulation);

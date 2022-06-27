@@ -5,6 +5,7 @@ HEADERS += \
     $$PWD/../../src/tucuquery/computingqueryresponse.h \
     $$PWD/../../src/tucuquery/computingqueryresponsexmlexport.h \
     $$PWD/../../src/tucuquery/computingresponseexport.h \
+    $$PWD/../../src/tucuquery/fullsample.h \
     $$PWD/../../src/tucuquery/querycomputer.h \
     $$PWD/../../src/tucuquery/querydata.h \
     $$PWD/../../src/tucuquery/queryimport.h \
@@ -21,6 +22,7 @@ SOURCES += \
     $$PWD/../../src/tucuquery/computingqueryresponse.cpp \
     $$PWD/../../src/tucuquery/computingqueryresponsexmlexport.cpp \
     $$PWD/../../src/tucuquery/computingresponseexport.cpp \
+    $$PWD/../../src/tucuquery/fullsample.cpp \
     $$PWD/../../src/tucuquery/querycomputer.cpp \
     $$PWD/../../src/tucuquery/querydata.cpp \
     $$PWD/../../src/tucuquery/queryimport.cpp \

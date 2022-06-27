@@ -20,6 +20,7 @@ namespace Core {
 
 class TargetEvaluator;
 class Target;
+class XpertRequestResultXmlExport;
 
 class TargetEvent
 {
@@ -32,6 +33,26 @@ public:
     ActiveMoietyId getActiveMoietyId() const
     {
         return m_activeMoietyId;
+    }
+
+    Value getValueMin() const {
+        return m_valueMin;
+    }
+
+    Value getValueMax() const {
+        return m_valueMax;
+    }
+
+    Value getValueBest() const {
+        return m_valueBest;
+    }
+
+    Value getInefficacyAlarm() const {
+        return m_inefficacyAlarm;
+    }
+
+    Value getToxicityAlarm() const {
+        return m_toxicityAlarm;
     }
 
     static TargetEvent createTargetEventWithMic(

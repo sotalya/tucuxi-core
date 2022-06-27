@@ -10,6 +10,7 @@
 #include "tucucore/targetevent.h"
 
 #include "tucuquery/querydata.h"
+#include "tucuquery/fullsample.h"
 
 #include "querystatus.h"
 
@@ -73,7 +74,7 @@ public:
     /// \param _drugPosition
     /// \return
     ///
-    Tucuxi::Core::Samples extractSamples(const QueryData& _query, size_t _drugPosition) const;
+    Tucuxi::Query::FullSamples extractSamples(const QueryData& _query, size_t _drugPosition) const;
 
     std::unique_ptr<Core::DrugTreatment> extractDrugTreatment(
             const QueryData& _query, const RequestData& _requestData) const;
