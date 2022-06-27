@@ -31,20 +31,24 @@ public:
         this->signingCert = std::move(_signingCert);
     }
 
-    void setDrugfile(std::string _drugfile) {
-        this->drugfile = std::move(_drugfile);
+    void setSignedData(std::string _signedData) {
+        this->signedData = std::move(_signedData);
     }
 
     std::string getUserCert() {
         return this->userCert;
     }
 
-    std::string getDrugfile() {
-        return this->drugfile;
+    std::string getSignedData() {
+        return this->signedData;
     }
 
     std::string getValue() {
         return this->value;
+    }
+
+    bool getPartial() {
+        return this->isPartial;
     }
 
 private:
@@ -52,7 +56,7 @@ private:
     std::string value;
     std::string userCert;
     std::string signingCert;
-    std::string drugfile;
+    std::string signedData;
 };
 
 }
