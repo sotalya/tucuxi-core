@@ -53,10 +53,10 @@ protected:
     void exportFormulationAndRoute(const Tucuxi::Core::SingleDose& _dosage, Tucuxi::Common::XmlNode& _rootNode);
 
 
-    void exportDose(const Tucuxi::Core::SingleDose& _dosage, Tucuxi::Common::XmlNode& _rootNode);
+    virtual void exportDose(const Tucuxi::Core::SingleDose& _dosage, Tucuxi::Common::XmlNode& _rootNode);
 
 
-    virtual void exportSingleDose(const Tucuxi::Core::SingleDose& _dosage, Tucuxi::Common::XmlNode& _rootNode);
+    void exportSingleDose(const Tucuxi::Core::SingleDose& _dosage, Tucuxi::Common::XmlNode& _rootNode);
 
 
     std::string formulationEnumToString(const Tucuxi::Core::Formulation& _formulation);
