@@ -23,12 +23,12 @@ public:
         this->value = std::move(_value);
     }
 
-    void setUserCert(std::string _userCert) {
-        this->userCert = std::move(_userCert);
+    void setUserCert(std::string _userCertPem) {
+        this->userCertPem = std::move(_userCertPem);
     }
 
-    void setSigningCert(std::string _signingCert) {
-        this->signingCert = std::move(_signingCert);
+    void setSigningCert(std::string _signingCertPem) {
+        this->signingCertPem = std::move(_signingCertPem);
     }
 
     void setSignedData(std::string _signedData) {
@@ -36,7 +36,11 @@ public:
     }
 
     std::string getUserCert() {
-        return this->userCert;
+        return this->userCertPem;
+    }
+
+    std::string getSigningCert() {
+        return this->signingCertPem;
     }
 
     std::string getSignedData() {
@@ -54,8 +58,8 @@ public:
 private:
     bool isPartial;
     std::string value;
-    std::string userCert;
-    std::string signingCert;
+    std::string userCertPem;
+    std::string signingCertPem;
     std::string signedData;
 };
 

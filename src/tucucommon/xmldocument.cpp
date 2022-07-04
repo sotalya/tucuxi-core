@@ -88,6 +88,14 @@ bool XmlDocument::toString(std::string& _xml, bool _prettyPrint)
     return false;
 }
 
+bool XmlDocument::toStringWithDoubleQuote(std::string& _xml)
+{
+    if (m_pDocument != nullptr) {
+        rapidxml::print(std::back_inserter(_xml), *m_pDocument, rapidxml::print_no_indenting);
+        return true;
+    }
+    return false;
+}
 
 XmlNode XmlDocument::getRoot() const
 {

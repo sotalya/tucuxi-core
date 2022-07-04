@@ -18,9 +18,8 @@
 #include "clicomputer.h"
 #include "cxxopts/include/cxxopts.hpp"
 
-// test
 #include "tucusign/signparser.h"
-#include <botan/base64.h>
+#include "tucusign/signvalidator.h"
 
 using namespace std::chrono_literals;
 
@@ -50,9 +49,16 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
         auto result = options.parse(_argc, _argv);
 
         if (result.count("signature") > 0) {
-            std::string drugpath = result["signature"].as<std::string>();
-            Tucuxi::Common::SignParser s(drugpath);
-            s.loadSignature();
+            std::string signedDrugfilePath = result["signature"].as<std::string>();
+            Tucuxi::Common::Signature signature = Tucuxi::Common::SignParser::loadSignature(signedDrugfilePath);
+
+            bool isSignatureValid = Tucuxi::Common::SignValidator::validateSignature(signature);
+
+            if (isSignatureValid) {
+                std::cout << "\nThe drug file has been signed by: \n"
+                          << Tucuxi::Common::SignValidator::loadSigner(signature.getUserCert())
+                          << std::endl;
+            }
             exit(0);
         }
 

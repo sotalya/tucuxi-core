@@ -55,6 +55,10 @@ public:
     /// \param _prettyPrint Make the output pretty (line breaks, indenting, ...)
     bool toString(std::string& _xml, bool _prettyPrint = false);
 
+    /// \brief Save XML data into the specified string
+    /// \param _xml The string where XML data should be written
+    bool toStringWithDoubleQuote(std::string& _xml);
+
     /// \brief Returns the root element of the document
     /// \return The rool element
     XmlNode getRoot() const;

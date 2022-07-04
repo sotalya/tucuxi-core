@@ -1,10 +1,11 @@
 //@@license@@
 
 #include "xmlnode.h"
-
 #include "rapidxml.hpp"
 #include "xmlattribute.h"
 #include "xmliterator.h"
+#include "cstring"
+
 
 namespace Tucuxi {
 namespace Common {
@@ -206,9 +207,23 @@ char* XmlNode::allocateString(const std::string& _string)
     return nullptr;
 }
 
-void XmlNode::removeChildren(const XmlNode& node) const
+void XmlNode::removeNode(const XmlNode& _node) const
 {
-   m_pNode->remove_node(node.m_pNode);
+   m_pNode->remove_node(_node.m_pNode);
+}
+
+void XmlNode::removeNodes(const std::string& nodeName)
+{
+    XmlNode parent = m_pNode;
+    for (rapidxml::xml_node<> *child = m_pNode->first_node(); child; child = child->next_sibling()) {
+        if (std::strcmp(child->name(), nodeName.c_str()) == 0) {
+            parent.m_pNode->remove_node(child);
+            break;
+        } else {
+            m_pNode = child;
+        }
+        removeNodes(nodeName);
+    }
 }
 
 } // namespace Common

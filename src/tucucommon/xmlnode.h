@@ -8,6 +8,7 @@
 #include "componentmanager.h"
 #include "xmltypes.h"
 
+
 namespace rapidxml {
 template<class Ch>
 class xml_node; // NOLINT(readability-identifier-naming)
@@ -118,7 +119,13 @@ public:
     /// \return False if both objects are sharing the same reference.
     bool operator!=(const XmlNode& _other) const;
 
-				void removeChildren(const XmlNode& root) const;
+    /// \brief Remove a node and all of its children (if any)
+    /// \param _node The node to remove
+				void removeNode(const XmlNode& _node) const;
+
+				/// \brief Remove a node and all of its children (if any) recursively
+				/// \param _node The name of the node to remove
+				void removeNodes(const std::string& nodeName);
 
 private:
     /// \brief Create a new node and initialize it with a pointer to a rapidxml node.

@@ -4,9 +4,7 @@
 
 #include "signparser.h"
 #include "signature.h"
-#include "signvalidator.h"
 #include <iostream>
-#include <regex>
 
 #include "tucucommon/xmldocument.h"
 #include "tucucommon/xmlnode.h"
@@ -15,42 +13,45 @@
 namespace Tucuxi {
 namespace Common {
 
-SignParser::SignParser(std::string signedDrugpath) : signedDrugpath(signedDrugpath) {}
-
-// todo clean up
 // todo handle error
-void SignParser::loadSignature()
-{
+
+Signature SignParser::loadSignature(std::string signedDrugfilePath) {
     XmlDocument document;
-    if (!document.open(this->signedDrugpath)) {
-        std::cout << "Error";
+    if (!document.open(signedDrugfilePath)) {
+        std::cerr << "Error";
+        exit(1);
     }
     else {
-        XmlNode root = document.getRoot();
-
-        XmlNodeIterator signatureIterator = root.getChildren("signature");
-
         Signature signature;
-
-        //checkNodeIterator(drugModelIterator, "drugModel");
+        XmlNode root = document.getRoot();
+        XmlNodeIterator signatureIterator = root.getChildren("signature");
+								// extract data from xml
         extractSignature(signatureIterator, signature);
+        extractSignedData(document, root, signatureIterator, signature);
 
-        // todo in function
-        // remove signature node -> added a function in tucucommon/xmlnode file
-        root.removeChildren(*signatureIterator.operator->());
-        std::string drugfile;
-        document.toString(drugfile);
-        // remove whitespace
-        drugfile.erase(remove(drugfile.begin(), drugfile.end(), ' '), drugfile.end());
-        signature.setDrugfile(drugfile);
-
-        // verify signature
-        SignValidator::verifySignature(SignValidator::loadPublicKey(SignValidator::loadCert(signature.getUserCert())), signature.getValue(), signature.getDrugfile());
+        return signature;
     }
 }
 
-void SignParser::extractSignature(Tucuxi::Common::XmlNodeIterator node, Signature& signature)
-{
+void SignParser::extractSignedData(Tucuxi::Common::XmlDocument& document, Tucuxi::Common::XmlNode& root,
+                                   Tucuxi::Common::XmlNodeIterator signatureIterator, Signature& signature) {
+    root.removeNode(*signatureIterator.operator->());
+
+    if (signature.getPartial()) {
+        // remove optional nodes
+        std::vector<std::string> nodesName = {"comments", "description"};
+        for(const auto& nodeName : nodesName) {
+            root.removeNodes(nodeName);
+            root = document.getRoot();
+        }
+    }
+    // create signed data string
+    std::string signedData;
+    document.toStringWithDoubleQuote(signedData);
+    signature.setSignedData(signedData);
+}
+
+void SignParser::extractSignature(Tucuxi::Common::XmlNodeIterator node, Signature& signature) {
     // get partial attribute
     signature.setPartial(node->getAttribute("partial").getValue() == "true");
     XmlNodeIterator it = node->getChildren();
@@ -64,11 +65,9 @@ void SignParser::extractSignature(Tucuxi::Common::XmlNodeIterator node, Signatur
         }
         it++;
     }
-
 }
 
-void SignParser::extractCertificates(Tucuxi::Common::XmlNodeIterator node, Signature& signature)
-{
+void SignParser::extractCertificates(Tucuxi::Common::XmlNodeIterator node, Signature& signature) {
     XmlNodeIterator it = node->getChildren();
 
     while (it != XmlNodeIterator::none()) {
@@ -81,8 +80,6 @@ void SignParser::extractCertificates(Tucuxi::Common::XmlNodeIterator node, Signa
         it++;
     }
 }
-
-
 
 }
 }
