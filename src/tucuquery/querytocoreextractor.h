@@ -9,8 +9,8 @@
 #include "tucucore/drugtreatment/sample.h"
 #include "tucucore/targetevent.h"
 
-#include "tucuquery/querydata.h"
 #include "tucuquery/fullsample.h"
+#include "tucuquery/querydata.h"
 
 #include "querystatus.h"
 

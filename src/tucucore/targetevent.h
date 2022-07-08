@@ -35,23 +35,28 @@ public:
         return m_activeMoietyId;
     }
 
-    Value getValueMin() const {
+    Value getValueMin() const
+    {
         return m_valueMin;
     }
 
-    Value getValueMax() const {
+    Value getValueMax() const
+    {
         return m_valueMax;
     }
 
-    Value getValueBest() const {
+    Value getValueBest() const
+    {
         return m_valueBest;
     }
 
-    Value getInefficacyAlarm() const {
+    Value getInefficacyAlarm() const
+    {
         return m_inefficacyAlarm;
     }
 
-    Value getToxicityAlarm() const {
+    Value getToxicityAlarm() const
+    {
         return m_toxicityAlarm;
     }
 
