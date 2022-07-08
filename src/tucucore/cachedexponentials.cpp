@@ -43,7 +43,7 @@ std::size_t CachedExponentials::hash(
     std::size_t seed = 0;
     boost::hash<double> hasher;
 
-    boost::hash_combine(seed, hasher(static_cast<int>(_cycleDuration.toMilliseconds())));
+    boost::hash_combine(seed, hasher(static_cast<double>(_cycleDuration.toMilliseconds())));
     boost::hash_combine(seed, hasher(static_cast<double>(_nbPoints)));
     for (const auto& parameter : _parameters) {
         boost::hash_combine(seed, hasher(parameter.getValue()));

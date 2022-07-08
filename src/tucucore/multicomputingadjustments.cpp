@@ -716,7 +716,8 @@ ComputingStatus MultiComputingAdjustments::compute(
                 for (size_t i = 0; i < intakeSeriesPerGroup[analyteGroupId].size(); i++) {
                     TimeOffsets times = activeMoietiesPredictions[0]->getTimes()[i];
                     DateTime start = intakeSeriesPerGroup[analyteGroupId][i].getEventTime();
-                    DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000 * 3600);
+                    DateTime end =
+                            start + std::chrono::milliseconds(static_cast<long long>(times.back()) * 1000 * 3600);
                     if (start >= _traits->getAdjustmentTime()) {
                         CycleData cycle(start, end, finalUnit);
                         cycle.addData(
@@ -1359,7 +1360,7 @@ ComputingStatus MultiComputingAdjustments::generatePrediction(
         }
         TimeOffsets times = multianalytesPredictions[0]->getTimes()[i];
         DateTime start = recordedIntakes[i].getEventTime();
-        DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000 * 3600);
+        DateTime end = start + std::chrono::milliseconds(static_cast<long long>(times.back()) * 1000 * 3600);
         if (start >= _traits->getAdjustmentTime()) {
 
             ComputingStatus recordStatus = MultiComputingComponent::recordCycle(

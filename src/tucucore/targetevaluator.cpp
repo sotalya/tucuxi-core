@@ -103,7 +103,7 @@ ComputingStatus TargetEvaluator::evaluate(
     std::size_t lastCycleIndex = _prediction.getTimes().size() - 1;
     TimeOffsets times = _prediction.getTimes()[lastCycleIndex];
     DateTime start = _intakeSeries[lastCycleIndex].getEventTime();
-    DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000);
+    DateTime end = start + std::chrono::milliseconds(static_cast<long long>(times.back()) * 1000);
     CycleData cycle(start, end, TucuUnit("ug/l"));
     cycle.addData(times, _prediction.getValues()[lastCycleIndex]);
 
@@ -182,7 +182,7 @@ ComputingStatus TargetEvaluator::evaluate(
         for (std::size_t i = 0; i < _prediction.getTimes().size(); i++) {
             TimeOffsets times = _prediction.getTimes()[i];
             DateTime start = _intakeSeries[i].getEventTime();
-            DateTime end = start + std::chrono::milliseconds(static_cast<int>(times.back()) * 1000);
+            DateTime end = start + std::chrono::milliseconds(static_cast<long long>(times.back()) * 1000);
             CycleData cycle(start, end, TucuUnit("ug/l"));
             cycle.addData(times, _prediction.getValues()[i]);
 
