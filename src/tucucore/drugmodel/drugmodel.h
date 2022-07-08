@@ -418,6 +418,9 @@ private:
 
     InterParameterSetCorrelations m_interParameterSetCorrelations;
 
+#ifdef DRUGMODELTESTS
+public:
+#endif // DRUGMODELTESTS
     ActiveMoieties m_activeMoieties;
 
     std::unique_ptr<TimeConsiderations> m_timeConsiderations;
@@ -430,9 +433,6 @@ private:
     friend TestMultiAnalytesSingleActiveMoiety;
     friend TestMultiAnalytesMultiActiveMoieties;
     friend TestPkAsymptotic;
-#ifdef DRUGMODELTESTS
-    friend Drugs2Manager;
-#endif // DRUGMODELTESTS
 };
 
 } // namespace Core
