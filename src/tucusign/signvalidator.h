@@ -1,3 +1,5 @@
+//@@license@@
+
 //
 // Created by fiona on 6/23/22.
 //
@@ -5,17 +7,19 @@
 #ifndef TUCUXI_SIGNATUREVALIDATOR_H
 #define TUCUXI_SIGNATUREVALIDATOR_H
 
-#include <string>
 #include <iostream>
-#include <botan/pk_keys.h>
-#include <botan/data_src.h>
-#include <botan/pem.h>
-#include <botan/x509cert.h>
+#include <string>
+
 #include <botan/auto_rng.h>
-#include <botan/pubkey.h>
-#include <botan/hex.h>
 #include <botan/base64.h>
+#include <botan/data_src.h>
+#include <botan/hex.h>
+#include <botan/pem.h>
+#include <botan/pk_keys.h>
+#include <botan/pubkey.h>
+#include <botan/x509cert.h>
 #include <botan/x509path.h>
+
 #include "signature.h"
 #include "signer.h"
 
@@ -60,7 +64,7 @@ public:
     static Signer loadSigner(std::string certPem);
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif //TUCUXI_SIGNATUREVALIDATOR_H

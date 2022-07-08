@@ -121,11 +121,11 @@ public:
 
     /// \brief Remove a node and all of its children (if any)
     /// \param _node The node to remove
-				void removeNode(const XmlNode& _node) const;
+    void removeNode(const XmlNode& _node) const;
 
-				/// \brief Remove a node and all of its children (if any) recursively
-				/// \param _node The name of the node to remove
-				void removeNodes(const std::string& nodeName);
+    /// \brief Remove a node and all of its children (if any) recursively
+    /// \param _node The name of the node to remove
+    void removeNodes(const std::string& nodeName);
 
 private:
     /// \brief Create a new node and initialize it with a pointer to a rapidxml node.

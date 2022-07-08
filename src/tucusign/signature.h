@@ -1,3 +1,5 @@
+//@@license@@
+
 //
 // Created by fiona on 6/24/22.
 //
@@ -13,45 +15,55 @@ namespace Common {
 class Signature
 {
 public:
-    Signature() {};
+    Signature(){};
 
-    void setPartial(bool partial) {
+    void setPartial(bool partial)
+    {
         this->isPartial = partial;
     }
 
-    void setValue(std::string _value) {
+    void setValue(std::string _value)
+    {
         this->value = std::move(_value);
     }
 
-    void setUserCert(std::string _userCertPem) {
+    void setUserCert(std::string _userCertPem)
+    {
         this->userCertPem = std::move(_userCertPem);
     }
 
-    void setSigningCert(std::string _signingCertPem) {
+    void setSigningCert(std::string _signingCertPem)
+    {
         this->signingCertPem = std::move(_signingCertPem);
     }
 
-    void setSignedData(std::string _signedData) {
+    void setSignedData(std::string _signedData)
+    {
         this->signedData = std::move(_signedData);
     }
 
-    std::string getUserCert() {
+    std::string getUserCert()
+    {
         return this->userCertPem;
     }
 
-    std::string getSigningCert() {
+    std::string getSigningCert()
+    {
         return this->signingCertPem;
     }
 
-    std::string getSignedData() {
+    std::string getSignedData()
+    {
         return this->signedData;
     }
 
-    std::string getValue() {
+    std::string getValue()
+    {
         return this->value;
     }
 
-    bool getPartial() {
+    bool getPartial()
+    {
         return this->isPartial;
     }
 
@@ -63,8 +75,8 @@ private:
     std::string signedData;
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 
 #endif //TUCUXI_SIGNATURE_H

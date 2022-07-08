@@ -1,3 +1,5 @@
+//@@license@@
+
 //
 // Created by fiona on 6/23/22.
 //
@@ -6,10 +8,12 @@
 #define TUCUXI_SIGNPARSER_H
 
 #include <string>
-#include "signature.h"
+
 #include "tucucommon/xmldocument.h"
 #include "tucucommon/xmlimporter.h"
 #include "tucucommon/xmlnode.h"
+
+#include "signature.h"
 
 namespace Tucuxi {
 namespace Common {
@@ -38,11 +42,14 @@ private:
     /// \param root The root node
     /// \param signatureIterator The signature iterator
     /// \param signature The signature object to set the information
-    static void extractSignedData(Tucuxi::Common::XmlDocument& document, Tucuxi::Common::XmlNode& root,
-                                  Tucuxi::Common::XmlNodeIterator signatureIterator, Signature& signature);
+    static void extractSignedData(
+            Tucuxi::Common::XmlDocument& document,
+            Tucuxi::Common::XmlNode& root,
+            Tucuxi::Common::XmlNodeIterator signatureIterator,
+            Signature& signature);
 };
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
 
 #endif //TUCUXI_SIGNPARSER_H

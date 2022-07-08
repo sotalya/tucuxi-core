@@ -1,6 +1,6 @@
 //@@license@@
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 #include "tucucommon/general.h"
 #include "tucucommon/loggerhelper.h"
@@ -17,7 +17,6 @@
 
 #include "clicomputer.h"
 #include "cxxopts/include/cxxopts.hpp"
-
 #include "tucusign/signparser.h"
 #include "tucusign/signvalidator.h"
 
@@ -56,8 +55,7 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
 
             if (isSignatureValid) {
                 std::cout << "\nThe drug file has been signed by: \n"
-                          << Tucuxi::Common::SignValidator::loadSigner(signature.getUserCert())
-                          << std::endl;
+                          << Tucuxi::Common::SignValidator::loadSigner(signature.getUserCert()) << std::endl;
             }
             exit(0);
         }

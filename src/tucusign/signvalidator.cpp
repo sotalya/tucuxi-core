@@ -1,26 +1,32 @@
+//@@license@@
+
 //
 // Created by fiona on 6/23/22.
 //
 
+#include <cstring>
+#include <sstream>
+
+#include <botan/auto_rng.h>
+#include <botan/base64.h>
+#include <botan/data_src.h>
+#include <botan/hex.h>
+#include <botan/pem.h>
+#include <botan/pk_keys.h>
+#include <botan/pubkey.h>
+#include <botan/x509cert.h>
+#include <botan/x509path.h>
+
 #include "signvalidator.h"
+
 #include "signature.h"
 #include "signer.h"
-#include <botan/pk_keys.h>
-#include <botan/data_src.h>
-#include <botan/pem.h>
-#include <botan/x509cert.h>
-#include <botan/auto_rng.h>
-#include <botan/pubkey.h>
-#include <botan/hex.h>
-#include <botan/base64.h>
-#include <botan/x509path.h>
-#include "cstring"
-#include <sstream>
 
 namespace Tucuxi {
 namespace Common {
 
-Botan::X509_Certificate SignValidator::loadCert(std::string certPem) {
+Botan::X509_Certificate SignValidator::loadCert(std::string certPem)
+{
     // decode PEM certificate
     std::string label;
     Botan::secure_vector<uint8_t> decoded_pem = Botan::PEM_Code::decode(certPem, label);
@@ -31,18 +37,21 @@ Botan::X509_Certificate SignValidator::loadCert(std::string certPem) {
     return cert;
 }
 
-Botan::Public_Key* SignValidator::loadPublicKey(Botan::X509_Certificate& cert) {
+Botan::Public_Key* SignValidator::loadPublicKey(Botan::X509_Certificate& cert)
+{
     Botan::Public_Key* public_key(cert.subject_public_key());
     return public_key;
 }
 
-Signer SignValidator::loadSigner(std::string certPem) {
+Signer SignValidator::loadSigner(std::string certPem)
+{
     Botan::X509_Certificate cert = loadCert(certPem);
-				Signer signer;
-				//"X520.Country""X520.Locality""X520.Organization""X520.State"
+    Signer signer;
+    //"X520.Country""X520.Locality""X520.Organization""X520.State"
     Botan::X509_DN subject_dn = cert.subject_dn();
     std::multimap<std::string, std::string> subject_dn_attr = subject_dn.contents();
-    for (std::multimap<std::string, std::string>::iterator it= subject_dn_attr.begin(); it != subject_dn_attr.end(); ++it) {
+    for (std::multimap<std::string, std::string>::iterator it = subject_dn_attr.begin(); it != subject_dn_attr.end();
+         ++it) {
         if (std::strcmp(it->first.c_str(), "X520.CommonName") == 0) {
             signer.setName(it->second);
         }
@@ -55,13 +64,14 @@ Signer SignValidator::loadSigner(std::string certPem) {
         else if (std::strcmp(it->first.c_str(), "X520.Organization") == 0) {
             size_t pos = it->second.find_last_of(' ');
             signer.setOrganizationName(it->second.substr(0, pos));
-            signer.setOrganizationTrustLevel(it->second.substr(pos+1));
+            signer.setOrganizationTrustLevel(it->second.substr(pos + 1));
         }
     }
     return signer;
 }
 
-bool SignValidator::verifySignature(Botan::Public_Key* publicKey, std::string base64Signature, std::string signedData) {
+bool SignValidator::verifySignature(Botan::Public_Key* publicKey, std::string base64Signature, std::string signedData)
+{
     // decode base 64 signature
     Botan::secure_vector<uint8_t> signature = Botan::base64_decode(base64Signature);
 
@@ -71,14 +81,15 @@ bool SignValidator::verifySignature(Botan::Public_Key* publicKey, std::string ba
     // verify signature
     Botan::PK_Verifier verifier(*publicKey, "EMSA1(SHA-256)", Botan::DER_SEQUENCE);
     bool valid = verifier.verify_message(data, signature);
-    std::cout << "Signature is " << (valid? "valid\n" : "invalid\n");
+    std::cout << "Signature is " << (valid ? "valid\n" : "invalid\n");
 
     free(publicKey);
 
     return valid;
 }
 
-bool SignValidator::verifyChain(Botan::X509_Certificate& userCert, Botan::X509_Certificate& signingCert) {
+bool SignValidator::verifyChain(Botan::X509_Certificate& userCert, Botan::X509_Certificate& signingCert)
+{
     // todo read from file
     Botan::X509_Certificate rootCert = loadCert("-----BEGIN CERTIFICATE-----\n"
                                                 "MIICtzCCAl2gAwIBAgIULEIMR/HPAXg/PQkhZEXnJXNd98QwCgYIKoZIzj0EAwIw\n"
@@ -97,13 +108,11 @@ bool SignValidator::verifyChain(Botan::X509_Certificate& userCert, Botan::X509_C
                                                 "AgNIADBFAiEAz2T36en6LUblEKpxuj/4x2ubtqKe4KirO4IQVVNm2V8CIAZd/YHe\n"
                                                 "Ypl/DHcf4PWOvgXbaK/9mPd0SyygR5qLLbYf\n"
                                                 "-----END CERTIFICATE-----");
-    
+
     // define validation restrictions
     std::set<std::string> trusted_hashes;
     trusted_hashes.insert("SHA-256");
-    Botan::Path_Validation_Restrictions validation_restrictions(
-            false,80, false, trusted_hashes
-            );
+    Botan::Path_Validation_Restrictions validation_restrictions(false, 80, false, trusted_hashes);
 
     // create the certificate store containing the trusted certificate (the root CA certificate)
     Botan::Certificate_Store_In_Memory root_ca(rootCert);
@@ -116,16 +125,16 @@ bool SignValidator::verifyChain(Botan::X509_Certificate& userCert, Botan::X509_C
     chain_certs.push_back(signingCert);
 
     // verify the certificate chain
-    Botan::Path_Validation_Result path_validation_result = Botan::x509_path_validate(
-            chain_certs, validation_restrictions, trusted_root
-            );
+    Botan::Path_Validation_Result path_validation_result =
+            Botan::x509_path_validate(chain_certs, validation_restrictions, trusted_root);
     bool valid = path_validation_result.successful_validation();
-    std::cout << "Certificate chain is " <<  (valid? "valid\n" : "invalid\n");
+    std::cout << "Certificate chain is " << (valid ? "valid\n" : "invalid\n");
 
     return valid;
 }
 
-bool SignValidator::validateSignature(Signature& signature) {
+bool SignValidator::validateSignature(Signature& signature)
+{
     Botan::X509_Certificate userCert = loadCert(signature.getUserCert());
     Botan::X509_Certificate signingCert = loadCert(signature.getSigningCert());
     Botan::Public_Key* userPublicKey = loadPublicKey(userCert);
@@ -140,5 +149,5 @@ bool SignValidator::validateSignature(Signature& signature) {
 }
 
 
-}
-}
+} // namespace Common
+} // namespace Tucuxi
