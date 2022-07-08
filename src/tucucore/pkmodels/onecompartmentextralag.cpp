@@ -114,18 +114,6 @@ inline void OneCompartmentExtraLagMicro::compute(
             _concentrations2[i] = concentrations2post[i];
         }
     }
-
-
-// In ezechiel, the equation of cencenrations2 for single points was different.
-// After the test, if the result is strange,
-// try to use following equation for calculation of single points
-#if 0
-    // a.cwiseQuotient(b): element wise division of Matrix
-    Eigen::VectorXd concentrations2 =
-        (m_F * m_D * logs(Exponentials::Ka)).
-    cwiseQuotient((m_V * (1*Eigen::VectorXd::Ones(logs(Exponentials::Ka).size()) -
-        logs(Exponentials::Ka))));
-#endif
 }
 
 void OneCompartmentExtraLagMicro::computeExponentials(Eigen::VectorXd& _times)

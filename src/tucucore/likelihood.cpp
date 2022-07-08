@@ -86,7 +86,7 @@ Value Likelihood::negativeLogLikelihood(const ValueVector& _etas) const
 
     // If we have a really big problem, like we have a log of zero
     if (std::isnan(gll)) {
-        //        EXLOG(QtWarningMsg, ezechiel::math::NOEZERROR, QObject::tr("Log likelihood is NAN"))
+        //        EXLOG(QtWarningMsg, tucuxi::math::NOEZERROR, QObject::tr("Log likelihood is NAN"))
         gll = std::numeric_limits<double>::max();
     }
 
