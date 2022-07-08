@@ -231,7 +231,7 @@ unique_ptr<Core::PatientCovariate> QueryImport::createCovariateData(Common::XmlN
 struct CmpByDate
 {
     inline bool operator()(
-            const std::unique_ptr<Tucuxi::Core::Sample>& _a, const std::unique_ptr<Tucuxi::Core::Sample>& _b)
+            const std::unique_ptr<Tucuxi::Query::FullSample>& _a, const std::unique_ptr<Tucuxi::Query::FullSample>& _b)
     {
         return _a->getDate() < _b->getDate();
     }
@@ -257,7 +257,7 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
     Common::XmlNodeIterator treatmentRootIterator = _drugDataRootIterator->getChildren(TREATMENT_NODE_NAME);
     unique_ptr<Treatment> pTreatment = createTreatment(treatmentRootIterator);
 
-    vector<unique_ptr<Tucuxi::Core::Sample> > samples;
+    vector<unique_ptr<Tucuxi::Query::FullSample> > samples;
     Common::XmlNodeIterator samplesRootIterator = _drugDataRootIterator->getChildren(SAMPLES_NODE_NAME);
     Common::XmlNodeIterator samplesIterator = samplesRootIterator->getChildren();
     while (samplesIterator != Common::XmlNodeIterator::none()) {
@@ -433,7 +433,7 @@ unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIt
             tMax);
 }
 
-unique_ptr<Tucuxi::Core::Sample> QueryImport::createSampleData(
+unique_ptr<Tucuxi::Query::FullSample> QueryImport::createSampleData(
         Common::XmlNodeIterator& _sampleDataRootIterator, Common::XmlNodeIterator& _concentrationRootIterator)
 {
     static const string SAMPLE_ID_NODE_NAME = "sampleId";
@@ -449,7 +449,7 @@ unique_ptr<Tucuxi::Core::Sample> QueryImport::createSampleData(
     Tucuxi::Core::Value value(getChildDouble(_concentrationRootIterator, VALUE_NODE_NAME));
     TucuUnit unit = getChildUnit(_concentrationRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
 
-    return make_unique<Tucuxi::Core::Sample>(sampleDate, analyteId, value, unit);
+    return make_unique<Tucuxi::Query::FullSample>(sampleId, sampleDate, analyteId, value, unit);
 }
 
 //unique_ptr<Tucuxi::Core::ConcentrationData> QueryImport::createConcentrationData(Common::XmlNodeIterator& _concentrationDataRootIterator)

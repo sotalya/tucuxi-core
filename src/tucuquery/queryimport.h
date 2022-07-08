@@ -21,6 +21,8 @@
 #include "tucucore/drugtreatment/sample.h"
 #include "tucucore/drugtreatment/target.h"
 
+#include "tucuquery/fullsample.h"
+
 #include "querydata.h"
 
 struct TestDosageImportExport;
@@ -78,7 +80,7 @@ protected:
     std::unique_ptr<Core::PatientCovariate> createCovariateData(Common::XmlNodeIterator& _covariateDataRootIterator);
     std::unique_ptr<DrugData> createDrugData(Common::XmlNodeIterator& _drugDataRootIterator);
     std::unique_ptr<Tucuxi::Core::Target> createTargetData(Common::XmlNodeIterator& _targetDataRootIterator);
-    std::unique_ptr<Tucuxi::Core::Sample> createSampleData(
+    std::unique_ptr<Tucuxi::Query::FullSample> createSampleData(
             Common::XmlNodeIterator& _sampleDataRootIterator, Common::XmlNodeIterator& _concentrationRootIterator);
     //    std::unique_ptr<Tucuxi::Core::ConcentrationData> createConcentrationData(Common::XmlNodeIterator& _concentrationDataRootIterator) ;
     std::unique_ptr<Treatment> createTreatment(Common::XmlNodeIterator& _treatmentRootIterator);
