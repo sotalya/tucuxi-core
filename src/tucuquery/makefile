@@ -15,7 +15,7 @@ SOURCES := \
            computingqueryresponse.cpp \
            computingqueryresponsexmlexport.cpp \
            computingresponseexport.cpp \
-           fullsample.cpp
+           fullsample.cpp \
            parametersdata.cpp \
            querycomputer.cpp \
            querydata.cpp \

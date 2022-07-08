@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef FULLSAMPLE_H
 #define FULLSAMPLE_H
 
@@ -28,7 +30,6 @@ public:
     std::string getSampleId() const;
 
 protected:
-
     /// Sample ID
     const std::string m_sampleID;
 };
