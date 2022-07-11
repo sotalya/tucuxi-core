@@ -1,9 +1,5 @@
 //@@license@@
 
-//
-// Created by fiona on 6/23/22.
-//
-
 #ifndef TUCUXI_SIGNATUREVALIDATOR_H
 #define TUCUXI_SIGNATUREVALIDATOR_H
 
@@ -26,6 +22,17 @@
 namespace Tucuxi {
 namespace Common {
 
+enum class SignatureError
+{
+    SIGNATURE_OK = 1,
+    CHAIN_OK = 1,
+    SIGNATURE_VALID = 1,
+    SIGNATURE_NOT_OK = -1,
+    CHAIN_NOT_OK = -1,
+    SIGNATURE_INVALID = -1,
+    UNABLE_TO_LOAD_ROOTCA_CERT = -2,
+};
+
 class SignValidator
 {
 private:
@@ -44,19 +51,19 @@ private:
     /// \param base64Signature The signature
     /// \param signedData The data that has been signed
     /// \return True if the signature is valid
-    static bool verifySignature(Botan::Public_Key* publicKey, std::string base64Signature, std::string signedData);
+    static SignatureError verifySignature(Botan::Public_Key* publicKey, std::string base64Signature, std::string signedData);
 
     /// \brief Verify the certificate chain
     /// \param userCert The user certificate
     /// \param signingCert The intermediate certificate
     /// \return True if the certificate chain is valid
-    static bool verifyChain(Botan::X509_Certificate& userCert, Botan::X509_Certificate& signingCert);
+    static SignatureError verifyChain(Botan::X509_Certificate& userCert, Botan::X509_Certificate& signingCert);
 
 public:
     /// \brief Validate a signature
     /// \param signature The signature to validate
     /// \return True if the signature and certificate chain is valid
-    static bool validateSignature(Signature& signature);
+    static SignatureError validateSignature(Signature& signature);
 
     /// \brief Load the certificate owner information
     /// \param certPem The PEM encoded certificate

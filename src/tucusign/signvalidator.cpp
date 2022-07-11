@@ -1,16 +1,12 @@
 //@@license@@
 
-//
-// Created by fiona on 6/23/22.
-//
-
 #include <cstring>
 #include <sstream>
-
+#include <fstream>
+#include "tucucommon/loggerhelper.h"
 #include <botan/auto_rng.h>
 #include <botan/base64.h>
 #include <botan/data_src.h>
-#include <botan/hex.h>
 #include <botan/pem.h>
 #include <botan/pk_keys.h>
 #include <botan/pubkey.h>
@@ -30,8 +26,10 @@ Botan::X509_Certificate SignValidator::loadCert(std::string certPem)
     // decode PEM certificate
     std::string label;
     Botan::secure_vector<uint8_t> decoded_pem = Botan::PEM_Code::decode(certPem, label);
+
     // load data source
     Botan::DataSource_Memory data_source(decoded_pem);
+
     // create object certificate
     Botan::X509_Certificate cert(data_source);
     return cert;
@@ -45,9 +43,10 @@ Botan::Public_Key* SignValidator::loadPublicKey(Botan::X509_Certificate& cert)
 
 Signer SignValidator::loadSigner(std::string certPem)
 {
-    Botan::X509_Certificate cert = loadCert(certPem);
     Signer signer;
-    //"X520.Country""X520.Locality""X520.Organization""X520.State"
+    Botan::X509_Certificate cert = loadCert(certPem);
+
+    // get certificate subject info
     Botan::X509_DN subject_dn = cert.subject_dn();
     std::multimap<std::string, std::string> subject_dn_attr = subject_dn.contents();
     for (std::multimap<std::string, std::string>::iterator it = subject_dn_attr.begin(); it != subject_dn_attr.end();
@@ -65,12 +64,14 @@ Signer SignValidator::loadSigner(std::string certPem)
             size_t pos = it->second.find_last_of(' ');
             signer.setOrganizationName(it->second.substr(0, pos));
             signer.setOrganizationTrustLevel(it->second.substr(pos + 1));
+        } else if (std::strcmp(it->first.c_str(), "X520.State") == 0) {
+            signer.setCountry(it->second);
         }
     }
     return signer;
 }
 
-bool SignValidator::verifySignature(Botan::Public_Key* publicKey, std::string base64Signature, std::string signedData)
+SignatureError SignValidator::verifySignature(Botan::Public_Key* publicKey, std::string base64Signature, std::string signedData)
 {
     // decode base 64 signature
     Botan::secure_vector<uint8_t> signature = Botan::base64_decode(base64Signature);
@@ -85,34 +86,33 @@ bool SignValidator::verifySignature(Botan::Public_Key* publicKey, std::string ba
 
     free(publicKey);
 
-    return valid;
+    if (valid) {
+        return SignatureError::SIGNATURE_OK;
+    } else {
+        return SignatureError::SIGNATURE_NOT_OK;
+    }
 }
 
-bool SignValidator::verifyChain(Botan::X509_Certificate& userCert, Botan::X509_Certificate& signingCert)
+
+SignatureError SignValidator::verifyChain(Botan::X509_Certificate& userCert, Botan::X509_Certificate& signingCert)
 {
     // todo read from file
-    Botan::X509_Certificate rootCert = loadCert("-----BEGIN CERTIFICATE-----\n"
-                                                "MIICtzCCAl2gAwIBAgIULEIMR/HPAXg/PQkhZEXnJXNd98QwCgYIKoZIzj0EAwIw\n"
-                                                "gacxCzAJBgNVBAYTAkNIMRQwEgYDVQQIDAtTd2l0emVybGFuZDEQMA4GA1UEBwwH\n"
-                                                "WXZlcmRvbjEPMA0GA1UECgwGVHVjdXhpMSUwIwYDVQQLDBxUdWN1eGkgQ2VydGlm\n"
-                                                "aWNhdGUgQXV0aG9yaXR5MRcwFQYDVQQDDA5UdWN1eGkgUm9vdCBDQTEfMB0GCSqG\n"
-                                                "SIb3DQEJARYQdHVjdXhpQHR1Y3V4aS5jaDAgFw0yMjA2MjkxNTM3MDBaGA8yMDcy\n"
-                                                "MDYxNjE1MzcwMFowgacxCzAJBgNVBAYTAkNIMRQwEgYDVQQIDAtTd2l0emVybGFu\n"
-                                                "ZDEQMA4GA1UEBwwHWXZlcmRvbjEPMA0GA1UECgwGVHVjdXhpMSUwIwYDVQQLDBxU\n"
-                                                "dWN1eGkgQ2VydGlmaWNhdGUgQXV0aG9yaXR5MRcwFQYDVQQDDA5UdWN1eGkgUm9v\n"
-                                                "dCBDQTEfMB0GCSqGSIb3DQEJARYQdHVjdXhpQHR1Y3V4aS5jaDBZMBMGByqGSM49\n"
-                                                "AgEGCCqGSM49AwEHA0IABFKLloS8GpWxUMcWnkHe6jjIepaS5ftU7D0XqBm2/k18\n"
-                                                "djhnJmzI+SX90WnSl56I9xrvSU4s6rFDdbeMFxRZb8OjYzBhMB0GA1UdDgQWBBQc\n"
-                                                "1i5wy2MxvV/QUlqK4tNzvTIGtzAfBgNVHSMEGDAWgBQc1i5wy2MxvV/QUlqK4tNz\n"
-                                                "vTIGtzAPBgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBhjAKBggqhkjOPQQD\n"
-                                                "AgNIADBFAiEAz2T36en6LUblEKpxuj/4x2ubtqKe4KirO4IQVVNm2V8CIAZd/YHe\n"
-                                                "Ypl/DHcf4PWOvgXbaK/9mPd0SyygR5qLLbYf\n"
-                                                "-----END CERTIFICATE-----");
+    LoggerHelper logger;
+    std::ifstream ROOTCAFile("/home/fiona/Desktop/tucuxi/2022-gamboni/dev/tucuxi-core/src/tucusign/ROOT_CA_PEM.pem");
+    if (!ROOTCAFile.is_open()) {
+        logger.error("Could not open ROOT CA cert");
+        return SignatureError::UNABLE_TO_LOAD_ROOTCA_CERT;
+    }
+    std::string rootCertPem = std::string((std::istreambuf_iterator<char>(ROOTCAFile)), std::istreambuf_iterator<char>());
+
+    Botan::X509_Certificate rootCert = loadCert(rootCertPem);
 
     // define validation restrictions
     std::set<std::string> trusted_hashes;
     trusted_hashes.insert("SHA-256");
-    Botan::Path_Validation_Restrictions validation_restrictions(false, 80, false, trusted_hashes);
+    Botan::Path_Validation_Restrictions validation_restrictions(
+            false, 80, false, trusted_hashes
+            );
 
     // create the certificate store containing the trusted certificate (the root CA certificate)
     Botan::Certificate_Store_In_Memory root_ca(rootCert);
@@ -125,27 +125,42 @@ bool SignValidator::verifyChain(Botan::X509_Certificate& userCert, Botan::X509_C
     chain_certs.push_back(signingCert);
 
     // verify the certificate chain
-    Botan::Path_Validation_Result path_validation_result =
-            Botan::x509_path_validate(chain_certs, validation_restrictions, trusted_root);
+    Botan::Path_Validation_Result path_validation_result = Botan::x509_path_validate(
+            chain_certs, validation_restrictions, trusted_root
+            );
     bool valid = path_validation_result.successful_validation();
     std::cout << "Certificate chain is " << (valid ? "valid\n" : "invalid\n");
 
-    return valid;
+    if (valid) {
+        return SignatureError::CHAIN_OK;
+    } else {
+        return SignatureError::CHAIN_NOT_OK;
+    }
+
 }
 
-bool SignValidator::validateSignature(Signature& signature)
+SignatureError SignValidator::validateSignature(Signature& signature)
 {
     Botan::X509_Certificate userCert = loadCert(signature.getUserCert());
     Botan::X509_Certificate signingCert = loadCert(signature.getSigningCert());
     Botan::Public_Key* userPublicKey = loadPublicKey(userCert);
 
     // verify signature
-    bool isSignatureValid = verifySignature(userPublicKey, signature.getValue(), signature.getSignedData());
+    SignatureError isSignatureValid = verifySignature(
+            userPublicKey, signature.getValue(), signature.getSignedData()
+            );
 
     // verify certificate chain
-    bool isChainValid = verifyChain(userCert, signingCert);
+    SignatureError isChainValid = verifyChain(userCert, signingCert);
 
-    return isSignatureValid && isChainValid;
+    if (isSignatureValid == SignatureError::SIGNATURE_OK && isChainValid == SignatureError::CHAIN_OK) {
+        return SignatureError::SIGNATURE_VALID;
+    } else if (isChainValid == SignatureError::UNABLE_TO_LOAD_ROOTCA_CERT) {
+        return SignatureError::UNABLE_TO_LOAD_ROOTCA_CERT;
+    } else {
+        return SignatureError::SIGNATURE_INVALID;
+    }
+
 }
 
 

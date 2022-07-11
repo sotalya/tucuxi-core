@@ -16,6 +16,7 @@ include(../general.pri)
 include(../tucucommon.pri)
 include(../tucucore.pri)
 include(../tucuquery.pri)
+include(../tucusign.pri)
 
 
 HEADERS += \

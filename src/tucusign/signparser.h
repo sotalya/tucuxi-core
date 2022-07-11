@@ -1,9 +1,5 @@
 //@@license@@
 
-//
-// Created by fiona on 6/23/22.
-//
-
 #ifndef TUCUXI_SIGNPARSER_H
 #define TUCUXI_SIGNPARSER_H
 
@@ -18,13 +14,20 @@
 namespace Tucuxi {
 namespace Common {
 
+enum class ParsingError
+{
+    SIGNATURE_OK = 1,
+    UNABLE_TO_LOAD_DRUGFILE = -1,
+    NO_SIGNATURE = -2,
+};
+
 class SignParser
 {
 public:
     /// \brief Load a Signature from a drug file
     /// \param signedDrugfilePath The signed drug file path
     /// \return The Signature object
-    static Signature loadSignature(std::string signedDrugfilePath);
+    static ParsingError loadSignature(std::string signedDrugfilePath, Signature& signature);
 
 private:
     /// \brief Extract the information from the signature node

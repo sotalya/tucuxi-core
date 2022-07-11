@@ -1,9 +1,5 @@
 //@@license@@
 
-//
-// Created by fiona on 6/24/22.
-//
-
 #ifndef TUCUXI_SIGNATURE_H
 #define TUCUXI_SIGNATURE_H
 

@@ -1,40 +1,39 @@
 //@@license@@
 
-//
-// Created by fiona on 6/23/22.
-//
-
-#include <iostream>
-
 #include "signparser.h"
-
+#include "tucucommon/loggerhelper.h"
 #include "tucucommon/xmldocument.h"
 #include "tucucommon/xmliterator.h"
 #include "tucucommon/xmlnode.h"
-
 #include "signature.h"
 
 namespace Tucuxi {
 namespace Common {
 
-// todo handle error
+const std::vector<std::string> OPTIONAL_NODES_NAME = {"comments", "description"};
 
-Signature SignParser::loadSignature(std::string signedDrugfilePath)
+ParsingError SignParser::loadSignature(std::string signedDrugfilePath, Signature& signature)
 {
+    LoggerHelper logger;
     XmlDocument document;
     if (!document.open(signedDrugfilePath)) {
-        std::cerr << "Error";
-        exit(1);
+        logger.error("Could not open drug file");
+        return ParsingError::UNABLE_TO_LOAD_DRUGFILE;
     }
     else {
-        Signature signature;
         XmlNode root = document.getRoot();
         XmlNodeIterator signatureIterator = root.getChildren("signature");
+
+        if (!signatureIterator->isValid()) {
+            logger.error("The drug file has not been signed");
+            return ParsingError::NO_SIGNATURE;
+        }
+
         // extract data from xml
         extractSignature(signatureIterator, signature);
         extractSignedData(document, root, signatureIterator, signature);
 
-        return signature;
+        return ParsingError::SIGNATURE_OK;
     }
 }
 
@@ -48,8 +47,7 @@ void SignParser::extractSignedData(
 
     if (signature.getPartial()) {
         // remove optional nodes
-        std::vector<std::string> nodesName = {"comments", "description"};
-        for (const auto& nodeName : nodesName) {
+        for (const auto& nodeName : OPTIONAL_NODES_NAME) {
             root.removeNodes(nodeName);
             root = document.getRoot();
         }

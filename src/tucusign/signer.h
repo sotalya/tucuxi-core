@@ -1,9 +1,5 @@
 //@@license@@
 
-//
-// Created by fiona on 6/30/22.
-//
-
 #ifndef TUCUXI_SIGNER_H
 #define TUCUXI_SIGNER_H
 
@@ -18,10 +14,11 @@ public:
     Signer(){};
     Signer(std::string name,
            std::string countryCode,
+           std::string country,
            std::string locality,
            std::string orgaName,
            std::string orgaTrustLevel)
-        : name(std::move(name)), countryCode(std::move(countryCode)), locality(std::move(locality)),
+        : name(std::move(name)), countryCode(std::move(countryCode)), country(std::move(country)), locality(std::move(locality)),
           organizationName(std::move(orgaName)), organizationTrustLevel(std::move(orgaTrustLevel)){};
 
     void setName(std::string _name)
@@ -32,6 +29,11 @@ public:
     void setCountryCode(std::string _countryCode)
     {
         this->countryCode = std::move(_countryCode);
+    }
+
+    void setCountry(std::string _country)
+    {
+        this->country = std::move(_country);
     }
 
     void setLocality(std::string _locality)
@@ -52,7 +54,8 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Signer& signer)
     {
         os << "Name: " << signer.name << "\n"
-           << "Country: " << signer.countryCode << "\n"
+           << "Country code: " << signer.countryCode << "\n"
+           << "Country : " << signer.country << "\n"
            << "Locality: " << signer.locality << "\n"
            << "Organization name: " << signer.organizationName << "\n"
            << "Organization trust level: " << signer.organizationTrustLevel << "\n";
@@ -62,6 +65,7 @@ public:
 private:
     std::string name;
     std::string countryCode;
+    std::string country;
     std::string locality;
     std::string organizationName;
     std::string organizationTrustLevel;
