@@ -372,6 +372,50 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkOperations(const DrugMo
     return {true, ""};
 }
 
+
+DrugModelChecker::CheckerResult_t DrugModelChecker::checkOperation(Operation* _operation)
+{
+    if (_operation != nullptr) {
+        OperationInputList inputList;
+        for (const auto& input : _operation->getInputs()) {
+            switch (input.getType()) {
+            case InputType::BOOL: {
+                inputList.push_back(OperationInput(input.getName(), true));
+            } break;
+            case InputType::DOUBLE: {
+                inputList.push_back(OperationInput(input.getName(), 1.0));
+            } break;
+            case InputType::INTEGER: {
+                inputList.push_back(OperationInput(input.getName(), 1));
+            } break;
+            }
+        }
+
+        JSOperation* jsOperation = dynamic_cast<JSOperation*>(_operation);
+        if (jsOperation != nullptr) {
+            if (!jsOperation->checkOperation(inputList)) {
+
+                std::string exp = jsOperation->getExpression();
+                std::stringstream sstream(exp);
+                std::string line;
+                std::string numberedExp;
+
+                int lineIndex = 0;
+                while (std::getline(sstream, line, '\n')) {
+                    numberedExp += std::to_string(lineIndex) + " .\t" + line + "\n";
+                    lineIndex++;
+                }
+
+
+                return {false,
+                        "The operation could not be evaluated with input values being 1 (for double and int) and true for booleans. Maybe you forgot to set up some of the required inputs in the input list: \n\n"
+                                + numberedExp + "\n\nSpecific error message: \n" + _operation->getLastErrorMessage()};
+            }
+        }
+    }
+    return {true, ""};
+}
+
 DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugModel* _drugModel)
 {
     auto drugTreatment = std::make_unique<DrugTreatment>();

@@ -97,6 +97,17 @@ public:
     Status importFromString(std::unique_ptr<DrugModel>& _drugModel, const std::string& _xml);
 
     ///
+    /// \brief importOperationFromFile
+    /// \param _operation A reference to an Operation unique pointer that will be allocated within the function
+    /// \param _fileName The name of the file in which the operation is stored
+    /// \return Result_Ok if the import went well, another Result else.
+    /// This function is reentrant.
+    /// It is meant to be used by the the DrugModelChecker to help the online drug model editor.
+    ///
+    DrugModelImport::Status importOperationFromFile(
+            std::unique_ptr<Tucuxi::Core::Operation>& _operation, const std::string& _fileName);
+
+    ///
     /// \brief importOperationFromString
     /// \param _operation A reference to an Operation unique pointer that will be allocated within the function
     /// \param _xml A string in which the operation is stored

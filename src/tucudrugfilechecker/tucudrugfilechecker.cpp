@@ -33,6 +33,8 @@ cxxopts::ParseResult parse(int _argc, char* _argv[])
                 .add_options()
                 ("d,drugfilecontent", "Drug file content", cxxopts::value<std::string>())
                 ("f,drugfilepath", "Drug file path", cxxopts::value<std::string>())
+                ("c,operationfilecontent", "Operation content", cxxopts::value<std::string>())
+                ("p,operationfilepath", "Operation file path", cxxopts::value<std::string>())
                 ("help", "Print help")
                 ;
         // clang-format on
@@ -46,11 +48,22 @@ cxxopts::ParseResult parse(int _argc, char* _argv[])
 
         std::string drugFileContent;
         std::string drugFilePath;
+        std::string operationFileContent;
+        std::string operationFilePath;
+        bool checkDrugFile = false;
         if (result.count("drugfilecontent") > 0) {
             drugFileContent = result["drugfilecontent"].as<std::string>();
+            checkDrugFile = true;
         }
         else if (result.count("drugfilepath") > 0) {
             drugFilePath = result["drugfilepath"].as<std::string>();
+            checkDrugFile = true;
+        }
+        else if (result.count("operationfilecontent") > 0) {
+            operationFileContent = result["operationfilecontent"].as<std::string>();
+        }
+        else if (result.count("operationfilepath") > 0) {
+            operationFilePath = result["operationfilepath"].as<std::string>();
         }
         else {
             std::cout << "The drug file content of path is mandatory" << std::endl << std::endl;
@@ -68,45 +81,78 @@ cxxopts::ParseResult parse(int _argc, char* _argv[])
         //        logHelper.info("Test file : {}", testsFileName);
         //        logHelper.info("Log file  : {}", logFileName);
 
-        //Scan the drug
+        if (checkDrugFile) {
+            //Scan the drug
 
-        std::unique_ptr<Tucuxi::Core::DrugModel> dModel;
+            std::unique_ptr<Tucuxi::Core::DrugModel> dModel;
 
-        Tucuxi::Core::DrugModelImport importer;
+            Tucuxi::Core::DrugModelImport importer;
 
-        if (drugFileContent.empty()) {
-            if (importer.importFromFile(dModel, drugFilePath) != Tucuxi::Core::DrugModelImport::Status::Ok) {
-                std::cout << "Can not import the drug file.\n\n" << importer.getErrorMessage() << std::endl;
-                exit(3);
+            if (drugFileContent.empty()) {
+                if (importer.importFromFile(dModel, drugFilePath) != Tucuxi::Core::DrugModelImport::Status::Ok) {
+                    std::cout << "Can not import the drug file.\n\n" << importer.getErrorMessage() << std::endl;
+                    exit(3);
+                }
+            }
+            else {
+                if (importer.importFromString(dModel, drugFileContent) != Tucuxi::Core::DrugModelImport::Status::Ok) {
+                    std::cout << "Can not import the drug file content.\n\n" << importer.getErrorMessage() << std::endl;
+                    exit(3);
+                }
+            }
+
+
+
+
+            Tucuxi::Core::DrugModelChecker checker;
+
+            Tucuxi::Core::PkModelCollection pkCollection;
+
+            if (!defaultPopulate(pkCollection)) {
+                std::cout << "Could not populate the Pk models collection. No model will be available" << std::endl;
+                exit(2);
+            }
+
+            Tucuxi::Core::DrugModelChecker::CheckerResult_t checkerResult =
+                    checker.checkDrugModel(dModel.get(), &pkCollection);
+            if (!checkerResult.m_ok) {
+                std::cout << checkerResult.m_errorMessage << std::endl;
+                exit(4);
+            }
+            else {
+                std::cout << "The drug file seems valid, and should at least give some results in Tucuxi." << std::endl;
             }
         }
         else {
-            if (importer.importFromString(dModel, drugFileContent) != Tucuxi::Core::DrugModelImport::Status::Ok) {
-                std::cout << "Can not import the drug file.\n\n" << importer.getErrorMessage() << std::endl;
-                exit(3);
+            // We deal with an operation
+
+            Tucuxi::Core::DrugModelImport importer;
+            std::unique_ptr<Tucuxi::Core::Operation> operation;
+            if (operationFileContent.empty()) {
+                if (importer.importOperationFromFile(operation, operationFilePath)
+                    != Tucuxi::Core::DrugModelImport::Status::Ok) {
+                    std::cout << "Can not import the operation file.\n\n" << importer.getErrorMessage() << std::endl;
+                    exit(5);
+                }
             }
-        }
+            else {
+                if (importer.importOperationFromString(operation, operationFileContent)
+                    != Tucuxi::Core::DrugModelImport::Status::Ok) {
+                    std::cout << "Can not import the operation content.\n\n" << importer.getErrorMessage() << std::endl;
+                    exit(5);
+                }
+            }
 
-
-
-
-        Tucuxi::Core::DrugModelChecker checker;
-
-        Tucuxi::Core::PkModelCollection pkCollection;
-
-        if (!defaultPopulate(pkCollection)) {
-            std::cout << "Could not populate the Pk models collection. No model will be available" << std::endl;
-            exit(2);
-        }
-
-        Tucuxi::Core::DrugModelChecker::CheckerResult_t checkerResult =
-                checker.checkDrugModel(dModel.get(), &pkCollection);
-        if (!checkerResult.m_ok) {
-            std::cout << checkerResult.m_errorMessage << std::endl;
-            exit(4);
-        }
-        else {
-            std::cout << "The drug file seems valid, and should at least give some results in Tucuxi." << std::endl;
+            Tucuxi::Core::DrugModelChecker checker;
+            Tucuxi::Core::DrugModelChecker::CheckerResult_t checkerResult = checker.checkOperation(operation.get());
+            if (!checkerResult.m_ok) {
+                std::cout << checkerResult.m_errorMessage << std::endl;
+                exit(6);
+            }
+            else {
+                std::cout << "The operation file seems valid, and should at least give some results in Tucuxi."
+                          << std::endl;
+            }
         }
 
         return result;

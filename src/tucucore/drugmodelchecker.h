@@ -28,6 +28,8 @@ public:
 
     CheckerResult_t checkDrugModel(const DrugModel* _drugModel, const PkModelCollection* _pkCollection);
 
+    CheckerResult_t checkOperation(Operation* _operation);
+
 protected:
     ///
     /// \brief checkAnalytes
