@@ -50,19 +50,20 @@ private:
     /// \param publicKey The public key
     /// \param base64Signature The signature
     /// \param signedData The data that has been signed
-    /// \return True if the signature is valid
+    /// \return SIGNATURE_OK if the signature is valid, SIGNATURE_NOT_OK otherwise
     static SignatureError verifySignature(Botan::Public_Key* publicKey, std::string base64Signature, std::string signedData);
 
     /// \brief Verify the certificate chain
     /// \param userCert The user certificate
     /// \param signingCert The intermediate certificate
-    /// \return True if the certificate chain is valid
+    /// \return CHAIN_OK if the certificate chain is valid, CHAIN_NOT_OK otherwise
+    /// or UNABLE_TO_LOAD_ROOTCA_CERT if ROOT CA certificate couldn't be loaded
     static SignatureError verifyChain(Botan::X509_Certificate& userCert, Botan::X509_Certificate& signingCert);
 
 public:
     /// \brief Validate a signature
     /// \param signature The signature to validate
-    /// \return True if the signature and certificate chain is valid
+    /// \return SIGNATURE_VALID if the signature is valid, SIGNATURE_INVALID otherwise
     static SignatureError validateSignature(Signature& signature);
 
     /// \brief Load the certificate owner information

@@ -26,7 +26,9 @@ class SignParser
 public:
     /// \brief Load a Signature from a drug file
     /// \param signedDrugfilePath The signed drug file path
-    /// \return The Signature object
+    /// \return SIGNATURE_OK if the signature has been loaded
+    /// UNABLE_TO_LOAD_DRUGFILE if the drug file couldn't be loaded
+    /// NO_SIGNATURE if the drug file has not been signed (does not contain <signature>)
     static ParsingError loadSignature(std::string signedDrugfilePath, Signature& signature);
 
 private:
