@@ -1012,11 +1012,22 @@ public:
 
 
 
-    /// \brief Add a time range to the history.
+    /// \brief Add a time range to the history. This method
+    ///        guarantees that the time ranges are sorted by
+    ///        start date.
     /// \param _timeRange Time range to add.
     void addTimeRange(const DosageTimeRange& _timeRange)
     {
-        m_history.emplace_back(new DosageTimeRange(_timeRange));
+        // Get the insertion position
+        auto insertPosIt = std::upper_bound(m_history.begin(),
+                                            m_history.end(),
+                                            std::make_unique<DosageTimeRange>(_timeRange),
+            [](const std::unique_ptr<DosageTimeRange>& timeRange1, const std::unique_ptr<DosageTimeRange>& timeRange2){
+            return timeRange1->getStartDate() < timeRange2->getStartDate();
+        });
+
+        // Insert the dosage time range
+        m_history.emplace(insertPosIt, std::make_unique<DosageTimeRange>(_timeRange));
     }
 
     ///
