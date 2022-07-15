@@ -23,6 +23,8 @@ class ComputingQueryResponseXmlExport
 public:
     ComputingQueryResponseXmlExport();
 
+    virtual ~ComputingQueryResponseXmlExport();
+
     bool exportToString(const ComputingQueryResponse& _computingQueryResponse, std::string& _xmlString);
 
     bool exportToFile(const ComputingQueryResponse& _computingQueryResponse, const std::string& _fileName);
