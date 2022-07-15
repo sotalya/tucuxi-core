@@ -12,8 +12,7 @@ Sample::Sample(DateTime _date, AnalyteId _analyteId, Value _value, TucuUnit _uni
 {
 }
 
-Sample::~Sample()
-{}
+Sample::~Sample() {}
 
 DateTime Sample::getDate() const
 {
