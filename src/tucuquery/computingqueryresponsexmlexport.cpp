@@ -22,6 +22,8 @@ using namespace Core;
 
 ComputingQueryResponseXmlExport::ComputingQueryResponseXmlExport() {}
 
+ComputingQueryResponseXmlExport::~ComputingQueryResponseXmlExport() {}
+
 bool ComputingQueryResponseXmlExport::exportToFile(
         const ComputingQueryResponse& _computingQueryResponse, const std::string& _fileName)
 {
