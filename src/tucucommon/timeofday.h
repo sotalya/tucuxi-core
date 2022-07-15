@@ -34,6 +34,11 @@ public:
     /// In case the specifed duration is bigger than one day, we only use the remainder.
     TimeOfDay(std::chrono::seconds& _time);
 
+    /// \brief builds an unnormalized time of day (hours can be more than 23)
+    /// \param _time A duration
+    /// \return A TimeOfDay object where hours can be more than 23
+    static TimeOfDay buildUnnormalized(const Duration& _time);
+
     /// \brief Returns the duration since 0h00 in milliseconds
     /// \return The duration in milliseconds.
     int64 getDuration() const;

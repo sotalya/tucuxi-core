@@ -32,6 +32,13 @@ TimeOfDay::TimeOfDay(const Duration& _time)
 }
 
 
+TimeOfDay TimeOfDay::buildUnnormalized(const Duration& _time)
+{
+    TimeOfDay result;
+    result.m_time = std::chrono::duration<ChronoBaseType>(static_cast<double>(_time.toMilliseconds()) / 1000.0);
+    return result;
+}
+
 int64 TimeOfDay::getDuration() const
 {
     return std::chrono::duration_cast<std::chrono::milliseconds>(m_time).count();
