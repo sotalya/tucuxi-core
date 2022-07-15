@@ -79,6 +79,11 @@ public:
     Sample(DateTime _date, AnalyteId _analyteId, Value _value, TucuUnit _unit);
 
     ///
+    /// \brief Virtual destructor
+    ///
+    virtual ~Sample();
+
+    ///
     /// \brief Returns the date of measure
     /// \return The date of measure
     ///
