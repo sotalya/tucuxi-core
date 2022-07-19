@@ -12,7 +12,7 @@
 #include "signature.h"
 
 namespace Tucuxi {
-namespace Common {
+namespace Sign {
 
 const std::vector<std::string> OPTIONAL_NODES = {"comments", "description"};
 
@@ -56,7 +56,7 @@ private:
             Signature& signature);
 };
 
-} // namespace Common
+} // namespace Sign
 } // namespace Tucuxi
 
 #endif //TUCUXI_SIGNPARSER_H

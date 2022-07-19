@@ -20,7 +20,7 @@
 #include "signer.h"
 
 namespace Tucuxi {
-namespace Common {
+namespace Sign {
 
 enum class SignatureError
 {
@@ -53,7 +53,8 @@ private:
     /// \param signedData The data that has been signed
     /// \return SIGNATURE_OK if the signature is valid
     /// SIGNATURE_NOT_OK if the signature is not valid
-    static SignatureError verifySignature(Botan::Public_Key* publicKey, std::string base64Signature, std::string signedData);
+    static SignatureError verifySignature(
+            Botan::Public_Key* publicKey, std::string base64Signature, std::string signedData);
 
     /// \brief Verify the certificate chain
     /// \param userCert The user certificate
@@ -79,7 +80,7 @@ public:
     static Signer loadSigner(std::string certPem);
 };
 
-} // namespace Common
+} // namespace Sign
 } // namespace Tucuxi
 
 #endif //TUCUXI_SIGNATUREVALIDATOR_H

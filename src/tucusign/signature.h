@@ -6,7 +6,7 @@
 #include <string>
 
 namespace Tucuxi {
-namespace Common {
+namespace Sign {
 
 class Signature
 {
@@ -71,7 +71,7 @@ private:
     std::string signedData;
 };
 
-} // namespace Common
+} // namespace Sign
 } // namespace Tucuxi
 
 

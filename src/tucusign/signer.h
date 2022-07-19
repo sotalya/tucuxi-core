@@ -6,7 +6,7 @@
 #include <string>
 
 namespace Tucuxi {
-namespace Common {
+namespace Sign {
 
 class Signer
 {
@@ -18,8 +18,9 @@ public:
            std::string locality,
            std::string orgaName,
            std::string orgaTrustLevel)
-        : name(std::move(name)), countryCode(std::move(countryCode)), country(std::move(country)), locality(std::move(locality)),
-          organizationName(std::move(orgaName)), organizationTrustLevel(std::move(orgaTrustLevel)){};
+        : name(std::move(name)), countryCode(std::move(countryCode)), country(std::move(country)),
+          locality(std::move(locality)), organizationName(std::move(orgaName)),
+          organizationTrustLevel(std::move(orgaTrustLevel)){};
 
     void setName(std::string _name)
     {
@@ -71,7 +72,7 @@ private:
     std::string organizationTrustLevel;
 };
 
-} // namespace Common
+} // namespace Sign
 } // namespace Tucuxi
 
 #endif //TUCUXI_SIGNER_H

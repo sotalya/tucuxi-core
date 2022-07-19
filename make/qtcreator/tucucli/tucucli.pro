@@ -19,7 +19,7 @@ include(../tucuquery.pri)
 include(../tucusign.pri)
 
 # copy the root ca certificate in the output directory
-copydata.commands = $(COPY_DIR) ../../../src/tucusign/ca.cert.pem $$OUT_PWD
+copydata.commands = $(COPY_DIR) $$PWD/../../../src/tucusign/ca.cert.pem $$OUT_PWD
 first.depends = $(first) copydata
 export(first.depends)
 export(copydata.commands)

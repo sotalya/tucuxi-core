@@ -49,20 +49,20 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
 
         if (result.count("signature") > 0) {
             std::string signedDrugfilePath = result["signature"].as<std::string>();
-            Tucuxi::Common::Signature signature;
+            Tucuxi::Sign::Signature signature;
             // load signature from drug file
-            Tucuxi::Common::ParsingError parsingResponse =
-                    Tucuxi::Common::SignParser::loadSignature(signedDrugfilePath, signature);
+            Tucuxi::Sign::ParsingError parsingResponse =
+                    Tucuxi::Sign::SignParser::loadSignature(signedDrugfilePath, signature);
 
-            if (parsingResponse == Tucuxi::Common::ParsingError::SIGNATURE_OK) {
+            if (parsingResponse == Tucuxi::Sign::ParsingError::SIGNATURE_OK) {
                 // validate signature
-                Tucuxi::Common::SignatureError signatureResponse =
-                        Tucuxi::Common::SignValidator::validateSignature(signature);
+                Tucuxi::Sign::SignatureError signatureResponse =
+                        Tucuxi::Sign::SignValidator::validateSignature(signature);
 
-                if (signatureResponse == Tucuxi::Common::SignatureError::SIGNATURE_VALID) {
+                if (signatureResponse == Tucuxi::Sign::SignatureError::SIGNATURE_VALID) {
                     // print signer info
                     std::cout << "\nThe drug file has been signed by: \n"
-                              << Tucuxi::Common::SignValidator::loadSigner(signature.getUserCert())
+                              << Tucuxi::Sign::SignValidator::loadSigner(signature.getUserCert())
                               << std::endl;
                 }
             }
@@ -147,11 +147,7 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
     }
     catch (const cxxopts::OptionException& e) {
         logHelper.error("error parsing options: {}", e.what());
-
         return -1;
-
-
-        //retourner -1
     }
 }
 

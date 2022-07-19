@@ -1,14 +1,18 @@
 //@@license@@
 
 #include "signparser.h"
+
 #include "tucucommon/loggerhelper.h"
 #include "tucucommon/xmldocument.h"
 #include "tucucommon/xmliterator.h"
 #include "tucucommon/xmlnode.h"
+
 #include "signature.h"
 
 namespace Tucuxi {
-namespace Common {
+namespace Sign {
+
+using namespace Tucuxi::Common;
 
 ParsingError SignParser::loadSignature(std::string signedDrugfilePath, Signature& signature)
 {
@@ -90,5 +94,5 @@ void SignParser::extractCertificates(Tucuxi::Common::XmlNodeIterator node, Signa
     }
 }
 
-} // namespace Common
+} // namespace Sign
 } // namespace Tucuxi
