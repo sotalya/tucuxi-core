@@ -14,6 +14,8 @@
 namespace Tucuxi {
 namespace Common {
 
+const std::vector<std::string> OPTIONAL_NODES = {"comments", "description"};
+
 enum class ParsingError
 {
     SIGNATURE_OK = 1,

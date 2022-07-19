@@ -18,6 +18,12 @@ include(../tucucore.pri)
 include(../tucuquery.pri)
 include(../tucusign.pri)
 
+# copy the root ca certificate in the output directory
+copydata.commands = $(COPY_DIR) ../../../src/tucusign/ca.cert.pem $$OUT_PWD
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata
 
 HEADERS += \
     ../../../src/tucucli/clicomputer.h

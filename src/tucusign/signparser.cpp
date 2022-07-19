@@ -10,8 +10,6 @@
 namespace Tucuxi {
 namespace Common {
 
-const std::vector<std::string> OPTIONAL_NODES_NAME = {"comments", "description"};
-
 ParsingError SignParser::loadSignature(std::string signedDrugfilePath, Signature& signature)
 {
     LoggerHelper logger;
@@ -47,7 +45,7 @@ void SignParser::extractSignedData(
 
     if (signature.getPartial()) {
         // remove optional nodes
-        for (const auto& nodeName : OPTIONAL_NODES_NAME) {
+        for (const auto& nodeName : OPTIONAL_NODES) {
             root.removeNodes(nodeName);
             root = document.getRoot();
         }

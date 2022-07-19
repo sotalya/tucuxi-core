@@ -31,6 +31,7 @@ enum class SignatureError
     CHAIN_NOT_OK = -1,
     SIGNATURE_INVALID = -1,
     UNABLE_TO_LOAD_ROOTCA_CERT = -2,
+    MALFORMED_SIGNATURE = -3,
 };
 
 class SignValidator
@@ -50,25 +51,31 @@ private:
     /// \param publicKey The public key
     /// \param base64Signature The signature
     /// \param signedData The data that has been signed
-    /// \return SIGNATURE_OK if the signature is valid, SIGNATURE_NOT_OK otherwise
+    /// \return SIGNATURE_OK if the signature is valid
+    /// SIGNATURE_NOT_OK if the signature is not valid
     static SignatureError verifySignature(Botan::Public_Key* publicKey, std::string base64Signature, std::string signedData);
 
     /// \brief Verify the certificate chain
     /// \param userCert The user certificate
     /// \param signingCert The intermediate certificate
-    /// \return CHAIN_OK if the certificate chain is valid, CHAIN_NOT_OK otherwise
-    /// or UNABLE_TO_LOAD_ROOTCA_CERT if ROOT CA certificate couldn't be loaded
+    /// \return CHAIN_OK if the certificate chain is valid
+    /// CHAIN_NOT_OK if the certificate chain is not valid
+    /// UNABLE_TO_LOAD_ROOTCA_CERT if ROOT CA certificate couldn't be loaded
     static SignatureError verifyChain(Botan::X509_Certificate& userCert, Botan::X509_Certificate& signingCert);
 
 public:
     /// \brief Validate a signature
     /// \param signature The signature to validate
-    /// \return SIGNATURE_VALID if the signature is valid, SIGNATURE_INVALID otherwise
+    /// \return SIGNATURE_VALID if the signature is valid
+    /// SIGNATURE_INVALID if the signature is not valid
+    /// UNABLE_TO_LOAD_ROOT_CA_CERT if ROOT CA certificate couldn't be loaded
+    /// MALFORMED_SIGNATURE if the content of the signature is malformed
     static SignatureError validateSignature(Signature& signature);
 
     /// \brief Load the certificate owner information
     /// \param certPem The PEM encoded certificate
     /// \return The signer object containing the signer information
+    /// or a null signer if the certPem is malformed
     static Signer loadSigner(std::string certPem);
 };
 

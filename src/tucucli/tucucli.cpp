@@ -50,19 +50,20 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
         if (result.count("signature") > 0) {
             std::string signedDrugfilePath = result["signature"].as<std::string>();
             Tucuxi::Common::Signature signature;
-            Tucuxi::Common::ParsingError parsingResponse = Tucuxi::Common::SignParser::loadSignature(signedDrugfilePath, signature);
+            // load signature from drug file
+            Tucuxi::Common::ParsingError parsingResponse =
+                    Tucuxi::Common::SignParser::loadSignature(signedDrugfilePath, signature);
 
             if (parsingResponse == Tucuxi::Common::ParsingError::SIGNATURE_OK) {
-                try {
-                    Tucuxi::Common::SignatureError signatureResponse = Tucuxi::Common::SignValidator::validateSignature(signature);
+                // validate signature
+                Tucuxi::Common::SignatureError signatureResponse =
+                        Tucuxi::Common::SignValidator::validateSignature(signature);
 
-                    if (signatureResponse == Tucuxi::Common::SignatureError::SIGNATURE_VALID) {
-                        std::cout << "\nThe drug file has been signed by: \n"
-                                  << Tucuxi::Common::SignValidator::loadSigner(signature.getUserCert()) << std::endl;
-                    }
-                } catch (...) {
-                    logHelper.error("The drug file is not properly signed");
-                    exit(1);
+                if (signatureResponse == Tucuxi::Common::SignatureError::SIGNATURE_VALID) {
+                    // print signer info
+                    std::cout << "\nThe drug file has been signed by: \n"
+                              << Tucuxi::Common::SignValidator::loadSigner(signature.getUserCert())
+                              << std::endl;
                 }
             }
             exit(0);
