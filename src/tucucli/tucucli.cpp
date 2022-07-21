@@ -62,8 +62,7 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
                 if (signatureResponse == Tucuxi::Sign::SignatureError::SIGNATURE_VALID) {
                     // print signer info
                     std::cout << "\nThe drug file has been signed by: \n"
-                              << Tucuxi::Sign::SignValidator::loadSigner(signature.getUserCert())
-                              << std::endl;
+                              << Tucuxi::Sign::SignValidator::loadSigner(signature.getUserCert()) << std::endl;
                 }
             }
             exit(0);
