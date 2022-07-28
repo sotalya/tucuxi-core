@@ -63,6 +63,10 @@ public:
         return os;
     }
 
+    std::string getName() { return name; }
+    std::string getOrganizationName() { return organizationName; }
+    std::string getLocality() { return locality; }
+
 private:
     std::string name;
     std::string countryCode;
