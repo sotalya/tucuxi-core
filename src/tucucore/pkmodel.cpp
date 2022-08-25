@@ -9,6 +9,7 @@
 #include "tucucore/pkmodels/rkmichaelismentenenzyme.h"
 #include "tucucore/pkmodels/rkmichaelismentenonecomp.h"
 #include "tucucore/pkmodels/rkmichaelismententwocomp.h"
+#include "tucucore/pkmodels/rkmichaelismententwocompvmaxamount.h"
 #include "tucucore/pkmodels/rktwocompartmenterlang.h"
 #include "tucucore/pkmodels/rktwocompartmentextralag.h"
 #include "tucucore/pkmodels/threecompartmentbolus.h"
@@ -347,6 +348,43 @@ bool defaultPopulate(PkModelCollection& _collection)
                 AbsorptionModel::Infusion, RkMichaelisMentenTwoCompInfusionMacro::getCreator());
         rc &= sharedPkModel->addParameterList(
                 AbsorptionModel::Infusion, RkMichaelisMentenTwoCompInfusionMacro::getParametersId());
+
+        Tucuxi::Common::TranslatableString elimination;
+        elimination.setString("Michaelis-Menten", "en");
+        sharedPkModel->setElimination(elimination);
+
+        Tucuxi::Common::TranslatableString distribution;
+        distribution.setString("Extra- or intra-vascular", "en");
+        sharedPkModel->setDistribution(distribution);
+
+        _collection.addPkModel(sharedPkModel);
+    }
+
+
+    {
+        std::shared_ptr<PkModel> sharedPkModel;
+        sharedPkModel =
+                std::make_shared<PkModel>("michaelismenten.vmaxamount.2comp.macro", PkModel::AllowMultipleRoutes::Yes);
+
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompVmaxAmountExtraMacro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompVmaxAmountExtraMacro::getParametersId());
+
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::ExtravascularLag, RkMichaelisMentenTwoCompVmaxAmountExtraLagMacro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::ExtravascularLag, RkMichaelisMentenTwoCompVmaxAmountExtraLagMacro::getParametersId());
+
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Intravascular, RkMichaelisMentenTwoCompVmaxAmountBolusMacro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Intravascular, RkMichaelisMentenTwoCompVmaxAmountBolusMacro::getParametersId());
+
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Infusion, RkMichaelisMentenTwoCompVmaxAmountInfusionMacro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Infusion, RkMichaelisMentenTwoCompVmaxAmountInfusionMacro::getParametersId());
 
         Tucuxi::Common::TranslatableString elimination;
         elimination.setString("Michaelis-Menten", "en");
