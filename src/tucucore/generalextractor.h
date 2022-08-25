@@ -61,7 +61,8 @@ public:
             GroupsIntakeSeries& _intakeSeries,
             CovariateSeries& _covariatesSeries,
             GroupsParameterSetSeries& _parameterSeries,
-            Common::DateTime& _calculationStartTime);
+            Common::DateTime& _calculationStartTime,
+            const Common::DateTime& _covariateEndDate = Common::DateTime::undefinedDateTime());
 
     ComputingStatus generalExtractions(
             const Tucuxi::Core::ComputingTraitStandard* _traits,
@@ -71,7 +72,8 @@ public:
             GroupsIntakeSeries& _intakeSeries,
             CovariateSeries& _covariatesSeries,
             GroupsParameterSetSeries& _parameterSeries,
-            Common::DateTime& _calculationStartTime);
+            Common::DateTime& _calculationStartTime,
+            const Common::DateTime& _covariateEndDate = Common::DateTime::undefinedDateTime());
 
     std::vector<const FullFormulationAndRoute*> extractFormulationAndRoutes(
             const DrugModel& _drugModel, const IntakeSeries& _intakeSeries);

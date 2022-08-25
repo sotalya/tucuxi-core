@@ -59,6 +59,7 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
             UnitType::Weight,
             {
                 {"kg", 1000.0},
+                {"Kg", 1000.0},
                 {"g", 1.0},
                 {"mg", 0.001},
                 {"ug", 0.000001}

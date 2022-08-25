@@ -204,7 +204,8 @@ ComputingStatus GeneralExtractor::generalExtractions(
         GroupsIntakeSeries& _intakeSeries,
         CovariateSeries& _covariatesSeries,
         GroupsParameterSetSeries& _parameterSeries,
-        DateTime& _calculationStartTime)
+        DateTime& _calculationStartTime,
+        const DateTime& _covariateEndDate)
 {
 
 
@@ -430,6 +431,12 @@ ComputingStatus GeneralExtractor::generalExtractions(
                     return exStatus;
                 }
             }
+            auto endDate = _traits->getEnd();
+            // This is used for dosage adjustment, because of neonates and the age that changes too rapidly,
+            // generating issues with finding a steady state
+            if (!_covariateEndDate.isUndefined()) {
+                endDate = _covariateEndDate;
+            }
             CovariateExtractor covariateExtractor(
                     _drugModel.getCovariates(), patientVariatesList, fantomStart, _traits->getEnd());
             ComputingStatus covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
@@ -544,7 +551,8 @@ ComputingStatus GeneralExtractor::generalExtractions(
         GroupsIntakeSeries& _intakeSeries,
         CovariateSeries& _covariatesSeries,
         GroupsParameterSetSeries& _parameterSeries,
-        DateTime& _calculationStartTime)
+        DateTime& _calculationStartTime,
+        const DateTime& _covariateEndTime)
 {
     return generalExtractions(
             _traits,
@@ -557,7 +565,8 @@ ComputingStatus GeneralExtractor::generalExtractions(
             _intakeSeries,
             _covariatesSeries,
             _parameterSeries,
-            _calculationStartTime);
+            _calculationStartTime,
+            _covariateEndTime);
 }
 
 

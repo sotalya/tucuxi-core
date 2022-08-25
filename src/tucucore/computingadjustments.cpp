@@ -512,6 +512,9 @@ ComputingStatus ComputingAdjustments::compute(
         ComputingTraitConcentration traits(
                 "0", _traits->getAdjustmentTime(), newEndTime, nbPointsPerHour, _traits->getComputingOption());
 
+        // We for the covariates to stop updating after the adjustment time, in order to reach steady state
+        // specially for neonates and age in days
+        auto covariateEndTime = _traits->getAdjustmentTime() + Duration(std::chrono::hours(1));
 
         GroupsIntakeSeries intakeSeries;
         CovariateSeries unusedCovariateSeries;
@@ -526,7 +529,8 @@ ComputingStatus ComputingAdjustments::compute(
                 intakeSeries,
                 unusedCovariateSeries,
                 parameterSeries,
-                calculationStartTime);
+                calculationStartTime,
+                covariateEndTime);
 
         if (extractionResult != ComputingStatus::Ok) {
             return extractionResult;
