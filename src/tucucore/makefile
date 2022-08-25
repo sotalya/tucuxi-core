@@ -83,6 +83,7 @@ SOURCES := \
            pkmodels/rkmichaelismentenenzyme.cpp \
            pkmodels/rkmichaelismentenonecomp.cpp \
            pkmodels/rkmichaelismententwocomp.cpp \
+           pkmodels/rkmichaelismententwocompvmaxamount.cpp \
            pkmodels/rkonecompartmentextra.cpp \
            pkmodels/rkonecompartmentgammaextra.cpp \
            pkmodels/rktwocompartmenterlang.cpp \
