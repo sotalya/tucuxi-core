@@ -364,7 +364,43 @@ bool defaultPopulate(PkModelCollection& _collection)
     {
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel =
-                std::make_shared<PkModel>("michaelismenten.vmaxamount.2comp.macro", PkModel::AllowMultipleRoutes::Yes);
+                std::make_shared<PkModel>("michaelismenten.2comp.vmaxamount.micro", PkModel::AllowMultipleRoutes::Yes);
+
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompVmaxAmountExtraMicro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompVmaxAmountExtraMicro::getParametersId());
+
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::ExtravascularLag, RkMichaelisMentenTwoCompVmaxAmountExtraLagMicro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::ExtravascularLag, RkMichaelisMentenTwoCompVmaxAmountExtraLagMicro::getParametersId());
+
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Intravascular, RkMichaelisMentenTwoCompVmaxAmountBolusMicro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Intravascular, RkMichaelisMentenTwoCompVmaxAmountBolusMicro::getParametersId());
+
+        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Infusion, RkMichaelisMentenTwoCompVmaxAmountInfusionMicro::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::Infusion, RkMichaelisMentenTwoCompVmaxAmountInfusionMicro::getParametersId());
+
+        Tucuxi::Common::TranslatableString elimination;
+        elimination.setString("Michaelis-Menten", "en");
+        sharedPkModel->setElimination(elimination);
+
+        Tucuxi::Common::TranslatableString distribution;
+        distribution.setString("Extra- or intra-vascular", "en");
+        sharedPkModel->setDistribution(distribution);
+
+        _collection.addPkModel(sharedPkModel);
+    }
+
+    {
+        std::shared_ptr<PkModel> sharedPkModel;
+        sharedPkModel =
+                std::make_shared<PkModel>("michaelismenten.2comp.vmaxamount.macro", PkModel::AllowMultipleRoutes::Yes);
 
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
                 AbsorptionModel::Extravascular, RkMichaelisMentenTwoCompVmaxAmountExtraMacro::getCreator());
