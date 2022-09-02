@@ -22,6 +22,8 @@ using namespace Core;
 
 ComputingQueryResponseXmlExport::ComputingQueryResponseXmlExport() {}
 
+ComputingQueryResponseXmlExport::~ComputingQueryResponseXmlExport() {}
+
 bool ComputingQueryResponseXmlExport::exportToFile(
         const ComputingQueryResponse& _computingQueryResponse, const std::string& _fileName)
 {
@@ -556,7 +558,8 @@ bool ComputingQueryResponseXmlExport::exportDosage(
     Tucuxi::Common::XmlNode lastingDose = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "lastingDosage");
     _rootNode.addChild(lastingDose);
 
-    addNode(lastingDose, "interval", timeToString(TimeOfDay(_dosage.getTimeStep())));
+    // Be careful here, we use an unnormalized TimeOfDay to allow hours to be more than 23
+    addNode(lastingDose, "interval", timeToString(TimeOfDay::buildUnnormalized(_dosage.getTimeStep())));
 
     exportSingleDose(_dosage, lastingDose);
 

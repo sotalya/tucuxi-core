@@ -433,6 +433,10 @@ bool TwoCompartmentExtraLagMicro::computeConcentrations(
     // Compute concentrations
     bool bOK = compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
+    if (!bOK) {
+        // If computing went wrong, then stop here
+        return bOK;
+    }
     // Return residuals of comp1, comp2 and comp3
     _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
     _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];

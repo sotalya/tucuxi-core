@@ -1,5 +1,6 @@
 //@@license@@
 
+#include <fstream>
 #include <iostream>
 
 #include "drugmodelimport.h"
@@ -90,6 +91,18 @@ DrugModelImport::Status DrugModelImport::importFromString(
     }
 
     return importDocument(_drugModel, document);
+}
+
+DrugModelImport::Status DrugModelImport::importOperationFromFile(
+        std::unique_ptr<Tucuxi::Core::Operation>& _operation, const std::string& _fileName)
+{
+    setStatus(Status::Ok);
+    _operation = nullptr;
+
+    std::ifstream t(_fileName);
+    std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+
+    return importOperationFromString(_operation, str);
 }
 
 DrugModelImport::Status DrugModelImport::importOperationFromString(
