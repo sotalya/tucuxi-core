@@ -2,7 +2,7 @@
 
 HEADERS += \
     $$PWD/../../src/tucusign/signature.h \
-    $$PWD/../../src/tucusign/sign.h \
+    $$PWD/../../src/tucusign/signer.h \
     $$PWD/../../src/tucusign/signparser.h \
     $$PWD/../../src/tucusign/signvalidator.h
 
