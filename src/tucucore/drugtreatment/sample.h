@@ -76,7 +76,7 @@ public:
     /// \param _value Value of concentration
     /// \param _unit Unit of the value
     ///
-    Sample(DateTime _date, AnalyteId _analyteId, Value _value, TucuUnit _unit);
+    Sample(DateTime _date, AnalyteId _analyteId, Value _value, TucuUnit _unit, Value _weight = 1);
 
     ///
     /// \brief Virtual destructor
@@ -113,6 +113,12 @@ public:
     ///
     TucuUnit getUnit() const;
 
+    ///
+    /// \brief Returns the weight of the sample
+    /// \return The sample weight
+    ///
+    Value getWeight() const;
+
 
 protected:
     /// Sample ID
@@ -129,6 +135,9 @@ protected:
 
     /// Unit of the measure
     const TucuUnit m_unit;
+
+    /// Sample weight
+    const Value m_weight;
 };
 
 /// A vector of unique_ptr on Sample objects

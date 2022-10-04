@@ -44,7 +44,7 @@ ComputingStatus SampleExtractor::extract(
                     _series.push_back(SampleEvent(
                             sample->getDate(),
                             UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(
-                                    sample->getValue(), sample->getUnit(), _toUnit)));
+                                    sample->getValue(), sample->getUnit(), _toUnit), sample->getWeight()));
                 }
                 TUCU_CATCH(std::invalid_argument & e)
                 {
@@ -90,7 +90,7 @@ ComputingStatus SampleExtractor::extract(
                 _series.push_back(SampleEvent(
                         sample->getDate(),
                         UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(
-                                sample->getValue(), sample->getUnit(), _toUnit)));
+                                sample->getValue(), sample->getUnit(), _toUnit), sample->getWeight()));
             }
             TUCU_CATCH(std::invalid_argument & e)
             {
