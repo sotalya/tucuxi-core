@@ -934,6 +934,7 @@ int main(int argc, char** argv)
 
     likelihoodTests.add_test("testLikelihoodWrongParameters", &TestLikelihood::testWrongParameters);
     likelihoodTests.add_test("testLikelihood1Sample", &TestLikelihood::test1Sample);
+    likelihoodTests.add_test("testLikelihoodweightsample", &TestLikelihood::testWeightSample);
     likelihoodTests.add_test("testLikelihood2SamplesSameDate", &TestLikelihood::test2SamplesSameDate);
     likelihoodTests.add_test("testLikelihood2SamplesDifferentDates", &TestLikelihood::test2SamplesDifferentDates);
     likelihoodTests.add_test("testLikelihood3SamplesDifferentDates", &TestLikelihood::test3SamplesDifferentDates);

@@ -216,6 +216,90 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
         fructose_assert_double_eq(res, expectedValue);
     }
 
+    /// \brief Test the likelihood calculation, with weight for sample
+    /// \param _testName Test name.
+    ///
+    /// \testing{Tucuxi::Core::Likelihood::negativeLogLikelihood()}
+    ///
+    /// A Likelihood object computes a negativeLogLikelihood.
+    /// This test is done thanks to ConstantEliminationBolus, with one single sample.
+    ///
+    void testWeightSample(const std::string& /* _testName */)
+    {
+
+        IntakeSeries intakes = buildIntakeSeries();
+
+        // First sample at date 06/06/2017 at 12:30, with a weight of 0.3
+        // Sample value: 200.0
+        SampleSeries samples;
+        SampleEvent sample1(
+                DateTime(
+                        date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                        Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
+                200.0, 0.3);
+
+        samples.push_back(sample1);
+
+        // Second sample at date 06/06/2017 at 12:30, with a weight of 0.7
+        // Sample value: 200.0
+        SampleEvent sample2(
+                DateTime(
+                        date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                        Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
+                200.0, 0.7);
+
+        samples.push_back(sample2);
+
+        // Here we build parameters that correspond to the intake calculator (ConstantEliminationBolus)
+        Tucuxi::Core::ParameterDefinitions microParameterDefs;
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::Additive));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestM", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestR", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                "TestS", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
+        Tucuxi::Core::ParameterSetEvent parameterEvent(DateTime::now(), microParameterDefs);
+        ConcentrationCalculator calculator;
+        ParameterSetSeries parameters;
+        parameters.addParameterSetEvent(parameterEvent);
+
+
+        SigmaResidualErrorModel residualErrorModel;
+        Tucuxi::Core::Sigma sigma(1);
+        sigma(0) = 0.3138;
+        residualErrorModel.setErrorModel(Tucuxi::Core::ResidualErrorType::PROPORTIONAL);
+        residualErrorModel.setSigma(sigma);
+
+        double theEta = 0.1;
+        Etas etas(1);
+        etas[0] = theEta;
+
+        auto omega = Tucuxi::Core::OmegaMatrix(1, 1);
+        omega(0, 0) = 0.1; // Variance of A
+
+        Likelihood likelihood(omega, residualErrorModel, samples, intakes, parameters, calculator);
+
+        Value res = likelihood.negativeLogLikelihood(etas);
+
+        // We compute the expected resut by using one sample with a default weight if 1. It should be
+        // equal to two sample with weights of 0.3 and 0.7.
+        SampleSeries samplesEpected;
+        SampleEvent expectedSample1(
+                DateTime(
+                        date::year_month_day(date::year(2017), date::month(6), date::day(6)),
+                        Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
+                200.0);
+
+        samplesEpected.push_back(expectedSample1);
+
+        Likelihood likelihoodExpected(omega, residualErrorModel, samplesEpected, intakes, parameters, calculator);
+        Value expectedValue = likelihoodExpected.negativeLogLikelihood(etas);
+
+        fructose_assert_double_eq(res, expectedValue);
+    }
+
     /// \brief Test the likelihood calculation
     /// \param _testName Test name.
     ///

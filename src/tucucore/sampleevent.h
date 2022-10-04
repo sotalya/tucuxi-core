@@ -22,15 +22,21 @@ public:
     /// \pre _time.isValid() == true
     /// \post m_time == _time
     /// \post m_value == _value
-    SampleEvent(DateTime _time, Value _value = 0) : TimedEvent(_time), m_value(_value) {}
+    SampleEvent(DateTime _time, Value _value = 0, Value _weight = 1.0) : TimedEvent(_time), m_value(_value), m_weight(_weight) {}
 
     Value getValue() const
     {
         return m_value;
     }
 
+    Value getWeight() const
+    {
+        return m_weight;
+    }
+
 protected:
     Value m_value;
+    Value m_weight;
 };
 
 typedef std::vector<SampleEvent> SampleSeries;
