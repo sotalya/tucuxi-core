@@ -438,18 +438,20 @@ unique_ptr<Tucuxi::Query::FullSample> QueryImport::createSampleData(
 {
     static const string SAMPLE_ID_NODE_NAME = "sampleId";
     static const string SAMPLE_DATE_NODE_NAME = "sampleDate";
+    static const string SAMPLE_WEIGHT_NODE_NAME = "sampleWeight";
     static const string ANALYTE_ID_NODE_NAME = "analyteId";
     static const string VALUE_NODE_NAME = "value";
     static const string UNIT_NODE_NAME = "unit";
 
     string sampleId = getChildString(_sampleDataRootIterator, SAMPLE_ID_NODE_NAME);
     Common::DateTime sampleDate = getChildDateTime(_sampleDataRootIterator, SAMPLE_DATE_NODE_NAME);
+    Tucuxi::Core::Value weight(getChildDoubleOptional(_sampleDataRootIterator, SAMPLE_WEIGHT_NODE_NAME, 1.0));
 
     Tucuxi::Core::AnalyteId analyteId(getChildString(_concentrationRootIterator, ANALYTE_ID_NODE_NAME));
     Tucuxi::Core::Value value(getChildDouble(_concentrationRootIterator, VALUE_NODE_NAME));
     TucuUnit unit = getChildUnit(_concentrationRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
 
-    return make_unique<Tucuxi::Query::FullSample>(sampleId, sampleDate, analyteId, value, unit);
+    return make_unique<Tucuxi::Query::FullSample>(sampleId, sampleDate, analyteId, value, unit, weight);
 }
 
 //unique_ptr<Tucuxi::Core::ConcentrationData> QueryImport::createConcentrationData(Common::XmlNodeIterator& _concentrationDataRootIterator)

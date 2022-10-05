@@ -22,8 +22,9 @@ public:
     /// \param _analyteId ID of the measured analyte
     /// \param _value Value of concentration
     /// \param _unit Unit of the value
+    /// \param _weight The sample weight
     ///
-    FullSample(std::string _id, Common::DateTime _date, Core::AnalyteId _analyteId, Core::Value _value, TucuUnit _unit);
+    FullSample(std::string _id, Common::DateTime _date, Core::AnalyteId _analyteId, Core::Value _value, TucuUnit _unit, Core::Value _weight = 1.0);
 
     /// \brief Returns the sample ID
     /// \return Sample ID

@@ -76,7 +76,7 @@ public:
     /// \param _value Value of concentration
     /// \param _unit Unit of the value
     ///
-    Sample(DateTime _date, AnalyteId _analyteId, Value _value, TucuUnit _unit, Value _weight = 1);
+    Sample(DateTime _date, AnalyteId _analyteId, Value _value, TucuUnit _unit, Value _weight = 1.0);
 
     ///
     /// \brief Virtual destructor
