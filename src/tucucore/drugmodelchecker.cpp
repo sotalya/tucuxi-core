@@ -317,6 +317,10 @@ void DrugModelChecker::getAllOperations(const DrugModel* _drugModel, std::vector
         if (validation != nullptr) {
             _operations.push_back(covariate->getValidation());
         }
+
+        if (covariate->isComputed()) {
+            _operations.push_back(&covariate->getOperation());
+        }
     }
 }
 
