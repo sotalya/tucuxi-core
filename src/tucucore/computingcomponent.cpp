@@ -252,6 +252,7 @@ ComputingStatus ComputingComponent::compute(
     CovariateSeries covariateSeries;
     GroupsParameterSetSeries parameterSeries;
     DateTime calculationStartTime;
+    Value negativeLogLikelihood;
 
     ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(
             _traits,
@@ -291,7 +292,8 @@ ComputingStatus ComputingComponent::compute(
                     parameterSeries[analyteGroupId],
                     covariateSeries,
                     calculationStartTime,
-                    _traits->getEnd());
+                    _traits->getEnd(),
+                    negativeLogLikelihood);
             if (extractionResult != ComputingStatus::Ok) {
                 return extractionResult;
             }
@@ -334,6 +336,8 @@ ComputingStatus ComputingComponent::compute(
     }
 
     std::unique_ptr<SinglePredictionData> resp = std::make_unique<SinglePredictionData>(_request.getId());
+
+    resp->setLogLikelihood(-negativeLogLikelihood);
 
     IntakeSeries recordedIntakes;
     selectRecordedIntakes(
@@ -384,6 +388,7 @@ ComputingStatus ComputingComponent::compute(
     _response->addResponse(std::move(resp));
     return ComputingStatus::Ok;
 }
+
 
 ComputingStatus ComputingComponent::compute(
         const ComputingTraitPercentiles* _traits,
@@ -492,6 +497,7 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
 
         for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
             AnalyteGroupId analyteGroupId = analyteGroup->getId();
+            Value negativeLogLikelihood;
 
             ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
                     etas[analyteGroupId],
@@ -501,7 +507,8 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
                     parameterSeries[analyteGroupId],
                     covariateSeries,
                     calculationStartTime,
-                    _traits->getEnd());
+                    _traits->getEnd(),
+                    negativeLogLikelihood);
             if (aposterioriEtasExtractionResult != ComputingStatus::Ok) {
                 return aposterioriEtasExtractionResult;
             }
@@ -677,6 +684,7 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
     Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
 
     if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+        Value negativeLogLikelihood;
         ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
                 etas,
                 _request,
@@ -685,7 +693,8 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
                 parameterSeries[analyteGroupId],
                 covariateSeries,
                 calculationStartTime,
-                _traits->getEnd());
+                _traits->getEnd(),
+                negativeLogLikelihood);
         if (aposterioriEtasExtractionResult != ComputingStatus::Ok) {
             return aposterioriEtasExtractionResult;
         }
@@ -910,6 +919,7 @@ ComputingStatus ComputingComponent::compute(
     CovariateSeries covariateSeries;
     GroupsParameterSetSeries parameterSeries;
     DateTime calculationStartTime;
+    Value negativeLogLikelihood;
 
     DateTime firstDate;
     DateTime lastDate;
@@ -966,7 +976,8 @@ ComputingStatus ComputingComponent::compute(
                     parameterSeries[analyteGroupId],
                     covariateSeries,
                     calculationStartTime,
-                    lastDate);
+                    lastDate,
+                    negativeLogLikelihood);
             if (aposterioriEtasExtractionResult != ComputingStatus::Ok) {
                 return aposterioriEtasExtractionResult;
             }
@@ -998,6 +1009,8 @@ ComputingStatus ComputingComponent::compute(
 
         if (computingResult == ComputingStatus::Ok) {
             std::unique_ptr<SinglePointsData> resp = std::make_unique<SinglePointsData>(_request.getId());
+
+            resp->setLogLikelihood(-negativeLogLikelihood);
 
             if (concentrations.size() != timesSeries.size()) {
                 // Something went wrong

@@ -18,7 +18,8 @@ ComputingStatus APosterioriEtasCalculator::computeAposterioriEtas(
         const OmegaMatrix& _omega,
         const IResidualErrorModel& _residualErrorModel,
         const SampleSeries& _samples,
-        Etas& _aPosterioriEtas)
+        Etas& _aPosterioriEtas,
+        Value& _negativeLogLikelihood)
 {
     // Verify we have a var-covar matrix
     if (isOmegaEmpty(_omega)) {
@@ -67,6 +68,8 @@ ComputingStatus APosterioriEtasCalculator::computeAposterioriEtas(
 
     // Execute the minimizer
     _aPosterioriEtas = frprmn.minimize(initialEtas);
+
+    _negativeLogLikelihood = funcd.negativeLogLikelihood(_aPosterioriEtas);
 
 
     // Prints out the eta values

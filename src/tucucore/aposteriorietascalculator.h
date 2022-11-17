@@ -25,7 +25,8 @@ public:
             const OmegaMatrix& _omega,
             const IResidualErrorModel& _residualErrorModel,
             const SampleSeries& _samples,
-            Etas& _aPosterioriEtas);
+            Etas& _aPosterioriEtas,
+            Value& _negativeLogLikelihood);
 };
 
 } // namespace Core

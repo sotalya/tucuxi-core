@@ -403,6 +403,7 @@ ComputingStatus MultiComputingAdjustments::compute(
 
         for (const auto& analyteGroupId : allGroupIds) {
             if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+                Value negativeLogLikelihood = 0.0;
                 ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
                         etas[analyteGroupId],
                         _request,
@@ -411,7 +412,8 @@ ComputingStatus MultiComputingAdjustments::compute(
                         parameterSeries[analyteGroupId],
                         covariateSeries,
                         calculationStartTime,
-                        _traits->getEnd());
+                        _traits->getEnd(),
+                        negativeLogLikelihood);
 
                 if (aposterioriEtasExtractionResult != ComputingStatus::Ok) {
                     return aposterioriEtasExtractionResult;

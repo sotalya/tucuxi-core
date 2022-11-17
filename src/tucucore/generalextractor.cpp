@@ -52,8 +52,9 @@ ComputingStatus GeneralExtractor::extractAposterioriEtas(
         const IntakeSeries& _intakeSeries,
         const ParameterSetSeries& _parameterSeries,
         const CovariateSeries& _covariateSeries,
-        DateTime _calculationStartTime,
-        DateTime _endTime)
+        const DateTime& _calculationStartTime,
+        const DateTime& _endTime,
+        Value& _negativeLogLikelihood)
 {
     Tucuxi::Core::OmegaMatrix omega;
 
@@ -98,7 +99,13 @@ ComputingStatus GeneralExtractor::extractAposterioriEtas(
 
         APosterioriEtasCalculator etasCalculator;
         auto status = etasCalculator.computeAposterioriEtas(
-                _intakeSeries, _parameterSeries, omega, *residualErrorModel, sampleSeries, _etas);
+                _intakeSeries,
+                _parameterSeries,
+                omega,
+                *residualErrorModel,
+                sampleSeries,
+                _etas,
+                _negativeLogLikelihood);
         if (status != ComputingStatus::Ok) {
             return status;
         }

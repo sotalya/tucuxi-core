@@ -134,6 +134,23 @@ public:
 
     /// Unit of concentrations
     TucuUnit m_unit;
+
+    void setLogLikelihood(Value value)
+    {
+        m_logLikelihood = value;
+    }
+    Value getLogLikelihood() const
+    {
+        return m_logLikelihood;
+    }
+
+protected:
+    ///
+    /// \brief likelihood of the parameters based on the samples, in case of a posteriori predictions
+    ///
+    /// This value is 0.0 in case of a priori predictions
+    ///
+    Value m_logLikelihood{0.0};
 };
 
 
@@ -175,6 +192,23 @@ class SinglePredictionData : public ComputedData, public ConcentrationData
 {
 public:
     SinglePredictionData(RequestResponseId _id) : ComputedData(std::move(_id)) {}
+
+    void setLogLikelihood(Value value)
+    {
+        m_logLikelihood = value;
+    }
+    Value getLogLikelihood() const
+    {
+        return m_logLikelihood;
+    }
+
+protected:
+    ///
+    /// \brief likelihood of the parameters based on the samples, in case of a posteriori predictions
+    ///
+    /// This value is 0.0 in case of a priori predictions
+    ///
+    Value m_logLikelihood{0.0};
 };
 
 ///

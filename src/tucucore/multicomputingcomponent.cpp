@@ -488,6 +488,7 @@ ComputingStatus MultiComputingComponent::compute(
         for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
             AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
+            Value negativeLogLikelihood;
             ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
                     etas[analyteGroupId],
                     _request,
@@ -496,7 +497,8 @@ ComputingStatus MultiComputingComponent::compute(
                     parameterSeries[analyteGroupId],
                     covariateSeries,
                     calculationStartTime,
-                    _traits->getEnd());
+                    _traits->getEnd(),
+                    negativeLogLikelihood);
             if (aposterioriEtasExtractionResult != ComputingStatus::Ok) {
                 return aposterioriEtasExtractionResult;
             }
@@ -786,6 +788,7 @@ ComputingStatus MultiComputingComponent::compute(
         Etas etas;
 
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+            Value negativeLogLikelihood;
             ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
                     etas,
                     _request,
@@ -794,7 +797,8 @@ ComputingStatus MultiComputingComponent::compute(
                     parameterSeries[analyteGroupId],
                     covariateSeries,
                     calculationStartTime,
-                    lastDate);
+                    lastDate,
+                    negativeLogLikelihood);
             if (aposterioriEtasExtractionResult != ComputingStatus::Ok) {
                 return aposterioriEtasExtractionResult;
             }

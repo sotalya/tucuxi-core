@@ -356,6 +356,7 @@ bool ComputingQueryResponseXmlExport::exportAdjustment(
 bool ComputingQueryResponseXmlExport::exportSinglePrediction(
         const Tucuxi::Core::SinglePredictionData* _prediction, Tucuxi::Common::XmlNode& _rootNode)
 {
+    addNode(_rootNode, "logLikelihood", _prediction->getLogLikelihood());
     Tucuxi::Common::XmlNode analyteIds = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "analyteIds");
     _rootNode.addChild(analyteIds);
     for (const auto& comp : _prediction->getCompartmentInfos()) {
@@ -403,6 +404,9 @@ std::string timeToString(const Tucuxi::Common::TimeOfDay& _timeOfDay)
 bool ComputingQueryResponseXmlExport::exportSinglePoints(
         const Tucuxi::Core::SinglePointsData* _prediction, Tucuxi::Common::XmlNode& _rootNode)
 {
+
+    addNode(_rootNode, "logLikelihood", _prediction->getLogLikelihood());
+
     addNode(_rootNode, "unit", _prediction->m_unit.toString());
 
     Tucuxi::Common::XmlNode points = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "points");

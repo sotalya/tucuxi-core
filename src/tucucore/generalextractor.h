@@ -41,8 +41,9 @@ public:
             const IntakeSeries& _intakeSeries,
             const ParameterSetSeries& _parameterSeries,
             const Tucuxi::Core::CovariateSeries& _covariateSeries,
-            Common::DateTime _calculationStartTime,
-            Common::DateTime _endTime);
+            const Common::DateTime& _calculationStartTime,
+            const Common::DateTime& _endTime,
+            Value& _negativeLogLikelihood);
 
     ComputingStatus extractOmega(
             const DrugModel& _drugModel,
