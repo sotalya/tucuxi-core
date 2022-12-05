@@ -4,7 +4,7 @@ INCLUDEPATH += $$PWD/../../src \
     $$PWD/../../libs/boost-1.63.0 \
     $$PWD/../../libs/eigen-3.3.2/ \
     $$PWD/../../libs/fructose-1.3/fructose/include \
-    $$PWD/../../libs/date-master-20170711 \
+    $$PWD/../../libs/date/include \
     $$PWD/../../libs/tiny-js-master-20170629 \
     $$PWD/../../libs/rapidxml-1.13 \
     $$PWD/../../libs/cxxopts \
@@ -19,7 +19,7 @@ INCLUDEPATH += $$PWD/../../src \
         -isystem $$PWD/../../libs/boost-1.63.0 \
         -isystem $$PWD/../../libs/eigen-3.3.2/ \
         -isystem $$PWD/../../libs/fructose-1.3/fructose/include \
-        -isystem $$PWD/../../libs/date-master-20170711 \
+        -isystem $$PWD/../../libs/date/include \
         -isystem $$PWD/../../libs/tiny-js-master-20170629 \
         -isystem $$PWD/../../libs/rapidxml-1.13 \
         -isystem $$PWD/../../libs/cxxopts \

@@ -791,8 +791,9 @@ public:
     {
         // Really ugly cast required by the library to extract the day of week from the date
         // dayofweek can be cast to unsigned int, so we need the two successive casts
-        const int numStartDayOfWeek = static_cast<int>(static_cast<unsigned>(DayOfWeek(_intervalStart.getDate())));
-        const int numPlannedDayOfWeek = static_cast<int>(static_cast<unsigned>(m_dayOfWeek));
+        const int numStartDayOfWeek =
+                static_cast<int>(static_cast<unsigned>(DayOfWeek(_intervalStart.getDate()).c_encoding()));
+        const int numPlannedDayOfWeek = static_cast<int>(static_cast<unsigned>(m_dayOfWeek.c_encoding()));
         int dayDiff = numPlannedDayOfWeek - numStartDayOfWeek;
 
         if (dayDiff < 0) {
