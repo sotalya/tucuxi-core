@@ -1024,6 +1024,13 @@ std::unique_ptr<CovariateDefinition> DrugModelImport::extractCovariate(Tucuxi::C
         return nullptr;
     }
 
+    if (type == CovariateType::Dose) {
+        if (!UnitManager::isOfType<UnitManager::UnitType::Weight>(unit)) {
+            setStatus(Status::Error, "Covariate being a dose, but with a unit not being a weight");
+            return nullptr;
+        }
+    }
+
     // TODO : Try to find a way to allow flexible covariate values. This is odd
     std::string valueString = std::to_string(value->getValue());
 

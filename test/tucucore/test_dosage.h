@@ -145,6 +145,51 @@ struct TestDosage : public fructose::test_base<TestDosage>
         const DayOfWeek validDayOfWeek1(unsigned{SUNDAY});
         const DayOfWeek validDayOfWeek2(unsigned{MONDAY});
 
+        {
+            const DayOfWeek validDayOfWeek0(unsigned{MONDAY});
+            const DayOfWeek validDayOfWeek1(unsigned{TUESDAY});
+            const DayOfWeek validDayOfWeek2(unsigned{WEDNESDAY});
+            const DayOfWeek validDayOfWeek3(unsigned{THURSDAY});
+            const DayOfWeek validDayOfWeek4(unsigned{FRIDAY});
+            const DayOfWeek validDayOfWeek5(unsigned{SATURDAY});
+            const DayOfWeek validDayOfWeek6(unsigned{SUNDAY});
+
+            std::vector<unsigned> c_encoding = {
+                    validDayOfWeek0.c_encoding(),
+                    validDayOfWeek1.c_encoding(),
+                    validDayOfWeek2.c_encoding(),
+                    validDayOfWeek3.c_encoding(),
+                    validDayOfWeek4.c_encoding(),
+                    validDayOfWeek5.c_encoding(),
+                    validDayOfWeek6.c_encoding()};
+
+            std::vector<unsigned> iso_encoding = {
+                    validDayOfWeek0.iso_encoding(),
+                    validDayOfWeek1.iso_encoding(),
+                    validDayOfWeek2.iso_encoding(),
+                    validDayOfWeek3.iso_encoding(),
+                    validDayOfWeek4.iso_encoding(),
+                    validDayOfWeek5.iso_encoding(),
+                    validDayOfWeek6.iso_encoding()};
+
+            fructose_assert_eq(validDayOfWeek0.iso_encoding(), 1);
+            fructose_assert_eq(validDayOfWeek1.iso_encoding(), 2);
+            fructose_assert_eq(validDayOfWeek2.iso_encoding(), 3);
+            fructose_assert_eq(validDayOfWeek3.iso_encoding(), 4);
+            fructose_assert_eq(validDayOfWeek4.iso_encoding(), 5);
+            fructose_assert_eq(validDayOfWeek5.iso_encoding(), 6);
+            fructose_assert_eq(validDayOfWeek6.iso_encoding(), 7);
+
+
+            fructose_assert_eq(validDayOfWeek0.c_encoding(), 1);
+            fructose_assert_eq(validDayOfWeek1.c_encoding(), 2);
+            fructose_assert_eq(validDayOfWeek2.c_encoding(), 3);
+            fructose_assert_eq(validDayOfWeek3.c_encoding(), 4);
+            fructose_assert_eq(validDayOfWeek4.c_encoding(), 5);
+            fructose_assert_eq(validDayOfWeek5.c_encoding(), 6);
+            fructose_assert_eq(validDayOfWeek6.c_encoding(), 0);
+        }
+
         fructose_assert_exception(
                 Tucuxi::Core::WeeklyDose(
                         validDose, TucuUnit("mg"), routePerfusion, validInfusionTime, validTimeOfDay, invalidDayOfWeek),

@@ -236,7 +236,8 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
                 DateTime(
                         date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                         Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
-                200.0, 0.3);
+                200.0,
+                0.3);
 
         samples.push_back(sample1);
 
@@ -246,7 +247,8 @@ struct TestLikelihood : public fructose::test_base<TestLikelihood>
                 DateTime(
                         date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                         Duration(std::chrono::hours(12), std::chrono::minutes(30), std::chrono::seconds(0))),
-                200.0, 0.7);
+                200.0,
+                0.7);
 
         samples.push_back(sample2);
 

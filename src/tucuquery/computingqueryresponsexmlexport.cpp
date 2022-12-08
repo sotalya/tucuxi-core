@@ -591,7 +591,7 @@ bool ComputingQueryResponseXmlExport::exportDosage(
     _rootNode.addChild(weeklyDose);
 
     //TODO : CONTROL
-    addNode(weeklyDose, "day", _dosage.getDayOfWeek().operator unsigned int());
+    addNode(weeklyDose, "day", _dosage.getDayOfWeek().c_encoding());
 
     addNode(weeklyDose, "time", timeToString(_dosage.getTimeOfDay()));
 
