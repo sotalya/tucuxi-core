@@ -17,8 +17,11 @@
 
 #include "clicomputer.h"
 #include "cxxopts/include/cxxopts.hpp"
+
+#ifdef CONFIG_SIGN
 #include "tucusign/signparser.h"
 #include "tucusign/signvalidator.h"
+#endif // CONFIG_SIGN
 
 using namespace std::chrono_literals;
 
@@ -41,12 +44,16 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
                 "i,input", "Input request file", cxxopts::value<std::string>())(
                 "o,output", "Output response file", cxxopts::value<std::string>())(
                 "q,querylogpath", "Query folder path", cxxopts::value<std::string>())(
-                "csv", "Data file (.dat) folder path", cxxopts::value<std::string>())(
-                "s,signature", "Signed drug file path", cxxopts::value<std::string>())("help", "Print help");
+                "csv", "Data file (.dat) folder path", cxxopts::value<std::string>())
+#ifdef CONFIG_SIGN
+                ("s,signature", "Signed drug file path", cxxopts::value<std::string>())
+#endif // CONFIG_SIGN
+                        ("help", "Print help");
 
 
         auto result = options.parse(_argc, _argv);
 
+#ifdef CONFIG_SIGN
         if (result.count("signature") > 0) {
             std::string signedDrugfilePath = result["signature"].as<std::string>();
             Tucuxi::Sign::Signature signature;
@@ -67,6 +74,7 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
             }
             exit(0);
         }
+#endif // CONFIG_SIGN
 
         if (result.count("help") > 0) {
             std::cout << options.help({"", "Group"}) << std::endl;

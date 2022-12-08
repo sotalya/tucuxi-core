@@ -1,13 +1,14 @@
 //@@license@@
 
+#include <array>
+#include <ctime>
+#include <fstream>
+#include <iostream>
+
 #include "querylogger.h"
 
 #include "tucucommon/datetime.h"
 #include "tucucommon/timeofday.h"
-
-#include "ctime"
-#include "fstream"
-#include "iostream"
 
 #ifdef WIN32
 #include "Windows.h"
