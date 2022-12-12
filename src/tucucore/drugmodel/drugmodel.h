@@ -80,7 +80,9 @@ public:
 
     ParameterDefinitionIterator(const ParameterDefinitionIterator& _right)
         : m_model(_right.m_model), m_analyteGroupId(_right.m_analyteGroupId), m_formulation(_right.m_formulation),
-          m_route(_right.m_route), m_index(_right.m_index)
+          m_route(_right.m_route), m_fullFormulationAndRoutes(_right.m_fullFormulationAndRoutes),
+          m_formulationAndRoutes(_right.m_formulationAndRoutes), m_index(_right.m_index)
+
     {
         build();
     }
