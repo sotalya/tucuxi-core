@@ -206,6 +206,9 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
     unsigned int nbPatientsPerThread =
             static_cast<unsigned int>(ceil(static_cast<double>(_nbPatients) / static_cast<double>(nbThreads)));
 
+    std::mutex timesMutex;
+    bool timesDefined = false;
+
     std::vector<std::thread> workers;
     for (unsigned int threadIndex = 0; threadIndex < nbThreads; threadIndex++) {
         // Duplicate an IntakeSeries for avoid a possible problem with multi-thread
@@ -227,7 +230,9 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
                                           &_concentrationCalculator,
                                           _recordFrom,
                                           _recordTo,
-                                          _recordedIntakes]() {
+                                          _recordedIntakes,
+                                         &timesMutex,
+                                         &timesDefined]() {
 #else
     // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
     int nbThreads = 1;
@@ -283,8 +288,14 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
                             CycleSize cyclePoints = _recordedIntakes[cycle].getNbPoints();
 
                             // Save times only one time (when patient is equal to 0)
-                            if (patient == 0) {
+                            timesMutex.lock();
+                            if (!timesDefined) {
+                                timesDefined = true;
+                                timesMutex.unlock();
                                 _times.push_back((predictionPtr->getTimes())[cycle]);
+                            }
+                            else {
+                                timesMutex.unlock();
                             }
 
                             for (CycleSize point = 0; point < cyclePoints; point++) {
@@ -811,6 +822,9 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
         return ComputingStatus::AposterioriPercentilesNoSamplesError;
     }
 
+
+    // auto startTime = std::chrono::system_clock::now();
+
     size_t nbSamplesOut = 0;
     for (const auto& sample : _samples) {
         if ((sample.getEventTime() < _intakes.at(0).getEventTime())
@@ -1032,6 +1046,11 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     for (std::size_t patient = 0; patient < nbReSamples; patient++) {
         _fullEtas[patient] = etaSamples[discreteDistribution(rnGenerator)];
     }
+
+
+    // auto endTime = std::chrono::system_clock::now();
+    // std::chrono::duration<double> diff = endTime - startTime;
+    // std::cout << "Extract Etas and Epsilon: " << diff.count() << std::endl;
 
     return ComputingStatus::Ok;
 }
