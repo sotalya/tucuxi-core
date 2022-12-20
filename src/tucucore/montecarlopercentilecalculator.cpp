@@ -231,8 +231,8 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
                                           _recordFrom,
                                           _recordTo,
                                           _recordedIntakes,
-                                         &timesMutex,
-                                         &timesDefined]() {
+                                          &timesMutex,
+                                          &timesDefined]() {
 #else
     // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
     int nbThreads = 1;
