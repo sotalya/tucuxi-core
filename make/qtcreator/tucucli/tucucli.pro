@@ -21,7 +21,7 @@ config_sign {
     include(../tucusign.pri)
     DEFINES+=CONFIG_SIGN
 
-    copy the root ca certificate in the output directory
+    # copy the root ca certificate in the output directory
     copydata.commands = $(COPY_DIR) $$PWD/../../../src/tucusign/ca.cert.pem $$OUT_PWD
     first.depends = $(first) copydata
     export(first.depends)
