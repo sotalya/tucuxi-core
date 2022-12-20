@@ -22,7 +22,7 @@ std::vector<std::string> TwoCompartmentExtraMicro::getParametersId()
 
 bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkCondition(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
         return false;
     }
 
@@ -151,7 +151,7 @@ std::vector<std::string> TwoCompartmentExtraMacro::getParametersId()
 
 bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkCondition(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
         return false;
     }
 
@@ -178,6 +178,50 @@ bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkStrictlyPositiveValue(m_F, "F");
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkStrictlyPositiveValue(q, "Q");
+    bOK &= checkStrictlyPositiveValue(m_V1, "V1");
+    bOK &= checkStrictlyPositiveValue(v2, "V2");
+    bOK &= checkPositiveValue(m_Alpha, "Alpha");
+    bOK &= checkPositiveValue(m_Beta, "Beta");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
+
+
+    return bOK;
+}
+
+
+std::vector<std::string> TwoCompartmentExtraMacroSameCl::getParametersId()
+{
+    return {"CL", "V1", "V2", "Ka", "F"};
+}
+
+bool TwoCompartmentExtraMacroSameCl::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+{
+    if (!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
+        return false;
+    }
+
+    m_D = _intakeEvent.getDose();
+    Value cl = _parameters.getValue(ParameterId::CL);
+    Value v2 = _parameters.getValue(ParameterId::V2);
+    m_V1 = _parameters.getValue(ParameterId::V1);
+    m_Ka = _parameters.getValue(ParameterId::Ka);
+    m_F = _parameters.getValue(ParameterId::F);
+    m_Ke = cl / m_V1;
+    m_K12 = cl / m_V1;
+    m_K21 = cl / v2;
+    Value sumK = m_Ke + m_K12 + m_K21;
+    m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
+    m_Alpha = (sumK + m_RootK) / 2;
+    m_Beta = (sumK - m_RootK) / 2;
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
+    m_Int = (_intakeEvent.getInterval()).toHours();
+
+    // check the inputs
+    bool bOK = checkPositiveValue(m_D, "The dose");
+    bOK &= checkStrictlyPositiveValue(m_Ka, "Ka");
+    bOK &= checkStrictlyPositiveValue(m_F, "F");
+    bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkStrictlyPositiveValue(m_V1, "V1");
     bOK &= checkStrictlyPositiveValue(v2, "V2");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");

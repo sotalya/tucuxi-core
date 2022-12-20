@@ -107,6 +107,21 @@ protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 };
 
+
+class TwoCompartmentBolusMacroSameCl : public TwoCompartmentBolusMacro
+{
+    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentBolusMacroSameCl)
+public:
+    TwoCompartmentBolusMacroSameCl() = default;
+
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
+
+protected:
+    bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+};
+
 } // namespace Core
 } // namespace Tucuxi
 

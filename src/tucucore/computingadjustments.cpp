@@ -615,6 +615,7 @@ ComputingStatus ComputingAdjustments::compute(
             if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
                 finalUnit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
             }
+
             for (size_t i = 0; i < pPrediction->getValues().size(); i++) {
                 Tucuxi::Common::UnitManager::updateAndConvertToUnit<
                         Tucuxi::Common::UnitManager::UnitType::Concentration>(
@@ -712,7 +713,7 @@ ComputingStatus ComputingAdjustments::compute(
 
             // TODO : There is something wrong here that will go badly when we'll have multi-analytes drugmodels
             for (const auto& analyteGroupId : allGroupIds) {
-                for (size_t i = 0; i < intakeSeriesPerGroup[analyteGroupId].size(); i++) {
+                for (size_t i = 0; i < activeMoietiesPredictions[0]->getTimes().size(); i++) {
                     TimeOffsets times = activeMoietiesPredictions[0]->getTimes()[i];
                     DateTime start = intakeSeriesPerGroup[analyteGroupId][i].getEventTime();
                     DateTime end =

@@ -213,5 +213,61 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
 }
 
 
+std::vector<std::string> TwoCompartmentBolusMacroSameCl::getParametersId()
+{
+    return {"CL", "V1", "V2"};
+}
+
+bool TwoCompartmentBolusMacroSameCl::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+{
+    if (!checkCondition(_parameters.size() >= 3, "The number of parameters should be equal to 3.")) {
+        return false;
+    }
+
+    m_D = _intakeEvent.getDose();
+    Value cl = _parameters.getValue(ParameterId::CL);
+    m_V1 = _parameters.getValue(ParameterId::V1);
+    Value v2 = _parameters.getValue(ParameterId::V2);
+    m_Ke = cl / m_V1;
+    m_K12 = cl / m_V1;
+    m_K21 = cl / v2;
+    m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
+    m_Int = (_intakeEvent.getInterval()).toHours();
+
+    Value sumK = m_Ke + m_K12 + m_K21;
+    m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
+    m_Alpha = (sumK + m_RootK) / 2;
+    m_Beta = (sumK - m_RootK) / 2;
+
+#ifdef DEBUG
+    Tucuxi::Common::LoggerHelper logHelper;
+
+    logHelper.debug("<<Input Values>>");
+    logHelper.debug("m_D: {}", m_D);
+    logHelper.debug("cl: {}", cl);
+    logHelper.debug("q: {}", q);
+    logHelper.debug("m_V1: {}", m_V1);
+    logHelper.debug("v2: {}", v2);
+    logHelper.debug("m_Ke: {}", m_Ke);
+    logHelper.debug("m_K12: {}", m_K12);
+    logHelper.debug("m_K21: {}", m_K21);
+    logHelper.debug("m_nbPoints: {}", m_nbPoints);
+    logHelper.debug("m_Int: {}", m_Int);
+#endif
+
+    // check the inputs
+    bool bOK = checkPositiveValue(m_D, "The dose");
+    bOK &= checkStrictlyPositiveValue(cl, "The clearance");
+    bOK &= checkStrictlyPositiveValue(m_V1, "V1");
+    bOK &= checkStrictlyPositiveValue(v2, "V2");
+    bOK &= checkPositiveValue(m_Alpha, "Alpha");
+    bOK &= checkPositiveValue(m_Beta, "Beta");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
+    bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
+
+    return bOK;
+}
+
+
 } // namespace Core
 } // namespace Tucuxi

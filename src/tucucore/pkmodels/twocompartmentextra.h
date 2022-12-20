@@ -193,6 +193,21 @@ protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 };
 
+
+class TwoCompartmentExtraMacroSameCl : public TwoCompartmentExtraMacro
+{
+    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentExtraMacroSameCl)
+public:
+    TwoCompartmentExtraMacroSameCl() = default;
+
+    /// \brief Returns the list of required PK parameters Ids
+    /// \return The list of required PK parameters Ids
+    static std::vector<std::string> getParametersId();
+
+protected:
+    bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
+};
+
 } // namespace Core
 } // namespace Tucuxi
 
