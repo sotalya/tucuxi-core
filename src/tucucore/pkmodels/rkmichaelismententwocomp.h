@@ -60,10 +60,10 @@ public:
     }
 
 protected:
-    Value m_D;  /// Quantity of drug
-    Value m_F;  /// bioavailability
-    Value m_Ka; /// Absorption rate constant
-    Value m_V1; /// Volume of the compartment
+    Value m_D;       /// Quantity of drug
+    Value m_F{1.0};  /// bioavailability
+    Value m_Ka{0.0}; /// Absorption rate constant
+    Value m_V1;      /// Volume of the compartment
     Value m_Km;
     Value m_Vmax;
     Value m_K12;
