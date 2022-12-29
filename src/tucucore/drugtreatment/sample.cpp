@@ -1,5 +1,7 @@
 //@@license@@
 
+#include <utility>
+
 #include "sample.h"
 
 
@@ -8,11 +10,12 @@ namespace Core {
 
 
 Sample::Sample(DateTime _date, AnalyteId _analyteId, Value _value, TucuUnit _unit, Value _weight)
-    : m_date(_date), m_analyteID(_analyteId), m_value(_value), m_unit(_unit), m_weight(_weight)
+    : m_date(std::move(_date)), m_analyteID(std::move(_analyteId)), m_value(_value), m_unit(std::move(_unit)),
+      m_weight(_weight)
 {
 }
 
-Sample::~Sample() {}
+Sample::~Sample() = default;
 
 DateTime Sample::getDate() const
 {

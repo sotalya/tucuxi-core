@@ -26,7 +26,9 @@ ComputingAdjustments::ComputingAdjustments(ComputingUtils* _computingUtils) : m_
 
 
 std::unique_ptr<DosageTimeRange> ComputingAdjustments::createDosage(
-        const ComputingAdjustments::SimpleDosageCandidate& _candidate, DateTime _startTime, DateTime _endTime)
+        const ComputingAdjustments::SimpleDosageCandidate& _candidate,
+        const DateTime& _startTime,
+        const DateTime& _endTime)
 {
     // At least a number of intervals allowing to fill the interval asked
     unsigned int nbTimes = static_cast<unsigned int>(std::ceil((_endTime - _startTime) / _candidate.m_interval));
@@ -42,7 +44,7 @@ std::unique_ptr<DosageTimeRange> ComputingAdjustments::createDosage(
 }
 
 std::unique_ptr<DosageTimeRange> ComputingAdjustments::createLoadingDosageOrRestPeriod(
-        const SimpleDosageCandidate& _candidate, DateTime _startTime)
+        const SimpleDosageCandidate& _candidate, const DateTime& _startTime)
 {
     unsigned int nbTimes = 1;
 
@@ -59,7 +61,7 @@ std::unique_ptr<DosageTimeRange> ComputingAdjustments::createLoadingDosageOrRest
 }
 
 std::unique_ptr<DosageTimeRange> ComputingAdjustments::createSteadyStateDosage(
-        const SimpleDosageCandidate& _candidate, DateTime _startTime)
+        const SimpleDosageCandidate& _candidate, const DateTime& _startTime)
 {
     // A single interval
     unsigned int nbTimes = 1;
@@ -140,7 +142,7 @@ ComputingStatus ComputingAdjustments::buildCandidates(
 
 ComputingStatus ComputingAdjustments::buildCandidatesForInterval(
         const FullFormulationAndRoute* _formulationAndRoute,
-        Duration _interval,
+        const Duration& _interval,
         std::vector<ComputingAdjustments::SimpleDosageCandidate>& _candidates)
 {
     std::vector<Value> doseValues;
@@ -226,18 +228,18 @@ std::vector<DosageAdjustment> ComputingAdjustments::sortAndFilterCandidates(
     } // break;
     case BestCandidatesOption::BestDosagePerInterval: {
         for (size_t i = 0; i < _candidates.size(); i++) {
-            const DosageRepeat* repeat = dynamic_cast<const DosageRepeat*>(
+            auto repeat = dynamic_cast<const DosageRepeat*>(
                     _candidates[i].m_history.getDosageTimeRanges().back()->getDosage());
             if (repeat != nullptr) {
-                const LastingDose* dose = dynamic_cast<const LastingDose*>(repeat->getDosage());
+                auto dose = dynamic_cast<const LastingDose*>(repeat->getDosage());
                 if (dose != nullptr) {
                     Duration interval = dose->getTimeStep();
                     for (size_t j = i + 1; j < _candidates.size(); j++) {
 
-                        const DosageRepeat* repeat2 = dynamic_cast<const DosageRepeat*>(
+                        auto repeat2 = dynamic_cast<const DosageRepeat*>(
                                 _candidates[j].m_history.getDosageTimeRanges().back()->getDosage());
                         if (repeat2 != nullptr) {
-                            const LastingDose* dose2 = dynamic_cast<const LastingDose*>(repeat2->getDosage());
+                            auto dose2 = dynamic_cast<const LastingDose*>(repeat2->getDosage());
                             if (dose2 != nullptr) {
                                 if (dose2->getTimeStep() == interval) {
                                     _candidates.erase(_candidates.begin() + static_cast<long>(j));
@@ -401,7 +403,7 @@ ComputingStatus ComputingAdjustments::compute(
 
         for (const auto& analyteGroupId : allGroupIds) {
             if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-                Value negativeLogLikelihood;
+                Value negativeLogLikelihood = std::numeric_limits<Value>::infinity();
                 ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
                         etas[analyteGroupId],
                         _request,
@@ -891,13 +893,12 @@ ComputingStatus ComputingAdjustments::addRest(
         return ComputingStatus::Ok;
     }
 
-    const DosageRepeat* repeat =
-            dynamic_cast<const DosageRepeat*>(_dosage.m_history.getDosageTimeRanges()[0]->getDosage());
+    const auto repeat = dynamic_cast<const DosageRepeat*>(_dosage.m_history.getDosageTimeRanges()[0]->getDosage());
     if (repeat == nullptr) {
         _modified = false;
         return ComputingStatus::AdjustmentsInternalError;
     }
-    const LastingDose* dosage = dynamic_cast<const LastingDose*>(repeat->getDosage());
+    const auto dosage = dynamic_cast<const LastingDose*>(repeat->getDosage());
     if (dosage == nullptr) {
         _modified = false;
         return ComputingStatus::AdjustmentsInternalError;
@@ -1009,13 +1010,13 @@ ComputingStatus ComputingAdjustments::addRest(
 
 
     {
-        const DosageRepeat* repeat = dynamic_cast<const DosageRepeat*>(
+        const auto repeat = dynamic_cast<const DosageRepeat*>(
                 loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0]->getDosage());
         if (repeat == nullptr) {
             _modified = false;
             return ComputingStatus::AdjustmentsInternalError;
         }
-        const LastingDose* dosage = dynamic_cast<const LastingDose*>(repeat->getDosage());
+        const auto dosage = dynamic_cast<const LastingDose*>(repeat->getDosage());
         if (dosage == nullptr) {
             _modified = false;
             return ComputingStatus::AdjustmentsInternalError;
@@ -1060,13 +1061,12 @@ ComputingStatus ComputingAdjustments::addLoad(
         return ComputingStatus::Ok;
     }
 
-    const DosageRepeat* repeat =
-            dynamic_cast<const DosageRepeat*>(_dosage.m_history.getDosageTimeRanges()[0]->getDosage());
+    const auto repeat = dynamic_cast<const DosageRepeat*>(_dosage.m_history.getDosageTimeRanges()[0]->getDosage());
     if (repeat == nullptr) {
         _modified = false;
         return ComputingStatus::AdjustmentsInternalError;
     }
-    const LastingDose* dosage = dynamic_cast<const LastingDose*>(repeat->getDosage());
+    const auto dosage = dynamic_cast<const LastingDose*>(repeat->getDosage());
     if (dosage == nullptr) {
         _modified = false;
         return ComputingStatus::AdjustmentsInternalError;
@@ -1182,13 +1182,13 @@ ComputingStatus ComputingAdjustments::addLoad(
     }
 
     {
-        const DosageRepeat* repeat = dynamic_cast<const DosageRepeat*>(
+        auto repeat = dynamic_cast<const DosageRepeat*>(
                 loadingCandidates[bestIndex].loadingDosage.m_history.getDosageTimeRanges()[0]->getDosage());
         if (repeat == nullptr) {
             _modified = false;
             return ComputingStatus::AdjustmentsInternalError;
         }
-        const LastingDose* dosage = dynamic_cast<const LastingDose*>(repeat->getDosage());
+        auto dosage = dynamic_cast<const LastingDose*>(repeat->getDosage());
         if (dosage == nullptr) {
             _modified = false;
             return ComputingStatus::AdjustmentsInternalError;

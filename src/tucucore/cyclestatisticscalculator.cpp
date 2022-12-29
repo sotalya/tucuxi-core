@@ -2,6 +2,7 @@
 
 #include <iterator>
 #include <numeric>
+#include <utility>
 #include <vector>
 
 #include "tucucore/cyclestatisticscalculator.h"
@@ -13,8 +14,8 @@ namespace Tucuxi {
 namespace Core {
 
 
-CycleStatistic::CycleStatistic(const DateTime& _cycleStartDate, const CycleStatisticType /*_type*/)
-    : m_cycleStartDate(_cycleStartDate) //,
+CycleStatistic::CycleStatistic(DateTime _cycleStartDate, const CycleStatisticType /*_type*/)
+    : m_cycleStartDate(std::move(_cycleStartDate)) //,
 // Currently unused
 //  m_type(_type)
 {

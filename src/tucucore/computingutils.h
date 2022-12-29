@@ -64,7 +64,7 @@ public:
     CovariateEvent getCovariateAtTime(const DateTime& _date, const CovariateSeries& _covariates);
 
     ComputingStatus computeMultiActiveMoiety(
-            const std::vector<ActiveMoiety*> _activemoieties,
+            const std::vector<ActiveMoiety*>& _activemoieties,
             const std::vector<MultiConcentrationPredictionPtr>& _analytesPredictions,
             MultiConcentrationPredictionPtr& _activeMoietyPredictions);
 };

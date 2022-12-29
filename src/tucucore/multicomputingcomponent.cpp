@@ -1,6 +1,7 @@
 //@@license@@
 
 #include <chrono> // for high_resolution_clock
+#include <utility>
 
 #include "multicomputingcomponent.h"
 
@@ -73,7 +74,7 @@ bool MultiComputingComponent::initialize()
 
 void MultiComputingComponent::setPkModelCollection(std::shared_ptr<PkModelCollection> _collection)
 {
-    m_utils->m_models = _collection;
+    m_utils->m_models = std::move(_collection);
 }
 
 
@@ -149,8 +150,8 @@ ComputingStatus MultiComputingComponent::recordCycle(
         const ComputingTraitStandard* _traits,
         const ComputingRequest& _request,
         ConcentrationData& _concentrationData,
-        DateTime _start,
-        DateTime _end,
+        const DateTime& _start,
+        const DateTime& _end,
         const TimeOffsets& _times,
         const MultiConcentrationPredictionPtr& _activeMoietiesPredictions,
         const std::vector<MultiConcentrationPredictionPtr>& _analytesPredictions,

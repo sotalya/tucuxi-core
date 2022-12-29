@@ -1,10 +1,10 @@
 //@@license@@
 
 #include <algorithm>
+#include <ctime>
 #include <mutex>
 #include <random>
 #include <thread>
-#include <time.h>
 
 #include <Eigen/Cholesky>
 
@@ -919,7 +919,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     double part3 = tgamma(v / 2) * std::pow(v * 3.14159, p / 2);
 
 
-    unsigned int nbSamplePerThread =
+    auto nbSamplePerThread =
             static_cast<unsigned int>(ceil(static_cast<double>(nbInitialSamples) / static_cast<double>(nbThreads)));
 
     std::vector<std::thread> workers;

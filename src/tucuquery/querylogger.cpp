@@ -36,12 +36,10 @@ using namespace std;
 namespace Tucuxi {
 namespace Query {
 
-static const std::string DATE_FORMAT = "%Y-%m-%dT%H:%M:%S";
-
 
 Tucuxi::Common::Interface* QueryLogger::createComponent(const std::string& _folderPath)
 {
-    QueryLogger* cmp = new QueryLogger(_folderPath);
+    auto cmp = new QueryLogger(_folderPath);
 
 
     return dynamic_cast<IQueryLogger*>(cmp);
@@ -69,12 +67,11 @@ std::string QueryLogger::getFolderPath()
 void QueryLogger::saveQuery(const std::string& _queryString, const std::string& _queryID)
 {
 
-    time_t rawtime;
-    struct tm* timeinfo;
-    std::array<char, 20> buffer;
+    time_t rawtime = 0;
+    std::array<char, 20> buffer{};
 
     time(&rawtime);
-    timeinfo = localtime(&rawtime);
+    struct tm* timeinfo = localtime(&rawtime);
 
     strftime(buffer.data(), sizeof(buffer), "%Y-%m-%d", timeinfo);
     std::string directoryPath = getFolderPath() + PATH_SEPARATOR + string(buffer.data());

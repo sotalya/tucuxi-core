@@ -1,5 +1,7 @@
 //@@license@@
 
+#include <utility>
+
 #include "cachecomputing.h"
 
 #include "computingservice/computingrequest.h"
@@ -51,14 +53,17 @@ bool CacheComputing::isLastCallaHit() const
 }
 
 bool CacheComputing::getSpecificIntervalFromCache(
-        DateTime _start, DateTime _end, double _nbPointsPerHour, std::unique_ptr<ComputingResponse>& _response)
+        const DateTime& _start,
+        const DateTime& _end,
+        double _nbPointsPerHour,
+        std::unique_ptr<ComputingResponse>& _response)
 {
     // This function implements various ways of getting pertinent data from the Cache.
 
     std::vector<PercentilesData*> candidates;
 
     for (const auto& data : m_data) {
-        PercentilesData* pData = dynamic_cast<PercentilesData*>(data.get());
+        auto pData = dynamic_cast<PercentilesData*>(data.get());
         if (pData != nullptr) {
             // This check is required if something went strangely with the insertion of percentiles.
             // It happens when we ask for data in a far future, where the computation ended up with
@@ -94,8 +99,8 @@ bool CacheComputing::getSpecificIntervalFromCache(
 
 
 bool CacheComputing::buildResponse(
-        DateTime _start,
-        DateTime _end,
+        const DateTime& _start,
+        const DateTime& _end,
         double _nbPointsPerHour,
         const std::vector<PercentilesData*>& _candidates,
         std::unique_ptr<ComputingResponse>& _response)
@@ -119,7 +124,7 @@ bool CacheComputing::buildResponse(
     return false;
 }
 
-bool CacheComputing::isFullIntervalInCache(DateTime _start, DateTime _end)
+bool CacheComputing::isFullIntervalInCache(const DateTime& _start, const DateTime& _end)
 {
     if (m_indexVector.empty()) {
         return false;
@@ -141,12 +146,15 @@ bool CacheComputing::isFullIntervalInCache(DateTime _start, DateTime _end)
 }
 
 void CacheComputing::buildIndex(
-        DateTime _start, DateTime _end, double _nbPointsPerHour, const std::vector<PercentilesData*>& _candidates)
+        const DateTime& _start,
+        const DateTime& _end,
+        double _nbPointsPerHour,
+        const std::vector<PercentilesData*>& _candidates)
 {
     TMP_UNUSED_PARAMETER(_nbPointsPerHour);
     m_indexVector.clear();
     for (const auto& data : _candidates) {
-        PercentilesData* pData = dynamic_cast<PercentilesData*>(data);
+        auto pData = dynamic_cast<PercentilesData*>(data);
         if (pData != nullptr) {
             const auto p0 = pData->getPercentileData(0);
             const auto size = p0.size();
@@ -161,7 +169,7 @@ void CacheComputing::buildIndex(
     }
 }
 
-void CacheComputing::insertCycle(DateTime _start, DateTime _end, PercentilesData* _data, std::size_t _cycleIndex)
+void CacheComputing::insertCycle(const DateTime& _start, DateTime _end, PercentilesData* _data, std::size_t _cycleIndex)
 {
     auto it = m_indexVector.rbegin();
     while (it != m_indexVector.rend()) {
@@ -173,7 +181,7 @@ void CacheComputing::insertCycle(DateTime _start, DateTime _end, PercentilesData
         }
         it++;
     }
-    m_indexVector.insert(it.base(), index_t{_data, _cycleIndex, _start, _end});
+    m_indexVector.insert(it.base(), index_t{_data, _cycleIndex, _start, std::move(_end)});
     /*
     size_t insertIndex = m_indexVector.size();
     for(size_t i = m_indexVector.size() - 1; i >= 0; i--) {
@@ -197,10 +205,10 @@ bool CacheComputing::getFromCache(const ComputingRequest& _request, std::unique_
     // We iterate over the computing traits, and only process the percentiles,
     // by calling getSpecificIntervalFromCache
     for (const auto& trait : _request.getComputingTraits()) {
-        ComputingTraitPercentiles* pTraits = dynamic_cast<ComputingTraitPercentiles*>(trait.get());
+        auto pTraits = dynamic_cast<ComputingTraitPercentiles*>(trait.get());
         if (pTraits != nullptr) {
-            auto start = pTraits->getStart();
-            auto end = pTraits->getEnd();
+            const auto& start = pTraits->getStart();
+            const auto& end = pTraits->getEnd();
             auto nbPointsPerHour = pTraits->getNbPointsPerHour();
             if (getSpecificIntervalFromCache(start, end, nbPointsPerHour, _response)) {
                 return true;

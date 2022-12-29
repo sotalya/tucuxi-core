@@ -73,8 +73,8 @@ Value Likelihood::negativeLogLikelihood(const ValueVector& _etas) const
     //calculate the prior which depends only on eta and omega (not the measure)
     Value logPrior = negativeLogPrior(
             Eigen::Map<const EigenVector>(&_etas[0], static_cast<Eigen::Index>(_etas.size())) /*, *m_omega*/);
-    SampleSeries::const_iterator sit = m_samples->begin();
-    SampleSeries::const_iterator sitEnd = m_samples->end();
+    auto sit = m_samples->begin();
+    auto sitEnd = m_samples->end();
     size_t sampleCounter = 0;
     while (sit != sitEnd) {
         // SampleEvent s = *sit;

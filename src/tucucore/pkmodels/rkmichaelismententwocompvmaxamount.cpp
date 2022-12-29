@@ -239,7 +239,7 @@ bool RkMichaelisMentenTwoCompVmaxAmountInfusionMicro::checkInputs(
 
 
 
-RkMichaelisMentenTwoCompVmaxAmountExtraMacro::RkMichaelisMentenTwoCompVmaxAmountExtraMacro() {}
+RkMichaelisMentenTwoCompVmaxAmountExtraMacro::RkMichaelisMentenTwoCompVmaxAmountExtraMacro() = default;
 
 
 
@@ -286,7 +286,7 @@ bool RkMichaelisMentenTwoCompVmaxAmountExtraMacro::checkInputs(
 }
 
 
-RkMichaelisMentenTwoCompVmaxAmountExtraLagMacro::RkMichaelisMentenTwoCompVmaxAmountExtraLagMacro() {}
+RkMichaelisMentenTwoCompVmaxAmountExtraLagMacro::RkMichaelisMentenTwoCompVmaxAmountExtraLagMacro() = default;
 
 std::vector<std::string> RkMichaelisMentenTwoCompVmaxAmountExtraLagMacro::getParametersId()
 {
@@ -332,7 +332,7 @@ bool RkMichaelisMentenTwoCompVmaxAmountExtraLagMacro::checkInputs(
 }
 
 
-RkMichaelisMentenTwoCompVmaxAmountBolusMacro::RkMichaelisMentenTwoCompVmaxAmountBolusMacro() {}
+RkMichaelisMentenTwoCompVmaxAmountBolusMacro::RkMichaelisMentenTwoCompVmaxAmountBolusMacro() = default;
 
 std::vector<std::string> RkMichaelisMentenTwoCompVmaxAmountBolusMacro::getParametersId()
 {
@@ -389,7 +389,7 @@ bool RkMichaelisMentenTwoCompVmaxAmountBolusMacro::checkInputs(
 
 
 
-RkMichaelisMentenTwoCompVmaxAmountInfusionMacro::RkMichaelisMentenTwoCompVmaxAmountInfusionMacro() {}
+RkMichaelisMentenTwoCompVmaxAmountInfusionMacro::RkMichaelisMentenTwoCompVmaxAmountInfusionMacro() = default;
 
 std::vector<std::string> RkMichaelisMentenTwoCompVmaxAmountInfusionMacro::getParametersId()
 {

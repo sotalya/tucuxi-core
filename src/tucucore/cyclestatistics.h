@@ -39,7 +39,7 @@ public:
     /// \param _cycleStartDate Absolute cycle start date
     /// \param _type
     ///
-    CycleStatistic(const Tucuxi::Common::DateTime& _cycleStartDate, CycleStatisticType _type);
+    CycleStatistic(Tucuxi::Common::DateTime _cycleStartDate, CycleStatisticType _type);
 
     ///
     /// \brief Add a new value to the statistic

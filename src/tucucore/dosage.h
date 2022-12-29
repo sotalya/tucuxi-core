@@ -1024,9 +1024,9 @@ public:
                 m_history.begin(),
                 m_history.end(),
                 std::make_unique<DosageTimeRange>(_timeRange),
-                [](const std::unique_ptr<DosageTimeRange>& timeRange1,
-                   const std::unique_ptr<DosageTimeRange>& timeRange2) {
-                    return timeRange1->getStartDate() < timeRange2->getStartDate();
+                [](const std::unique_ptr<DosageTimeRange>& _timeRange1,
+                   const std::unique_ptr<DosageTimeRange>& _timeRange2) {
+                    return _timeRange1->getStartDate() < _timeRange2->getStartDate();
                 });
 
         // Insert the dosage time range

@@ -10,7 +10,7 @@ namespace Common {
 
 static const int MINUTE = 60;
 static const int SECONDE = MINUTE;
-static const string DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"; // NOLINT(readability-identifier-naming)
+static const char* DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"; // NOLINT(readability-identifier-naming)
 
 
 void XMLImporter::unexpectedTag(const std::string& _tagName)
@@ -70,9 +70,9 @@ TucuUnit XMLImporter::extractUnit(Tucuxi::Common::XmlNodeIterator _rootIterator,
 
 double XMLImporter::extractDouble(Tucuxi::Common::XmlNodeIterator _rootIterator)
 {
-    double result;
+    double result = 0.0;
     try {
-        std::size_t pos;
+        std::size_t pos = 0;
         result = std::stod(_rootIterator->getValue(), &pos);
         if (pos != _rootIterator->getValue().size()) {
             setNodeError(_rootIterator);

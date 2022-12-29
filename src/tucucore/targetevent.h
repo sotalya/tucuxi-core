@@ -119,9 +119,9 @@ private:
             Value _vmax,
             Value _mic,
             TucuUnit _micUnit,
-            const Tucuxi::Common::Duration& _tmin,
-            const Tucuxi::Common::Duration& _tbest,
-            const Tucuxi::Common::Duration& _tmax);
+            Tucuxi::Common::Duration _tmin,
+            Tucuxi::Common::Duration _tbest,
+            Tucuxi::Common::Duration _tmax);
 
 
     /// Id of the active moiety on which applying the target

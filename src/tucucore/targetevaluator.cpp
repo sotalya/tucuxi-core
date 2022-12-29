@@ -94,7 +94,9 @@ ComputingStatus TargetEvaluator::evaluate(
         TargetEvaluationResult& _result)
 {
 
-    assert(!_prediction.getTimes().empty());
+    if (_prediction.getTimes().empty()) {
+        return ComputingStatus::TargetEvaluationError;
+    }
 
     bool bOk = true;
     double score = 0.0;

@@ -21,7 +21,7 @@ namespace Core {
     public:                                                                             \
         NAME()                                                                          \
         {                                                                               \
-            fillRequiredInputs();                                                       \
+            NAME::fillRequiredInputs();                                                 \
             m_filledInputs = true;                                                      \
         }                                                                               \
         virtual std::unique_ptr<Operation> clone() const                                \

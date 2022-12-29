@@ -75,9 +75,9 @@ ComputingStatus ComputingUtils::computeActiveMoiety(
 CovariateEvent ComputingUtils::getCovariateAtTime(const DateTime& _date, const CovariateSeries& _covariates)
 {
     // Find the lasted change that occured before the given date
-    std::vector<CovariateEvent>::const_iterator it = _covariates.begin();
+    auto it = _covariates.begin();
     if (it != _covariates.end()) {
-        std::vector<CovariateEvent>::const_iterator itNext = it;
+        auto itNext = it;
         while (++itNext != _covariates.end() && _date > itNext->getEventTime()) {
             it++;
         }
@@ -97,7 +97,7 @@ CovariateEvent ComputingUtils::getCovariateAtTime(const DateTime& _date, const C
 
 
 ComputingStatus ComputingUtils::computeMultiActiveMoiety(
-        const std::vector<ActiveMoiety*> _activemoieties,
+        const std::vector<ActiveMoiety*>& _activemoieties,
         const std::vector<MultiConcentrationPredictionPtr>& _analytesPredictions,
         MultiConcentrationPredictionPtr& _activeMoietyPredictions)
 {
@@ -144,7 +144,7 @@ ComputingStatus ComputingUtils::computeMultiActiveMoiety(
                     for (size_t an = 0; an < nbAnalytes; an++) {
                         inputList[an].setValue(analyteC[an][c]);
                     }
-                    double result;
+                    double result = 0.0;
                     if (!op[i]->evaluate(inputList, result)) {
                         // Something went wrong
                         return ComputingStatus::MultiActiveMoietyCalculationError;

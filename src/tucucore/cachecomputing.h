@@ -76,7 +76,10 @@ protected:
     /// If data is not found in the cache, then the _response is unchanged.
     ///
     bool getSpecificIntervalFromCache(
-            DateTime _start, DateTime _end, double _nbPointsPerHour, std::unique_ptr<ComputingResponse>& _response);
+            const DateTime& _start,
+            const DateTime& _end,
+            double _nbPointsPerHour,
+            std::unique_ptr<ComputingResponse>& _response);
 
     ///
     /// \brief buildResponse
@@ -95,8 +98,8 @@ protected:
     /// It tries to build a response set from the candidates, and populate the response if possible.
     ///
     bool buildResponse(
-            DateTime _start,
-            DateTime _end,
+            const DateTime& _start,
+            const DateTime& _end,
             double _nbPointsPerHour,
             const std::vector<PercentilesData*>& _candidates,
             std::unique_ptr<ComputingResponse>& _response);
@@ -140,7 +143,10 @@ protected:
     /// It fills m_indexVector with indexes to cycle datas
     ///
     void buildIndex(
-            DateTime _start, DateTime _end, double _nbPointsPerHour, const std::vector<PercentilesData*>& _candidates);
+            const DateTime& _start,
+            const DateTime& _end,
+            double _nbPointsPerHour,
+            const std::vector<PercentilesData*>& _candidates);
 
     ///
     /// \brief Tries to insert a cycle data into the m_indexVector
@@ -153,7 +159,7 @@ protected:
     /// [_start,_end] interval. If it finds one, it inserts an index_t at this specific slot.
     /// If the slot is already filled, then nothing happens.
     ///
-    void insertCycle(DateTime _start, DateTime _end, PercentilesData* _data, std::size_t _cycleIndex);
+    void insertCycle(const DateTime& _start, DateTime _end, PercentilesData* _data, std::size_t _cycleIndex);
 
     ///
     /// \brief Checks if the data referenced by m_indexVector fills the interval
@@ -164,7 +170,7 @@ protected:
     /// This function shall be called after buildIndex(), to check if the built index fills the
     /// [_start, _end] interval
     ///
-    bool isFullIntervalInCache(DateTime _start, DateTime _end);
+    bool isFullIntervalInCache(const DateTime& _start, const DateTime& _end);
 };
 
 } // namespace Core

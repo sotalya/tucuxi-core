@@ -66,18 +66,18 @@ protected:
 
     ComputingStatus buildCandidatesForInterval(
             const FullFormulationAndRoute* _formulationAndRoute,
-            Common::Duration _interval,
+            const Common::Duration& _interval,
             std::vector<ComputingAdjustments::SimpleDosageCandidate>& _candidates);
 
     std::unique_ptr<DosageTimeRange> createDosage(
-            const SimpleDosageCandidate& _candidate, DateTime _startTime, DateTime _endTime);
+            const SimpleDosageCandidate& _candidate, const DateTime& _startTime, const DateTime& _endTime);
 
 
     std::unique_ptr<DosageTimeRange> createLoadingDosageOrRestPeriod(
-            const SimpleDosageCandidate& _candidate, DateTime _startTime);
+            const SimpleDosageCandidate& _candidate, const DateTime& _startTime);
 
     std::unique_ptr<DosageTimeRange> createSteadyStateDosage(
-            const SimpleDosageCandidate& _candidate, DateTime _startTime);
+            const SimpleDosageCandidate& _candidate, const DateTime& _startTime);
 
     ComputingStatus addLoadOrRest(
             std::vector<DosageAdjustment>& _dosages,

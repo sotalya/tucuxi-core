@@ -102,7 +102,7 @@ Value Utils::varToValue(const DateTime& _value)
 
 Value Utils::stringToValue(const std::string& _str, const DataType& _dataType)
 {
-    Value v;
+    Value v = 0.0;
     std::string str = _str;
     std::transform(str.begin(), str.end(), str.begin(), ::tolower);
     switch (_dataType) {
@@ -167,8 +167,10 @@ std::string Utils::varToString(const double& _value)
 
 std::string Utils::varToString(const DateTime& _value)
 {
-    char buf[64];
-    sprintf(buf,
+    std::array<char, 64> buf{};
+    snprintf(
+            buf.data(),
+            buf.size(),
             "%04d-%02d-%02d %02d:%02d:%02d",
             _value.year(),
             _value.month(),
@@ -176,7 +178,7 @@ std::string Utils::varToString(const DateTime& _value)
             _value.hour(),
             _value.minute(),
             _value.second());
-    return std::string(buf);
+    return std::string(buf.data());
 }
 
 

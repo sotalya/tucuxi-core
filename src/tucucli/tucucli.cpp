@@ -133,7 +133,7 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
 
         drugModelRepository->addFolderPath(drugPath);
 
-        Tucuxi::Query::QueryLogger* queryLogger =
+        auto* queryLogger =
                 dynamic_cast<Tucuxi::Query::QueryLogger*>(Tucuxi::Query::QueryLogger::createComponent(queryLogPath));
 
         pCmpMgr->registerComponent("QueryLogger", queryLogger);

@@ -46,7 +46,7 @@ clang-tidy \
 	-I../libs/rapidjson-master-20190220/include \
 	-I../libs/eigen-3.3.2 \
 	-I../libs/boost-1.63.0 \
-	-I../libs/date-master-20170711 \
+	-I../libs/date/include \
 	-I../libs/spdlog-master-20170622/include \
     -I../libs/botan-2.1.0/build/include \
     -I../libs/tiny-js-master-20170629 \

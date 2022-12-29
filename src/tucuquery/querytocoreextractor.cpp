@@ -181,7 +181,7 @@ Tucuxi::Core::DrugModel* QueryToCoreExtractor::extractDrugModel(
     Tucuxi::Core::DrugModel* drugModel = nullptr;
 
     // Getting the drug model
-    Tucuxi::Core::IDrugModelRepository* drugModelRepository;
+    Tucuxi::Core::IDrugModelRepository* drugModelRepository = nullptr;
 
     // Get the "DrugModelRepository" component from the component manager
     Tucuxi::Common::ComponentManager* pCmpMgr = Tucuxi::Common::ComponentManager::getInstance();

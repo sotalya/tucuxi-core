@@ -1,6 +1,7 @@
 //@@license@@
 
 #include <chrono>
+#include <utility>
 
 #include "validduration.h"
 
@@ -14,7 +15,7 @@ using Tucuxi::Common::Duration;
 using namespace std::chrono_literals;
 
 ValidDurations::ValidDurations(TucuUnit _unit, std::unique_ptr<PopulationValue> _defaultValue)
-    : ValidValues(_unit, std::move(_defaultValue))
+    : ValidValues(std::move(_unit), std::move(_defaultValue))
 {
 }
 

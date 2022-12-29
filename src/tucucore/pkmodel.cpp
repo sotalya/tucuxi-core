@@ -1,5 +1,7 @@
 //@@license@@
 
+#include <utility>
+
 #include "pkmodel.h"
 
 #include "tucucore/pkmodels/onecompartmentbolus.h"
@@ -31,8 +33,8 @@
 namespace Tucuxi {
 namespace Core {
 
-PkModel::PkModel(const std::string& _pkModelId, AllowMultipleRoutes _allowMultipleRoutes)
-    : m_pkModelId(_pkModelId), m_allowMultipleRoutes(_allowMultipleRoutes)
+PkModel::PkModel(std::string _pkModelId, AllowMultipleRoutes _allowMultipleRoutes)
+    : m_pkModelId(std::move(_pkModelId)), m_allowMultipleRoutes(_allowMultipleRoutes)
 {
 }
 

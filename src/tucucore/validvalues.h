@@ -27,7 +27,7 @@ public:
 class ValidValues
 {
 public:
-    ValidValues(const Common::TucuUnit& _unit, std::unique_ptr<PopulationValue> _defaultValue);
+    ValidValues(Common::TucuUnit _unit, std::unique_ptr<PopulationValue> _defaultValue);
 
     virtual ~ValidValues();
 

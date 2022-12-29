@@ -234,7 +234,7 @@ bool RkMichaelisMentenTwoCompInfusionMicro::checkInputs(
 
 
 
-RkMichaelisMentenTwoCompExtraMacro::RkMichaelisMentenTwoCompExtraMacro() {}
+RkMichaelisMentenTwoCompExtraMacro::RkMichaelisMentenTwoCompExtraMacro() = default;
 
 
 
@@ -281,7 +281,7 @@ bool RkMichaelisMentenTwoCompExtraMacro::checkInputs(
 }
 
 
-RkMichaelisMentenTwoCompExtraLagMacro::RkMichaelisMentenTwoCompExtraLagMacro() {}
+RkMichaelisMentenTwoCompExtraLagMacro::RkMichaelisMentenTwoCompExtraLagMacro() = default;
 
 std::vector<std::string> RkMichaelisMentenTwoCompExtraLagMacro::getParametersId()
 {
@@ -327,7 +327,7 @@ bool RkMichaelisMentenTwoCompExtraLagMacro::checkInputs(
 }
 
 
-RkMichaelisMentenTwoCompBolusMacro::RkMichaelisMentenTwoCompBolusMacro() {}
+RkMichaelisMentenTwoCompBolusMacro::RkMichaelisMentenTwoCompBolusMacro() = default;
 
 std::vector<std::string> RkMichaelisMentenTwoCompBolusMacro::getParametersId()
 {
@@ -384,7 +384,7 @@ bool RkMichaelisMentenTwoCompBolusMacro::checkInputs(
 
 
 
-RkMichaelisMentenTwoCompInfusionMacro::RkMichaelisMentenTwoCompInfusionMacro() {}
+RkMichaelisMentenTwoCompInfusionMacro::RkMichaelisMentenTwoCompInfusionMacro() = default;
 
 std::vector<std::string> RkMichaelisMentenTwoCompInfusionMacro::getParametersId()
 {

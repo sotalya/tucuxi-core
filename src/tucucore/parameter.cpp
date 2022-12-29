@@ -14,9 +14,9 @@ namespace Core {
 ParameterSetEventPtr ParameterSetSeries::getAtTime(const DateTime& _date, const Etas& _etas) const
 {
     // Find the lasted change that occured before the given date
-    std::vector<ParameterSetEvent>::const_iterator it = m_parameterSets.begin();
+    auto it = m_parameterSets.begin();
     if (it != m_parameterSets.end()) {
-        std::vector<ParameterSetEvent>::const_iterator itNext = it;
+        auto itNext = it;
         while (++itNext != m_parameterSets.end() && _date >= itNext->getEventTime()) {
             it++;
         }

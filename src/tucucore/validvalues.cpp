@@ -1,5 +1,7 @@
 //@@license@@
 
+#include <utility>
+
 #include "validvalues.h"
 
 
@@ -7,8 +9,8 @@ namespace Tucuxi {
 namespace Core {
 
 
-ValidValues::ValidValues(const TucuUnit& _unit, std::unique_ptr<PopulationValue> _defaultValue)
-    : m_unit(_unit), m_defaultValue(std::move(_defaultValue))
+ValidValues::ValidValues(TucuUnit _unit, std::unique_ptr<PopulationValue> _defaultValue)
+    : m_unit(std::move(_unit)), m_defaultValue(std::move(_defaultValue))
 {
 }
 
@@ -97,7 +99,7 @@ Value ValidValuesRange::getStepValue() const
 }
 
 
-ValidValuesFixed::ValidValuesFixed() {}
+ValidValuesFixed::ValidValuesFixed() = default;
 
 void ValidValuesFixed::addValue(Value _dose)
 {

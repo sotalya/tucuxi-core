@@ -1,5 +1,7 @@
 //@@license@@
 
+#include <utility>
+
 #include "fullsample.h"
 
 namespace Tucuxi {
@@ -13,7 +15,8 @@ FullSample::FullSample(
         Core::Value _value,
         Common::TucuUnit _unit,
         Core::Value _weight)
-    : Core::Sample(_date, _analyteId, _value, _unit, _weight), m_sampleID(_id)
+    : Core::Sample(std::move(_date), std::move(_analyteId), _value, std::move(_unit), _weight),
+      m_sampleID(std::move(_id))
 {
 }
 

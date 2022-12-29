@@ -710,7 +710,7 @@ public:
             RequestResponseId _id,
             Tucuxi::Common::DateTime _start,
             Tucuxi::Common::DateTime _end,
-            const PercentileRanks& _ranks,
+            PercentileRanks _ranks,
             double _nbPointsPerHour,
             ComputingOption _computingOption,
             ComputingAborter* _aborter = nullptr);

@@ -20,9 +20,9 @@ namespace Query {
 
 using namespace Core;
 
-ComputingQueryResponseXmlExport::ComputingQueryResponseXmlExport() {}
+ComputingQueryResponseXmlExport::ComputingQueryResponseXmlExport() = default;
 
-ComputingQueryResponseXmlExport::~ComputingQueryResponseXmlExport() {}
+ComputingQueryResponseXmlExport::~ComputingQueryResponseXmlExport() = default;
 
 bool ComputingQueryResponseXmlExport::exportToFile(
         const ComputingQueryResponse& _computingQueryResponse, const std::string& _fileName)
@@ -145,7 +145,7 @@ bool ComputingQueryResponseXmlExport::exportToString(
                     m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "requestType", "adjustment");
             responseNode.addChild(requestType);
 
-            const Tucuxi::Core::AdjustmentData* prediction =
+            const auto prediction =
                     dynamic_cast<const Tucuxi::Core::AdjustmentData*>(response.m_computingResponse->getData());
 
             if (!exportAdjustment(prediction, dataNode)) {
@@ -164,7 +164,7 @@ bool ComputingQueryResponseXmlExport::exportToString(
                     m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "requestType", "prediction");
             responseNode.addChild(requestType);
 
-            const Tucuxi::Core::SinglePredictionData* prediction =
+            const auto prediction =
                     dynamic_cast<const Tucuxi::Core::SinglePredictionData*>(response.m_computingResponse->getData());
 
             if (!exportSinglePrediction(prediction, dataNode)) {
@@ -182,7 +182,7 @@ bool ComputingQueryResponseXmlExport::exportToString(
                     m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "requestType", "singlePoints");
             responseNode.addChild(requestType);
 
-            const Tucuxi::Core::SinglePointsData* prediction =
+            const auto prediction =
                     dynamic_cast<const Tucuxi::Core::SinglePointsData*>(response.m_computingResponse->getData());
 
             if (!exportSinglePoints(prediction, dataNode)) {
@@ -201,7 +201,7 @@ bool ComputingQueryResponseXmlExport::exportToString(
                     m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "requestType", "percentiles");
             responseNode.addChild(requestType);
 
-            const Tucuxi::Core::PercentilesData* prediction =
+            const auto prediction =
                     dynamic_cast<const Tucuxi::Core::PercentilesData*>(response.m_computingResponse->getData());
 
             if (!exportPercentiles(prediction, dataNode)) {
@@ -376,10 +376,10 @@ std::string dateTimeToString(const Tucuxi::Common::DateTime& _dateTime)
              + std::to_string(_dateTime.day()) + "T" + std::to_string(_dateTime.hour()) + ":"
              + std::to_string(_dateTime.minute()) + ":" + std::to_string(_dateTime.second());
 
-    char str[20];
+    std::array<char, 20> str{};
     snprintf(
-            str,
-            20,
+            str.data(),
+            str.size(),
             "%04d-%02d-%02dT%02d:%02d:%02d",
             _dateTime.year(),
             _dateTime.month(),
@@ -387,16 +387,16 @@ std::string dateTimeToString(const Tucuxi::Common::DateTime& _dateTime)
             _dateTime.hour(),
             _dateTime.minute(),
             _dateTime.second());
-    result = str;
+    result = str.data();
     return result;
 }
 
 std::string timeToString(const Tucuxi::Common::TimeOfDay& _timeOfDay)
 {
-    char str[10];
-    snprintf(str, 9, "%02d:%02d:%02d", _timeOfDay.hour(), _timeOfDay.minute(), _timeOfDay.second());
+    std::array<char, 10> str{};
+    snprintf(str.data(), str.size(), "%02d:%02d:%02d", _timeOfDay.hour(), _timeOfDay.minute(), _timeOfDay.second());
 
-    return std::string(str);
+    return std::string(str.data());
 }
 
 

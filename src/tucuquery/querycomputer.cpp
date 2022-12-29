@@ -25,8 +25,7 @@ QueryComputer::QueryComputer() = default;
 void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _response)
 {
 
-    Core::IComputingService* computingComponent =
-            dynamic_cast<Core::IComputingService*>(Core::ComputingComponent::createComponent());
+    auto computingComponent = dynamic_cast<Core::IComputingService*>(Core::ComputingComponent::createComponent());
 
     unsigned int errorsCounter = 0;
     for (const std::unique_ptr<Core::ComputingRequest>& computingRequest : _query.m_computingRequests) {
@@ -92,10 +91,9 @@ void QueryComputer::compute(const std::string& _queryString, ComputingQueryRespo
         return;
     }
 
-    Tucuxi::Query::IQueryLogger* queryLogger;
     Tucuxi::Common::ComponentManager* pCmpMgr = Tucuxi::Common::ComponentManager::getInstance();
     if (pCmpMgr != nullptr) {
-        queryLogger = pCmpMgr->getComponent<Tucuxi::Query::IQueryLogger>("QueryLogger");
+        auto queryLogger = pCmpMgr->getComponent<Tucuxi::Query::IQueryLogger>("QueryLogger");
         if (!queryLogger->getFolderPath().empty()) {
             queryLogger->saveQuery(_queryString, query->getQueryID());
         }

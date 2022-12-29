@@ -1,5 +1,7 @@
 //@@license@@
 
+#include <utility>
+
 #include "querydata.h"
 
 using namespace std;
@@ -9,14 +11,14 @@ namespace Tucuxi {
 namespace Query {
 
 QueryData::QueryData(
-        const string& _queryID,
-        const string& _clientID,
-        const Common::DateTime& _pQueryDate,
-        const string& _language,
+        string _queryID,
+        string _clientID,
+        Common::DateTime _pQueryDate,
+        string _language,
         unique_ptr<DrugTreatmentData> _pParameters,
         vector<unique_ptr<RequestData> >& _requests)
-    : m_queryID(_queryID), m_clientID(_clientID), m_pQueryDate(_pQueryDate), m_language(_language),
-      m_pParameters(move(_pParameters)), m_requests(move(_requests))
+    : m_queryID(std::move(_queryID)), m_clientID(std::move(_clientID)), m_pQueryDate(std::move(_pQueryDate)),
+      m_language(std::move(_language)), m_pParameters(move(_pParameters)), m_requests(move(_requests))
 {
 }
 

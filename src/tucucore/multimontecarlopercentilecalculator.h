@@ -109,12 +109,12 @@ protected:
             PercentilesPrediction& _percentiles,
             const PercentileRanks& _percentileRanks,
             const ActiveMoiety* _activeMoiety,
-            std::vector<AnalyteGroupId> _analyteGroupIds,
+            const std::vector<AnalyteGroupId>& _analyteGroupIds,
             IntakeSeries _recordedIntakes,
             size_t _nbPatients,
             std::vector<std::vector<std::vector<std::vector<Concentration> > > >& _concentrations,
             MonteCarloPercentileCalculatorBase& _simpleCalculator,
-            std::vector<TimeOffsets> _times);
+            const std::vector<TimeOffsets>& _times);
 };
 
 class AprioriPercentileCalculatorMulti :

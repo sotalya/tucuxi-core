@@ -135,9 +135,9 @@ public:
     /// Unit of concentrations
     TucuUnit m_unit;
 
-    void setLogLikelihood(Value value)
+    void setLogLikelihood(Value _value)
     {
-        m_logLikelihood = value;
+        m_logLikelihood = _value;
     }
     Value getLogLikelihood() const
     {

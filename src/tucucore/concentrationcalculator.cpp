@@ -336,8 +336,8 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtTimes(
     intakeNext++;
 
     // The size of residuals vectors equals the number of compartments. This shouldnt be hardcoded here.
-    SampleSeries::const_iterator sampleEnd = _samples.end();
-    SampleSeries::const_iterator sit = _samples.begin();
+    auto sampleEnd = _samples.end();
+    auto sit = _samples.begin();
 
     DateTime nextSampleTime = sit->getEventTime();
     // double _nextsampletime = intakes.begin()->time.secsTo(sit->time)/3600.0;

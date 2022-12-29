@@ -24,7 +24,7 @@ namespace Tucuxi {
 namespace Query {
 
 
-static const std::string DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"; // NOLINT(readability-identifier-naming)
+static const char* DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"; // NOLINT(readability-identifier-naming)
 
 
 QueryImport::QueryImport() = default;
@@ -871,9 +871,8 @@ Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(
 {
     Common::XmlNodeIterator it = _rootIterator->getChildren(_childName);
     Tucuxi::Core::PercentileRanks ranks;
-    Tucuxi::Core::PercentileRank rank;
     while (it != Common::XmlNodeIterator::none()) {
-        rank = extractDouble(it);
+        Tucuxi::Core::PercentileRank rank = extractDouble(it);
         ranks.push_back(rank);
         it++;
     }
@@ -904,12 +903,10 @@ unique_ptr<Tucuxi::Core::ComputingTraitAtMeasures> QueryImport::getChildComputin
 {
     static const string COMPUTING_OPTION = "computingOption";
 
-
-    Tucuxi::Core::RequestResponseId requestResponseId = _requestResponseId;
     // Here we move the iterator, as it is the only use of it
     Tucuxi::Core::ComputingOption computingOption = getChildComputingOption(std::move(_rootIterator), COMPUTING_OPTION);
 
-    return make_unique<Tucuxi::Core::ComputingTraitAtMeasures>(requestResponseId, computingOption);
+    return make_unique<Tucuxi::Core::ComputingTraitAtMeasures>(_requestResponseId, computingOption);
 }
 
 
@@ -920,14 +917,12 @@ unique_ptr<Tucuxi::Core::ComputingTraitSinglePoints> QueryImport::getChildComput
     static const string DATES_NODE_NAME = "dates";
     static const string DATES_DATE_NODE_NAME = "date";
 
-    Tucuxi::Core::RequestResponseId requestResponseId = _requestResponseId;
-
     Common::XmlNodeIterator timesRootIterator = _rootIterator->getChildren(DATES_NODE_NAME);
     vector<Common::DateTime> times = getChildDateTimeList(timesRootIterator, DATES_DATE_NODE_NAME);
 
     Tucuxi::Core::ComputingOption computingOption = getChildComputingOption(_rootIterator, COMPUTING_OPTION);
 
-    return make_unique<Tucuxi::Core::ComputingTraitSinglePoints>(requestResponseId, times, computingOption);
+    return make_unique<Tucuxi::Core::ComputingTraitSinglePoints>(_requestResponseId, times, computingOption);
 }
 
 unique_ptr<Tucuxi::Core::ComputingTraitPercentiles> QueryImport::getChildComputingTraitPercentiles(
@@ -941,8 +936,6 @@ unique_ptr<Tucuxi::Core::ComputingTraitPercentiles> QueryImport::getChildComputi
     static const string RANKS_RANK_NODE_NAME = "rank";
     static const string COMPUTING_OPTION = "computingOption";
 
-    Tucuxi::Core::RequestResponseId requestResponseId = _requestResponseId;
-
     Common::XmlNodeIterator dateIntervalRootIterator = _rootIterator->getChildren(DATE_INTERVAL_NODE_NAME);
     Common::DateTime start = getChildDateTime(dateIntervalRootIterator, DATE_INTERVAL_START_NODE_NAME);
     Common::DateTime end = getChildDateTime(dateIntervalRootIterator, DATE_INTERVAL_END_NODE_NAME);
@@ -955,7 +948,7 @@ unique_ptr<Tucuxi::Core::ComputingTraitPercentiles> QueryImport::getChildComputi
     Tucuxi::Core::ComputingOption computingOption = getChildComputingOption(_rootIterator, COMPUTING_OPTION);
 
     return make_unique<Tucuxi::Core::ComputingTraitPercentiles>(
-            requestResponseId, start, end, ranks, nbPointsPerHour, computingOption);
+            _requestResponseId, start, end, ranks, nbPointsPerHour, computingOption);
 }
 
 unique_ptr<Tucuxi::Core::ComputingTraitConcentration> QueryImport::getChildComputingTraitConcentration(
@@ -967,8 +960,6 @@ unique_ptr<Tucuxi::Core::ComputingTraitConcentration> QueryImport::getChildCompu
     static const string DATE_INTERVAL_END_NODE_NAME = "end";
     static const string COMPUTING_OPTION = "computingOption";
 
-    Tucuxi::Core::RequestResponseId requestResponseId = _requestResponseId;
-
     Common::XmlNodeIterator dateIntervalRootIterator = _rootIterator->getChildren(DATE_INTERVAL_NODE_NAME);
     Common::DateTime start = getChildDateTime(dateIntervalRootIterator, DATE_INTERVAL_START_NODE_NAME);
     Common::DateTime end = getChildDateTime(dateIntervalRootIterator, DATE_INTERVAL_END_NODE_NAME);
@@ -979,7 +970,7 @@ unique_ptr<Tucuxi::Core::ComputingTraitConcentration> QueryImport::getChildCompu
 
 
     return make_unique<Tucuxi::Core::ComputingTraitConcentration>(
-            requestResponseId, start, end, nbPointsPerHour, computingOption);
+            _requestResponseId, start, end, nbPointsPerHour, computingOption);
 }
 
 unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> QueryImport::getChildComputingTraitAdjustment(
@@ -992,9 +983,6 @@ unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> QueryImport::getChildComputin
     static const string COMPUTING_OPTION = "computingOption";
     static const string DATE_ADJUSTMENT_TIME = "adjustmentDate";
     static const string OPTIONS = "options";
-
-
-    Tucuxi::Core::RequestResponseId requestResponseId = _requestResponseId;
 
     Common::XmlNodeIterator dateIntervalRootIterator = _rootIterator->getChildren(DATE_INTERVAL_NODE_NAME);
     Common::DateTime start = getChildDateTime(dateIntervalRootIterator, DATE_INTERVAL_START_NODE_NAME);
@@ -1023,7 +1011,7 @@ unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> QueryImport::getChildComputin
 
 
     return make_unique<Tucuxi::Core::ComputingTraitAdjustment>(
-            requestResponseId,
+            _requestResponseId,
             start,
             end,
             nbPointsPerHour,

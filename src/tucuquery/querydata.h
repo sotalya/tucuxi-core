@@ -42,10 +42,10 @@ public:
     /// \param _requests The requests that the server must process.
     ///
     QueryData(
-            const std::string& _queryID,
-            const std::string& _clientID,
-            const Tucuxi::Common::DateTime& _pQueryDate,
-            const std::string& _language,
+            std::string _queryID,
+            std::string _clientID,
+            Tucuxi::Common::DateTime _pQueryDate,
+            std::string _language,
             std::unique_ptr<DrugTreatmentData> _pParameters,
             std::vector<std::unique_ptr<RequestData> >& _requests);
 

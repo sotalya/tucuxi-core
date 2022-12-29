@@ -55,7 +55,7 @@ CovariateExtractor::CovariateExtractor(
 
     // ** Fill internal structures with ID and position in vector, splitting between computed and not **
     // Push covariate definitions, splitting between computed and not.
-    for (cdIterator_t it = m_defaults.begin(); it != m_defaults.end(); ++it) {
+    for (auto it = m_defaults.begin(); it != m_defaults.end(); ++it) {
         std::pair<std::map<std::string, cdIterator_t>::iterator, bool> rc;
         if ((*it)->isComputed()) {
             rc = m_cdComputed.insert(std::pair<std::string, cdIterator_t>((*it)->getId(), it));
@@ -126,7 +126,7 @@ CovariateExtractor::CovariateExtractor(
     }
 
     // Push patient variates -- not computed by definition.
-    for (pvIterator_t it = m_patientCovariates.begin(); it != m_patientCovariates.end(); ++it) {
+    for (auto it = m_patientCovariates.begin(); it != m_patientCovariates.end(); ++it) {
         // If we cannot find a corresponding covariate definition or if it is a non-standard type, we can safely drop a
         // patient variate.
         if (m_cdValued.find((*it)->getId()) != m_cdValued.end()
@@ -331,7 +331,7 @@ bool CovariateExtractor::computeEvents(
             // If we are at the first iteration, then simply push all events, otherwise check those whose value has been
             // updated.
             for (auto& cvm : m_cdComputed) {
-                double cvVal;
+                double cvVal = 0.0;
                 if (!m_ogm.getValue(cvm.first, cvVal)) {
                     return false;
                 }
@@ -352,8 +352,6 @@ bool CovariateExtractor::computeEvents(
 
 ComputingStatus CovariateExtractor::extract(CovariateSeries& _series)
 {
-    bool rc;
-
     // Patient Variates have to be sorted by date (dropping all non-interesting ones).
     sortPatientVariates();
 
@@ -363,7 +361,14 @@ ComputingStatus CovariateExtractor::extract(CovariateSeries& _series)
 
     TUCU_TRY
     {
-        rc = computeEvents(refreshMap, _series);
+        bool rc = computeEvents(refreshMap, _series);
+
+        if (!rc) {
+            Tucuxi::Common::LoggerHelper logHelper;
+            logHelper.error(
+                    "Error with covariate extraction. It be caused by missing covariates used in a priori computations");
+            return ComputingStatus::CovariateExtractionError;
+        }
     }
     TUCU_CATCH(std::invalid_argument & e)
     TUCU_ONEXCEPTION({
@@ -372,13 +377,6 @@ ComputingStatus CovariateExtractor::extract(CovariateSeries& _series)
         logHelper.error("If error due to conversion, please check Query and DrugModel units");
         return ComputingStatus::CovariateExtractionError;
     });
-
-    if (!rc) {
-        Tucuxi::Common::LoggerHelper logHelper;
-        logHelper.error(
-                "Error with covariate extraction. It be caused by missing covariates used in a priori computations");
-        return ComputingStatus::CovariateExtractionError;
-    }
 
     return ComputingStatus::Ok;
 }
@@ -566,7 +564,7 @@ void CovariateExtractor::sortPatientVariates()
         if (pvV.second.size() > 1) {
             // Drop all values before m_start and past m_end, except the ones on the border (we will use them for the
             // interpolation).
-            std::vector<pvIterator_t>::iterator it = pvV.second.begin();
+            auto it = pvV.second.begin();
             // Remove before m_start.
             while (std::next(it) != pvV.second.end() && (**it)->getEventTime() < m_start) {
                 if ((**(std::next(it)))->getEventTime() >= m_start && it != pvV.second.begin()) {

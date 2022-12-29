@@ -54,7 +54,7 @@ bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
-    return true;
+    return bOK;
 }
 
 
@@ -230,7 +230,7 @@ bool TwoCompartmentExtraMacroSameCl::checkInputs(const IntakeEvent& _intakeEvent
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
 
-    return true;
+    return bOK;
 }
 
 } // namespace Core

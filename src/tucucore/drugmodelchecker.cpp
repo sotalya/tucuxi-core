@@ -349,7 +349,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkOperations(const DrugMo
                 }
             }
 
-            JSOperation* jsOperation = dynamic_cast<JSOperation*>(operation);
+            auto jsOperation = dynamic_cast<JSOperation*>(operation);
             if (jsOperation != nullptr) {
                 if (!jsOperation->checkOperation(inputList)) {
 
@@ -395,7 +395,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkOperation(Operation* _o
             }
         }
 
-        JSOperation* jsOperation = dynamic_cast<JSOperation*>(_operation);
+        auto* jsOperation = dynamic_cast<JSOperation*>(_operation);
         if (jsOperation != nullptr) {
             if (!jsOperation->checkOperation(inputList)) {
 
@@ -446,8 +446,8 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
     auto timeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(start, repeatedDose);
     drugTreatment->getModifiableDosageHistory().addTimeRange(*timeRange);
 
-    IComputingService* componentPtr = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
-    std::unique_ptr<IComputingService> component = std::unique_ptr<IComputingService>(componentPtr);
+    auto componentPtr = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = std::unique_ptr<IComputingService>(componentPtr);
 
     {
         RequestResponseId requestResponseId = "1";
@@ -492,7 +492,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
         }
 
         const ComputedData* responseData = response->getData();
-        const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
+        auto resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
         MultiCompConcentration residuals;
         for (const auto& d : resp->getData()) {
@@ -547,8 +547,8 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
                             "A prediction calculation based on the halflife and the multiplier went wrong. Please check these values."};
                 }
 
-                const ComputedData* responseData = response->getData();
-                const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
+                auto responseData = response->getData();
+                auto resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
                 MultiCompConcentration residuals;
                 double lastResidual = 10000000.0;

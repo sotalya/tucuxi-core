@@ -66,7 +66,7 @@ protected:
 
 
     template<typename T>
-    void setNodeError(T _nodeIterator, std::string _message)
+    void setNodeError(T _nodeIterator, const std::string& _message)
     {
         std::string errorMessage;
         Tucuxi::Common::XmlNode node = _nodeIterator->getParent();

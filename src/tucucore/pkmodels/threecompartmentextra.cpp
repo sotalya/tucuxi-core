@@ -32,8 +32,6 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
         return false;
     }
 
-    Value a0, a1, a2, p, q, r1, r2, phi;
-
     m_D = _intakeEvent.getDose();
     m_F = _parameters.getValue(ParameterId::F);
     m_V1 = _parameters.getValue(ParameterId::V1);
@@ -46,14 +44,14 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
-    a0 = m_Ke * m_K21 * m_K31;
-    a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
-    a2 = m_Ke + m_K12 + m_K13 + m_K21 + m_K31;
-    p = a1 - std::pow(a2, 2) / 3;
-    q = 2 * std::pow(a2, 3) / 27 - a1 * a2 / 3 + a0;
-    r1 = std::sqrt(-(std::pow(p, 3) / 27));
-    r2 = 2 * std::pow(r1, 1 / 3);
-    phi = std::acos(-q / (2 * r1)) / 3;
+    Value a0 = m_Ke * m_K21 * m_K31;
+    Value a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
+    Value a2 = m_Ke + m_K12 + m_K13 + m_K21 + m_K31;
+    Value p = a1 - std::pow(a2, 2) / 3;
+    Value q = 2 * std::pow(a2, 3) / 27 - a1 * a2 / 3 + a0;
+    Value r1 = std::sqrt(-(std::pow(p, 3) / 27));
+    Value r2 = 2 * std::pow(r1, 1 / 3);
+    Value phi = std::acos(-q / (2 * r1)) / 3;
 
     m_Alpha = -(std::cos(phi) * r2 - a2 / 3);
     m_Beta = -(std::cos(phi + 2 * 3.1428 / 3) * r2 - a2 / 3);

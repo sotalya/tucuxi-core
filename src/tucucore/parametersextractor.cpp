@@ -1,6 +1,7 @@
 //@@license@@
 
 #include <chrono>
+#include <utility>
 
 #include "tucucore/parametersextractor.h"
 
@@ -18,9 +19,9 @@ namespace Core {
 ParametersExtractor::ParametersExtractor(
         const CovariateSeries& _covariates,
         Tucuxi::Common::Iterator<const ParameterDefinition*>& _paramsIterator,
-        const DateTime& _start,
-        const DateTime& _end)
-    : m_paramsIterator{_paramsIterator}, m_start{_start}, m_end{_end}
+        DateTime _start,
+        DateTime _end)
+    : m_paramsIterator{_paramsIterator}, m_start{std::move(_start)}, m_end{std::move(_end)}
 {
     // Check that start time is past end time.
     if (m_start > m_end) {
@@ -227,10 +228,9 @@ ComputingStatus ParametersExtractor::extract(ParameterSetSeries& _series)
         }
 
         // Retrieve updated values.
-        Value newVal;
-        bool rc;
+        Value newVal = 0.0;
         for (auto& cp : cParamMap) {
-            rc = m_ogm.getValue(cp.first, newVal);
+            bool rc = m_ogm.getValue(cp.first, newVal);
             if (!rc) {
                 return ComputingStatus::ParameterExtractionError;
             }
@@ -247,7 +247,7 @@ ComputingStatus ParametersExtractor::extract(ParameterSetSeries& _series)
 
         // Get the covariate values used here:
         for (const auto& cov : covariateIds) {
-            double value;
+            double value = 0.0;
             m_ogm.getValue(cov, value);
             covariateValues.push_back({cov, value});
         }

@@ -14,7 +14,7 @@ bool CovariateEvent::evaluate(const OperableGraphManager& _graphMgr)
     OperationInputList inputs = getInputs();
 
     for (auto& input : inputs) {
-        double val;
+        double val = 0.0;
         bool rc = _graphMgr.getValue(input.getName(), val);
         if (!rc) {
             return false;

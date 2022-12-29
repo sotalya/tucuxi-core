@@ -39,8 +39,8 @@ public:
     ParametersExtractor(
             const CovariateSeries& _covariates,
             Tucuxi::Common::Iterator<const ParameterDefinition*>& _paramsIterator,
-            const DateTime& _start,
-            const DateTime& _end);
+            DateTime _start,
+            DateTime _end);
 
     /// \brief Extract parameter set events in a given interval from covariate events and parameter definitions.
     /// The events will contain only the modified parameters. Therefore, in order to get events where every parameter

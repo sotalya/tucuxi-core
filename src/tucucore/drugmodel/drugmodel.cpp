@@ -1,5 +1,7 @@
 //@@license@@
 
+#include <utility>
+
 #include "tucucore/drugmodel/drugmodel.h"
 
 #include "tucucore/covariateevent.h"
@@ -114,7 +116,7 @@ DrugModel::DrugModel()
 
 void DrugModel::setTimeToSteadyState(Tucuxi::Common::Duration _time)
 {
-    m_timeToSteadyState = _time;
+    m_timeToSteadyState = std::move(_time);
 }
 
 

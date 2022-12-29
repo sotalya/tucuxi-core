@@ -36,7 +36,7 @@ namespace Core {
 
 Tucuxi::Common::Interface* ComputingComponent::createComponent()
 {
-    ComputingComponent* cmp = new ComputingComponent();
+    auto cmp = new ComputingComponent();
 
     cmp->initialize();
 
@@ -111,7 +111,7 @@ ComputingStatus ComputingComponent::compute(
 
         // A simple iteration on the ComputingTraits. Each one is responsible to fill the _response object with
         // a new computing response
-        ComputingTraits::Iterator it = _request.getComputingTraits().begin();
+        auto it = _request.getComputingTraits().begin();
         ComputingStatus result = ComputingStatus::Ok;
         while (it != _request.getComputingTraits().end()) {
             ComputingStatus internalResult = it->get()->compute(*this, _request, _response);
@@ -141,8 +141,8 @@ ComputingStatus ComputingComponent::recordCycle(
         const ComputingTraitStandard* _traits,
         const ComputingRequest& _request,
         ConcentrationData& _concentrationData,
-        DateTime _start,
-        DateTime _end,
+        const DateTime& _start,
+        const DateTime& _end,
         const TimeOffsets& _times,
         const std::vector<ConcentrationPredictionPtr>& _activeMoietiesPredictions,
         const std::vector<ConcentrationPredictionPtr>& _analytesPredictions,
@@ -252,7 +252,7 @@ ComputingStatus ComputingComponent::compute(
     CovariateSeries covariateSeries;
     GroupsParameterSetSeries parameterSeries;
     DateTime calculationStartTime;
-    Value negativeLogLikelihood;
+    Value negativeLogLikelihood = std::numeric_limits<Value>::infinity();
 
     ComputingStatus extractionResult = m_utils->m_generalExtractor->generalExtractions(
             _traits,
@@ -497,7 +497,7 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
 
         for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
             AnalyteGroupId analyteGroupId = analyteGroup->getId();
-            Value negativeLogLikelihood;
+            Value negativeLogLikelihood = std::numeric_limits<Value>::infinity();
 
             ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
                     etas[analyteGroupId],
@@ -684,7 +684,7 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
     Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
 
     if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
-        Value negativeLogLikelihood;
+        Value negativeLogLikelihood = std::numeric_limits<Value>::infinity();
         ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
                 etas,
                 _request,
@@ -919,7 +919,7 @@ ComputingStatus ComputingComponent::compute(
     CovariateSeries covariateSeries;
     GroupsParameterSetSeries parameterSeries;
     DateTime calculationStartTime;
-    Value negativeLogLikelihood;
+    Value negativeLogLikelihood = std::numeric_limits<Value>::infinity();
 
     DateTime firstDate;
     DateTime lastDate;

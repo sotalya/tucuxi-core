@@ -33,7 +33,7 @@ public:
     /// \brief Create a PkModel, setting its Id.
     /// \param _pkModelId the Id to set.
     /// \warning The ID shall be unique within the software
-    PkModel(const std::string& _pkModelId, AllowMultipleRoutes _allowMultipleRoutes = PkModel::AllowMultipleRoutes::No);
+    PkModel(std::string _pkModelId, AllowMultipleRoutes _allowMultipleRoutes = PkModel::AllowMultipleRoutes::No);
 
     /// \brief Get the PkModel Id.
     /// \return ID of the PkModel

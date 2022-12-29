@@ -1,5 +1,7 @@
 //@@license@@
 
+#include <utility>
+
 #include "validdose.h"
 
 
@@ -12,7 +14,7 @@ namespace Core {
 ValidDoses::~ValidDoses() = default;
 
 ValidDoses::ValidDoses(TucuUnit _unit, std::unique_ptr<PopulationValue> _defaultDose)
-    : ValidValues(_unit, std::move(_defaultDose))
+    : ValidValues(std::move(_unit), std::move(_defaultDose))
 {
 }
 
