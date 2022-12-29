@@ -50,11 +50,12 @@ protected:
         _concentrations[1] = _inResiduals[1] + m_D / m_V;
     }
 
-    Value m_D;  /// Quantity of drug
-    Value m_F;  /// bioavailability
-    Value m_Ka; /// Absorption rate constant
-    Value m_V;  /// Volume of the compartment
-    Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
+    Value m_D{NAN};  /// Quantity of drug
+    Value m_F{NAN};  /// bioavailability
+    Value m_Ka{NAN}; /// Absorption rate constant
+    Value m_V{NAN};  /// Volume of the compartment
+    Value m_Ke{
+            NAN}; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
 
 
 private:

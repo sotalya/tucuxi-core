@@ -56,16 +56,17 @@ protected:
 
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2);
 
-    Value m_D;  /// Quantity of drug
-    Value m_V1; /// Volume
-    Value m_Ke; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
-    Value m_K12;             /// Q/V1
-    Value m_K21;             /// Q/V2
-    Value m_RootK;           /// sqrt(sumK*sumK - 4*K21*Ke)
-    Value m_Alpha;           /// (sumK + root)/2
-    Value m_Beta;            /// (sumK - root)/2
-    Eigen::Index m_nbPoints; /// Number measure points during interval
-    Value m_Int;             /// Interval (hours)
+    Value m_D{NAN};  /// Quantity of drug
+    Value m_V1{NAN}; /// Volume
+    Value m_Ke{
+            NAN}; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
+    Value m_K12{NAN};           /// Q/V1
+    Value m_K21{NAN};           /// Q/V2
+    Value m_RootK{NAN};         /// sqrt(sumK*sumK - 4*K21*Ke)
+    Value m_Alpha{NAN};         /// (sumK + root)/2
+    Value m_Beta{NAN};          /// (sumK - root)/2
+    Eigen::Index m_nbPoints{0}; /// Number measure points during interval
+    Value m_Int{NAN};           /// Interval (hours)
 
 private:
     typedef TwoCompartmentBolusCompartments Compartments;

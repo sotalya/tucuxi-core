@@ -80,26 +80,26 @@ public:
     }
 
 protected:
-    Value m_D;  /// Quantity of drug
-    Value m_F;  /// bioavailability
-    Value m_Ka; /// Absorption rate constant
-    Value m_V;  /// Volume of the compartment
-    Value m_Km;
-    Value m_Vmax;
-    Value m_AllmCL; /// Allometric clearance
-    Value m_Tinf;
+    Value m_D{NAN};  /// Quantity of drug
+    Value m_F{NAN};  /// bioavailability
+    Value m_Ka{NAN}; /// Absorption rate constant
+    Value m_V{NAN};  /// Volume of the compartment
+    Value m_Km{NAN};
+    Value m_Vmax{NAN};
+    Value m_AllmCL{NAN}; /// Allometric clearance
+    Value m_Tinf{NAN};
 
-    Value m_Kenz;
-    Value m_Emax;
-    Value m_ECmid;
-    Value m_EDmid;
-    Value m_DoseMid;
-    Value m_Fmax;
-    Value m_NN;
-    Value m_MTT;
+    Value m_Kenz{NAN};
+    Value m_Emax{NAN};
+    Value m_ECmid{NAN};
+    Value m_EDmid{NAN};
+    Value m_DoseMid{NAN};
+    Value m_Fmax{NAN};
+    Value m_NN{NAN};
+    Value m_MTT{NAN};
 
-    Value m_cumul;
-    Value m_ktr;
+    Value m_cumul{NAN};
+    Value m_ktr{NAN};
 
 
 private:

@@ -55,13 +55,14 @@ protected:
     void compute(const Residuals& _inResiduals, int _forceSize, Eigen::VectorXd& _concentrations);
 
 
-    Value m_D;    /// Quantity of drug
-    Value m_Cl;   /// Clearance
-    Value m_V;    /// Volume of the compartment
-    Value m_Ke;   /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
-    Value m_Tinf; /// Infusion time (hours)
-    Value m_Int;  /// Interval (hours)
-    Eigen::Index m_nbPoints; /// number measure points during interval
+    Value m_D{NAN};  /// Quantity of drug
+    Value m_Cl{NAN}; /// Clearance
+    Value m_V{NAN};  /// Volume of the compartment
+    Value m_Ke{
+            NAN}; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
+    Value m_Tinf{NAN};          /// Infusion time (hours)
+    Value m_Int{NAN};           /// Interval (hours)
+    Eigen::Index m_nbPoints{0}; /// number measure points during interval
 
 private:
     typedef OneCompartmentInfusionCompartments Compartments;

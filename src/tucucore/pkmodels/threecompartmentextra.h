@@ -63,20 +63,21 @@ protected:
             Value& _concentrations2,
             Value& _concentrations3);
 
-    Value m_D;  /// Quantity of drug
-    Value m_F;  /// ???
-    Value m_V1; /// Volume of the compartment 1
-    Value m_Ka; /// Absorption rate constant
-    Value m_Ke; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
-    Value m_K12; /// Q/V1
-    Value m_K21; /// Q/V2
-    Value m_K13; /// Q/V1
-    Value m_K31; /// Q/V2
-    Value m_Alpha;
-    Value m_Beta;
-    Value m_Gamma;
-    Eigen::Index m_nbPoints; /// number measure points during interval
-    Value m_Int;             /// Interval (hours)
+    Value m_D{NAN};  /// Quantity of drug
+    Value m_F{NAN};  /// ???
+    Value m_V1{NAN}; /// Volume of the compartment 1
+    Value m_Ka{NAN}; /// Absorption rate constant
+    Value m_Ke{
+            NAN}; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
+    Value m_K12{NAN}; /// Q/V1
+    Value m_K21{NAN}; /// Q/V2
+    Value m_K13{NAN}; /// Q/V1
+    Value m_K31{NAN}; /// Q/V2
+    Value m_Alpha{NAN};
+    Value m_Beta{NAN};
+    Value m_Gamma{NAN};
+    Eigen::Index m_nbPoints{0}; /// number measure points during interval
+    Value m_Int{NAN};           /// Interval (hours)
 
 private:
     typedef ThreeCompartmentExtraCompartments Compartments;

@@ -58,12 +58,13 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    Value m_D;  /// Quantity of drug
-    Value m_F;  /// bioavailability
-    Value m_V;  /// Volume of the compartment
-    Value m_Ke; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
-    Value m_a;  /// Gamma distribution parameter
-    Value m_b;  /// Gamma distribution parameter
+    Value m_D{NAN}; /// Quantity of drug
+    Value m_F{NAN}; /// bioavailability
+    Value m_V{NAN}; /// Volume of the compartment
+    Value m_Ke{
+            NAN}; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
+    Value m_a{NAN}; /// Gamma distribution parameter
+    Value m_b{NAN}; /// Gamma distribution parameter
 
 private:
     typedef RK4OneCompartmentGammaExtraCompartments Compartments;

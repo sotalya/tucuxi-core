@@ -42,13 +42,13 @@ public:
     }
 
 protected:
-    Value m_D;  /// Quantity of drug
-    Value m_F;  /// bioavailability
-    Value m_Ka; /// Absorption rate constant
-    Value m_V;  /// Volume of the compartment
-    Value m_Km;
-    Value m_Vmax;
-    Value m_Tinf;
+    Value m_D{NAN};  /// Quantity of drug
+    Value m_F{NAN};  /// bioavailability
+    Value m_Ka{NAN}; /// Absorption rate constant
+    Value m_V{NAN};  /// Volume of the compartment
+    Value m_Km{NAN};
+    Value m_Vmax{NAN};
+    Value m_Tinf{NAN};
 
 
 private:

@@ -39,7 +39,7 @@ const EigenMatrix& AposterioriMatrixCache::getAvecs(int _nbSamples, int _nbEtas)
     EigenMatrix avecs = EigenMatrix::Zero(_nbSamples, _nbEtas);
     for (int row = 0; row < avecs.rows(); row++) {
         for (int column = 0; column < avecs.cols(); column++) {
-            double value;
+            double value = NAN;
             // Here we truncate the generated number by looking for one in [-100,100]
             do {
                 value = standardNormalDist(rnGenerator);

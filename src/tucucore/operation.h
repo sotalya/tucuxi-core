@@ -130,7 +130,7 @@ private:
         double d; // NOLINT(readability-identifier-naming)
         bool b;   // NOLINT(readability-identifier-naming)
         int i;    // NOLINT(readability-identifier-naming)
-    } m_value;
+    } m_value{};
 };
 
 

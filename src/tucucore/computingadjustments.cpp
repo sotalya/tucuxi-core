@@ -979,7 +979,7 @@ ComputingStatus ComputingAdjustments::addRest(
         index++;
     }
 
-    double existingDosageScore;
+    double existingDosageScore = NAN;
     {
 
         DosageAdjustment loadingDosage;

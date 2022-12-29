@@ -58,16 +58,17 @@ protected:
 
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2);
 
-    Value m_D;    /// Quantity of drug
-    Value m_F;    /// bioavailability
-    Value m_Ka;   /// Absorption rate constant
-    Value m_V;    /// Volume of the compartment
-    Value m_Ke;   /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
-    Value m_Tlag; /// Lag time (in hours)
-    Value m_Int;  /// Interval time (Hours)
-    Eigen::Index m_nbPoints;  /// Number measure points during interval
-    Eigen::Index m_nbPoints0; /// Number of points during lag time
-    Eigen::Index m_nbPoints1; /// Number of points after lag time
+    Value m_D{NAN};  /// Quantity of drug
+    Value m_F{NAN};  /// bioavailability
+    Value m_Ka{NAN}; /// Absorption rate constant
+    Value m_V{NAN};  /// Volume of the compartment
+    Value m_Ke{
+            NAN}; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
+    Value m_Tlag{NAN};           /// Lag time (in hours)
+    Value m_Int{NAN};            /// Interval time (Hours)
+    Eigen::Index m_nbPoints{0};  /// Number measure points during interval
+    Eigen::Index m_nbPoints0{0}; /// Number of points during lag time
+    Eigen::Index m_nbPoints1{0}; /// Number of points after lag time
 
 
 private:

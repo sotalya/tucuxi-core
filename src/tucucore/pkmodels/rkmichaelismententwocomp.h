@@ -60,20 +60,20 @@ public:
     }
 
 protected:
-    Value m_D;       /// Quantity of drug
+    Value m_D{NAN};  /// Quantity of drug
     Value m_F{1.0};  /// bioavailability
     Value m_Ka{0.0}; /// Absorption rate constant
-    Value m_V1;      /// Volume of the compartment
-    Value m_Km;
-    Value m_Vmax;
-    Value m_K12;
-    Value m_K21;
-    Value m_Tinf;
-    Value m_Tlag;
+    Value m_V1{NAN}; /// Volume of the compartment
+    Value m_Km{NAN};
+    Value m_Vmax{NAN};
+    Value m_K12{NAN};
+    Value m_K21{NAN};
+    Value m_Tinf{NAN};
+    Value m_Tlag{NAN};
     Value m_infusionRate{0};
-    bool m_delivered;
+    bool m_delivered{false};
     bool m_isInfusion{false};
-    bool m_isWithLag;
+    bool m_isWithLag{false};
 
 private:
     typedef RkMichaelisMentenTwoCompCompartments Compartments;

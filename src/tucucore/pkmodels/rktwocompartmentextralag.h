@@ -58,14 +58,15 @@ protected:
         m_delivered = false;
     }
 
-    Value m_D;  /// Quantity of drug
-    Value m_F;  /// bioavailability
-    Value m_V1; /// Volume1
-    Value m_Ka; /// Absorption rate constant
-    Value m_Ke; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
-    Value m_K12;  /// Q/V1
-    Value m_K21;  /// Q/V2
-    Value m_Tlag; /// Lag time (in hours)
+    Value m_D{NAN};  /// Quantity of drug
+    Value m_F{NAN};  /// bioavailability
+    Value m_V1{NAN}; /// Volume1
+    Value m_Ka{NAN}; /// Absorption rate constant
+    Value m_Ke{
+            NAN}; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
+    Value m_K12{NAN};  /// Q/V1
+    Value m_K21{NAN};  /// Q/V2
+    Value m_Tlag{NAN}; /// Lag time (in hours)
 
     bool m_delivered{false};
 
