@@ -87,10 +87,10 @@ inline bool TwoCompartmentExtraLagMicro::compute(
         Eigen::VectorXd& _concentrations2,
         Eigen::VectorXd& _concentrations3)
 {
-    Value A;       // NOLINT(readability-identifier-naming)
-    Value B;       // NOLINT(readability-identifier-naming)
-    Value C;       // NOLINT(readability-identifier-naming)
-    Value divider; // NOLINT(readability-identifier-naming)
+    Value A = NAN;       // NOLINT(readability-identifier-naming)
+    Value B = NAN;       // NOLINT(readability-identifier-naming)
+    Value C = NAN;       // NOLINT(readability-identifier-naming)
+    Value divider = NAN; // NOLINT(readability-identifier-naming)
 
     if (m_Tlag <= 0.0) {
 

@@ -823,12 +823,14 @@ typedef struct
     Duration interval;              // NOLINT(readability-identifier-naming)
 } LoadingCandidate;
 
+/*
 typedef struct
 {
     DosageAdjustment restDosage; // NOLINT(readability-identifier-naming)
     double score;                // NOLINT(readability-identifier-naming)
     Duration interval;           // NOLINT(readability-identifier-naming)
 } RestCandidate;
+*/
 
 ComputingStatus ComputingAdjustments::addLoadOrRest(
         DosageAdjustment& _dosage,

@@ -186,6 +186,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
     // Set the size of vector "concentrations"
     for (const auto& recordedIntake : _recordedIntakes) {
         std::vector<std::vector<Concentration> > vec;
+        vec.reserve(recordedIntake.getNbPoints());
         for (size_t point = 0; point < recordedIntake.getNbPoints(); point++) {
             vec.push_back(std::vector<Concentration>(_nbPatients));
         }
