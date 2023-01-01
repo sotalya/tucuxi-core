@@ -104,11 +104,11 @@ protected:
 
 
 
-class TwoCompartmentExtraLagMacroSameCl : public TwoCompartmentExtraLagMacro
+class TwoCompartmentExtraLagMacroRatios : public TwoCompartmentExtraLagMacro
 {
-    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentExtraLagMacroSameCl)
+    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentExtraLagMacroRatios)
 public:
-    TwoCompartmentExtraLagMacroSameCl() = default;
+    TwoCompartmentExtraLagMacroRatios() = default;
 
     /// \brief Returns the list of required PK parameters Ids
     /// \return The list of required PK parameters Ids

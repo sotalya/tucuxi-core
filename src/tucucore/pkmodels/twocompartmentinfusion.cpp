@@ -358,25 +358,28 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
 }
 
 
-std::vector<std::string> TwoCompartmentInfusionMacroSameCl::getParametersId()
+std::vector<std::string> TwoCompartmentInfusionMacroRatios::getParametersId()
 {
-    return {"CL", "V1", "V2"};
+    return {"CL", "V1", "RQCL", "RV2V1"};
 }
 
-bool TwoCompartmentInfusionMacroSameCl::checkInputs(
+bool TwoCompartmentInfusionMacroRatios::checkInputs(
         const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkCondition(_parameters.size() >= 3, "The number of parameters should be equal to 3.")) {
+    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
         return false;
     }
 
     m_D = _intakeEvent.getDose();
     Value cl = _parameters.getValue(ParameterId::CL);
     m_V1 = _parameters.getValue(ParameterId::V1);
-    Value v2 = _parameters.getValue(ParameterId::V2);
+    Value rQCL = _parameters.getValue(ParameterId::RQCL);
+    Value rV2V1 = _parameters.getValue(ParameterId::RV2V1);
+    Value v2 = m_V1 * rV2V1;
+    Value q = cl * rQCL;
     m_Ke = cl / m_V1;
-    m_K12 = cl / m_V1;
-    m_K21 = cl / v2;
+    m_K12 = q / m_V1;
+    m_K21 = q / v2;
     m_SumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((m_SumK * m_SumK) - (4 * m_K21 * m_Ke));
     m_Divider = m_RootK * (-m_SumK + m_RootK) * (m_SumK + m_RootK);
@@ -419,6 +422,7 @@ bool TwoCompartmentInfusionMacroSameCl::checkInputs(
     // check the inputs
     bool bOK = checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
+    bOK &= checkStrictlyPositiveValue(q, "Q");
     bOK &= checkStrictlyPositiveValue(m_V1, "V1");
     bOK &= checkStrictlyPositiveValue(v2, "V2");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");

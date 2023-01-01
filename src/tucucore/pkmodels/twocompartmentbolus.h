@@ -109,11 +109,11 @@ protected:
 };
 
 
-class TwoCompartmentBolusMacroSameCl : public TwoCompartmentBolusMacro
+class TwoCompartmentBolusMacroRatios : public TwoCompartmentBolusMacro
 {
-    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentBolusMacroSameCl)
+    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentBolusMacroRatios)
 public:
-    TwoCompartmentBolusMacroSameCl() = default;
+    TwoCompartmentBolusMacroRatios() = default;
 
     /// \brief Returns the list of required PK parameters Ids
     /// \return The list of required PK parameters Ids

@@ -194,11 +194,11 @@ protected:
 };
 
 
-class TwoCompartmentInfusionMacroSameCl : public TwoCompartmentInfusionMacro
+class TwoCompartmentInfusionMacroRatios : public TwoCompartmentInfusionMacro
 {
-    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentInfusionMacroSameCl)
+    INTAKEINTERVALCALCULATOR_UTILS(TwoCompartmentInfusionMacroRatios)
 public:
-    TwoCompartmentInfusionMacroSameCl() = default;
+    TwoCompartmentInfusionMacroRatios() = default;
 
     /// \brief Returns the list of required PK parameters Ids
     /// \return The list of required PK parameters Ids

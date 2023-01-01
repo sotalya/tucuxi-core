@@ -12,7 +12,7 @@ namespace Core {
 class ParameterId
 {
 public:
-    static const int size = 43; // NOLINT(readability-identifier-naming)
+    static const int size = 45; // NOLINT(readability-identifier-naming)
     enum Enum
     {
         V,
@@ -57,6 +57,8 @@ public:
         NN,
         MTT,
         AllmCL,
+        RQCL,
+        RV2V1,
         Unknown
     };
 
@@ -84,7 +86,8 @@ public:
                 {"Emax", ParameterId::Emax},     {"ECmid", ParameterId::ECmid},
                 {"EDmid", ParameterId::EDmid},   {"DoseMid", ParameterId::DoseMid},
                 {"Fmax", ParameterId::Fmax},     {"NN", ParameterId::NN},
-                {"MTT", ParameterId::MTT},       {"AllmCL", ParameterId::AllmCL}};
+                {"MTT", ParameterId::MTT},       {"AllmCL", ParameterId::AllmCL},
+                {"RQCL", ParameterId::RQCL},     {"RV2V1", ParameterId::RV2V1}};
         std::map<std::string, Enum>::const_iterator it = sm_paramIds.find(_id);
         if (it != sm_paramIds.end()) {
             return it->second;

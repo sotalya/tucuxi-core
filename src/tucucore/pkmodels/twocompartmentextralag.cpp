@@ -577,12 +577,12 @@ bool TwoCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, c
 }
 
 
-std::vector<std::string> TwoCompartmentExtraLagMacroSameCl::getParametersId()
+std::vector<std::string> TwoCompartmentExtraLagMacroRatios::getParametersId()
 {
     return {"CL", "V1", "V2", "Ka", "F", "Tlag"};
 }
 
-bool TwoCompartmentExtraLagMacroSameCl::checkInputs(
+bool TwoCompartmentExtraLagMacroRatios::checkInputs(
         const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
@@ -591,14 +591,17 @@ bool TwoCompartmentExtraLagMacroSameCl::checkInputs(
 
     m_D = _intakeEvent.getDose();
     Value cl = _parameters.getValue(ParameterId::CL);
-    Value v2 = _parameters.getValue(ParameterId::V2);
     m_V1 = _parameters.getValue(ParameterId::V1);
+    Value rQCL = _parameters.getValue(ParameterId::RQCL);
+    Value rV2V1 = _parameters.getValue(ParameterId::RV2V1);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_F = _parameters.getValue(ParameterId::F);
     m_Tlag = _parameters.getValue(ParameterId::Tlag);
+    Value v2 = m_V1 * rV2V1;
+    Value q = cl * rQCL;
     m_Ke = cl / m_V1;
-    m_K12 = cl / m_V1;
-    m_K21 = cl / v2;
+    m_K12 = q / m_V1;
+    m_K21 = q / v2;
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
     m_Alpha = (sumK + m_RootK) / 2;

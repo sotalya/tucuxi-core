@@ -213,12 +213,12 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
 }
 
 
-std::vector<std::string> TwoCompartmentBolusMacroSameCl::getParametersId()
+std::vector<std::string> TwoCompartmentBolusMacroRatios::getParametersId()
 {
     return {"CL", "V1", "V2"};
 }
 
-bool TwoCompartmentBolusMacroSameCl::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool TwoCompartmentBolusMacroRatios::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 3, "The number of parameters should be equal to 3.")) {
         return false;
@@ -227,10 +227,13 @@ bool TwoCompartmentBolusMacroSameCl::checkInputs(const IntakeEvent& _intakeEvent
     m_D = _intakeEvent.getDose();
     Value cl = _parameters.getValue(ParameterId::CL);
     m_V1 = _parameters.getValue(ParameterId::V1);
-    Value v2 = _parameters.getValue(ParameterId::V2);
+    Value rQCL = _parameters.getValue(ParameterId::RQCL);
+    Value rV2V1 = _parameters.getValue(ParameterId::RV2V1);
+    Value v2 = m_V1 * rV2V1;
+    Value q = cl * rQCL;
     m_Ke = cl / m_V1;
-    m_K12 = cl / m_V1;
-    m_K21 = cl / v2;
+    m_K12 = q / m_V1;
+    m_K21 = q / v2;
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 

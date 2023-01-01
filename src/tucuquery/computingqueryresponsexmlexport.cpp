@@ -384,7 +384,8 @@ std::string dateTimeToString(const Tucuxi::Common::DateTime& _dateTime)
 
 std::string timeToString(const Tucuxi::Common::TimeOfDay& _timeOfDay)
 {
-    return Tucuxi::Common::Utils::strFormat("%02d:%02d:%02d", _timeOfDay.hour(), _timeOfDay.minute(), _timeOfDay.second());
+    return Tucuxi::Common::Utils::strFormat(
+            "%02d:%02d:%02d", _timeOfDay.hour(), _timeOfDay.minute(), _timeOfDay.second());
 }
 
 
