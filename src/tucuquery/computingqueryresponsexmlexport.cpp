@@ -371,15 +371,7 @@ std::string dateTimeToString(const Tucuxi::Common::DateTime& _dateTime)
     if (_dateTime.isUndefined()) {
         return "";
     }
-    std::string result;
-    result = std::to_string(_dateTime.year()) + "." + std::to_string(_dateTime.month()) + "."
-             + std::to_string(_dateTime.day()) + "T" + std::to_string(_dateTime.hour()) + ":"
-             + std::to_string(_dateTime.minute()) + ":" + std::to_string(_dateTime.second());
-
-    std::array<char, 20> str{};
-    snprintf(
-            str.data(),
-            str.size(),
+    std::string result = Tucuxi::Common::Utils::strFormat(
             "%04d-%02d-%02dT%02d:%02d:%02d",
             _dateTime.year(),
             _dateTime.month(),
@@ -387,16 +379,12 @@ std::string dateTimeToString(const Tucuxi::Common::DateTime& _dateTime)
             _dateTime.hour(),
             _dateTime.minute(),
             _dateTime.second());
-    result = str.data();
     return result;
 }
 
 std::string timeToString(const Tucuxi::Common::TimeOfDay& _timeOfDay)
 {
-    std::array<char, 10> str{};
-    snprintf(str.data(), str.size(), "%02d:%02d:%02d", _timeOfDay.hour(), _timeOfDay.minute(), _timeOfDay.second());
-
-    return std::string(str.data());
+    return Tucuxi::Common::Utils::strFormat("%02d:%02d:%02d", _timeOfDay.hour(), _timeOfDay.minute(), _timeOfDay.second());
 }
 
 
