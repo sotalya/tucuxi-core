@@ -26,7 +26,7 @@ SOURCES := componentmanager.cpp \
 INCLUDES := ../../libs/spdlog-master-20170622/include \
             ../../libs/eigen-3.3.2 \
             ../../libs/tiny-js-master-20170629 \
-            ../../libs/date-master-20170711 \
+            ../../libs/date/include \
             ../../libs/rapidxml-1.13 \
             ../../libs/botan-2.1.0/build/include
 LIBS := tinyjs
