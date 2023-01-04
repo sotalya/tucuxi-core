@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <string>
+#include <array>
 
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
