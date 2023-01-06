@@ -1018,14 +1018,23 @@ ComputingStatus ComputingComponent::compute(
                 return ComputingStatus::ConcentrationSizeError;
             }
 
+
+            // The final unit depends on the computing options
+            TucuUnit unit("ug/l");
+            if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
+                unit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
+            }
+
             size_t nbTimes = concentrations.size();
             Concentrations c;
             for (size_t i = 0; i < nbTimes; i++) {
-                c.push_back(concentrations[i]);
+                c.push_back(Tucuxi::Common::UnitManager::convertToUnit<
+                            Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        concentrations[i], _request.getDrugModel().getActiveMoieties()[0]->getUnit(), unit));
                 resp->m_times.push_back(timesSeries[i].getEventTime());
             }
             resp->m_concentrations.push_back(c);
-            resp->m_unit = TucuUnit("ug/l");
+            resp->m_unit = unit;
 
             _response->addResponse(std::move(resp));
         }
