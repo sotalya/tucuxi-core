@@ -3,6 +3,7 @@
 #ifndef TUCUXI_TUCUCOMMON_UTILS_H
 #define TUCUXI_TUCUCOMMON_UTILS_H
 
+#include <array>
 #include <memory>
 #include <string>
 
