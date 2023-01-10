@@ -3,9 +3,9 @@
 #ifndef TUCUXI_TUCUCOMMON_UTILS_H
 #define TUCUXI_TUCUCOMMON_UTILS_H
 
+#include <array>
 #include <memory>
 #include <string>
-#include <array>
 
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
