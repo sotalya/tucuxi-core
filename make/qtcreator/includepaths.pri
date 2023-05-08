@@ -26,6 +26,8 @@ INCLUDEPATH += $$PWD/../../src \
         -isystem $$PWD/../../libs/rapidjson-master-20190220/include
 }
 
+!config_nobotan {
+
 win32 {
     !config_tucucore_lib {
         INCLUDEPATH += C:\Botan\Botan2-64\include\botan-2
@@ -36,4 +38,5 @@ win32 {
 }
 else {
     INCLUDEPATH +=  $$PWD/../../libs/botan-2.1.0/build/include/ \
+}
 }
