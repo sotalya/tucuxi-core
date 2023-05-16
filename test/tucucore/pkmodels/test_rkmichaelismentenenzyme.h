@@ -1014,10 +1014,67 @@ struct TestMichaelisMentenEnzyme1comp : public fructose::test_base<TestMichaelis
             fructose_assert_eq(
                     resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
+
             //std::cout << "A priori parameters : " << std::endl;
             //for (auto parameter : resp->getData()[0].m_parameters) {
             //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
             //}
+        }
+
+        if (component != nullptr) {
+            delete component;
+        }
+    }
+
+
+    /// \brief Check that objects are correctly constructed by the constructor.
+    void testExtraPercentilesApriori(const std::string& /* _testName */)
+    {
+        DrugModelImport importer;
+
+        std::unique_ptr<DrugModel> drugModel;
+
+        auto importStatus = importer.importFromString(drugModel, test_mm_1comp_enzyme_bolus_tdd);
+        fructose_assert_eq(importStatus, DrugModelImport::Status::Ok);
+
+        fructose_assert(drugModel != nullptr);
+
+
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+        fructose_assert(component != nullptr);
+
+        const FormulationAndRoute route(
+                Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+
+        auto drugTreatment = buildDrugTreatment(route);
+
+        {
+
+            RequestResponseId requestResponseId = "1";
+            Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+            Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+            PercentileRanks percentileRanks({5, 25, 50, 75, 95});
+            double nbPointsPerHour = 10.0;
+            ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+            auto traits = std::make_unique<ComputingTraitPercentiles>(
+                    requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+
+            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+            ComputingStatus result;
+            result = component->compute(request, response);
+
+            fructose_assert_eq(result, ComputingStatus::Ok);
+
+            const ComputedData* responseData = response->getData();
+            fructose_assert(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+            if (dynamic_cast<const PercentilesData*>(responseData) == nullptr) {
+                return;
+            }
+            //const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
         }
 
         if (component != nullptr) {

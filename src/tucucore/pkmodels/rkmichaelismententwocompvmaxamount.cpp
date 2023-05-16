@@ -43,6 +43,7 @@ bool RkMichaelisMentenTwoCompVmaxAmountExtraMicro::checkInputs(
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_F = _parameters.getValue(ParameterId::F);
     m_Ka = _parameters.getValue(ParameterId::Ka);
+    m_Tlag = _parameters.getOptionalValue(ParameterId::Tlag, 0.0);
     m_K12 = _parameters.getValue(ParameterId::K12);
     m_K21 = _parameters.getValue(ParameterId::K21);
     m_nbPoints = _intakeEvent.getNbPoints();
@@ -143,8 +144,9 @@ bool RkMichaelisMentenTwoCompVmaxAmountBolusMicro::checkInputs(
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
-    m_F = _parameters.getOptionalValue(ParameterId::F);
-    m_Ka = _parameters.getOptionalValue(ParameterId::Ka);
+    m_F = _parameters.getOptionalValue(ParameterId::F, 1.0);
+    m_Ka = _parameters.getOptionalValue(ParameterId::Ka, 1.0);
+    m_Tlag = _parameters.getOptionalValue(ParameterId::Tlag, 0.0);
     m_K12 = _parameters.getValue(ParameterId::K12);
     m_K21 = _parameters.getValue(ParameterId::K21);
     m_nbPoints = _intakeEvent.getNbPoints();
@@ -194,8 +196,9 @@ bool RkMichaelisMentenTwoCompVmaxAmountInfusionMicro::checkInputs(
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
-    m_F = _parameters.getValue(ParameterId::F);
-    m_Ka = _parameters.getValue(ParameterId::Ka);
+    m_F = _parameters.getOptionalValue(ParameterId::F, 1.0);
+    m_Ka = _parameters.getOptionalValue(ParameterId::Ka, 1.0);
+    m_Tlag = _parameters.getOptionalValue(ParameterId::Tlag, 0.0);
     m_K12 = _parameters.getValue(ParameterId::K12);
     m_K21 = _parameters.getValue(ParameterId::K21);
     m_nbPoints = _intakeEvent.getNbPoints();
@@ -217,24 +220,6 @@ bool RkMichaelisMentenTwoCompVmaxAmountInfusionMicro::checkInputs(
 
     return bOK;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -261,6 +246,7 @@ bool RkMichaelisMentenTwoCompVmaxAmountExtraMacro::checkInputs(
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_F = _parameters.getValue(ParameterId::F);
     m_Ka = _parameters.getValue(ParameterId::Ka);
+    m_Tlag = _parameters.getOptionalValue(ParameterId::Tlag);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
     auto v2 = _parameters.getValue(ParameterId::V2);
@@ -350,6 +336,9 @@ bool RkMichaelisMentenTwoCompVmaxAmountBolusMacro::checkInputs(
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
+    m_F = _parameters.getOptionalValue(ParameterId::F, 1.0);
+    m_Ka = _parameters.getOptionalValue(ParameterId::Ka, 1.0);
+    m_Tlag = _parameters.getOptionalValue(ParameterId::Tlag, 0.0);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
     auto v2 = _parameters.getValue(ParameterId::V2);
@@ -361,10 +350,10 @@ bool RkMichaelisMentenTwoCompVmaxAmountBolusMacro::checkInputs(
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V1, "The volume");
-    bOK &= checkPositiveValue(m_F, "The bioavailability");
+    bOK &= checkStrictlyPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
-    bOK &= checkPositiveValue(m_Ka, "The absorption rate");
+    bOK &= checkStrictlyPositiveValue(m_Ka, "The absorption rate");
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
     bOK &= checkPositiveValue(m_K12, "K12");
     bOK &= checkPositiveValue(m_K21, "K21");
@@ -373,20 +362,6 @@ bool RkMichaelisMentenTwoCompVmaxAmountBolusMacro::checkInputs(
 
     return bOK;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 RkMichaelisMentenTwoCompVmaxAmountInfusionMacro::RkMichaelisMentenTwoCompVmaxAmountInfusionMacro() = default;
@@ -409,6 +384,9 @@ bool RkMichaelisMentenTwoCompVmaxAmountInfusionMacro::checkInputs(
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
+    m_F = _parameters.getOptionalValue(ParameterId::F, 1.0);
+    m_Ka = _parameters.getOptionalValue(ParameterId::Ka, 1.0);
+    m_Tlag = _parameters.getOptionalValue(ParameterId::Tlag, 0.0);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
     auto v2 = _parameters.getValue(ParameterId::V2);
@@ -420,10 +398,10 @@ bool RkMichaelisMentenTwoCompVmaxAmountInfusionMacro::checkInputs(
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V1, "The volume");
-    bOK &= checkPositiveValue(m_F, "The bioavailability");
+    bOK &= checkStrictlyPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
-    bOK &= checkPositiveValue(m_Ka, "The absorption rate");
+    bOK &= checkStrictlyPositiveValue(m_Ka, "The absorption rate");
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
     bOK &= checkPositiveValue(m_K12, "K12");
     bOK &= checkPositiveValue(m_K21, "K21");
@@ -432,11 +410,6 @@ bool RkMichaelisMentenTwoCompVmaxAmountInfusionMacro::checkInputs(
 
     return bOK;
 }
-
-
-
-
-
 
 
 } // namespace Core

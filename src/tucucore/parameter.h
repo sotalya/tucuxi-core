@@ -181,6 +181,24 @@ public:
         return 0.0;
     }
 
+    ///
+    /// \brief Gets the value of a parameter if it exists
+    /// \param _id Id of the parameter
+    /// \param _default Default value returned if the parameter does not exist
+    /// \return The value of the parameter if it exists, _default else
+    ///
+    /// This function does not consider a missing parameter to be an error,
+    /// while getValue() would.
+    ///
+    Value getOptionalValue(ParameterId::Enum _id, Value _default) const
+    {
+        int index = m_IdToIndex.at(_id);
+        if (index >= 0) {
+            return m_parameters[static_cast<size_t>(index)].getValue();
+        }
+        return _default;
+    }
+
     int size() const
     {
         return static_cast<int>(m_parameters.size());

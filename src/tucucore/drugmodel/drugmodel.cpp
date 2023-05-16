@@ -103,7 +103,7 @@ const ParameterDefinition* ParameterDefinitionIterator::operator*()
     }
 
     // This really should never happen
-    throw std::runtime_error("Internal error: A paramter from a paramter set could not be extracted.");
+    throw std::runtime_error("Internal error: A paramter from a parameter set could not be extracted.");
 
     return nullptr;
 }

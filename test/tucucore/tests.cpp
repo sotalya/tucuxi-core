@@ -20,6 +20,17 @@
 
 
 
+namespace Tucuxi {
+namespace Core {
+
+template<typename T>
+std::ostream& operator<<(typename std::enable_if<std::is_enum<T>::value, std::ostream>::type& stream, const T& e)
+{
+    return stream << static_cast<typename std::underlying_type<T>::type>(e);
+}
+
+} // namespace Core
+} // namespace Tucuxi
 
 
 #if defined(test_multiconstanteliminationbolus) || !defined(DO_NOT_COMPILE_ALL_TESTS)
@@ -141,6 +152,9 @@
 #endif
 #if defined(test_twocompartmentextralag) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "pkmodels/test_twocompartmentextralag.h"
+#endif
+#if defined(test_rkmichaelismententwocompvmaxamount) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "pkmodels/test_rkmichaelismententwocompvmaxamount.h"
 #endif
 
 int main(int argc, char** argv)
@@ -974,9 +988,14 @@ int main(int argc, char** argv)
     // --- Multi analytes multi active moieties tests --- //
     TestMichaelisMentenEnzyme1comp michaelisMententEnzyme1compTests;
 
-    //michaelisMententEnzyme1compTests.add_test("testMichaelisMenten2compBolus", &TestMichaelisMentenEnzyme1comp::testBolus);
     michaelisMententEnzyme1compTests.add_test(
-            "testMichaelisMenten2compExtra", &TestMichaelisMentenEnzyme1comp::testExtra);
+            "testMichaelisMenten2compBolus", &TestMichaelisMentenEnzyme1comp::testBolus);
+    michaelisMententEnzyme1compTests.add_test(
+            "testMichaelisMenten1compExtra", &TestMichaelisMentenEnzyme1comp::testExtra);
+    michaelisMententEnzyme1compTests.add_test(
+            "testMichaelisMenten1compPercentilesApriori", &TestMichaelisMentenEnzyme1comp::testExtraPercentilesApriori);
+
+
 
     res = michaelisMententEnzyme1compTests.run(argc, argv);
     tot_res |= res;
@@ -1005,6 +1024,26 @@ int main(int argc, char** argv)
         std::cout << "2 comp extra lag test succeeded\n";
     }
 #endif
+
+#if defined(test_rkmichaelismententwocompvmaxamount) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- Multi analytes multi active moieties tests --- //
+    TestMichaelisMenten2compVmaxAmount twoCompMMVmaxAmountTests;
+
+    twoCompMMVmaxAmountTests.add_test("testTwoCompMMVmaxAmountBolus", &TestMichaelisMenten2compVmaxAmount::testBolus);
+    twoCompMMVmaxAmountTests.add_test("testTwoCompMMVmaxAmountInfu", &TestMichaelisMenten2compVmaxAmount::testInfusion);
+    twoCompMMVmaxAmountTests.add_test("testTwoCompMMVmaxAmountExtra", &TestMichaelisMenten2compVmaxAmount::testExtra);
+    twoCompMMVmaxAmountTests.add_test("testTwoCompMMVmaxAmountMix", &TestMichaelisMenten2compVmaxAmount::testMix);
+
+    res = twoCompMMVmaxAmountTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        std::cerr << "2 comp Michaelis Menten VMax Amount test failed\n";
+    }
+    else {
+        std::cout << "2 comp Michaelis Menten VMax Amount test succeeded\n";
+    }
+#endif
+
 
     // Delete the logger to avoid a warning when using valgrind --leak-check=full
     Tucuxi::Common::LoggerHelper::beforeExit();

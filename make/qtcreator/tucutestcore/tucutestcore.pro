@@ -26,6 +26,7 @@ HEADERS += \
     ../../../test/tucucore/pkmodels/multiconstanteliminationbolus.h \
     ../../../test/tucucore/pkmodels/pkasymptotic.h \
     ../../../test/tucucore/pkmodels/test_rkmichaelismentenenzyme.h \
+    ../../../test/tucucore/pkmodels/test_rkmichaelismententwocompvmaxamount.h \
     ../../../test/tucucore/pkmodels/test_twocompartmentextralag.h \
     ../../../test/tucucore/test_cachecomputing.h \
     ../../../test/tucucore/test_computingcomponentadjustments.h \
