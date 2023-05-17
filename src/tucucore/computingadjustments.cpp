@@ -544,6 +544,8 @@ ComputingStatus ComputingAdjustments::compute(
 
         GroupsIntakeSeries intakeSeriesPerGroup;
 
+        bool isValidCandidate = true;
+
         for (const auto& analyteGroupId : allGroupIds) {
 
 
@@ -607,83 +609,90 @@ ComputingStatus ComputingAdjustments::compute(
                         etas[analyteGroupId]);
             }
 
-            if (predictionComputingResult != ComputingStatus::Ok) {
-                m_logger.error("Error with the computation of a single adjustment candidate");
-                return predictionComputingResult;
+            if (predictionComputingResult == ComputingStatus::NoSteadyState) {
+                isValidCandidate = false;
             }
-
-            // The final unit depends on the computing options
-            TucuUnit finalUnit("ug/l");
-            if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
-                finalUnit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
-            }
-
-            for (size_t i = 0; i < pPrediction->getValues().size(); i++) {
-                Tucuxi::Common::UnitManager::updateAndConvertToUnit<
-                        Tucuxi::Common::UnitManager::UnitType::Concentration>(
-                        pPrediction->getModifiableValues()[i],
-                        _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
-                        finalUnit);
-            }
-            analytesPredictions.push_back(std::move(pPrediction));
-        }
-
-        std::vector<ConcentrationPredictionPtr> activeMoietiesPredictions;
-
-        if (!_request.getDrugModel().isSingleAnalyte()) {
-
-            for (const auto& activeMoiety : _request.getDrugModel().getActiveMoieties()) {
-                ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
-                ComputingStatus activeMoietyComputingResult =
-                        m_utils->computeActiveMoiety(activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
-                if (activeMoietyComputingResult != ComputingStatus::Ok) {
-                    return activeMoietyComputingResult;
+            else {
+                if (predictionComputingResult != ComputingStatus::Ok) {
+                    m_logger.error("Error with the computation of a single adjustment candidate");
+                    return predictionComputingResult;
                 }
-                activeMoietiesPredictions.push_back(std::move(activeMoietyPrediction));
+
+                // The final unit depends on the computing options
+                TucuUnit finalUnit("ug/l");
+                if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
+                    finalUnit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
+                }
+
+                for (size_t i = 0; i < pPrediction->getValues().size(); i++) {
+                    Tucuxi::Common::UnitManager::updateAndConvertToUnit<
+                            Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                            pPrediction->getModifiableValues()[i],
+                            _request.getDrugModel().getActiveMoieties()[0]->getUnit(),
+                            finalUnit);
+                }
+                analytesPredictions.push_back(std::move(pPrediction));
             }
-        }
-        else {
-            activeMoietiesPredictions.push_back(std::move(analytesPredictions[0]));
         }
 
         std::vector<TargetEvaluationResult> candidateResults;
-        bool isValidCandidate = true;
+        std::vector<ConcentrationPredictionPtr> activeMoietiesPredictions;
 
-        if (targetSeries.empty()) {
-            isValidCandidate = false;
-        }
+        if (isValidCandidate) {
 
-        size_t moietyIndex = 0;
+            if (!_request.getDrugModel().isSingleAnalyte()) {
 
-        // Check wheter value (after extraction) is in target or not
-        for (const auto& activeMoiety : _request.getDrugModel().getActiveMoieties()) {
-            for (const auto& target : targetSeries[activeMoiety->getActiveMoietyId()]) {
-                TargetEvaluationResult localResult;
-
-                // Now the score calculation
-                ComputingStatus evaluationResult = targetEvaluator.evaluate(
-                        *activeMoietiesPredictions[moietyIndex].get(),
-                        intakeSeriesPerGroup[allGroupIds[0]],
-                        target,
-                        localResult);
-
-                // Here we do not compare to Result::Ok, because the result can also be
-                // Result::InvalidCandidate
-                if (evaluationResult == ComputingStatus::TargetEvaluationError) {
-                    m_logger.error("Error in the evaluation of targets");
-                    return evaluationResult;
-                }
-
-                // If the candidate is valid:
-                if (evaluationResult == ComputingStatus::Ok) {
-                    localResult.setTarget(target);
-                    candidateResults.push_back(localResult);
-                }
-                else {
-                    isValidCandidate = false;
+                for (const auto& activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+                    ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
+                    ComputingStatus activeMoietyComputingResult = m_utils->computeActiveMoiety(
+                            activeMoiety.get(), analytesPredictions, activeMoietyPrediction);
+                    if (activeMoietyComputingResult != ComputingStatus::Ok) {
+                        return activeMoietyComputingResult;
+                    }
+                    activeMoietiesPredictions.push_back(std::move(activeMoietyPrediction));
                 }
             }
-            moietyIndex++;
+            else {
+                activeMoietiesPredictions.push_back(std::move(analytesPredictions[0]));
+            }
+
+
+            if (targetSeries.empty()) {
+                isValidCandidate = false;
+            }
+
+            size_t moietyIndex = 0;
+
+            // Check wheter value (after extraction) is in target or not
+            for (const auto& activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+                for (const auto& target : targetSeries[activeMoiety->getActiveMoietyId()]) {
+                    TargetEvaluationResult localResult;
+
+                    // Now the score calculation
+                    ComputingStatus evaluationResult = targetEvaluator.evaluate(
+                            *activeMoietiesPredictions[moietyIndex].get(),
+                            intakeSeriesPerGroup[allGroupIds[0]],
+                            target,
+                            localResult);
+
+                    // Here we do not compare to Result::Ok, because the result can also be
+                    // Result::InvalidCandidate
+                    if (evaluationResult == ComputingStatus::TargetEvaluationError) {
+                        m_logger.error("Error in the evaluation of targets");
+                        return evaluationResult;
+                    }
+
+                    // If the candidate is valid:
+                    if (evaluationResult == ComputingStatus::Ok) {
+                        localResult.setTarget(target);
+                        candidateResults.push_back(localResult);
+                    }
+                    else {
+                        isValidCandidate = false;
+                    }
+                }
+                moietyIndex++;
+            }
         }
 
         if (isValidCandidate) {
