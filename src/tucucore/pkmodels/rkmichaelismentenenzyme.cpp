@@ -137,6 +137,7 @@ bool RkMichaelisMentenEnzymeBolus::checkInputs(const IntakeEvent& _intakeEvent, 
     m_Kenz = _parameters.getValue(ParameterId::Kenz);
     m_Emax = _parameters.getValue(ParameterId::Emax);
     m_ECmid = _parameters.getValue(ParameterId::ECmid);
+    m_AllmCL = _parameters.getValue(ParameterId::AllmCL);
 
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
@@ -151,6 +152,7 @@ bool RkMichaelisMentenEnzymeBolus::checkInputs(const IntakeEvent& _intakeEvent, 
     bOK &= checkStrictlyPositiveValue(m_Kenz, "Kenz");
     bOK &= checkStrictlyPositiveValue(m_Emax, "Emax");
     bOK &= checkStrictlyPositiveValue(m_ECmid, "ECmid");
+    bOK &= checkStrictlyPositiveValue(m_AllmCL, "Allometric clearance");
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
