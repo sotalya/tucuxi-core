@@ -28,14 +28,14 @@ public:
     /// \return The list of required PK parameters Ids
     static std::vector<std::string> getParametersId();
 
-    inline void derive(double _t, const MultiCompConcentration& _c, MultiCompConcentration& _dcdt)
+    inline void derive(double _t, const Compartments_t& _c, Compartments_t& _dcdt)
     {
         FINAL_UNUSED_PARAMETER(_t);
         _dcdt[0] = m_Ka * _c[1] - m_Ke * _c[0];
         _dcdt[1] = -m_Ka * _c[1];
     }
 
-    inline void addFixedValue(double _t, MultiCompConcentration& _concentrations)
+    inline void addFixedValue(double _t, Compartments_t& _concentrations)
     {
         FINAL_UNUSED_PARAMETER(_t);
         FINAL_UNUSED_PARAMETER(_concentrations);

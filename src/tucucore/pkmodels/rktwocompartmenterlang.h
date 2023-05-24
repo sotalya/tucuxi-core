@@ -73,32 +73,32 @@ namespace Core {
 /// \endcode
 ///
 ///
-template<int from, int to>
+template<typename Compartments_t, int from, int to>
 struct TransitComps
 {
     static inline void init(const Residuals& _inResiduals, MultiCompConcentration& _concentrations)
     {
         _concentrations[from] = _inResiduals[from];
-        TransitComps<from + 1, to>::init(_inResiduals, _concentrations);
+        TransitComps<Compartments_t, from + 1, to>::init(_inResiduals, _concentrations);
     }
 
-    static inline void derive(Value _ktr, const MultiCompConcentration& _c, MultiCompConcentration& _dcdt)
+    static inline void derive(Value _ktr, const Compartments_t& _c, Compartments_t& _dcdt)
     {
         _dcdt[from] = _ktr * _c[from - 1] - _ktr * _c[from];
-        TransitComps<from + 1, to>::derive(_ktr, _c, _dcdt);
+        TransitComps<Compartments_t, from + 1, to>::derive(_ktr, _c, _dcdt);
     }
 };
 
 // Terminal case
-template<int from>
-struct TransitComps<from, from>
+template<typename Compartments_t, int from>
+struct TransitComps<Compartments_t, from, from>
 {
     static inline void init(const Residuals& _inResiduals, MultiCompConcentration& _concentrations)
     {
         _concentrations[from] = _inResiduals[from];
     }
 
-    static inline void derive(Value _ktr, const MultiCompConcentration& _c, MultiCompConcentration& _dcdt)
+    static inline void derive(Value _ktr, const Compartments_t& _c, Compartments_t& _dcdt)
     {
         _dcdt[from] = _ktr * _c[from - 1] - _ktr * _c[from];
     }
@@ -156,20 +156,24 @@ public:
     };
 
 
-    inline void derive(double _t, const MultiCompConcentration& _c, MultiCompConcentration& _dcdt)
+    inline void derive(
+            double _t,
+            const std::array<Value, NbTransitCompartment + 3>& _c,
+            std::array<Value, NbTransitCompartment + 3>& _dcdt)
     {
         FINAL_UNUSED_PARAMETER(_t);
         _dcdt[0] = m_Ktr * _c[3 + NbTransitCompartment - 1] - m_Ke * _c[0] + m_K21 * _c[1] - m_K12 * _c[0];
         _dcdt[1] = m_K12 * _c[0] - m_K21 * _c[1];
         _dcdt[2] = -m_Ktr * _c[2];
-        TransitComps<3, 3 + NbTransitCompartment - 1>::derive(m_Ktr, _c, _dcdt);
+        TransitComps<std::array<Value, NbTransitCompartment + 3>, 3, 3 + NbTransitCompartment - 1>::derive(
+                m_Ktr, _c, _dcdt);
         //        _dcdt[3] = m_Ktr * _c[2] - m_Ktr * _c[3];
         //        _dcdt[4] = m_Ktr * _c[3] - m_Ktr * _c[4];
         //        _dcdt[5] = m_Ktr * _c[4] - m_Ktr * _c[5];
         //        _dcdt[6] = m_Ktr * _c[5] - m_Ktr * _c[6];
     }
 
-    inline void addFixedValue(double _t, MultiCompConcentration& _concentrations)
+    inline void addFixedValue(double _t, std::array<Value, NbTransitCompartment + 3>& _concentrations)
     {
         FINAL_UNUSED_PARAMETER(_t);
         FINAL_UNUSED_PARAMETER(_concentrations);
@@ -214,7 +218,8 @@ protected:
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1];
         _concentrations[2] = _inResiduals[2] + m_D / m_V1;
-        TransitComps<3, 3 + NbTransitCompartment - 1>::init(_inResiduals, _concentrations);
+        TransitComps<std::array<Value, NbTransitCompartment + 3>, 3, 3 + NbTransitCompartment - 1>::init(
+                _inResiduals, _concentrations);
         //        _concentrations[3] = _inResiduals[3];
         //        _concentrations[4] = _inResiduals[4];
         //        _concentrations[5] = _inResiduals[5];

@@ -135,6 +135,8 @@ public:
     }
 
 protected:
+    typedef std::array<Value, ResidualSize> Compartments_t;
+
     CycleSize m_nbPoints{0}; /// Number measure points during interval
     Value m_Int{0.0};        /// Interval time (Hours)
 
@@ -248,11 +250,11 @@ protected:
     struct ComputeK1
     {
         static inline void apply(
-                std::vector<double>& _k1,
+                Compartments_t& _k1,
                 double _h,
-                MultiCompConcentration& _dcdt,
-                MultiCompConcentration& _c,
-                MultiCompConcentration& _concentrations)
+                Compartments_t& _dcdt,
+                Compartments_t& _c,
+                Compartments_t& _concentrations)
         {
             // Set k1's
             _k1[from] = _h * _dcdt[from];
@@ -266,11 +268,11 @@ protected:
     struct ComputeK1<from, from>
     {
         static inline void apply(
-                std::vector<double>& _k1,
+                Compartments_t& _k1,
                 double _h,
-                MultiCompConcentration& _dcdt,
-                MultiCompConcentration& _c,
-                MultiCompConcentration& _concentrations)
+                Compartments_t& _dcdt,
+                Compartments_t& _c,
+                Compartments_t& _concentrations)
         {
             _k1[from] = _h * _dcdt[from];
             _c[from] = _concentrations[from] + _k1[from] / 2.0;
@@ -281,11 +283,11 @@ protected:
     struct ComputeK2
     {
         static inline void apply(
-                std::vector<double>& _k2,
+                Compartments_t& _k2,
                 double _h,
-                MultiCompConcentration& _dcdt,
-                MultiCompConcentration& _c,
-                MultiCompConcentration& _concentrations)
+                Compartments_t& _dcdt,
+                Compartments_t& _c,
+                Compartments_t& _concentrations)
         {
             // Set k1's
             _k2[from] = _h * _dcdt[from];
@@ -299,11 +301,11 @@ protected:
     struct ComputeK2<from, from>
     {
         static inline void apply(
-                std::vector<double>& _k2,
+                Compartments_t& _k2,
                 double _h,
-                MultiCompConcentration& _dcdt,
-                MultiCompConcentration& _c,
-                MultiCompConcentration& _concentrations)
+                Compartments_t& _dcdt,
+                Compartments_t& _c,
+                Compartments_t& _concentrations)
         {
             _k2[from] = _h * _dcdt[from];
             _c[from] = _concentrations[from] + _k2[from] / 2.0;
@@ -314,11 +316,11 @@ protected:
     struct ComputeK3
     {
         static inline void apply(
-                std::vector<double>& _k3,
+                Compartments_t& _k3,
                 double _h,
-                MultiCompConcentration& _dcdt,
-                MultiCompConcentration& _c,
-                MultiCompConcentration& _concentrations)
+                Compartments_t& _dcdt,
+                Compartments_t& _c,
+                Compartments_t& _concentrations)
         {
             // Set k1's
             _k3[from] = _h * _dcdt[from];
@@ -332,11 +334,11 @@ protected:
     struct ComputeK3<from, from>
     {
         static inline void apply(
-                std::vector<double>& _k3,
+                Compartments_t& _k3,
                 double _h,
-                MultiCompConcentration& _dcdt,
-                MultiCompConcentration& _c,
-                MultiCompConcentration& _concentrations)
+                Compartments_t& _dcdt,
+                Compartments_t& _c,
+                Compartments_t& _concentrations)
         {
             _k3[from] = _h * _dcdt[from];
             _c[from] = _concentrations[from] + _k3[from];
@@ -347,13 +349,13 @@ protected:
     struct ComputeK4
     {
         static inline void apply(
-                std::vector<double>& _k1,
-                std::vector<double>& _k2,
-                std::vector<double>& _k3,
-                std::vector<double>& _k4,
+                Compartments_t& _k1,
+                Compartments_t& _k2,
+                Compartments_t& _k3,
+                Compartments_t& _k4,
                 double _h,
-                MultiCompConcentration& _dcdt,
-                MultiCompConcentration& _concentrations)
+                Compartments_t& _dcdt,
+                Compartments_t& _concentrations)
         {
             _k4[from] = _h * _dcdt[from];
             // and directly compute the concentration of each compartment
@@ -368,13 +370,13 @@ protected:
     struct ComputeK4<from, from>
     {
         static inline void apply(
-                std::vector<double>& _k1,
-                std::vector<double>& _k2,
-                std::vector<double>& _k3,
-                std::vector<double>& _k4,
+                Compartments_t& _k1,
+                Compartments_t& _k2,
+                Compartments_t& _k3,
+                Compartments_t& _k4,
                 double _h,
-                MultiCompConcentration& _dcdt,
-                MultiCompConcentration& _concentrations)
+                Compartments_t& _dcdt,
+                Compartments_t& _concentrations)
         {
             _k4[from] = _h * _dcdt[from];
             // and directly compute the concentration of each compartment
@@ -398,18 +400,22 @@ protected:
         Eigen::Index nbPoints = _times.size();
 
         // The vectors of concentrations
-        MultiCompConcentration concentrations(ResidualSize);
+        Compartments_t concentrations = {};
 
         // We initialize the first concentration
-        initConcentrations(_inResiduals, concentrations);
+        MultiCompConcentration initConcs(ResidualSize);
+        initConcentrations(_inResiduals, initConcs);
+        for (size_t i = 0; i < ResidualSize; i++) {
+            concentrations[i] = initConcs[i];
+        }
 
         // The values used by RK4 during one iteration
-        MultiCompConcentration dcdt(ResidualSize);
-        std::vector<double> k1(ResidualSize);
-        std::vector<double> k2(ResidualSize);
-        std::vector<double> k3(ResidualSize);
-        std::vector<double> k4(ResidualSize);
-        MultiCompConcentration c(ResidualSize);
+        Compartments_t dcdt = {};
+        Compartments_t k1;
+        Compartments_t k2;
+        Compartments_t k3;
+        Compartments_t k4;
+        Compartments_t c = {};
 
         // Time t used for calculating the derivative
         double t = 0.0;
@@ -490,18 +496,23 @@ protected:
         Eigen::Index nbPoints = _times.size();
 
         // The vectors of concentrations
-        MultiCompConcentration concentrations(ResidualSize);
+        Compartments_t concentrations = {};
 
         // We initialize the first concentration
-        initConcentrations(_inResiduals, concentrations);
+        MultiCompConcentration initConcs(ResidualSize);
+        initConcentrations(_inResiduals, initConcs);
+        for (size_t i = 0; i < ResidualSize; i++) {
+            concentrations[i] = initConcs[i];
+        }
 
         // The values used by RK4 during one iteration
-        MultiCompConcentration dcdt(ResidualSize);
-        std::vector<double> k1(ResidualSize);
-        std::vector<double> k2(ResidualSize);
-        std::vector<double> k3(ResidualSize);
-        std::vector<double> k4(ResidualSize);
-        std::vector<double> c(ResidualSize);
+        Compartments_t dcdt = {};
+        Compartments_t k1;
+        Compartments_t k2;
+        Compartments_t k3;
+        Compartments_t k4;
+        Compartments_t c = {};
+
 
         // Time t used for calculating the derivative
         double t = 0.0;

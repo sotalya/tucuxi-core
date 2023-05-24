@@ -20,6 +20,7 @@ enum class RkMichaelisMentenTwoCompCompartments : int
 /// \sa IntakeIntervalCalculator
 class RkMichaelisMentenTwoComp : public IntakeIntervalCalculatorRK4Base<3, RkMichaelisMentenTwoComp>
 {
+
 public:
     /// \brief Constructor
     RkMichaelisMentenTwoComp();
@@ -28,7 +29,7 @@ public:
     /// \return The list of required PK parameters Ids
     static std::vector<std::string> getParametersId();
 
-    inline void derive(double _t, const MultiCompConcentration& _c, MultiCompConcentration& _dcdt)
+    inline void derive(double _t, const Compartments_t& _c, Compartments_t& _dcdt)
     {
         FINAL_UNUSED_PARAMETER(_t);
         // This function _dcdt[0] needs to be checked. I used the one of ADAPT5-User-Guide, but used
@@ -49,7 +50,7 @@ public:
         }
     }
 
-    inline void addFixedValue(double _t, MultiCompConcentration& _concentrations)
+    inline void addFixedValue(double _t, Compartments_t& _concentrations)
     {
         if (m_isWithLag) {
             if ((!m_delivered) && (_t >= m_Tlag)) {

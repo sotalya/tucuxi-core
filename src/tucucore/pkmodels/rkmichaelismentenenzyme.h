@@ -29,6 +29,7 @@ class CalculationException : public std::exception
 /// \sa IntakeIntervalCalculator
 class RkMichaelisMentenEnzyme : public IntakeIntervalCalculatorRK4Base<3, RkMichaelisMentenEnzyme>
 {
+
 public:
     /// \brief Constructor
     RkMichaelisMentenEnzyme();
@@ -37,7 +38,7 @@ public:
     /// \return The list of required PK parameters Ids
     static std::vector<std::string> getParametersId();
 
-    inline void derive(double _t, const MultiCompConcentration& _c, MultiCompConcentration& _dcdt)
+    inline void derive(double _t, const Compartments_t& _c, Compartments_t& _dcdt)
     {
         //auto c0 = _c[0] / 1000.0 * m_V;
         //auto cp = c0 / m_V;
@@ -73,7 +74,7 @@ public:
     }
 
 
-    inline void addFixedValue(double _t, MultiCompConcentration& _concentrations)
+    inline void addFixedValue(double _t, Compartments_t& _concentrations)
     {
         FINAL_UNUSED_PARAMETER(_t);
         FINAL_UNUSED_PARAMETER(_concentrations);
@@ -100,7 +101,6 @@ protected:
 
     Value m_cumul{NAN};
     Value m_ktr{NAN};
-
 
 private:
     typedef RkMichaelisMentenEnzymeCompartments Compartments;
@@ -196,7 +196,7 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    void initConcentrations (const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
+    void initConcentrations (const Residuals& _inResiduals, Compartments_t& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0];
         _concentrations[1] = _inResiduals[1];

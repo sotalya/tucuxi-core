@@ -20,6 +20,7 @@ enum class RkMichaelisMentenOneCompCompartments : int
 /// \sa IntakeIntervalCalculator
 class RkMichaelisMentenOneComp : public IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenOneComp>
 {
+
 public:
     /// \brief Constructor
     RkMichaelisMentenOneComp();
@@ -28,14 +29,14 @@ public:
     /// \return The list of required PK parameters Ids
     static std::vector<std::string> getParametersId();
 
-    inline void derive(double _t, const MultiCompConcentration& _c, MultiCompConcentration& _dcdt)
+    inline void derive(double _t, const Compartments_t& _c, Compartments_t& _dcdt)
     {
         FINAL_UNUSED_PARAMETER(_t);
         _dcdt[0] = m_Ka * _c[1] - m_Vmax * _c[0] / (m_Km + _c[0]);
         _dcdt[1] = -m_Ka * _c[1];
     }
 
-    inline void addFixedValue(double _t, MultiCompConcentration& _concentrations)
+    inline void addFixedValue(double _t, Compartments_t& _concentrations)
     {
         FINAL_UNUSED_PARAMETER(_t);
         FINAL_UNUSED_PARAMETER(_concentrations);
@@ -49,7 +50,6 @@ protected:
     Value m_Km{NAN};
     Value m_Vmax{NAN};
     Value m_Tinf{NAN};
-
 
 private:
     typedef RkMichaelisMentenOneCompCompartments Compartments;
