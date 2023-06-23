@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <ctime>
 #include <mutex>
+#include <omp.h>
 #include <random>
 #include <thread>
 
@@ -177,9 +178,8 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
         std::vector<std::vector<std::vector<Concentration> > >& _concentrations,
         ComputingAborter* _aborter)
 {
-    //    auto start = std::chrono::steady_clock::now();
-
-    bool abort = false;
+#define MULTITHREAD_MT
+    // auto start = std::chrono::steady_clock::now();
 
     selectRecordedIntakes(_recordedIntakes, _intakes, _recordFrom, _recordTo);
 
@@ -197,138 +197,61 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
     //    std::cout << "milliseconds for preparation: " << elapsed.count( ) << '\n';
     //    start = std::chrono::steady_clock::now();
 
-
-#define MULTITHREAD_MT
-
-#ifdef MULTITHREAD_MT
-    // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
-    unsigned int nbThreads = std::max(std::thread::hardware_concurrency(), static_cast<unsigned int>(1));
-
-    unsigned int nbPatientsPerThread =
-            static_cast<unsigned int>(ceil(static_cast<double>(_nbPatients) / static_cast<double>(nbThreads)));
-
-    std::mutex timesMutex;
-    bool timesDefined = false;
-
-    std::vector<std::thread> workers;
-    for (unsigned int threadIndex = 0; threadIndex < nbThreads; threadIndex++) {
-        // Duplicate an IntakeSeries for avoid a possible problem with multi-thread
+#pragma omp parallel default(shared)
+    {
         IntakeSeries newIntakes;
         cloneIntakeSeries(_intakes, newIntakes);
 
-        workers.emplace_back(std::thread([threadIndex,
-                                          _nbPatients,
-                                          &abort,
-                                          _aborter,
-                                          &_etas,
-                                          &_epsilons,
-                                          &_parameters,
-                                          newIntakes,
-                                          &_residualErrorModel,
-                                          &_times,
-                                          &_concentrations,
-                                          nbPatientsPerThread,
-                                          &_concentrationCalculator,
-                                          _recordFrom,
-                                          _recordTo,
-                                          _recordedIntakes,
-                                          &timesMutex,
-                                          &timesDefined]() {
-#else
-    // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
-    int nbThreads = 1;
+        bool timesDefined = omp_get_thread_num();
 
-    unsigned int nbPatientsPerThread =
-            static_cast<unsigned int>(ceil(static_cast<double>(_nbPatients) / static_cast<double>(nbThreads)));
+#pragma omp for
+        for (size_t patient = 0; patient < _nbPatients; patient++) {
+            if (_aborter && _aborter->shouldAbort())
+                continue;
+            // Get concentrations for each patient, allocation will be done in computeConcentrations
+            // Be careful with this pointer. If declared at the beginning of the thread, then
+            // only a single computation is stored instead of (end-start)
+            ConcentrationPredictionPtr predictionPtr;
+            predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
-    int threadIndex = 0;
-    IntakeSeries newIntakes;
-    cloneIntakeSeries(_intakes, newIntakes);
-#endif // MULTITHREAD_MT
-            size_t start = threadIndex * nbPatientsPerThread;
-            size_t end = std::min(static_cast<size_t>((threadIndex + 1) * nbPatientsPerThread), _nbPatients);
+            // Call to apriori becomes population as its determined earlier in the parametersExtractor
+            ComputingStatus computingResult = _concentrationCalculator.computeConcentrations(
+                    predictionPtr,
+                    false, // fix to "false"
+                    _recordFrom,
+                    _recordTo,
+                    newIntakes,
+                    _parameters,
+                    _etas[patient],
+                    _residualErrorModel,
+                    _epsilons[patient],
+                    false);
 
-            for (size_t patient = start; patient < end; patient++) {
-                if (!abort) {
-                    if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
-                        abort = true;
-#ifdef MULTITHREAD_MT
-                        return;
-#else  // MULTITHREAD_MT
-                break;
-#endif // MULTITHREAD_MT
-                    }
-
-
-                    // Get concentrations for each patients, allocation will be done in computeConcentrations
-                    // Be carefull with this pointer. If declared at the beginning of the thread, then
-                    // only a single computation is stored instead of (end-start)
-                    ConcentrationPredictionPtr predictionPtr;
-                    predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
-
-                    // Call to apriori becomes population as its determined earlier in the parametersExtractor
-                    ComputingStatus computingResult = _concentrationCalculator.computeConcentrations(
-                            predictionPtr,
-                            false, // fix to "false"
-                            _recordFrom,
-                            _recordTo,
-                            newIntakes,
-                            _parameters,
-                            _etas[patient],
-                            _residualErrorModel,
-                            _epsilons[patient],
-                            false);
-
-
-                    // Save the series of result of concentrations[cycle][nbPoints][patient] for each cycle
-                    if (computingResult == ComputingStatus::Ok) {
-
-                        // Save concentrations to array of [patient] for using sort() function
-                        for (size_t cycle = 0; cycle < _recordedIntakes.size(); cycle++) {
-
-                            CycleSize cyclePoints = _recordedIntakes[cycle].getNbPoints();
-
-                            // Save times only one time (when patient is equal to 0)
-                            timesMutex.lock();
-                            if (!timesDefined) {
-                                timesDefined = true;
-                                timesMutex.unlock();
-                                _times.push_back((predictionPtr->getTimes())[cycle]);
-                            }
-                            else {
-                                timesMutex.unlock();
-                            }
-
-                            for (CycleSize point = 0; point < cyclePoints; point++) {
-                                _concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
-                            }
-                        }
-                    }
-                    else {
-                        _concentrations[0][0][patient] = std::numeric_limits<double>::quiet_NaN();
-                    }
-                }
-#if 0
-                // Debugging
-                char filename[30];
-                sprintf(filename, "result%d.dat", patient);
-                predictionPtr->streamToFile(filename);
-#endif
+            // Save the series of result of concentrations[cycle][nbPoints][patient] for each cycle
+            if (computingResult != ComputingStatus::Ok) {
+                _concentrations[0][0][patient] = std::numeric_limits<double>::quiet_NaN();
+                continue;
             }
-#ifdef MULTITHREAD_MT
-        }));
+
+            // Save times only one time (when patient is equal to 0)
+            if (!timesDefined && _recordedIntakes.size() > 0) {
+                _times.push_back((predictionPtr->getTimes())[0]);
+                timesDefined = true;
+            }
+
+            // Save concentrations to array of [patient] for using sort() function
+            const size_t intakeSize = _recordedIntakes.size();
+            for (size_t cycle = 0; cycle < intakeSize; cycle++) {
+                const CycleSize cyclePoints = _recordedIntakes[cycle].getNbPoints();
+                for (CycleSize point = 0; point < cyclePoints; point++) {
+                    _concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
+                }
+            }
+        }
     }
 
-    std::for_each(workers.begin(), workers.end(), [](std::thread& _t) { _t.join(); });
-#endif // MULTITHREAD_MT
-
-    //    elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
-    //    std::cout << "milliseconds for predictions calculation : " << elapsed.count( ) << '\n';
-    //    start = std::chrono::steady_clock::now();
-
-    if (abort) {
+    if (_aborter && _aborter->shouldAbort())
         return ComputingStatus::Aborted;
-    }
 
     return ComputingStatus::Ok;
 }
