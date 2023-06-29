@@ -162,7 +162,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
             _percentiles, _percentileRanks, nbPatients, times, recordedIntakes, concentrations);
 }
 
-
+#ifdef CONFIG_OPENMP
 ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
         const DateTime& _recordFrom,
         const DateTime& _recordTo,
@@ -255,6 +255,180 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
 
     return ComputingStatus::Ok;
 }
+
+#else // CONFIG_OPENMP
+
+ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
+        const DateTime& _recordFrom,
+        const DateTime& _recordTo,
+        const IntakeSeries& _intakes,
+        const ParameterSetSeries& _parameters,
+        const IResidualErrorModel& _residualErrorModel,
+        const std::vector<Etas>& _etas,
+        const std::vector<Deviations>& _epsilons,
+        IConcentrationCalculator& _concentrationCalculator,
+        size_t _nbPatients,
+        std::vector<TimeOffsets>& _times,
+        IntakeSeries& _recordedIntakes,
+        std::vector<std::vector<std::vector<Concentration> > >& _concentrations,
+        ComputingAborter* _aborter)
+{
+    //    auto start = std::chrono::steady_clock::now();
+
+    bool abort = false;
+
+    selectRecordedIntakes(_recordedIntakes, _intakes, _recordFrom, _recordTo);
+
+    // Set the size of vector "concentrations"
+    for (const auto& recordedIntake : _recordedIntakes) {
+        std::vector<std::vector<Concentration> > vec;
+        vec.reserve(recordedIntake.getNbPoints());
+        for (size_t point = 0; point < recordedIntake.getNbPoints(); point++) {
+            vec.push_back(std::vector<Concentration>(_nbPatients));
+        }
+        _concentrations.push_back(vec);
+    }
+
+    //    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
+    //    std::cout << "milliseconds for preparation: " << elapsed.count( ) << '\n';
+    //    start = std::chrono::steady_clock::now();
+
+
+#define MULTITHREAD_MT
+
+#ifdef MULTITHREAD_MT
+    // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
+    unsigned int nbThreads = std::max(std::thread::hardware_concurrency(), static_cast<unsigned int>(1));
+
+    unsigned int nbPatientsPerThread =
+            static_cast<unsigned int>(ceil(static_cast<double>(_nbPatients) / static_cast<double>(nbThreads)));
+
+    std::mutex timesMutex;
+    bool timesDefined = false;
+
+    std::vector<std::thread> workers;
+    for (unsigned int threadIndex = 0; threadIndex < nbThreads; threadIndex++) {
+        // Duplicate an IntakeSeries for avoid a possible problem with multi-thread
+        IntakeSeries newIntakes;
+        cloneIntakeSeries(_intakes, newIntakes);
+
+        workers.emplace_back(std::thread([threadIndex,
+                                          _nbPatients,
+                                          &abort,
+                                          _aborter,
+                                          &_etas,
+                                          &_epsilons,
+                                          &_parameters,
+                                          newIntakes,
+                                          &_residualErrorModel,
+                                          &_times,
+                                          &_concentrations,
+                                          nbPatientsPerThread,
+                                          &_concentrationCalculator,
+                                          _recordFrom,
+                                          _recordTo,
+                                          _recordedIntakes,
+                                          &timesMutex,
+                                          &timesDefined]() {
+#else
+    // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
+    int nbThreads = 1;
+
+    unsigned int nbPatientsPerThread =
+            static_cast<unsigned int>(ceil(static_cast<double>(_nbPatients) / static_cast<double>(nbThreads)));
+
+    int threadIndex = 0;
+    IntakeSeries newIntakes;
+    cloneIntakeSeries(_intakes, newIntakes);
+#endif // MULTITHREAD_MT
+            size_t start = threadIndex * nbPatientsPerThread;
+            size_t end = std::min(static_cast<size_t>((threadIndex + 1) * nbPatientsPerThread), _nbPatients);
+
+            for (size_t patient = start; patient < end; patient++) {
+                if (!abort) {
+                    if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
+                        abort = true;
+#ifdef MULTITHREAD_MT
+                        return;
+#else  // MULTITHREAD_MT
+                break;
+#endif // MULTITHREAD_MT
+                    }
+
+
+                    // Get concentrations for each patients, allocation will be done in computeConcentrations
+                    // Be carefull with this pointer. If declared at the beginning of the thread, then
+                    // only a single computation is stored instead of (end-start)
+                    ConcentrationPredictionPtr predictionPtr;
+                    predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
+
+                    // Call to apriori becomes population as its determined earlier in the parametersExtractor
+                    ComputingStatus computingResult = _concentrationCalculator.computeConcentrations(
+                            predictionPtr,
+                            false, // fix to "false"
+                            _recordFrom,
+                            _recordTo,
+                            newIntakes,
+                            _parameters,
+                            _etas[patient],
+                            _residualErrorModel,
+                            _epsilons[patient],
+                            false);
+
+
+                    // Save the series of result of concentrations[cycle][nbPoints][patient] for each cycle
+                    if (computingResult == ComputingStatus::Ok) {
+
+                        // Save concentrations to array of [patient] for using sort() function
+                        for (size_t cycle = 0; cycle < _recordedIntakes.size(); cycle++) {
+
+                            CycleSize cyclePoints = _recordedIntakes[cycle].getNbPoints();
+
+                            // Save times only one time (when patient is equal to 0)
+                            timesMutex.lock();
+                            if (!timesDefined) {
+                                timesDefined = true;
+                                timesMutex.unlock();
+                                _times.push_back((predictionPtr->getTimes())[cycle]);
+                            }
+                            else {
+                                timesMutex.unlock();
+                            }
+
+                            for (CycleSize point = 0; point < cyclePoints; point++) {
+                                _concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
+                            }
+                        }
+                    }
+                    else {
+                        _concentrations[0][0][patient] = std::numeric_limits<double>::quiet_NaN();
+                    }
+                }
+#if 0
+                // Debugging
+                char filename[30];
+                sprintf(filename, "result%d.dat", patient);
+                predictionPtr->streamToFile(filename);
+#endif
+            }
+#ifdef MULTITHREAD_MT
+        }));
+    }
+
+    std::for_each(workers.begin(), workers.end(), [](std::thread& _t) { _t.join(); });
+#endif // MULTITHREAD_MT
+
+    //    elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
+    //    std::cout << "milliseconds for predictions calculation : " << elapsed.count( ) << '\n';
+    //    start = std::chrono::steady_clock::now();
+
+    if (abort) {
+        return ComputingStatus::Aborted;
+    }
+
+    return ComputingStatus::Ok;
+}
+#endif // CONFIG_OPENMP
 
 typedef struct
 {
