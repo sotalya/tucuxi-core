@@ -48,7 +48,7 @@ struct TestPercentileCalculator : public fructose::test_base<TestPercentileCalcu
                         Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356)));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "V",
-                0,
+                0.0,
                 std::make_unique<Tucuxi::Core::ParameterVariability>(
                         Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
         parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(

@@ -206,7 +206,7 @@ struct TestIntervalCalculator : public fructose::test_base<TestIntervalCalculato
             }
         }
 
-        fructose_assert(res == Tucuxi::Core::ComputingStatus::Ok);
+        fructose_assert_eq(res, Tucuxi::Core::ComputingStatus::Ok);
 
         res = microCalculator.calculateIntakeSinglePoint(
                 concentrations,

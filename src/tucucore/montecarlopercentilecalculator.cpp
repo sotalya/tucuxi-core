@@ -636,8 +636,6 @@ ComputingStatus AprioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
             EigenVector matrixY = rands.row(patient);
 
             // Cholesky is applied here to get correlated random deviates
-            std::vector<Etas> etaSamples;
-            std::vector<Deviations> epsilons;
             EigenVector matrixX = choleskyMatrix * matrixY;
             _etas[patient].assign(&matrixX(0), &matrixX(0) + omegaRank);
 

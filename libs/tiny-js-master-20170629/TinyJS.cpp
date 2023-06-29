@@ -137,6 +137,9 @@
 
 // support both windows and linux
 #ifndef __linux__
+
+#ifndef __APPLE__
+
 #include <windows.h>
 
 #define GETLIB(a,b) LoadLibrary(a)
@@ -145,6 +148,16 @@
 #define GETBUILDERROR "Load failed with 0x%x\n", GetLastError()
 #define FREELIB(a) FreeLibrary(a)
 #define RTLD_NOW 0
+#else
+#include <dlfcn.h>
+
+#define GETLIB(a,b) dlopen(a, b)
+#define GETSYMBOL(a,b) dlsym(a, b)
+#define LIBNAME "./jit.so"
+#define GETBUILDERROR "%s\n", dlerror()
+#define FREELIB(a) dlclose(a)
+#endif
+
 #else
 #include <dlfcn.h>
 
