@@ -303,9 +303,6 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
     unsigned int nbPatientsPerThread =
             static_cast<unsigned int>(ceil(static_cast<double>(_nbPatients) / static_cast<double>(nbThreads)));
 
-    std::mutex timesMutex;
-    bool timesDefined = false;
-
     std::vector<std::thread> workers;
     for (unsigned int threadIndex = 0; threadIndex < nbThreads; threadIndex++) {
         // Duplicate an IntakeSeries for avoid a possible problem with multi-thread
@@ -327,9 +324,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
                                           &_concentrationCalculator,
                                           _recordFrom,
                                           _recordTo,
-                                          _recordedIntakes,
-                                          &timesMutex,
-                                          &timesDefined]() {
+                                          _recordedIntakes]() {
 #else
     // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
     int nbThreads = 1;
@@ -343,6 +338,9 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
 #endif // MULTITHREAD_MT
             size_t start = threadIndex * nbPatientsPerThread;
             size_t end = std::min(static_cast<size_t>((threadIndex + 1) * nbPatientsPerThread), _nbPatients);
+
+            // We assume the thread 0 will have the opportunity to define the times, so the others do not modify it
+            bool timesDefined = (threadIndex != 0);
 
             for (size_t patient = start; patient < end; patient++) {
                 if (!abort) {
@@ -385,19 +383,17 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
                             CycleSize cyclePoints = _recordedIntakes[cycle].getNbPoints();
 
                             // Save times only one time (when patient is equal to 0)
-                            timesMutex.lock();
-                            if (!timesDefined) {
-                                timesDefined = true;
-                                timesMutex.unlock();
+                            if (!timesDefined && (threadIndex == 0)) {
                                 _times.push_back((predictionPtr->getTimes())[cycle]);
-                            }
-                            else {
-                                timesMutex.unlock();
                             }
 
                             for (CycleSize point = 0; point < cyclePoints; point++) {
                                 _concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
                             }
+                        }
+
+                        if (!timesDefined && (threadIndex == 0)) {
+                            timesDefined = true;
                         }
                     }
                     else {
