@@ -1,6 +1,12 @@
 
 DEFINES += TUCUXI_GIT_REVISION='\\"$$system(git --git-dir $$PWD/../../.git rev-parse --short HEAD)\\"'
 
+config_openmp {
+    QMAKE_CXXFLAGS += -fopenmp
+    QMAKE_LFLAGS += -fopenmp
+    DEFINES += CONFIG_OPENMP
+}
+
 HEADERS += \
     $$PWD/../../src/tucucore/cachecomputing.h \
     $$PWD/../../src/tucucore/computingutils.h \

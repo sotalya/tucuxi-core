@@ -3,6 +3,7 @@
 #ifndef CLICOMPUTER_H
 #define CLICOMPUTER_H
 
+#include <cstdint>
 #include <string>
 
 #include "tucuquery/querystatus.h"

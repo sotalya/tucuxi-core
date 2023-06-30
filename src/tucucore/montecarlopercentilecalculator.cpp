@@ -3,16 +3,18 @@
 #include <algorithm>
 #include <ctime>
 #include <mutex>
+#ifdef CONFIG_OPENMP
+#include <omp.h>
+#endif // CONFIG_OPENMP
 #include <random>
 #include <thread>
 
 #include <Eigen/Cholesky>
 
-#include "montecarlopercentilecalculator.h"
-
 #include "concentrationcalculator.h"
 #include "definitions.h"
 #include "drugmodel/activemoiety.h"
+#include "montecarlopercentilecalculator.h"
 #include "percentilesprediction.h"
 
 namespace Tucuxi {
@@ -161,6 +163,101 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
             _percentiles, _percentileRanks, nbPatients, times, recordedIntakes, concentrations);
 }
 
+#ifdef CONFIG_OPENMP
+ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
+        const DateTime& _recordFrom,
+        const DateTime& _recordTo,
+        const IntakeSeries& _intakes,
+        const ParameterSetSeries& _parameters,
+        const IResidualErrorModel& _residualErrorModel,
+        const std::vector<Etas>& _etas,
+        const std::vector<Deviations>& _epsilons,
+        IConcentrationCalculator& _concentrationCalculator,
+        size_t _nbPatients,
+        std::vector<TimeOffsets>& _times,
+        IntakeSeries& _recordedIntakes,
+        std::vector<std::vector<std::vector<Concentration> > >& _concentrations,
+        ComputingAborter* _aborter)
+{
+#define MULTITHREAD_MT
+    // auto start = std::chrono::steady_clock::now();
+
+    selectRecordedIntakes(_recordedIntakes, _intakes, _recordFrom, _recordTo);
+
+    // Set the size of vector "concentrations"
+    for (const auto& recordedIntake : _recordedIntakes) {
+        std::vector<std::vector<Concentration> > vec;
+        vec.reserve(recordedIntake.getNbPoints());
+        for (size_t point = 0; point < recordedIntake.getNbPoints(); point++) {
+            vec.push_back(std::vector<Concentration>(_nbPatients));
+        }
+        _concentrations.push_back(vec);
+    }
+
+    //    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
+    //    std::cout << "milliseconds for preparation: " << elapsed.count( ) << '\n';
+    //    start = std::chrono::steady_clock::now();
+
+#pragma omp parallel default(shared)
+    {
+        IntakeSeries newIntakes;
+        cloneIntakeSeries(_intakes, newIntakes);
+
+        bool timesDefined = omp_get_thread_num();
+
+#pragma omp for
+        for (size_t patient = 0; patient < _nbPatients; patient++) {
+            if (_aborter && _aborter->shouldAbort())
+                continue;
+            // Get concentrations for each patient, allocation will be done in computeConcentrations
+            // Be careful with this pointer. If declared at the beginning of the thread, then
+            // only a single computation is stored instead of (end-start)
+            ConcentrationPredictionPtr predictionPtr;
+            predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
+
+            // Call to apriori becomes population as its determined earlier in the parametersExtractor
+            ComputingStatus computingResult = _concentrationCalculator.computeConcentrations(
+                    predictionPtr,
+                    false, // fix to "false"
+                    _recordFrom,
+                    _recordTo,
+                    newIntakes,
+                    _parameters,
+                    _etas[patient],
+                    _residualErrorModel,
+                    _epsilons[patient],
+                    false);
+
+            // Save the series of result of concentrations[cycle][nbPoints][patient] for each cycle
+            if (computingResult != ComputingStatus::Ok) {
+                _concentrations[0][0][patient] = std::numeric_limits<double>::quiet_NaN();
+                continue;
+            }
+
+            // Save times only one time (when patient is equal to 0)
+            if (!timesDefined && _recordedIntakes.size() > 0) {
+                _times.push_back((predictionPtr->getTimes())[0]);
+                timesDefined = true;
+            }
+
+            // Save concentrations to array of [patient] for using sort() function
+            const size_t intakeSize = _recordedIntakes.size();
+            for (size_t cycle = 0; cycle < intakeSize; cycle++) {
+                const CycleSize cyclePoints = _recordedIntakes[cycle].getNbPoints();
+                for (CycleSize point = 0; point < cyclePoints; point++) {
+                    _concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
+                }
+            }
+        }
+    }
+
+    if (_aborter && _aborter->shouldAbort())
+        return ComputingStatus::Aborted;
+
+    return ComputingStatus::Ok;
+}
+
+#else // CONFIG_OPENMP
 
 ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
         const DateTime& _recordFrom,
@@ -207,9 +304,6 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
     unsigned int nbPatientsPerThread =
             static_cast<unsigned int>(ceil(static_cast<double>(_nbPatients) / static_cast<double>(nbThreads)));
 
-    std::mutex timesMutex;
-    bool timesDefined = false;
-
     std::vector<std::thread> workers;
     for (unsigned int threadIndex = 0; threadIndex < nbThreads; threadIndex++) {
         // Duplicate an IntakeSeries for avoid a possible problem with multi-thread
@@ -225,15 +319,12 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
                                           &_parameters,
                                           newIntakes,
                                           &_residualErrorModel,
-                                          &_times,
                                           &_concentrations,
                                           nbPatientsPerThread,
                                           &_concentrationCalculator,
                                           _recordFrom,
                                           _recordTo,
-                                          _recordedIntakes,
-                                          &timesMutex,
-                                          &timesDefined]() {
+                                          _recordedIntakes]() {
 #else
     // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
     int nbThreads = 1;
@@ -288,17 +379,6 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
 
                             CycleSize cyclePoints = _recordedIntakes[cycle].getNbPoints();
 
-                            // Save times only one time (when patient is equal to 0)
-                            timesMutex.lock();
-                            if (!timesDefined) {
-                                timesDefined = true;
-                                timesMutex.unlock();
-                                _times.push_back((predictionPtr->getTimes())[cycle]);
-                            }
-                            else {
-                                timesMutex.unlock();
-                            }
-
                             for (CycleSize point = 0; point < cyclePoints; point++) {
                                 _concentrations[cycle][point][patient] = (predictionPtr->getValues())[cycle][point];
                             }
@@ -319,6 +399,36 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
         }));
     }
 
+    {
+        ConcentrationPredictionPtr predictionPtr;
+        predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
+        Etas etas(_etas[0].size(), 0.0);
+        Deviations epsilons(_epsilons[0].size(), 0.0);
+        // Call to apriori just to get the times
+        ComputingStatus computingResult = _concentrationCalculator.computeConcentrations(
+                predictionPtr,
+                false, // fix to "false"
+                _recordFrom,
+                _recordTo,
+                _intakes,
+                _parameters,
+                etas,
+                _residualErrorModel,
+                epsilons,
+                false);
+
+        // Save the series of result of concentrations[cycle][nbPoints][patient] for each cycle
+        if (computingResult == ComputingStatus::Ok) {
+            for (size_t cycle = 0; cycle < _recordedIntakes.size(); cycle++) {
+                _times.push_back((predictionPtr->getTimes())[cycle]);
+            }
+        }
+    }
+
+
+
+
+
     std::for_each(workers.begin(), workers.end(), [](std::thread& _t) { _t.join(); });
 #endif // MULTITHREAD_MT
 
@@ -332,6 +442,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
 
     return ComputingStatus::Ok;
 }
+#endif // CONFIG_OPENMP
 
 typedef struct
 {
@@ -713,8 +824,6 @@ ComputingStatus AprioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
             EigenVector matrixY = rands.row(patient);
 
             // Cholesky is applied here to get correlated random deviates
-            std::vector<Etas> etaSamples;
-            std::vector<Deviations> epsilons;
             EigenVector matrixX = choleskyMatrix * matrixY;
             _etas[patient].assign(&matrixX(0), &matrixX(0) + omegaRank);
 

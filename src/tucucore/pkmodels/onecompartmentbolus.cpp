@@ -36,7 +36,7 @@ bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_V = _parameters.getValue(ParameterId::V);
     m_Ke = _parameters.getValue(ParameterId::Ke);
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
-    m_Int = static_cast<int>((_intakeEvent.getInterval()).toHours());
+    m_Int = (_intakeEvent.getInterval()).toHours();
 
 #ifdef DEBUG
     Tucuxi::Common::LoggerHelper logHelper;

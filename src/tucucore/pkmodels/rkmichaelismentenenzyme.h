@@ -44,16 +44,25 @@ public:
         //auto cp = c0 / m_V;
         // We get concentration 0 in mg/l instead of ug/l
         //        auto cp = _c[0] / 1000.0;
-        auto cp = _c[0];
-        _dcdt[0] = m_Ka * _c[1] - m_Vmax * cp * m_AllmCL / (m_Km + cp) * _c[2]; // / m_V;
+
+        // Store local variables to avoid multiple access to the same memory
+        auto c0 = _c[0];
+        auto c1 = _c[1];
+        auto c2 = _c[2];
+        auto kaC1 = m_Ka * c1;
+        auto den0 = 1 / (m_Km + c0);
         auto ktt = m_ktr * _t;
+        auto den2 = 1 / (m_ECmid + c0);
+
+        // Compute the derivatives with simplified expressions
+        _dcdt[0] = kaC1 - m_Vmax * c0 * m_AllmCL * c2 * den0; // / m_V;
         if (m_MTT == 0.0) {
-            _dcdt[1] = -m_Ka * _c[1];
+            _dcdt[1] = -kaC1;
         }
         else {
-            _dcdt[1] = -m_Ka * _c[1] + std::exp(m_cumul + m_NN * std::log(ktt) - ktt);
+            _dcdt[1] = -kaC1 + fastExpApproximation(std::fma(m_NN, std::log(ktt), m_cumul - ktt));
         }
-        _dcdt[2] = m_Kenz * (1 + m_Emax * cp / (m_ECmid + cp)) - m_Kenz * _c[2];
+        _dcdt[2] = m_Kenz * (1 - c2 + (c0 * m_Emax * den2));
 
         // Here we modify the derivative on the central compartment, in order
         // to consider it in ug/l     (1000.0 for ug, and /m_V for concentration)
@@ -78,6 +87,13 @@ public:
     {
         FINAL_UNUSED_PARAMETER(_t);
         FINAL_UNUSED_PARAMETER(_concentrations);
+    }
+
+    // Fast exp approximation
+    inline double fastExpApproximation(double _x)
+    {
+        constexpr double log2e = 1.4426950408889634; // log2(e)
+        return std::exp2(_x * log2e);
     }
 
 protected:
