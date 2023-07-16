@@ -20,6 +20,8 @@ struct TestUnit : public fructose::test_base<TestUnit>
         // clang-format off
         vector<string> weightUnits
         {
+            "ng",
+            "µg",
             "ug",
             "mg",
             "g",
@@ -54,10 +56,23 @@ struct TestUnit : public fructose::test_base<TestUnit>
         {
             "g/l",
             "mg/l",
+            "µg/l",
             "ug/l",
+            "ng/l",
+            "g/dl",
+            "mg/dl",
+            "µg/dl",
+            "ug/dl",
+            "ng/dl",
+            "mg/cl",
+            "µg/cl",
+            "ug/cl",
+            "ng/cl",
             "g/ml",
             "mg/ml",
-            "ug/ml"
+            "µg/ml",
+            "ug/ml",
+            "ng/ml"
         };
 
         vector<string> concentrationTimeUnits
@@ -97,6 +112,7 @@ struct TestUnit : public fructose::test_base<TestUnit>
             "mmol/l",
             "umol/l",
             "µmol/l",
+            "µmol/l",
             "µmol/L",
             "mol/ml",
             "mmol/ml",
@@ -106,9 +122,14 @@ struct TestUnit : public fructose::test_base<TestUnit>
 
         vector<string> molarMass
         {
-            "g/mol",
-            "g/umol",
             "kg/mol",
+            "g/mol",
+            "mg/mol",
+            "ug/mol",
+            "µg/mol",
+            "ug/umol",
+            "µg/umol",
+            "g/umol",
             "kg/umol"
         };
 
@@ -160,7 +181,7 @@ private:
 
         Tucuxi::Core::Value value = 1.0;
 
-        for (const auto unit : _temperatureUnits) {
+        for (const auto& unit : _temperatureUnits) {
             fructose_assert_eq(unitManager.isKnown(unit), true);
         }
 
@@ -181,7 +202,7 @@ private:
 
         Tucuxi::Core::Value value = 1.0;
 
-        for (const auto unit : _noUnits) {
+        for (const auto& unit : _noUnits) {
             fructose_assert_eq(unitManager.isKnown(unit), true);
         }
 
@@ -219,7 +240,7 @@ private:
 
         Tucuxi::Core::Value value = 20.0;
 
-        for (const auto unit : _weightUnits) {
+        for (const auto& unit : _weightUnits) {
             fructose_assert_eq(unitManager.isKnown(unit), true);
         }
 
@@ -290,6 +311,27 @@ private:
                 unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Weight>(
                         value, Tucuxi::Common::TucuUnit("kg"), Tucuxi::Common::TucuUnit("kg")),
                 20.0);
+
+        // The following tests are testing units added later. It is sufficient to convert to the
+        // base unit g
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Weight>(
+                        value, Tucuxi::Common::TucuUnit("ng"), Tucuxi::Common::TucuUnit("g")),
+                0.00000002);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Weight>(
+                        value, Tucuxi::Common::TucuUnit("g"), Tucuxi::Common::TucuUnit("ng")),
+                20000000000.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Weight>(
+                        value, Tucuxi::Common::TucuUnit("µg"), Tucuxi::Common::TucuUnit("g")),
+                0.00002);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Weight>(
+                        value, Tucuxi::Common::TucuUnit("g"), Tucuxi::Common::TucuUnit("µg")),
+                20000000.0);
     }
 
     void testHeight(vector<string>& _lengthUnits)
@@ -299,7 +341,7 @@ private:
 
         Tucuxi::Core::Value value = 20.0;
 
-        for (const auto unit : _lengthUnits) {
+        for (const auto& unit : _lengthUnits) {
             fructose_assert_eq(unitManager.isKnown(unit), true);
         }
 
@@ -379,7 +421,7 @@ private:
 
         Tucuxi::Core::Value value = 1.0;
 
-        for (const auto unit : _timeUnits) {
+        for (const auto& unit : _timeUnits) {
             fructose_assert_eq(unitManager.isKnown(unit), true);
         }
 
@@ -626,7 +668,7 @@ private:
 
         Tucuxi::Core::Value value = 1.0;
 
-        for (const auto unit : _concentrationUnits) {
+        for (const auto& unit : _concentrationUnits) {
             fructose_assert_eq(unitManager.isKnown(unit), true);
         }
 
@@ -779,6 +821,117 @@ private:
                 unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
                         value, Tucuxi::Common::TucuUnit("ug/ml"), Tucuxi::Common::TucuUnit("ug/ml")),
                 1.0);
+
+        // The following tests are testing units added later. It is sufficient to convert to the
+        // base unit g/l
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("µg/l"), Tucuxi::Common::TucuUnit("g/l")),
+                0.000001);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("g/l"), Tucuxi::Common::TucuUnit("µg/l")),
+                1000000.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("ng/l"), Tucuxi::Common::TucuUnit("g/l")),
+                0.000000001);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("g/l"), Tucuxi::Common::TucuUnit("ng/l")),
+                1000000000.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("g/dl"), Tucuxi::Common::TucuUnit("g/l")),
+                10.0);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("g/l"), Tucuxi::Common::TucuUnit("g/dl")),
+                0.1);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("µg/dl"), Tucuxi::Common::TucuUnit("g/l")),
+                0.00001);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("g/l"), Tucuxi::Common::TucuUnit("µg/dl")),
+                100000.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("ug/dl"), Tucuxi::Common::TucuUnit("g/l")),
+                0.00001);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("g/l"), Tucuxi::Common::TucuUnit("ug/dl")),
+                100000.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("ng/dl"), Tucuxi::Common::TucuUnit("g/l")),
+                0.00000001);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("g/l"), Tucuxi::Common::TucuUnit("ng/dl")),
+                100000000.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("mg/cl"), Tucuxi::Common::TucuUnit("g/l")),
+                0.1);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("g/l"), Tucuxi::Common::TucuUnit("mg/cl")),
+                10.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("µg/cl"), Tucuxi::Common::TucuUnit("g/l")),
+                0.0001);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("g/l"), Tucuxi::Common::TucuUnit("µg/cl")),
+                10000.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("ug/cl"), Tucuxi::Common::TucuUnit("g/l")),
+                0.0001);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("g/l"), Tucuxi::Common::TucuUnit("ug/cl")),
+                10000.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("ng/cl"), Tucuxi::Common::TucuUnit("g/l")),
+                0.0000001);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("g/l"), Tucuxi::Common::TucuUnit("ng/cl")),
+                10000000.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("µg/ml"), Tucuxi::Common::TucuUnit("g/l")),
+                0.001);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("g/l"), Tucuxi::Common::TucuUnit("µg/ml")),
+                1000.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("ng/ml"), Tucuxi::Common::TucuUnit("g/l")),
+                0.000001);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
+                        value, Tucuxi::Common::TucuUnit("g/l"), Tucuxi::Common::TucuUnit("ng/ml")),
+                1000000.0);
     }
 
     void testConcentrationTime(vector<string>& _concentrationTimeUnits)
@@ -788,7 +941,7 @@ private:
 
         Tucuxi::Core::Value value = 1.0;
 
-        for (const auto unit : _concentrationTimeUnits) {
+        for (const auto& unit : _concentrationTimeUnits) {
             fructose_assert_eq(unitManager.isKnown(unit), true);
         }
 
@@ -3128,7 +3281,7 @@ private:
 
         Tucuxi::Core::Value value = 1.0;
 
-        for (const auto unit : _concentrationMoleUnits) {
+        for (const auto& unit : _concentrationMoleUnits) {
             fructose_assert_eq(unitManager.isKnown(unit), true);
         }
 
@@ -3473,7 +3626,7 @@ private:
 
         Tucuxi::Core::Value value = 1.0;
 
-        for (const auto unit : _molarMass) {
+        for (const auto& unit : _molarMass) {
             fructose_assert_eq(unitManager.isKnown(unit), true);
         }
 
@@ -3544,6 +3697,63 @@ private:
                 unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::MolarMass>(
                         value, Tucuxi::Common::TucuUnit("kg/umol"), Tucuxi::Common::TucuUnit("kg/umol")),
                 1.0);
+
+        // The following tests are testing units added later. It is sufficient to convert to the
+        // base unit g/mol
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::MolarMass>(
+                        value, Tucuxi::Common::TucuUnit("mg/mol"), Tucuxi::Common::TucuUnit("g/mol")),
+                0.001);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::MolarMass>(
+                        value, Tucuxi::Common::TucuUnit("g/mol"), Tucuxi::Common::TucuUnit("mg/mol")),
+                1000.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::MolarMass>(
+                        value, Tucuxi::Common::TucuUnit("ug/mol"), Tucuxi::Common::TucuUnit("g/mol")),
+                0.000001);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::MolarMass>(
+                        value, Tucuxi::Common::TucuUnit("g/mol"), Tucuxi::Common::TucuUnit("ug/mol")),
+                1000000.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::MolarMass>(
+                        value, Tucuxi::Common::TucuUnit("µg/mol"), Tucuxi::Common::TucuUnit("g/mol")),
+                0.000001);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::MolarMass>(
+                        value, Tucuxi::Common::TucuUnit("g/mol"), Tucuxi::Common::TucuUnit("µg/mol")),
+                1000000.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::MolarMass>(
+                        value, Tucuxi::Common::TucuUnit("ug/umol"), Tucuxi::Common::TucuUnit("g/mol")),
+                1.0);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::MolarMass>(
+                        value, Tucuxi::Common::TucuUnit("g/mol"), Tucuxi::Common::TucuUnit("ug/umol")),
+                1.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::MolarMass>(
+                        value, Tucuxi::Common::TucuUnit("µg/umol"), Tucuxi::Common::TucuUnit("g/mol")),
+                1.0);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::MolarMass>(
+                        value, Tucuxi::Common::TucuUnit("g/mol"), Tucuxi::Common::TucuUnit("µg/umol")),
+                1.0);
+
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::MolarMass>(
+                        value, Tucuxi::Common::TucuUnit("mg/umol"), Tucuxi::Common::TucuUnit("g/mol")),
+                1000.0);
+        fructose_assert_double_eq(
+                unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::MolarMass>(
+                        value, Tucuxi::Common::TucuUnit("g/mol"), Tucuxi::Common::TucuUnit("mg/umol")),
+                0.001);
     }
 
     void testFlowRate(vector<string>& _flowRate)
@@ -3553,7 +3763,7 @@ private:
 
         Tucuxi::Core::Value value = 1.0;
 
-        for (const auto unit : _flowRate) {
+        for (const auto& unit : _flowRate) {
             fructose_assert_eq(unitManager.isKnown(unit), true);
         }
 

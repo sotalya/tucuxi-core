@@ -488,7 +488,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
 
         if (result != ComputingStatus::Ok) {
             return {false,
-                    "A prediction calculation based on the halflife and the multiplier went wrong. Please check these values."};
+                    "A prediction calculation based on the halflife and the multiplier went wrong. There is an issue within the drug model that I can not easily spot.\nPlease check the operations (the soft functions used for PK parameters for instance)."};
         }
 
         const ComputedData* responseData = response->getData();
@@ -544,7 +544,7 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
 
                 if (result != ComputingStatus::Ok) {
                     return {false,
-                            "A prediction calculation based on the halflife and the multiplier went wrong. Please check these values."};
+                            "A prediction calculation based on the halflife and the multiplier went wrong. There is an issue within the drug model that I can not easily spot.\nPlease check the operations (the soft functions used for PK parameters for instance)."};
                 }
 
                 auto responseData = response->getData();

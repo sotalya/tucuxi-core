@@ -62,7 +62,10 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
                 {"Kg", 1000.0},
                 {"g", 1.0},
                 {"mg", 0.001},
-                {"ug", 0.000001}
+                {"ug", 0.000001},
+
+                {"µg", 0.000001},
+                {"ng", 0.000000001}
             }
         },
         {
@@ -71,7 +74,14 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
                 {"g/mol", 1.0},
                 {"g/umol", 1000000.0},
                 {"kg/mol", 1000.0},
-                {"kg/umol", 1000000000.0}
+                {"kg/umol", 1000000000.0},
+
+            {"mg/mol", 0.001},
+            {"ug/mol", 0.000001},
+            {"µg/mol", 0.000001},
+            {"mg/umol", 1000.0},
+            {"ug/umol", 1.0},
+            {"µg/umol", 1.0}
             }
         },
         {
@@ -83,7 +93,21 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
                 {"ug/l", 0.000001},
                 {"g/ml", 1000},
                 {"mg/ml", 1.0},
-                {"ug/ml", 0.001}
+                {"ug/ml", 0.001},
+
+
+                {"µg/l", 0.000001},
+                {"ng/l", 0.000000001},
+                {"g/dl", 10.0},
+                {"µg/dl", 0.00001},
+                {"ug/dl", 0.00001},
+                {"ng/dl", 0.00000001},
+                {"mg/cl", 0.1},
+                {"µg/cl", 0.0001},
+                {"ug/cl", 0.0001},
+                {"ng/cl", 0.0000001},
+                {"µg/ml", 0.001},
+                {"ng/ml", 0.000001}
 
             }
         },
