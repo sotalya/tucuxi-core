@@ -11,6 +11,15 @@ win32 {
     QMAKE_CXXFLAGS += -bigobj
 }
 
+config_coverage {
+    QMAKE_CXXFLAGS += --coverage
+    QMAKE_CXXFLAGS += -O0
+    QMAKE_LFLAGS += --coverage
+    # After executing the tests, do:
+    # gcovr . -r ../../../../../src/ -r ../../../../../src/ --html report.html
+    # lcov --no-external --capture --directory . --base-directory ../../../../../src/ --output-file report.info
+}
+
 
 include(../general.pri)
 include(../tucucommon.pri)
