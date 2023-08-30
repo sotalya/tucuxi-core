@@ -51,10 +51,7 @@ bool OperableGraphManager::getValue(const std::string& _name, double& _value) co
 
 bool OperableGraphManager::isInputPresent(const std::string& _name) const
 {
-    if (m_operableInputs.find(_name) != m_operableInputs.end()) {
-        return true;
-    }
-    return false;
+    return (m_operableInputs.find(_name) != m_operableInputs.end());
 }
 
 

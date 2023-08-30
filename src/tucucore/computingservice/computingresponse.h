@@ -193,9 +193,9 @@ class SinglePredictionData : public ComputedData, public ConcentrationData
 public:
     SinglePredictionData(RequestResponseId _id) : ComputedData(std::move(_id)) {}
 
-    void setLogLikelihood(Value value)
+    void setLogLikelihood(Value _value)
     {
-        m_logLikelihood = value;
+        m_logLikelihood = _value;
     }
     Value getLogLikelihood() const
     {
