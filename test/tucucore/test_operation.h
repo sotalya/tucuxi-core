@@ -109,7 +109,8 @@ struct TestOperation : public fructose::test_base<TestOperation>
         fructose_assert(rc == true);
         fructose_assert(value2 == 433);
         b2 = true;
-        d2 = 3.23;
+        // Commented, related to the comments 4 lines below
+        // d2 = 3.23;
         fructose_assert(o2.setValue(b2) == false);
 
         // This next test was OK when a setValue(double) into an integer was not authorized.
