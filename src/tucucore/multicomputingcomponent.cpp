@@ -493,6 +493,7 @@ ComputingStatus MultiComputingComponent::compute(
             ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
                     etas[analyteGroupId],
                     _request,
+                    _traits->getComputingOption().getParametersType(),
                     analyteGroupId,
                     intakeSeries[analyteGroupId],
                     parameterSeries[analyteGroupId],
@@ -793,6 +794,7 @@ ComputingStatus MultiComputingComponent::compute(
             ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
                     etas,
                     _request,
+                    _traits->getComputingOption().getParametersType(),
                     analyteGroupId,
                     intakeSeries[analyteGroupId],
                     parameterSeries[analyteGroupId],

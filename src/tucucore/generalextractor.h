@@ -37,6 +37,7 @@ public:
     ComputingStatus extractAposterioriEtas(
             Etas& _etas,
             const ComputingRequest& _request,
+            PredictionParameterType _parameterType,
             const AnalyteGroupId& _analyteGroupId,
             const IntakeSeries& _intakeSeries,
             const ParameterSetSeries& _parameterSeries,

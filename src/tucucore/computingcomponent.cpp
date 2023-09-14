@@ -287,6 +287,7 @@ ComputingStatus ComputingComponent::compute(
             ComputingStatus extractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
                     etas,
                     _request,
+                    _traits->getComputingOption().getParametersType(),
                     analyteGroupId,
                     intakeSeries[analyteGroupId],
                     parameterSeries[analyteGroupId],
@@ -502,6 +503,7 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
             ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
                     etas[analyteGroupId],
                     _request,
+                    _traits->getComputingOption().getParametersType(),
                     analyteGroupId,
                     intakeSeries[analyteGroupId],
                     parameterSeries[analyteGroupId],
@@ -688,6 +690,7 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
         ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
                 etas,
                 _request,
+                _traits->getComputingOption().getParametersType(),
                 analyteGroupId,
                 intakeSeries[analyteGroupId],
                 parameterSeries[analyteGroupId],
@@ -971,6 +974,7 @@ ComputingStatus ComputingComponent::compute(
             ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
                     etas,
                     _request,
+                    _traits->getComputingOption().getParametersType(),
                     analyteGroupId,
                     intakeSeries[analyteGroupId],
                     parameterSeries[analyteGroupId],

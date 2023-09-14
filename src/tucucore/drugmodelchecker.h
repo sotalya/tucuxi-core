@@ -21,8 +21,7 @@ public:
     {
         bool m_ok;
         std::string m_errorMessage;
-    }
-    CheckerResult_t;
+    } CheckerResult_t;
 
     DrugModelChecker();
 

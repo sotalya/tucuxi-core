@@ -407,6 +407,7 @@ ComputingStatus MultiComputingAdjustments::compute(
                 ComputingStatus aposterioriEtasExtractionResult = m_utils->m_generalExtractor->extractAposterioriEtas(
                         etas[analyteGroupId],
                         _request,
+                        _traits->getComputingOption().getParametersType(),
                         analyteGroupId,
                         intakeSeries[analyteGroupId],
                         parameterSeries[analyteGroupId],

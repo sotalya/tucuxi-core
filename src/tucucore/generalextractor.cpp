@@ -48,6 +48,7 @@ Duration GeneralExtractor::secureStartDuration(const HalfLife& _halfLife)
 ComputingStatus GeneralExtractor::extractAposterioriEtas(
         Etas& _etas,
         const ComputingRequest& _request,
+        PredictionParameterType _parameterType,
         const AnalyteGroupId& _analyteGroupId,
         const IntakeSeries& _intakeSeries,
         const ParameterSetSeries& _parameterSeries,
@@ -67,13 +68,34 @@ ComputingStatus GeneralExtractor::extractAposterioriEtas(
         return omegaComputingResult;
     }
 
+
+    Tucuxi::Common::DateTime firstEvent = _calculationStartTime;
+    Tucuxi::Common::DateTime lastEvent = _endTime;
+    const auto& samples = _request.getDrugTreatment().getSamples();
+
+    if ((_parameterType == PredictionParameterType::Aposteriori) && (!samples.empty())) {
+        for (const auto& sample : samples) {
+            if (sample->getDate() < firstEvent) {
+                firstEvent = sample->getDate();
+            }
+            if (sample->getDate() > lastEvent) {
+                lastEvent = sample->getDate();
+            }
+        }
+    }
+
+    if (lastEvent != _endTime) {
+        // It means there is a sample after the end
+        lastEvent = lastEvent + Duration(24h);
+    }
+
     SampleSeries sampleSeries;
     SampleExtractor sampleExtractor;
     ComputingStatus sampleExtractionResult = sampleExtractor.extract(
             _request.getDrugTreatment().getSamples(),
             _request.getDrugModel().getAnalyteSet(_analyteGroupId),
-            _calculationStartTime,
-            _endTime,
+            firstEvent,
+            lastEvent,
             _request.getDrugModel().getAnalyteSet(_analyteGroupId)->getConcentrationUnit(),
             sampleSeries);
 

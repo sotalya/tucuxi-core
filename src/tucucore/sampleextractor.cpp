@@ -38,7 +38,8 @@ ComputingStatus SampleExtractor::extract(
     }
     for (const auto& sample : _samples) {
         if (contains(potentialAnalyteIds, sample->getAnalyteID())) {
-            if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
+            if ((sample->getDate() >= _start) && (sample->getDate() <= _end)) {
+                //if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
                 TUCU_TRY
                 {
                     _series.push_back(SampleEvent(
@@ -85,7 +86,8 @@ ComputingStatus SampleExtractor::extract(
     int nbRelevantSamples = 0;
     AnalyteId singleAnalyte = AnalyteId("");
     for (const auto& sample : _samples) {
-        if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
+        if ((sample->getDate() >= _start) && (sample->getDate() <= _end)) {
+            //    if ((sample->getDate() > _start) && (sample->getDate() < _end)) {
             TUCU_TRY
             {
                 _series.push_back(SampleEvent(

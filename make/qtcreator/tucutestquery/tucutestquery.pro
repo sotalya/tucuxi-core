@@ -40,7 +40,8 @@ config_coverage {
 
 
 HEADERS += \
-    ../../../test/tucuquery/test_dosageimportexport.h
+    ../../../test/tucuquery/test_dosageimportexport.h \
+    ../../../test/tucuquery/test_query1comp.h
 
 SOURCES += \
     ../../../test/tucuquery/tests.cpp
