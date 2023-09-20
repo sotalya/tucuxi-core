@@ -42,7 +42,7 @@ endif
 ## ---------------------------------------------------------------
 ## Windows rules
 ##
-ifeq ($(TARGET), VS2015)
+ifeq ($(TARGET), WINDOWS)
 MKDIR := mkdir
 DEL := del /Q
 COPY := copy /Y /V

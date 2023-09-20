@@ -1,4 +1,3 @@
-
 ## ----------------------------------------------------------------------------
 ##
 ## TucuMath Makefile
@@ -13,7 +12,7 @@ ifeq ($(TARGET), LINUX)
 include SourceLinux.mak
 endif
 
-ifeq ($(TARGET), VS2015)
+ifeq ($(TARGET), WINDOWS)
 include SourceWin.mak
 endif
 
@@ -36,3 +35,4 @@ prebuild:
 	$(DEL) Makefile
 	$(COPY) makefile.tmp makefile
 	$(DEL) makefile.tmp
+
