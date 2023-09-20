@@ -229,7 +229,7 @@ struct TestMultiConcentrationCalculator : public fructose::test_base<TestMultiCo
 
             // Only works for linear elimination, so do not perform that for some classes
             if (!(typeid(CalculatorClass) == typeid(ConstantEliminationBolus)
-                  or typeid(CalculatorClass) == typeid(MultiConstantEliminationBolus))) {
+                  || typeid(CalculatorClass) == typeid(MultiConstantEliminationBolus))) {
                 for (size_t cycle = 0; cycle < nbCycles; cycle++) {
                     MultiCompConcentrations concentration2 = predictionPtr->getValues()[cycle];
                     for (CycleSize i = 0; i < _nbPoints - 1; i++) {
