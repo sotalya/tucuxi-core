@@ -1,5 +1,8 @@
-
 @echo off
+
+REM get current location to return to path where script got launched
+set mypath=%cd%
+
 
 REM Handle command line arguments
 set MakeCmd=
@@ -42,14 +45,14 @@ for %%i in (tucucommon tucucore tucucli tucuvalidator tuculicense) do (
   echo *********************************************
   echo *** Compiling %%i
   cd "%TUCUXI_ROOT%\Src\%%i"
-  %MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\src\%%i\makefile" %MakeCmd%
+  %MAKE% TARGET=WINDOWS -f "%TUCUXI_ROOT%\src\%%i\makefile" %MakeCmd%
 )
 
 for %%i in (tucucommon tucucore) do (
   echo *********************************************
   echo *** Compiling %%i
   cd "%TUCUXI_ROOT%\Test\%%i"
-  %MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\test\%%i\makefile" %MakeCmd%
+  %MAKE% TARGET=WINDOWS -f "%TUCUXI_ROOT%\test\%%i\makefile" %MakeCmd%
 )
 
 if "%BuildDoc%" == "1" (
@@ -57,3 +60,5 @@ if "%BuildDoc%" == "1" (
   echo *** Generating documentation
   doxygen "%TUCUXI_ROOT%\src\doxyfile"
 )
+
+cd %mypath%

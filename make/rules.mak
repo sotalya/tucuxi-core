@@ -42,7 +42,7 @@ endif
 ## ---------------------------------------------------------------
 ## Windows rules
 ##
-ifeq ($(TARGET), VS2015)
+ifeq ($(TARGET), WINDOWS)
 MKDIR := mkdir
 DEL := del /Q
 COPY := copy /Y /V
@@ -51,6 +51,6 @@ RMDIR := rmdir /Q /S
 IFEXIST := if exist
 THEN := 
 ENDIF :=
-include $(TUCUXI_ROOT)/make/vs2015rules.mak
+include $(TUCUXI_ROOT)/make/windowsrules.mak
 endif
 

@@ -26,7 +26,7 @@ _WINLIBS := "$(WindowsSdkDir)Lib\$(WindowsSDKVersion)um\x64\advapi32.lib" \
 ## ---------------------------------------------------------------
 ## Build flags.
 ##
-CCFLAG :=  -Os -c -Oy -EHsc -nologo $(_INCLUDES) $(_DEFINES)
+CCFLAG :=  -Os -c -Oy -EHsc -nologo /DUNICODE /DWIN32 $(_INCLUDES) $(_DEFINES)
 ASFLAG := -W $(_INCLUDES)
 LDFLAG_APP := -nologo -MD -Fmobjs\$(NAME).map
 LDFLAG_DLL := -nologo -LD -MD -Fmobjs\$(NAME).map
