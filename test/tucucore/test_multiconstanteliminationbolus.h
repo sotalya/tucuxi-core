@@ -218,7 +218,7 @@ struct TestMultiConstantEliminationBolus : public fructose::test_base<TestMultiC
 
             // Only works for linear elimination, so do not perform that for some classes
             if (!(typeid(CalculatorClass) == typeid(ConstantEliminationBolus)
-                  or typeid(CalculatorClass) == typeid(MultiConstantEliminationBolus))) {
+                  || typeid(CalculatorClass) == typeid(MultiConstantEliminationBolus))) {
                 for (size_t cycle = 0; cycle < nbCycles; cycle++) {
                     Tucuxi::Core::Concentrations concentration2;
                     concentration2 = predictionPtr->getValues()[cycle];

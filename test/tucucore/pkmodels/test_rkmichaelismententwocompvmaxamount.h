@@ -186,7 +186,8 @@ static const std::string test_mm_2comp_vmaxamount_tdd = R"(
                                                                           <comments>
                                                                               <comment lang='en'>None</comment>
                                                                           </comments>
-                                                                      </covariate>
+                                                                      </covariate>)"
+                                                          R"(
                                                                       <covariate>
                                                                           <covariateId>InducerSt</covariateId>
                                                                           <covariateName>
@@ -362,7 +363,8 @@ static const std::string test_mm_2comp_vmaxamount_tdd = R"(
                                                                               </target>
                                                                           </targets>
                                                                       </activeMoiety>
-                                                                  </activeMoieties>
+                                                                  </activeMoieties>)"
+                                                          R"(
                                                                   <analyteGroups>
                                                                       <analyteGroup>
                                                                           <groupId>voriconazole</groupId>
@@ -489,7 +491,8 @@ static const std::string test_mm_2comp_vmaxamount_tdd = R"(
                                                                                           <comments/>
                                                                                       </validation>
                                                                                       <comments/>
-                                                                                  </parameter>
+                                                                                  </parameter>)"
+                                                          R"(
                                                                                   <parameter>
                                                                                       <parameterId>V1</parameterId>
                                                                                       <unit>l</unit>
@@ -647,7 +650,8 @@ static const std::string test_mm_2comp_vmaxamount_tdd = R"(
                                                                         <value>12</value>
                                                                         <value>24</value>
                                                                     </fixedValues>
-                                                                </availableIntervals>
+                                                                </availableIntervals>)"
+                                                        R"(
                                                                 <availableInfusions>
                                                                     <unit>min</unit>
                                                                     <default>
@@ -801,7 +805,8 @@ static const std::string test_mm_2comp_vmaxamount_tdd = R"(
                                                                                                   <stdDevs>
                                                                                                       <stdDev>0.367</stdDev>
                                                                                                   </stdDevs>
-                                                                                              </bsv>
+                                                                                              </bsv>)"
+                                                        R"(
                                                                                               <validation>
                                                                                                   <errorMessage>
                                                                                                       <text lang='fr'>NA</text>
