@@ -24,20 +24,33 @@ FOR %%a IN (%*) do (
   )
 )
 
+if not exist ..\bin\ (
+  mkdir ..\bin
+)
+
 if not defined VisualStudioVersion (
   echo *********************************************
   echo *** Running vcvarsall.bat
-  call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
+  call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
 )
 
-set MAKE="C:\Program Files (x86)\GnuWin32\bin\make"
+set MAKE="C:\Qt\Tools\mingw810_64\bin\mingw32-make.exe"
 
 if "%BuildLibs%" == "1" (
-  for %%i in (tiny-js-master-20170629 botan-2.1.0) do (
+  for %%i in (tiny-js-master-20170629 botan-2.19.3) do (
     echo *********************************************
     echo *** Compiling %%i
     cd "%TUCUXI_ROOT%\libs\%%i"
-    %MAKE% TARGET=VS2015 -f "%TUCUXI_ROOT%\libs\%%i\makefile" %MakeCmd%
+    %MAKE% TARGET=WINDOWS -f "%TUCUXI_ROOT%\libs\%%i\makefile" %MakeCmd%
+  )
+)
+
+if "%BuildLibs%" == "1" (
+  for %%i in () do (
+    echo *********************************************
+    echo *** Compiling %%i
+    cd "C:\Users\admin\Documents\Tucuxi\botan"
+    %MAKE% TARGET=WINDOWS -f "C:\Users\admin\Documents\Tucuxi\botan\makefile" %MakeCmd%
   )
 )
 

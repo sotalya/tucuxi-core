@@ -33,10 +33,10 @@ win32 {
         INCLUDEPATH += C:\Botan\Botan2-64\include\botan-2
     }
     else {
-        INCLUDEPATH +=  $$PWD/../../libs/botan-2.1.0/build/include/ \
+        INCLUDEPATH +=  $$PWD/../../libs/botan-2.19.3/build/include/ \
     }
 }
 else {
-    INCLUDEPATH +=  $$PWD/../../libs/botan-2.1.0/build/include/ \
+    INCLUDEPATH +=  $$PWD/../../libs/botan-2.19.3/build/include/ \
 }
 }
