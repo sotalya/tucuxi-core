@@ -958,7 +958,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     // Checks that subomega is valid. An error could be caused if the parameters are invalid
     for (int col = 0; col < subomega.cols(); col++) {
         for (int row = 0; row < subomega.rows(); row++) {
-            if (isnan(subomega(row, col))) {
+            if (std::isnan(subomega(row, col))) {
                 return ComputingStatus::PercentilesNoValidPrediction;
             }
         }
