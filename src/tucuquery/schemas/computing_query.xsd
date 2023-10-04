@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<!-- ##################################################################### -->
+<!-- XML Schema Definition -->
+<!-- ##################################################################### -->
+
+<xs:element name="query">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element name="queryId" type="xs:string" />
+			<xs:element name="clientId" type="xs:string" />
+			<xs:element name="date" type="xs:dateTime" />
+			<xs:element name="language">
+				<xs:simpleType>
+					<!-- As seen in Tucux's DataType Enum -->
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="en" />
+						<xs:enumeration value="fr" />
+						<xs:enumeration value="de" />
+						<xs:enumeration value="it" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="drugTreatment" type="parametersType" />
+			<xs:element name="requests">
+			<xs:complexType>
+		        <xs:sequence>
+		          <xs:element name="request" type="requestType" maxOccurs="unbounded" />
+		        </xs:sequence>
+			</xs:complexType>
+		</xs:element>
+		</xs:sequence>
+		<xs:attribute name="version" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+				 	<!-- Version number beginning and ending with a number,
+				 	each number being separated by a dot -->
+			     	<xs:pattern value="(((\d+)+\.)+)?(\d+)" />
+			    </xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+</xs:element>
+
+
+<!-- ##################################################################### -->
+<!-- Global types for query drugTreatment -->
+<!-- ##################################################################### -->
+
+<xs:complexType name="parametersType">
+	<xs:sequence>
+		<xs:element name="patient">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="covariates">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="covariate" type="covariateType" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element>
+		<xs:element name="drugs">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="drug" type="drugType" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element>
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="covariateType">
+	<xs:sequence>
+		<xs:element name="covariateId" type="xs:string" />
+		<xs:element name="date" type="xs:dateTime" />
+		<xs:element name="value" type="xs:string" />
+		<xs:element name="unit" type="unitType" />
+		<xs:element name="dataType">
+			<xs:simpleType>
+				<!-- As seen in Tucux's DataType Enum -->
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="int" />
+					<xs:enumeration value="double" />
+					<xs:enumeration value="bool" />
+					<xs:enumeration value="date" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+		<xs:element name="nature"  minOccurs="0">
+			<xs:simpleType>
+				<!-- As seen in the MOLIS specification -->
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="continuous" />
+					<xs:enumeration value="discrete" />
+					<xs:enumeration value="categorical" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="drugType">
+	<xs:sequence>
+		<xs:element name="drugId" type="xs:string" />
+		<xs:element name="activePrinciple" type="xs:string" />
+		<xs:element name="brandName" type="xs:string" />
+		<xs:element name="atc" type="xs:string" />
+		<xs:element name="treatment" type="treatmentType" />
+		<xs:element name="samples" minOccurs="0">
+			<xs:complexType>
+		        <xs:sequence>
+		          <xs:element name="sample" type="sampleType" maxOccurs="unbounded" />
+		        </xs:sequence>
+			</xs:complexType>
+		</xs:element>
+		<xs:element name="targets" minOccurs="0">
+			<xs:complexType>
+		        <xs:sequence>
+		          <xs:element name="target" type="targetType" maxOccurs="unbounded" />
+		        </xs:sequence>
+			</xs:complexType>
+		</xs:element>
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="treatmentType">
+	<xs:sequence>
+		<xs:element name="dosageHistory" type="dosageHistoryType" minOccurs="0" />
+	</xs:sequence>
+</xs:complexType>
+
+<!-- This type and other linked types are made to be the most compatible
+with the DosageHistory class and AbstractDosage subclasses -->
+<xs:complexType name="dosageHistoryType">
+	<xs:sequence>
+		<xs:element name="dosageTimeRange" type="dosageTimeRangeType" maxOccurs="unbounded" />
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="dosageTimeRangeType">
+	<xs:sequence>
+		<xs:group ref="dateIntervalGroup" />
+		<xs:element name="dosage" type="dosageType" maxOccurs="unbounded" />
+	</xs:sequence>
+</xs:complexType>
+
+<!-- Is the equivalent as the AbstractDosage class -->
+<xs:complexType name="dosageType">
+	<xs:choice>
+		<xs:element name="dosageLoop" type="dosageLoopType" />
+		<xs:element name="dosageSteadyState" type="dosageSteadyStateType" />
+		<xs:group ref="dosageBoundedGroup" />
+	</xs:choice>
+</xs:complexType>
+
+<xs:complexType name="dosageLoopType">
+  <xs:sequence>
+    <xs:group ref="dosageBoundedGroup" />
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="dosageSteadyStateType">
+  <xs:sequence>
+    <xs:element name="lastDoseDate" type="xs:dateTime" />
+    <xs:group ref="dosageBoundedGroup" />
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="dosageRepeatType">
+	<xs:sequence>
+		<xs:element name="iterations">
+			<xs:simpleType>
+				<xs:restriction base="xs:int">
+					<xs:minInclusive value="1" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+		<xs:group ref="dosageBoundedGroup" />
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="dosageSequenceType">
+	<xs:sequence>
+		<xs:group ref="dosageBoundedGroup" maxOccurs="unbounded" />
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="lastingDosageType">
+	<xs:sequence>
+		<xs:element name="interval" type="xs:time" />
+		<xs:group ref="intakeGroup" />
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="dailyDosageType">
+	<xs:sequence>
+		<xs:element name="time" type="xs:time" />
+		<xs:group ref="intakeGroup" />
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="weeklyDosageType">
+	<xs:sequence>
+		<xs:element name="day">
+		 	<xs:simpleType>
+				<xs:restriction base="xs:int">
+					<xs:minInclusive value="0" />
+					<xs:maxInclusive value="6" />
+				</xs:restriction>
+			</xs:simpleType>
+    	</xs:element>
+		<xs:element name="time" type="xs:time" />
+		<xs:group ref="intakeGroup" />
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="doseType">
+	<xs:sequence>
+		<xs:element name="value" type="xs:decimal" />
+		<xs:element name="unit" type="unitType" />
+		<xs:element name="infusionTimeInMinutes" type="xs:decimal" minOccurs="0"/>
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="formulationAndRouteType">
+	<xs:sequence>
+		<xs:element name="formulation">
+			<xs:simpleType>
+				<!-- This enumeration is based on the one present in formulationandroute.h file in Tucuxi -->
+				<xs:restriction base="xs:string">
+		            <xs:enumeration value="undefined" />
+		            <xs:enumeration value="parenteralSolution" />
+		            <xs:enumeration value="oralSolution" />
+		            <xs:enumeration value="test" />
+		        </xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+		<xs:element name="administrationName" type="xs:string" />
+		<xs:element name="administrationRoute">
+			<xs:simpleType>
+				<!-- This enumeration is based on the one present in formulationandroute.h file in Tucuxi -->
+				<xs:restriction base="xs:string">
+		            <xs:enumeration value="undefined" />
+		            <xs:enumeration value="intramuscular" />
+		            <xs:enumeration value="intravenousBolus" />
+		            <xs:enumeration value="intravenousDrip" />
+		            <xs:enumeration value="nasal" />
+		            <xs:enumeration value="oral" />
+		            <xs:enumeration value="rectal" />
+		            <xs:enumeration value="subcutaneous" />
+		            <xs:enumeration value="sublingual" />
+		            <xs:enumeration value="transdermal" />
+		            <xs:enumeration value="vaginal" />
+		        </xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+		<xs:element name="absorptionModel">
+			<xs:simpleType>
+				<!-- This enumeration is based on the one present in definitions.h file in Tucuxi -->
+				<xs:restriction base="xs:string">
+		            <xs:enumeration value="undefined" />
+		            <xs:enumeration value="intravascular" />
+		            <xs:enumeration value="extravascular" />
+		            <xs:enumeration value="extravascularLag" />
+		            <xs:enumeration value="infusion" />
+		        </xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="sampleType">
+	<xs:sequence>
+		<xs:element name="sampleId" type="xs:positiveInteger"/>
+		<xs:element name="sampleDate" type="xs:dateTime" />
+		<xs:element name="concentrations">
+	      	<xs:complexType>
+		        <xs:sequence>
+		          	<xs:element name="concentration" maxOccurs="unbounded">
+				      	<xs:complexType>
+				        	<xs:sequence>
+				          		<xs:element name="analyteId" type="xs:string" />
+					          	<xs:element name="value" type="xs:decimal" />
+					          	<xs:element name="unit" type="unitType" />
+				        	</xs:sequence>
+				      	</xs:complexType>
+					</xs:element>
+		        </xs:sequence>
+	      	</xs:complexType>
+		</xs:element>
+	</xs:sequence>
+</xs:complexType>
+
+
+<xs:complexType name="mic">
+    <xs:sequence>
+        <xs:element name="unit" type="unitType" />
+        <xs:element name="micValue" type="xs:decimal" />
+    </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="targetType">
+	<xs:sequence>
+		<xs:element name="activeMoietyId" type="xs:string" />
+		<xs:element name="targetType">
+			<xs:simpleType>
+				<!-- This enumeration is based on the one present in the drug file's XSD -->
+				<xs:restriction base="xs:string">
+		            <xs:enumeration value="peak" />
+		            <xs:enumeration value="residual" />
+		            <xs:enumeration value="mean" />
+		            <xs:enumeration value="auc" />
+		            <xs:enumeration value="aucOverMic" /> <!-- In that case MIC should be a covariate -->
+		            <xs:enumeration value="timeOverMic" /> <!-- In that case MIC should be a covariate -->
+		            <xs:enumeration value="aucDividedByMic" /> <!-- In that case MIC should be a covariate -->
+		            <xs:enumeration value="peakDividedByMic" /> <!-- In that case MIC should be a covariate -->
+		        </xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+		<xs:element name="unit" type="unitType" />
+		<xs:element name="min" type="xs:decimal" />
+		<xs:element name="best" type="xs:decimal" />
+		<xs:element name="max" type="xs:decimal" />
+		<xs:element name="inefficacyAlarm" type="xs:decimal" minOccurs="0"/>
+		<xs:element name="toxicityAlarm" type="xs:decimal" minOccurs="0"/>
+                <xs:element name="mic" type="mic" minOccurs="0"/>
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="dateIntervalType">
+	<xs:sequence>
+		<xs:group ref="dateIntervalGroup" />
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="percentileRanksType">
+	<xs:sequence>
+		<xs:element name="rank" maxOccurs="unbounded">
+			<xs:simpleType>
+				<xs:restriction base="xs:double">
+					<xs:minInclusive value="0" />
+					<xs:maxInclusive value="100" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+	</xs:sequence>
+</xs:complexType>
+
+<!-- ##################################################################### -->
+<!-- Global groups for query drugTreatment -->
+<!-- ##################################################################### -->
+
+<xs:group name="dateIntervalGroup">
+	<xs:sequence>
+		<xs:element name="start" type="xs:dateTime" />
+		<xs:element name="end" type="xs:dateTime" />
+	</xs:sequence>
+</xs:group>
+
+<xs:group name="dosageBoundedGroup">
+	<xs:choice>
+		<xs:element name="dosageRepeat" type="dosageRepeatType" />
+		<xs:element name="dosageSequence" type="dosageSequenceType" />
+		<xs:choice>
+			<xs:element name="lastingDosage" type="lastingDosageType" />
+			<xs:element name="dailyDosage" type="dailyDosageType" />
+			<xs:element name="weeklyDosage" type="weeklyDosageType" />
+		</xs:choice>
+	</xs:choice>
+</xs:group>
+
+<xs:group name="intakeGroup">
+	<xs:sequence>
+		<xs:element name="dose" type="doseType" />
+		<xs:element name="formulationAndRoute" type="formulationAndRouteType" />
+	</xs:sequence>
+</xs:group>
+
+
+    <xs:simpleType name="unitType">
+        <xs:restriction base="xs:normalizedString">
+        </xs:restriction>
+    </xs:simpleType>
+
+<!-- ##################################################################### -->
+<!-- Global types for requests -->
+<!-- ##################################################################### -->
+
+
+
+		<xs:element name="compartmentOption">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="allActiveMoieties" />
+					<xs:enumeration value="allAnalytes" />
+					<xs:enumeration value="allCompartments" />
+					<xs:enumeration value="specific" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+		
+
+		<xs:element name="parametersType">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="population" />
+					<xs:enumeration value="apriori" />
+					<xs:enumeration value="aposteriori" />
+					<xs:enumeration value="best" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+
+<xs:element name="computingOption">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="parametersType"/>
+<xs:element ref="compartmentOption"/>
+<xs:element name="retrieveStatistics" type="xs:boolean"/>
+<xs:element name="retrieveParameters" type="xs:boolean"/>
+<xs:element name="retrieveCovariates" type="xs:boolean"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+		<xs:element name="bestCandidatesOption">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="bestDosage" />
+					<xs:enumeration value="allDosages" />
+					<xs:enumeration value="bestDosagePerInterval" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+		
+		
+
+		<xs:element name="loadingOption">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="noLoadingDose" />
+					<xs:enumeration value="loadingDoseAllowed" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+		
+		
+
+		<xs:element name="restPeriodOption">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="noRestPeriod" />
+					<xs:enumeration value="restPeriodAllowed" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+		
+
+		<xs:element name="steadyStateTargetOption">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="atSteadyState" />
+					<xs:enumeration value="withinTreatmentTimeRange" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+		
+
+		<xs:element name="targetExtractionOption">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="populationValues" />
+					<xs:enumeration value="aprioriValues" />
+					<xs:enumeration value="individualTargets" />
+					<xs:enumeration value="individualTargetsIfDefinitionExists" />
+					<xs:enumeration value="definitionIfNoIndividualTarget" />
+					<xs:enumeration value="individualTargetsIfDefinitionExistsAndDefinitionIfNoIndividualTarget" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+		
+
+		<xs:element name="formulationAndRouteSelectionOption">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="lastFormulationAndRoute" />
+					<xs:enumeration value="defaultFormulationAndRoute" />
+					<xs:enumeration value="allFormulationAndRoutes" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+		
+<xs:element name="adjustmentTraits">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="computingOption"/>
+<xs:element name="nbPointsPerHour" type="xs:int" minOccurs="0" />
+		<xs:element name="dateInterval" type="dateIntervalType" minOccurs="0" />
+<xs:element name="adjustmentDate" type="xs:dateTime"/>
+<xs:element name="options">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="bestCandidatesOption"/>
+<xs:element ref="loadingOption"/>
+<xs:element ref="restPeriodOption"/>
+<xs:element ref="steadyStateTargetOption"/>
+<xs:element ref="targetExtractionOption"/>
+<xs:element ref="formulationAndRouteSelectionOption"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="predictionAtTimesTraits">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="computingOption"/>
+<xs:element name="dates">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="date" type="xs:dateTime" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+		</xs:sequence>
+		</xs:complexType>
+</xs:element>
+
+<xs:element name="predictionAtSampleTimesTraits">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="computingOption"/>
+		</xs:sequence>
+		</xs:complexType>
+</xs:element>
+
+<xs:element name="predictionTraits">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="computingOption"/>
+		<xs:element name="nbPointsPerHour" type="xs:int" minOccurs="0" />
+		<xs:element name="dateInterval" type="dateIntervalType" minOccurs="0" />
+		</xs:sequence>
+		</xs:complexType>
+</xs:element>
+
+<xs:element name="percentilesTraits">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="computingOption"/>
+		<xs:element name="nbPointsPerHour" type="xs:int" minOccurs="0" />
+		<xs:element name="dateInterval" type="dateIntervalType" minOccurs="0" />
+		<xs:element name="ranks" type="percentileRanksType" minOccurs="0" />
+		</xs:sequence>
+		</xs:complexType>
+</xs:element>
+
+<xs:complexType name="requestType">
+	<xs:sequence>
+		<xs:element name="requestId" type="xs:string" />
+		<xs:element name="drugId" type="xs:string" />
+		<xs:element name="drugModelId" type="xs:string"/>
+		<xs:choice>
+      <xs:element ref="predictionTraits"/>
+      <xs:element ref="predictionAtTimesTraits"/>
+      <xs:element ref="predictionAtSampleTimesTraits"/>
+      <xs:element ref="percentilesTraits"/>
+      <xs:element ref="adjustmentTraits"/>
+		</xs:choice>
+	</xs:sequence>
+</xs:complexType>
+
+</xs:schema>

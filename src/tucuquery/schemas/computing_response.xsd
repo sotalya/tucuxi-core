@@ -1,0 +1,357 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="tucuxiComputation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="queryId" type="xs:string"/>
+        <xs:element name="queryStatus">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="statusCode"/>
+              <xs:element name="statusCodeLit" type="xs:string"/>
+              <xs:element name="message" type="xs:string"/>
+              <xs:element name="description" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="responses" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="responses">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="response" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="response">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="requestId" type="xs:string"/>
+        <xs:element name="requestStatus">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="statusCode"/>
+              <xs:element name="statusCodeLit" type="xs:string"/>
+              <xs:element name="message" type="xs:string"/>
+              <xs:element name="description" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="requestType" type="xs:string" minOccurs="0"/>
+        <xs:choice minOccurs="0" maxOccurs="1">
+          <xs:element ref="dataAdjustment"/>
+          <xs:element ref="dataPrediction"/>
+          <xs:element ref="dataPoints"/>
+          <xs:element ref="dataPercentiles"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+<xs:element name="dataAdjustment">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="analyteIds" type="xs:string"/>
+        <xs:element ref="adjustments"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="adjustments">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="adjustment"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="adjustment">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="score" type="xs:string"/>
+        <xs:element ref="targetEvaluations"/>
+        <xs:element ref="dosageHistory"/>
+        <xs:element ref="cycleDatas"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="targetEvaluations">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="targetEvaluation" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="targetEvaluation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="targetType" type="xs:string"/>
+        <xs:element name="unit" type="xs:string"/>
+        <xs:element name="value" type="xs:string"/>
+        <xs:element name="score" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="dosageHistory">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="dosageTimeRange" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="dosageTimeRange">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="start" type="xs:string"/>
+        <xs:element name="end" type="xs:string"/>
+        <xs:element ref="dosage" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+	<xs:element name="dosage">
+    <xs:complexType>
+      <xs:sequence>
+				<xs:choice minOccurs="0" maxOccurs="1">
+          <xs:element ref="weeklyDosage"/>
+					<xs:element ref="dailyDosage"/>
+					<xs:element ref="lastingDosage"/>
+        </xs:choice>
+				<xs:choice minOccurs="0" maxOccurs="1">
+					<xs:element ref="dosageSteadyState"/>
+					<xs:element ref="dosageLoop"/>
+					<xs:element ref="dosageRepeat"/>
+					<xs:element ref="dosageSequence"/>
+				</xs:choice>
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="offset" type="xs:time"/>
+					<xs:choice minOccurs="0" maxOccurs="1">
+						<xs:element ref="weeklyDosage"/>
+						<xs:element ref="dailyDosage"/>
+						<xs:element ref="lastingDosage"/>
+					</xs:choice>
+				</xs:sequence>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+	<xs:element name="weeklyDosage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="day"/>
+        <xs:element name="time" type="xs:time"/>
+        <xs:element ref="dose"/>
+				<xs:element ref="formulationAndRoute"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+	<xs:element name="dose">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="value" type="xs:decimal"/>
+        <xs:element name="unit" type="xs:string"/>
+        <xs:element name="infusionTimeInMinutes" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+	<xs:element name="formulationAndRoute">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="formulation" type="xs:string"/>
+        <xs:element name="administrationName" type="xs:string"/>
+        <xs:element name="administrationRoute" type="xs:string"/>
+				<xs:element name="absorptionModel" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+	<xs:element name="dailyDosage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="time" type="xs:time"/>
+        <xs:element ref="dose"/>
+				<xs:element ref="formulationAndRoute"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+	<xs:element name="lastingDosage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="interval" type="xs:time"/>
+        <xs:element ref="dose"/>
+				<xs:element ref="formulationAndRoute"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+	
+	<xs:element name="dosageSteadyState">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="lastDoseDate" type="xs:dateTime"/>
+        <xs:choice maxOccurs="1">
+          <xs:element ref="weeklyDosage"/>
+					<xs:element ref="dailyDosage"/>
+					<xs:element ref="lastingDosage"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+	
+		<xs:element name="dosageLoop">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice maxOccurs="1">
+          <xs:element ref="weeklyDosage"/>
+					<xs:element ref="dailyDosage"/>
+					<xs:element ref="lastingDosage"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+	
+	<xs:element name="dosageRepeat">
+    <xs:complexType>
+      <xs:sequence>
+				<xs:element name="iterations" type="xs:int"/>
+        <xs:choice maxOccurs="1">
+          <xs:element ref="weeklyDosage"/>
+					<xs:element ref="dailyDosage"/>
+					<xs:element ref="lastingDosage"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+	
+	<xs:element name="dosageSequence">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+          <xs:element ref="weeklyDosage"/>
+					<xs:element ref="dailyDosage"/>
+					<xs:element ref="lastingDosage"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>	
+	
+	
+	
+  <xs:element name="cycleDatas">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="cycleData" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="cycleData">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="start" type="xs:string"/>
+        <xs:element name="end" type="xs:string"/>
+        <xs:element name="unit" type="xs:string"/>
+        <xs:element ref="parameters"/>
+        <xs:element ref="covariates"/>
+        <xs:element name="times" type="xs:string"/>
+        <xs:element name="values" type="xs:string"/>
+        <xs:element ref="statistics"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="parameters">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="parameter" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="parameter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="id" type="xs:string"/>
+        <xs:element name="value" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="covariates">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="covariate" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="covariate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="id" type="xs:string"/>
+        <xs:element name="value" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="statistics">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="mean" type="xs:string"/>
+        <xs:element name="auc" type="xs:string"/>
+        <xs:element name="auc24" type="xs:string"/>
+        <xs:element name="cumulativeAuc" type="xs:string"/>
+        <xs:element name="residual" type="xs:string"/>
+        <xs:element name="peak" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="dataPrediction">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="logLikelihood"/>
+        <xs:element ref="analyteIds"/>
+        <xs:element ref="cycleDatas"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="analyteIds">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="analyteId" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="dataPoints">
+    <xs:complexType>
+      <xs:sequence>
+				<xs:element name="logLikelihood" type="xs:string"/>
+        <xs:element name="unit" type="xs:string"/>
+        <xs:element ref="points"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="points">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="point" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="point">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="time" type="xs:time"/>
+        <xs:element name="value" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="dataPercentiles">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="percentile" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="percentile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="rank" type="xs:string"/>
+        <xs:element ref="cycleDatas"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
