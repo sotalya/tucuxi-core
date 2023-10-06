@@ -1,3 +1,0 @@
-<defines>
-SALSA20 -> 20131128
-</defines>

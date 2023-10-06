@@ -1,3 +1,0 @@
-<defines>
-MODE_XTS -> 20131128
-</defines>

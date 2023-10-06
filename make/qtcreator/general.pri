@@ -4,7 +4,7 @@ CONFIG += c++14
 CONFIG -= qt
 
 #LIBS += ../../../libs/tiny-js-master-20170629/objs/tinyjs.a \
-#        ../../../libs/botan-2.1.0/objs/botan.a
+#        ../../../libs/botan-2.19.3/objs/botan.a
 unix {
 LIBS += $$PWD/../../bin/tinyjs.a
 

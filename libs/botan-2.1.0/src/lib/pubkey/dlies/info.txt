@@ -1,9 +1,0 @@
-<defines>
-DLIES -> 20160713
-</defines>
-
-<requires>
-kdf
-mac
-block
-</requires>

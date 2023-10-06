@@ -28,7 +28,7 @@ INCLUDES := ../../libs/spdlog-master-20170622/include \
             ../../libs/tiny-js-master-20170629 \
             ../../libs/date/include \
             ../../libs/rapidxml-1.13 \
-            ../../libs/botan-2.1.0/build/include
+            ../../libs/botan-2.19.3/build/include
 LIBS := tinyjs
 EXTLIBS :=
 DEFINES :=
