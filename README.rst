@@ -21,9 +21,8 @@ A python interface is part of another repo, and will be available soon.
 Getting started
 ---------------
 
+Start with a git clone, with the --recurse-submodules option.
 
-Test and Deploy
----------------
 
 Dependencies
 ------------
