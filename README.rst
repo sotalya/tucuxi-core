@@ -4,7 +4,7 @@ Tucuxi-core
 Description
 -----------
 
-Tucuxi is a software for clinical pharmacology, able to compute drug concentration predictions based on the patient's data (dosage history, covariates, blood sample measurements). Tucuxi offers a graphical user interface, and is built on top of a computing engine.
+Tucuxi is a software for clinical pharmacology and specifically for Therapeutic Drug Monitoring (TDM) and Model Informed Precision Dosing (MIPD), able to compute drug concentration predictions based on the patient's data (dosage history, covariates, blood sample measurements). Tucuxi offers a graphical user interface, and is built on top of a computing engine.
 
 .. image:: images/tucuxi_screenshot.png
 
@@ -30,18 +30,18 @@ Dependencies
 
 Tucuxi-core takes advantage of other Open Source projects:
 
-- boost
-- botan
+- boost 1.83
+- botan 2.19.3
 - cxxopts
 - date
-- eigen
-- fructose
+- eigen 3.3.8
+- fructose 1.3
 - rapidxml
 - rapidjson
 - spdlog
 - TinyJS
 
-Currently, the useful code is embeded within our repo, except for date. It may change in the future.
+Currently, the useful code is embedded within our repo, except for date. It may change in the future.
 
 
 Compilation
@@ -141,7 +141,25 @@ Or go anywhere, and run:
 Usage
 -----
 
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+The command line interface, tucucli, can be used to perform computations, by supplying XML inputs containing the patient's dosage history, covariates, blood concentrations, and data about what kind of computation should be executed. Documentation will be available soon. In the meantime, run
+
+.. code-block:: bash
+
+    tucucli --help
+
+to get some help.
+
+The drug file checker, tucudrugfilechecker, is a software meant to check if a Tucuxi drug file is valid or not. Supplying a drug file as an input will end up with an extended check of it, with results explaining what issues are found in the file. Documentation will be available soon. In the meantime, run
+
+.. code-block:: bash
+
+    tucudrugfilechecker --help
+
+to get some help.
+
+The tests can be run directly, and will display meaningful messages if something goes wrong.
+
+To use the code directly, it can be embedded in any C++ source code, or embedded in python, thanks to a pybind11 project (soon to be released).
 
 Support
 -------
@@ -151,7 +169,7 @@ For now on, feel free to contact yann.thoma@heig-vd.ch for support.
 Roadmap
 -------
 
-Except small improvements added when required, the computing engine does not accept multi-analytes drugs. Support for such multi-analyte substances require some huge modifications, and is the main addition to be thought for the future.
+Except small improvements added when required, the computing engine does not accept multi-analytes drugs. Support for such multi-analytes substances require some huge modifications, and is the main addition to be thought for the future.
 
 Contributing
 ------------
@@ -168,11 +186,14 @@ In the <tucuxi-core> folder, there is a ``.clang-format`` file that ensures the 
 Authors and acknowledgment
 --------------------------
 
-Tucuxi-core is maintained by Yann Thoma, but the list of current and past developers on this project throughout the years is quite long:
+Tucuxi-core is maintained by Yann Thoma, but the list of current and past developers on this project throughout the years is quite long, but here are the main ones to mention:
 
 - Robert Hooper
 - Yannis Jeannotat
 - Jean-Rémi Péclard
+- Roberto Rigamonti
+- Johan Matthey
+- Julien Rosset
 
 
 Also, people at the CHUV hospital have been contributing with their insights:
