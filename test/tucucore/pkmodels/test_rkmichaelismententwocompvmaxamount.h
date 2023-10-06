@@ -187,7 +187,7 @@ static const std::string test_mm_2comp_vmaxamount_tdd = R"(
                                                                               <comment lang='en'>None</comment>
                                                                           </comments>
                                                                       </covariate>)"
-                                                          R"(
+                                                        R"(
                                                                       <covariate>
                                                                           <covariateId>InducerSt</covariateId>
                                                                           <covariateName>
@@ -364,7 +364,7 @@ static const std::string test_mm_2comp_vmaxamount_tdd = R"(
                                                                           </targets>
                                                                       </activeMoiety>
                                                                   </activeMoieties>)"
-                                                          R"(
+                                                        R"(
                                                                   <analyteGroups>
                                                                       <analyteGroup>
                                                                           <groupId>voriconazole</groupId>
@@ -492,7 +492,7 @@ static const std::string test_mm_2comp_vmaxamount_tdd = R"(
                                                                                       </validation>
                                                                                       <comments/>
                                                                                   </parameter>)"
-                                                          R"(
+                                                        R"(
                                                                                   <parameter>
                                                                                       <parameterId>V1</parameterId>
                                                                                       <unit>l</unit>
