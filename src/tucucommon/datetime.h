@@ -5,6 +5,8 @@
 
 #include <chrono>
 #include <iostream>
+#include <sstream>
+#include <string>
 
 #include "tucucommon/basetypes.h"
 
@@ -222,6 +224,24 @@ public:
                 << _dt.second() << "s";
         // clang-format on
         return _output;
+    }
+
+    std::string str()
+    {
+        DateTime _dt = *this;
+
+        // clang-format off
+        std::ostringstream result;
+        
+        result << _dt.day() << "."
+                << _dt.month() << "."
+                << _dt.year() << " "
+                << _dt.hour() << "h"
+                << _dt.minute() << "m"
+                << _dt.second() << "s";
+            
+        // clang-format on
+        return result.str();
     }
 
     /// \brief Returns the latest date possible
