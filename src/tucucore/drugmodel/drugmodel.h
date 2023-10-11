@@ -435,6 +435,9 @@ public:
     friend TestMultiAnalytesSingleActiveMoiety;
     friend TestMultiAnalytesMultiActiveMoieties;
     friend TestPkAsymptotic;
+#ifdef DRUGMODELTESTS
+    friend Drugs2Manager;
+#endif // DRUGMODELTESTS
 };
 
 } // namespace Core
