@@ -239,7 +239,7 @@ public:
                 << _dt.hour() << "h"
                 << _dt.minute() << "m"
                 << _dt.second() << "s";
-            
+
         // clang-format on
         return result.str();
     }
