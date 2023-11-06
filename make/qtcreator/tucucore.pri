@@ -9,6 +9,7 @@ config_openmp {
 
 HEADERS += \
     $$PWD/../../src/tucucore/cachecomputing.h \
+    $$PWD/../../src/tucucore/computingrequestxmlexport.h \
     $$PWD/../../src/tucucore/computingutils.h \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.h \
     $$PWD/../../src/tucucore/cachedexponentials.h \
@@ -115,6 +116,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/../../src/tucucore/cachecomputing.cpp \
+    $$PWD/../../src/tucucore/computingrequestxmlexport.cpp \
     $$PWD/../../src/tucucore/computingservice/computingresult.cpp \
     $$PWD/../../src/tucucore/computingutils.cpp \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \

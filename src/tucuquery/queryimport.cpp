@@ -25,6 +25,7 @@ namespace Query {
 
 
 static const char* DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"; // NOLINT(readability-identifier-naming)
+static const char* DATE_FORMAT2 = "%Y-%m-%d %H:%M:%S"; // NOLINT(readability-identifier-naming)
 
 
 QueryImport::QueryImport() = default;
@@ -889,8 +890,13 @@ vector<Common::DateTime> QueryImport::getChildDateTimeList(
     string value;
     while (it != Common::XmlNodeIterator::none()) {
         value = it->getValue();
-        Common::DateTime datetime(value, DATE_FORMAT);
-        times.push_back(datetime);
+        try {
+            Common::DateTime datetime(value, DATE_FORMAT);
+            times.push_back(datetime);
+        }  catch (std::runtime_error& e) {
+            Common::DateTime datetime(value, DATE_FORMAT2);
+            times.push_back(datetime);
+        }
 
         it++;
     }

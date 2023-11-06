@@ -23,7 +23,8 @@ CliComputer::CliComputer() = default;
 
 
 QueryStatus CliComputer::compute(
-        const std::string& _inputFileName, const std::string& _outputFileName, const std::string& _dataFilePath)
+        const std::string& _inputFileName, const std::string& _outputFileName, const std::string& _dataFilePath,
+        const std::string& _tqfOutputFileName)
 {
 
     // Change the settings for the tests
@@ -54,7 +55,7 @@ QueryStatus CliComputer::compute(
     }
     std::string xmlString((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
 
-    queryComputer->compute(xmlString, computingQueryResponse);
+    queryComputer->compute(xmlString, computingQueryResponse, _tqfOutputFileName);
 
 
     if (!_dataFilePath.empty()
