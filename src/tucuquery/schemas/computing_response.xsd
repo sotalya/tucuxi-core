@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
   <xs:element name="tucuxiComputation">
     <xs:complexType>
@@ -49,8 +49,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-
-<xs:element name="dataAdjustment">
+  <xs:element name="dataAdjustment">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="analyteIds" type="xs:string"/>
@@ -108,42 +107,42 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-	<xs:element name="dosage">
+  <xs:element name="dosage">
     <xs:complexType>
       <xs:sequence>
-				<xs:choice minOccurs="0" maxOccurs="1">
+        <xs:choice minOccurs="0" maxOccurs="1">
           <xs:element ref="weeklyDosage"/>
-					<xs:element ref="dailyDosage"/>
-					<xs:element ref="lastingDosage"/>
+          <xs:element ref="dailyDosage"/>
+          <xs:element ref="lastingDosage"/>
         </xs:choice>
-				<xs:choice minOccurs="0" maxOccurs="1">
-					<xs:element ref="dosageSteadyState"/>
-					<xs:element ref="dosageLoop"/>
-					<xs:element ref="dosageRepeat"/>
-					<xs:element ref="dosageSequence"/>
-				</xs:choice>
-				<xs:sequence minOccurs="0" maxOccurs="unbounded">
-					<xs:element name="offset" type="xs:time"/>
-					<xs:choice minOccurs="0" maxOccurs="1">
-						<xs:element ref="weeklyDosage"/>
-						<xs:element ref="dailyDosage"/>
-						<xs:element ref="lastingDosage"/>
-					</xs:choice>
-				</xs:sequence>
+        <xs:choice minOccurs="0" maxOccurs="1">
+          <xs:element ref="dosageSteadyState"/>
+          <xs:element ref="dosageLoop"/>
+          <xs:element ref="dosageRepeat"/>
+          <xs:element ref="dosageSequence"/>
+        </xs:choice>
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="offset" type="xs:time"/>
+          <xs:choice minOccurs="0" maxOccurs="1">
+            <xs:element ref="weeklyDosage"/>
+            <xs:element ref="dailyDosage"/>
+            <xs:element ref="lastingDosage"/>
+          </xs:choice>
+        </xs:sequence>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-	<xs:element name="weeklyDosage">
+  <xs:element name="weeklyDosage">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="day"/>
         <xs:element name="time" type="xs:time"/>
         <xs:element ref="dose"/>
-				<xs:element ref="formulationAndRoute"/>
+        <xs:element ref="formulationAndRoute"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-	<xs:element name="dose">
+  <xs:element name="dose">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="value" type="xs:decimal"/>
@@ -152,87 +151,80 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-	<xs:element name="formulationAndRoute">
+  <xs:element name="formulationAndRoute">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="formulation" type="xs:string"/>
         <xs:element name="administrationName" type="xs:string"/>
         <xs:element name="administrationRoute" type="xs:string"/>
-				<xs:element name="absorptionModel" type="xs:string"/>
+        <xs:element name="absorptionModel" type="xs:string"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-	<xs:element name="dailyDosage">
+  <xs:element name="dailyDosage">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="time" type="xs:time"/>
         <xs:element ref="dose"/>
-				<xs:element ref="formulationAndRoute"/>
+        <xs:element ref="formulationAndRoute"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-	<xs:element name="lastingDosage">
+  <xs:element name="lastingDosage">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="interval" type="xs:time"/>
         <xs:element ref="dose"/>
-				<xs:element ref="formulationAndRoute"/>
+        <xs:element ref="formulationAndRoute"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-	
-	<xs:element name="dosageSteadyState">
+  <xs:element name="dosageSteadyState">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="lastDoseDate" type="xs:dateTime"/>
         <xs:choice maxOccurs="1">
           <xs:element ref="weeklyDosage"/>
-					<xs:element ref="dailyDosage"/>
-					<xs:element ref="lastingDosage"/>
+          <xs:element ref="dailyDosage"/>
+          <xs:element ref="lastingDosage"/>
         </xs:choice>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-	
-		<xs:element name="dosageLoop">
+  <xs:element name="dosageLoop">
     <xs:complexType>
       <xs:sequence>
         <xs:choice maxOccurs="1">
           <xs:element ref="weeklyDosage"/>
-					<xs:element ref="dailyDosage"/>
-					<xs:element ref="lastingDosage"/>
+          <xs:element ref="dailyDosage"/>
+          <xs:element ref="lastingDosage"/>
         </xs:choice>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-	
-	<xs:element name="dosageRepeat">
+  <xs:element name="dosageRepeat">
     <xs:complexType>
       <xs:sequence>
-				<xs:element name="iterations" type="xs:int"/>
+        <xs:element name="iterations" type="xs:int"/>
         <xs:choice maxOccurs="1">
           <xs:element ref="weeklyDosage"/>
-					<xs:element ref="dailyDosage"/>
-					<xs:element ref="lastingDosage"/>
+          <xs:element ref="dailyDosage"/>
+          <xs:element ref="lastingDosage"/>
         </xs:choice>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-	
-	<xs:element name="dosageSequence">
+  <xs:element name="dosageSequence">
     <xs:complexType>
       <xs:sequence>
         <xs:choice minOccurs="1" maxOccurs="unbounded">
           <xs:element ref="weeklyDosage"/>
-					<xs:element ref="dailyDosage"/>
-					<xs:element ref="lastingDosage"/>
+          <xs:element ref="dailyDosage"/>
+          <xs:element ref="lastingDosage"/>
         </xs:choice>
       </xs:sequence>
     </xs:complexType>
-  </xs:element>	
-	
-	
-	
+  </xs:element>
   <xs:element name="cycleDatas">
     <xs:complexType>
       <xs:sequence>
@@ -296,7 +288,6 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
   <xs:element name="dataPrediction">
     <xs:complexType>
       <xs:sequence>
@@ -313,11 +304,10 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
   <xs:element name="dataPoints">
     <xs:complexType>
       <xs:sequence>
-				<xs:element name="logLikelihood" type="xs:string"/>
+        <xs:element name="logLikelihood" type="xs:string"/>
         <xs:element name="unit" type="xs:string"/>
         <xs:element ref="points"/>
       </xs:sequence>
@@ -338,7 +328,6 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-
   <xs:element name="dataPercentiles">
     <xs:complexType>
       <xs:sequence>
