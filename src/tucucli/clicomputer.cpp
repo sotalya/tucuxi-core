@@ -23,7 +23,9 @@ CliComputer::CliComputer() = default;
 
 
 QueryStatus CliComputer::compute(
-        const std::string& _inputFileName, const std::string& _outputFileName, const std::string& _dataFilePath,
+        const std::string& _inputFileName,
+        const std::string& _outputFileName,
+        const std::string& _dataFilePath,
         const std::string& _tqfOutputFileName)
 {
 

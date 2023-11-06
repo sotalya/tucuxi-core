@@ -33,7 +33,9 @@ public:
     /// This method is the single entry point exploited by the Command Line Interface
     ///
     Tucuxi::Query::QueryStatus compute(
-            const std::string& _inputFileName, const std::string& _outputFileName, const std::string& _dataFilePath,
+            const std::string& _inputFileName,
+            const std::string& _outputFileName,
+            const std::string& _dataFilePath,
             const std::string& _tqfOutputFileName = "");
 };
 

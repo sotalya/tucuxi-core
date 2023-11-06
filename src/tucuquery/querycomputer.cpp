@@ -3,10 +3,10 @@
 #include "querycomputer.h"
 
 #include "tucucore/computingcomponent.h"
+#include "tucucore/computingrequestxmlexport.h"
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/computingservice/icomputingservice.h"
 #include "tucucore/definitions.h"
-#include "tucucore/computingrequestxmlexport.h"
 #include "tucucore/overloadevaluator.h"
 
 #include "tucuquery/computingqueryresponsexmlexport.h"
@@ -23,8 +23,8 @@ namespace Query {
 
 QueryComputer::QueryComputer() = default;
 
-void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _response,
-                            const std::string& _tqfOutputFileName)
+void QueryComputer::compute(
+        ComputingQuery& _query, ComputingQueryResponse& _response, const std::string& _tqfOutputFileName)
 {
 
     auto computingComponent = dynamic_cast<Core::IComputingService*>(Core::ComputingComponent::createComponent());
@@ -70,7 +70,8 @@ void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _res
     delete computingComponent;
 }
 
-void QueryComputer::compute(const std::string& _queryString, ComputingQueryResponse& _response, const std::string &_tqfOutputFileName)
+void QueryComputer::compute(
+        const std::string& _queryString, ComputingQueryResponse& _response, const std::string& _tqfOutputFileName)
 {
     Tucuxi::Common::LoggerHelper logHelper;
 

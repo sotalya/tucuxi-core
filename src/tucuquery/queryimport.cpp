@@ -24,7 +24,7 @@ namespace Tucuxi {
 namespace Query {
 
 
-static const char* DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"; // NOLINT(readability-identifier-naming)
+static const char* DATE_FORMAT = "%Y-%m-%dT%H:%M:%S";  // NOLINT(readability-identifier-naming)
 static const char* DATE_FORMAT2 = "%Y-%m-%d %H:%M:%S"; // NOLINT(readability-identifier-naming)
 
 
@@ -893,7 +893,8 @@ vector<Common::DateTime> QueryImport::getChildDateTimeList(
         try {
             Common::DateTime datetime(value, DATE_FORMAT);
             times.push_back(datetime);
-        }  catch (std::runtime_error& e) {
+        }
+        catch (std::runtime_error& e) {
             Common::DateTime datetime(value, DATE_FORMAT2);
             times.push_back(datetime);
         }

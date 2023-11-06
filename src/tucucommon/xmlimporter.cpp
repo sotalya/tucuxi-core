@@ -10,7 +10,7 @@ namespace Common {
 
 static const int MINUTE = 60;
 static const int SECONDE = MINUTE;
-static const char* DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"; // NOLINT(readability-identifier-naming)
+static const char* DATE_FORMAT = "%Y-%m-%dT%H:%M:%S";  // NOLINT(readability-identifier-naming)
 static const char* DATE_FORMAT2 = "%Y-%m-%d %H:%M:%S"; // NOLINT(readability-identifier-naming)
 
 
