@@ -275,7 +275,18 @@ std::string ComputingQueryResponseXmlExport::getComputingStatus(
             {Tucuxi::Core::ComputingStatus::UncompatibleDrugDomain, {"UncompatibleDrugDomain", "39"}},
             {Tucuxi::Core::ComputingStatus::NoSteadyState, {"NoSteadyState", "40"}},
             {Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError,
-             {"AposterioriPercentilesOutOfScopeSamplesError", "41"}}};
+             {"AposterioriPercentilesOutOfScopeSamplesError", "41"}},
+            {Tucuxi::Core::ComputingStatus::AdjustmentsInternalError, {"AdjustmentsInternalError", "42"}},
+            {Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError,
+             {"MultiComputingComponentExceptionError", "43"}},
+            {Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError,
+             {"MultiComputingComponentNotInitialized", "44"}},
+            {Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError,
+             {"MultiActiveMoietyCalculationError", "45"}},
+            {Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError,
+             {"PercentilesNoValidPrediction", "46"}},
+            {Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError,
+             {"AposterioriPercentilesNoLikelySample", "47"}}};
 
     auto it = m.find(_computingStatus);
     if (it != m.end()) {

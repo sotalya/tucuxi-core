@@ -671,6 +671,9 @@ int main(int argc, char** argv)
     percentileCalculatorTests.add_test(
             "Aposteriori Monte Carlo Percentile", &TestPercentileCalculator::testAposteriori);
     percentileCalculatorTests.add_test(
+            "Aposteriori Monte Carlo Percentile Unlikely Sample",
+            &TestPercentileCalculator::testAposterioriUnlikelySample);
+    percentileCalculatorTests.add_test(
             "Aposteriori Monte Carlo Percentile with invalid parameters",
             &TestPercentileCalculator::testAposterioriInvalidParameters);
     percentileCalculatorTests.add_test(

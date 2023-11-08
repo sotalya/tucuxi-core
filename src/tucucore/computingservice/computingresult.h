@@ -108,7 +108,9 @@ enum class [[nodiscard]] ComputingStatus{
         /// Error during calculation of multi active moiety concentration values
         MultiActiveMoietyCalculationError,
         /// Error during percentiles calculation. Caused by no valid prediction being computed
-        PercentilesNoValidPrediction};
+        PercentilesNoValidPrediction,
+        /// There is no likely samples, so the a posteriori percentiles can not be computed
+        AposterioriPercentilesNoLikelySample};
 
 std::ostream& operator<<(std::ostream& _stream, const ComputingStatus& _e);
 
