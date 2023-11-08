@@ -129,7 +129,8 @@ static const std::string tdd = R"(<?xml version='1.0' encoding='UTF-8'?>
                 </validation>
                 <comments/>
             </covariate>
-        </covariates>
+        </covariates>)"
+  R"(
         <activeMoieties>
             <activeMoiety>
                 <activeMoietyId>virtualdrug</activeMoietyId>

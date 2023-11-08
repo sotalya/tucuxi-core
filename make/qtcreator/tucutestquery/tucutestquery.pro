@@ -4,7 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 win32{
-    TARGET = tucutestquery.exe
+    TARGET = tucutestquery
 
     exists(C:/Botan/Botan2-64) {
         CONFIG(debug, debug|release) {
