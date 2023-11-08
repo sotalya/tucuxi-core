@@ -427,12 +427,12 @@ public:
         return m_dosages;
     }
 
-    int getNumberOfDosages()
+    size_t getNumberOfDosages()
     {
         return m_dosages.size();
     }
 
-    DosageBounded* getDosageAtIndex(int _index) const
+    DosageBounded* getDosageAtIndex(size_t _index) const
     {
         return m_dosages[_index].get();
     }
@@ -545,17 +545,17 @@ public:
         return m_offsets;
     }
 
-    int getNumberOfDosages()
+    size_t getNumberOfDosages()
     {
         return m_dosages.size();
     }
 
-    DosageBounded* getDosageAtIndex(int _index) const
+    DosageBounded* getDosageAtIndex(size_t _index) const
     {
         return m_dosages[_index].get();
     }
 
-    Duration getOffsetAtIndex(int _index) const
+    Duration getOffsetAtIndex(size_t _index) const
     {
         return m_offsets[_index];
     }
@@ -1090,12 +1090,12 @@ public:
         return m_history;
     }
 
-    DosageTimeRange* getDosageTimeRangeAtIndex(int _index)
+    DosageTimeRange* getDosageTimeRangeAtIndex(size_t _index)
     {
         return m_history[_index].get();
     }
 
-    int getNumberOfTimeRanges()
+    size_t getNumberOfTimeRanges()
     {
         return m_history.size();
     }
