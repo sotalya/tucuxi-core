@@ -26,7 +26,7 @@ SOURCES := \
 
 INCLUDES := . \
             ../../libs/eigen-3.3.2 \
-            ../../libs/boost-1.63.0 \
+            ../../libs/boost-1.83.0 \
             ../../libs/date/include \
             ../../libs/spdlog-master-20170622/include
 LIBS :=
