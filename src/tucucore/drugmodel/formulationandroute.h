@@ -207,7 +207,6 @@ public:
                && (m_formulation == _v2.m_formulation);
     }
 
-
     bool isCompatible(const FormulationAndRoute& _v2) const
     {
         return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route);
@@ -220,15 +219,23 @@ public:
     {
         if (m_formulation < _f.m_formulation) {
             return true;
+        } else if (m_formulation > _f.m_formulation){
+            return false;
         }
         if (m_route < _f.m_route) {
             return true;
+        }else if (m_route > _f.m_route){
+            return false;
         }
         if (m_absorptionModel < _f.m_absorptionModel) {
             return true;
+        }else if (m_absorptionModel > _f.m_absorptionModel){
+            return false;
         }
         if (m_administrationName < _f.m_administrationName) {
             return true;
+        }else if (m_administrationName > _f.m_administrationName){
+            return false;
         }
         return false;
     }
