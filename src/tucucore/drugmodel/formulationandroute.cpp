@@ -67,7 +67,7 @@ const FullFormulationAndRoute* FormulationAndRoutes::get(
 const FullFormulationAndRoute* FormulationAndRoutes::get(const FormulationAndRoute& _formulation) const
 {
     for (const std::unique_ptr<FullFormulationAndRoute>& far : m_fars) {
-        if (far->m_specs == _formulation) {
+        if (far->m_specs.isCompatible(_formulation)) {
             return far.get();
         }
     }
@@ -87,9 +87,19 @@ std::vector<FormulationAndRoute> mergeFormulationAndRouteList(
     result = _v1;
 
     for (const auto& dd : _v2) {
+        bool found = false;
+        for (const auto& r: result) {
+            if (r.isCompatible(dd))
+                found = true;
+        }
+        if (!found) {
+            result.push_back(dd);
+        }
+        /*
         if (std::find(result.begin(), result.end(), dd) == result.end()) {
             result.push_back(dd);
         }
+        */
     }
 
     return result;

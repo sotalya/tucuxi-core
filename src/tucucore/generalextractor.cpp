@@ -209,10 +209,21 @@ std::vector<const FullFormulationAndRoute*> GeneralExtractor::extractFormulation
     std::vector<FormulationAndRoute> allFormulationAndRoutes;
     for (const auto& intake : _intakeSeries) {
         FormulationAndRoute f = intake.getFormulationAndRoute();
+        bool found;
+        for (const auto& ff: allFormulationAndRoutes) {
+            if (ff.isCompatible(f)) {
+                found = true;
+            }
+        }
+        if (!found) {
+            allFormulationAndRoutes.push_back(f);
+        }
+        /*
         if (std::find(allFormulationAndRoutes.begin(), allFormulationAndRoutes.end(), f)
             == allFormulationAndRoutes.end()) {
             allFormulationAndRoutes.push_back(f);
         }
+        */
     }
     result.reserve(allFormulationAndRoutes.size());
     for (const auto& f : allFormulationAndRoutes) {
@@ -366,10 +377,20 @@ ComputingStatus GeneralExtractor::generalExtractions(
     std::vector<FormulationAndRoute> allFormulationAndRoutes;
     for (const auto& intake : intakeSeries) {
         FormulationAndRoute f = intake.getFormulationAndRoute();
+        bool found = false;
+        for (const auto& ff: allFormulationAndRoutes) {
+            if (ff.isCompatible(f)) {
+                found = true;            }
+        }
+        if (!found) {
+            allFormulationAndRoutes.push_back(f);
+        }
+        /*
         if (std::find(allFormulationAndRoutes.begin(), allFormulationAndRoutes.end(), f)
             == allFormulationAndRoutes.end()) {
             allFormulationAndRoutes.push_back(f);
         }
+        */
     }
 
     std::map<FormulationAndRoute, const FullFormulationAndRoute*> fullFormulationAndRoutes;

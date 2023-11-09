@@ -188,14 +188,32 @@ public:
     {
         return m_administrationName;
     }
-
+/*
     friend bool operator==(const FormulationAndRoute& _v1, const FormulationAndRoute& _v2)
     {
         return (_v1.m_absorptionModel == _v2.m_absorptionModel) && (_v1.m_route == _v2.m_route);
         return (_v1.m_absorptionModel == _v2.m_absorptionModel) && (_v1.m_route == _v2.m_route)
                && (_v1.m_formulation == _v2.m_formulation);
     }
+  */
 
+    bool operator==(const FormulationAndRoute& _v2) const
+    {
+        return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route)
+               && (m_formulation == _v2.m_formulation)
+                && (this->m_administrationName == _v2.m_administrationName);
+        return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route);
+        return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route)
+               && (m_formulation == _v2.m_formulation);
+    }
+
+
+    bool isCompatible(const FormulationAndRoute& _v2) const
+    {
+        return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route);
+        return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route)
+                && (m_formulation == _v2.m_formulation);
+    }
 
     /// \brief Is the duration smaller?
     bool operator<(const FormulationAndRoute& _f) const
