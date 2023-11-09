@@ -4,8 +4,6 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 win32{
-    TARGET = tucutest.exe
-
     exists(C:/Botan/Botan2-64) {
         CONFIG(debug, debug|release) {
             LIBS += -LC:\Botan\botan2-64\lib -lbotan
@@ -19,7 +17,6 @@ win32{
     else {
         error("Error: Botan-64 directory not found in C:/Botan")
     }
-
     LIBS += Iphlpapi.lib
 }
 
