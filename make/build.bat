@@ -45,16 +45,7 @@ if "%BuildLibs%" == "1" (
   )
 )
 
-if "%BuildLibs%" == "1" (
-  for %%i in () do (
-    echo *********************************************
-    echo *** Compiling %%i
-    cd "C:\Users\admin\Documents\Tucuxi\botan"
-    %MAKE% TARGET=WINDOWS -f "C:\Users\admin\Documents\Tucuxi\botan\makefile" %MakeCmd%
-  )
-)
-
-for %%i in (tucucommon tucucore tucucli tucuvalidator tuculicense) do (
+for %%i in (tucucommon tucucore tucuquery tucucli tucuvalidator tucucrypto tuculicense tucudrugfilechecker) do (
   echo *********************************************
   echo *** Compiling %%i
   cd "%TUCUXI_ROOT%\Src\%%i"
