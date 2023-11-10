@@ -246,6 +246,14 @@ ComputingStatus ComputingComponent::compute(
         return ComputingStatus::NoComputingTraits;
     }
 
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+        auto res = m_utils->m_generalExtractor->checkSamplesValidity(
+                _request.getDrugTreatment().getDosageHistory(), _request.getDrugTreatment().getSamples());
+        if (res != ComputingStatus::Ok) {
+            return res;
+        }
+    }
+
     std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;
 
     GroupsIntakeSeries intakeSeries;
@@ -416,6 +424,14 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
         return ComputingStatus::NoComputingTraits;
+    }
+
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+        auto res = m_utils->m_generalExtractor->checkSamplesValidity(
+                _request.getDrugTreatment().getDosageHistory(), _request.getDrugTreatment().getSamples());
+        if (res != ComputingStatus::Ok) {
+            return res;
+        }
     }
 
     std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;
@@ -615,6 +631,14 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
         return ComputingStatus::NoComputingTraits;
+    }
+
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+        auto res = m_utils->m_generalExtractor->checkSamplesValidity(
+                _request.getDrugTreatment().getDosageHistory(), _request.getDrugTreatment().getSamples());
+        if (res != ComputingStatus::Ok) {
+            return res;
+        }
     }
 
     std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;
@@ -873,6 +897,15 @@ ComputingStatus ComputingComponent::compute(
         m_logger.error("The computing traits sent for computation are nullptr");
         return ComputingStatus::NoComputingTraits;
     }
+
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+        auto res = m_utils->m_generalExtractor->checkSamplesValidity(
+                _request.getDrugTreatment().getDosageHistory(), _request.getDrugTreatment().getSamples());
+        if (res != ComputingStatus::Ok) {
+            return res;
+        }
+    }
+
     ComputingAdjustments computer(m_utils.get());
     return computer.compute(_traits, _request, _response);
 }
@@ -884,6 +917,13 @@ ComputingStatus ComputingComponent::compute(
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response)
 {
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+        auto res = m_utils->m_generalExtractor->checkSamplesValidity(
+                _request.getDrugTreatment().getDosageHistory(), _request.getDrugTreatment().getSamples());
+        if (res != ComputingStatus::Ok) {
+            return res;
+        }
+    }
 
     // Simply extract the sample dates
     std::vector<Tucuxi::Common::DateTime> sampleTimes;
@@ -914,6 +954,14 @@ ComputingStatus ComputingComponent::compute(
         std::unique_ptr<SinglePointsData> resp = std::make_unique<SinglePointsData>(_request.getId());
         _response->addResponse(std::move(resp));
         return ComputingStatus::Ok;
+    }
+
+    if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
+        auto res = m_utils->m_generalExtractor->checkSamplesValidity(
+                _request.getDrugTreatment().getDosageHistory(), _request.getDrugTreatment().getSamples());
+        if (res != ComputingStatus::Ok) {
+            return res;
+        }
     }
 
     std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;

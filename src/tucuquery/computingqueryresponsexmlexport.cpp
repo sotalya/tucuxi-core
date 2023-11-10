@@ -277,16 +277,17 @@ std::string ComputingQueryResponseXmlExport::getComputingStatus(
             {Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError,
              {"AposterioriPercentilesOutOfScopeSamplesError", "41"}},
             {Tucuxi::Core::ComputingStatus::AdjustmentsInternalError, {"AdjustmentsInternalError", "42"}},
-            {Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError,
+            {Tucuxi::Core::ComputingStatus::MultiComputingComponentExceptionError,
              {"MultiComputingComponentExceptionError", "43"}},
-            {Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError,
+            {Tucuxi::Core::ComputingStatus::MultiComputingComponentNotInitialized,
              {"MultiComputingComponentNotInitialized", "44"}},
-            {Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError,
+            {Tucuxi::Core::ComputingStatus::MultiActiveMoietyCalculationError,
              {"MultiActiveMoietyCalculationError", "45"}},
-            {Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError,
-             {"PercentilesNoValidPrediction", "46"}},
-            {Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError,
-             {"AposterioriPercentilesNoLikelySample", "47"}}};
+            {Tucuxi::Core::ComputingStatus::PercentilesNoValidPrediction, {"PercentilesNoValidPrediction", "46"}},
+            {Tucuxi::Core::ComputingStatus::AposterioriPercentilesNoLikelySample,
+             {"AposterioriPercentilesNoLikelySample", "47"}},
+            {Tucuxi::Core::ComputingStatus::NoDosageHistory, {"NoDosageHistory", "48"}},
+            {Tucuxi::Core::ComputingStatus::SampleBeforeTreatmentStart, {"SampleBeforeTreatmentStart", "49"}}};
 
     auto it = m.find(_computingStatus);
     if (it != m.end()) {

@@ -189,13 +189,18 @@ public:
         return m_administrationName;
     }
 
-    friend bool operator==(const FormulationAndRoute& _v1, const FormulationAndRoute& _v2)
+    bool operator==(const FormulationAndRoute& _v2) const
     {
-        return (_v1.m_absorptionModel == _v2.m_absorptionModel) && (_v1.m_route == _v2.m_route);
-        return (_v1.m_absorptionModel == _v2.m_absorptionModel) && (_v1.m_route == _v2.m_route)
-               && (_v1.m_formulation == _v2.m_formulation);
+        return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route)
+               && (m_formulation == _v2.m_formulation) && (this->m_administrationName == _v2.m_administrationName);
     }
 
+    bool isCompatible(const FormulationAndRoute& _v2) const
+    {
+        return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route);
+        return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route)
+               && (m_formulation == _v2.m_formulation);
+    }
 
     /// \brief Is the duration smaller?
     bool operator<(const FormulationAndRoute& _f) const
@@ -203,14 +208,26 @@ public:
         if (m_formulation < _f.m_formulation) {
             return true;
         }
+        else if (m_formulation > _f.m_formulation) {
+            return false;
+        }
         if (m_route < _f.m_route) {
             return true;
+        }
+        else if (m_route > _f.m_route) {
+            return false;
         }
         if (m_absorptionModel < _f.m_absorptionModel) {
             return true;
         }
+        else if (m_absorptionModel > _f.m_absorptionModel) {
+            return false;
+        }
         if (m_administrationName < _f.m_administrationName) {
             return true;
+        }
+        else if (m_administrationName > _f.m_administrationName) {
+            return false;
         }
         return false;
     }
