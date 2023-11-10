@@ -342,19 +342,15 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         fructose_assert_eq(resultC, ComputingStatus::SampleBeforeTreatmentStart);
 
 
-        std::unique_ptr<ComputingTraitPercentiles> traits = std::make_unique<ComputingTraitPercentiles>(
-                requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+        auto traitsM = std::make_unique<ComputingTraitAtMeasures>(requestResponseId, computingOption);
+        ComputingRequest requestM(requestResponseId, *drugModel, *drugTreatment, std::move(traitsM));
 
-        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+        std::unique_ptr<ComputingResponse> responseM = std::make_unique<ComputingResponse>(requestResponseId);
 
-        std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+        ComputingStatus resultM;
+        resultM = component->compute(requestM, responseM);
 
-        ComputingStatus result;
-        result = component->compute(request, response);
-
-        fructose_assert_eq(result, ComputingStatus::SampleBeforeTreatmentStart);
-
-        fructose_assert(response->getData() == nullptr);
+        fructose_assert_eq(resultM, ComputingStatus::SampleBeforeTreatmentStart);
     }
 };
 
