@@ -87,19 +87,13 @@ std::vector<FormulationAndRoute> mergeFormulationAndRouteList(
     result = _v1;
 
     for (const auto& dd : _v2) {
-        bool found = false;
-        for (const auto& r: result) {
-            if (r.isCompatible(dd))
-                found = true;
-        }
-        if (!found) {
+        if (std::find_if(
+                    result.begin(),
+                    result.end(),
+                    [&dd](const FormulationAndRoute& _f) -> bool { return _f.isCompatible(dd); })
+            == result.end()) {
             result.push_back(dd);
         }
-        /*
-        if (std::find(result.begin(), result.end(), dd) == result.end()) {
-            result.push_back(dd);
-        }
-        */
     }
 
     return result;

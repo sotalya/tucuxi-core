@@ -288,7 +288,8 @@ int main(int argc, char** argv)
     computingComponentConcentrationTests.add_test("Simple1", &TestComputingComponentConcentration::testImatinib1);
     computingComponentConcentrationTests.add_test(
             "ImatinibSteadyState", &TestComputingComponentConcentration::testImatinibSteadyState);
-
+    computingComponentConcentrationTests.add_test(
+            "SampleBeforeTreatmentStart", &TestComputingComponentConcentration::testSampleBeforeTreatmentStart);
 
 
     res = computingComponentConcentrationTests.run(argc, argv);

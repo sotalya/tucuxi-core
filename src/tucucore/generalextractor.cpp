@@ -27,6 +27,21 @@ namespace Core {
 
 GeneralExtractor::GeneralExtractor() = default;
 
+
+ComputingStatus GeneralExtractor::checkSamplesValidity(const DosageHistory& _dosageHistory, const Samples& _samples)
+{
+    if (_dosageHistory.isEmpty()) {
+        return ComputingStatus::NoDosageHistory;
+    }
+    auto firstDate = _dosageHistory.getDosageTimeRanges()[0]->getStartDate();
+    for (const auto& sample : _samples) {
+        if (sample->getDate() < firstDate) {
+            return ComputingStatus::SampleBeforeTreatmentStart;
+        }
+    }
+    return ComputingStatus::Ok;
+}
+
 Duration GeneralExtractor::secureStartDuration(const HalfLife& _halfLife)
 {
     Duration duration;
@@ -75,7 +90,9 @@ ComputingStatus GeneralExtractor::extractAposterioriEtas(
 
     if ((_parameterType == PredictionParameterType::Aposteriori) && (!samples.empty())) {
         for (const auto& sample : samples) {
-            if (sample->getDate() < firstEvent) {
+            if ((sample->getDate() < firstEvent)
+                && (sample->getDate()
+                    >= _request.getDrugTreatment().getDosageHistory().getDosageTimeRanges()[0]->getStartDate())) {
                 firstEvent = sample->getDate();
             }
             if (sample->getDate() > lastEvent) {
@@ -209,21 +226,14 @@ std::vector<const FullFormulationAndRoute*> GeneralExtractor::extractFormulation
     std::vector<FormulationAndRoute> allFormulationAndRoutes;
     for (const auto& intake : _intakeSeries) {
         FormulationAndRoute f = intake.getFormulationAndRoute();
-        bool found;
-        for (const auto& ff: allFormulationAndRoutes) {
-            if (ff.isCompatible(f)) {
-                found = true;
-            }
-        }
-        if (!found) {
-            allFormulationAndRoutes.push_back(f);
-        }
-        /*
-        if (std::find(allFormulationAndRoutes.begin(), allFormulationAndRoutes.end(), f)
+
+        if (std::find_if(
+                    allFormulationAndRoutes.begin(),
+                    allFormulationAndRoutes.end(),
+                    [&f](const FormulationAndRoute& _f) -> bool { return _f.isCompatible(f); })
             == allFormulationAndRoutes.end()) {
             allFormulationAndRoutes.push_back(f);
         }
-        */
     }
     result.reserve(allFormulationAndRoutes.size());
     for (const auto& f : allFormulationAndRoutes) {
@@ -308,6 +318,12 @@ ComputingStatus GeneralExtractor::generalExtractions(
 
     if (nIntakes > 0) {
 
+        // Check the fantom start. Set the calculation start time
+        // to the first intake of the dosage history at earliest
+        if (fantomStart < _dosageHistory.getDosageTimeRanges()[0]->getStartDate()) {
+            _calculationStartTime = _dosageHistory.getDosageTimeRanges()[0]->getStartDate();
+        }
+
         // Ensure that time ranges are correctly handled. We set again the interval based on the start of
         // next intake
         for (size_t i = 0; i < nIntakes - 1; i++) {
@@ -377,20 +393,14 @@ ComputingStatus GeneralExtractor::generalExtractions(
     std::vector<FormulationAndRoute> allFormulationAndRoutes;
     for (const auto& intake : intakeSeries) {
         FormulationAndRoute f = intake.getFormulationAndRoute();
-        bool found = false;
-        for (const auto& ff: allFormulationAndRoutes) {
-            if (ff.isCompatible(f)) {
-                found = true;            }
-        }
-        if (!found) {
-            allFormulationAndRoutes.push_back(f);
-        }
-        /*
-        if (std::find(allFormulationAndRoutes.begin(), allFormulationAndRoutes.end(), f)
+
+        if (std::find_if(
+                    allFormulationAndRoutes.begin(),
+                    allFormulationAndRoutes.end(),
+                    [&f](const FormulationAndRoute& _f) -> bool { return _f.isCompatible(f); })
             == allFormulationAndRoutes.end()) {
             allFormulationAndRoutes.push_back(f);
         }
-        */
     }
 
     std::map<FormulationAndRoute, const FullFormulationAndRoute*> fullFormulationAndRoutes;

@@ -110,7 +110,11 @@ enum class [[nodiscard]] ComputingStatus{
         /// Error during percentiles calculation. Caused by no valid prediction being computed
         PercentilesNoValidPrediction,
         /// There is no likely samples, so the a posteriori percentiles can not be computed
-        AposterioriPercentilesNoLikelySample};
+        AposterioriPercentilesNoLikelySample,
+        /// The dosage history is empty, but should not be
+        NoDosageHistory,
+        /// There is at least one sample before the treatment start
+        SampleBeforeTreatmentStart};
 
 std::ostream& operator<<(std::ostream& _stream, const ComputingStatus& _e);
 
