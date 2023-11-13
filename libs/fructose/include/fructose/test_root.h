@@ -1,5 +1,5 @@
-/* FRUCTOSE C++ unit test library. 
-Copyright (c) 2014 Andrew Peter Marlow. All rights reserved.
+/* FRUCTOSE C++ unit test library.
+Copyright (c) 2018 Andrew Peter Marlow. All rights reserved.
 http://www.andrewpetermarlow.co.uk.
 
 This library is free software; you can redistribute it and/or
@@ -62,10 +62,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * All unit test facilities associated are scoped to the fructose namespace.
  */
 namespace fructose {
-   
+
 /**
  * Base class for test_base template.
- * 
+ *
  * This class keeps track of the test mode flags and
  * of the error count. It is responsible for formatting
  * the test failure messages. It also takes care of the
@@ -94,113 +94,113 @@ public:
 
     /**
      * Destructor
-     * 
+     *
      * Virtual in order to enable dynamic_cast
      */
     virtual ~test_root();
 
     /**
      * Default constructor
-     * 
+     *
      * Initialise error counter and mode flags.
-     */   
+     */
     test_root();
-         
+
     /**
-     * Accessor for verbose mode flag 
-     * 
+     * Accessor for verbose mode flag
+     *
      * Return true if verbose mode is on.
      * Verbose mode is anbled via the command line option "-v".
-     * 
+     *
      * @return The current setting of the verbose mode flag
      */
     bool verbose() const;
-    
+
     /**
-     * Setter for verbose mode flag 
-     * 
+     * Setter for verbose mode flag
+     *
      * Switch on/off verbose mode.
-     * 
+     *
      * @param flag - the desired setting of the verbose mode flag
      */
     void verbose(bool flag);
-    
+
     /**
      * Accessor for stop-on-failure mode flag
-     * 
+     *
      * Return true if stop-on-failure mode is set.
      * By default this value is false, i.e. when a test fails
      * the harness continues to run the other tests, producing a count
      * of all the failed tests at the end.
-     * 
+     *
      * @return The current setting of the stop-on-failure mode flag
      */
     bool stop_on_failure() const;
-    
+
     /**
      * Setter for stop-on-failure mode flag
-     * 
+     *
      * Switch on/off stop-on-failure mode.
      * By default this flag is off, Turning it on causes the
      * test harness to consider the first assertion failure to
-     * be fatal. 
-     * 
+     * be fatal.
+     *
      * @param flag - the desired setting of the stop-on-failure mode
      */
     void stop_on_failure(bool flag);
-    
+
     /**
      * Accessor for reverse mode flag
-     * 
+     *
      * Return true if reverse mode is set. Nornally this will never
      * be true, it is provided for testing the framework.
      * It is used by the -reverse command line option for such testing,
      * to reverse the sense of test assertions.
-     * 
+     *
      * @return The current setting of the reverse mode flag
      */
     bool reverse_mode() const;
-    
+
     /**
      * Setter for reverse mode flag
-     * 
+     *
      * Revert the meaning of condition for convenient
      * testing of the test framework.
-     * 
+     *
      * @param flag - the desired setting of the reverse mode
      */
     void reverse_mode(bool flag);
-    
+
     /**
      * Accessor for error status
-     * 
+     *
      * Return true if an assertion failed.
-     * 
+     *
      * @return The current error status - true if there was a failed assertion
      */
     bool error() const;
-     
+
     /**
      * Accessor for number of failed assertions
-     * 
+     *
      * Return number of failed assertions.
-     * 
+     *
      * @return The current number of failed assertions
      */
     int error_count() const;
-    
+
     /**
      * Accessor for test return status
-     * 
+     *
      * Compute the return status for use by test driver main.
-     * 
-     * @return Return status: EXIT_SUCCESS if error count is 0, 
+     *
+     * @return Return status: EXIT_SUCCESS if error count is 0,
      * EXIT_FAILURE otherise
      */
     int return_status() const;
 
     /**
-     * Setup initial conditions for each test. 
+     * Setup initial conditions for each test.
      */
     virtual void setup();
 
@@ -218,7 +218,7 @@ public:
      * Return the name of the current test.
      */
     std::string get_test_name() const;
-    
+
     /**
      * Return the parameters for the current test.
      */
@@ -226,69 +226,69 @@ public:
 
     /**
      * Tests the specified condition which must be true for the test to pass.
-     * If the condition is false then test case name, the filename, and line 
-     * number are reported and the error count is increased. Note that because 
+     * If the condition is false then test case name, the filename, and line
+     * number are reported and the error count is increased. Note that because
      * this sets an error status the method cannot be static.
-     * 
+     *
      * @param condition - the condition to be checked by the test
      * @param test_case_name - the name of the enclosing test case
      * @param msg - the message to be printed on failure
      * @param filename - the name of the file containing the test
-     * @param line_number - the location of the test assertion in the test source 
+     * @param line_number - the location of the test assertion in the test source
      * file
      */
-    void test_assert(bool condition, const std::string& test_case_name, 
+    void test_assert(bool condition, const std::string& test_case_name,
                      const char *msg, const char* filename, int line_number);
 
     /**
      * Tests that two values are equal.
-     * If this condition is false then test case name, the filename, and line 
-     * number are reported and the error count is increased. Note that because 
+     * If this condition is false then test case name, the filename, and line
+     * number are reported and the error count is increased. Note that because
      * this sets an error status the method cannot be static.
-     * 
+     *
      * @param lhs - the value on the left hand side of the expression (lhs == rhs)
      * @param rhs - the value on the right hand side of the expression (lhs == rhs)
      * @param test_case_name - the name of the enclosing test case
      * @param msg - the message to be printed on failure
      * @param filename - the name of the file containing the test
-     * @param line_number - the location of the test assertion in the test source 
+     * @param line_number - the location of the test assertion in the test source
      * file
      */
     template <typename lhs_type, typename rhs_type>
     void test_assert_eq(const lhs_type& lhs, const rhs_type& rhs,
-                            const std::string& test_case_name, 
+                            const std::string& test_case_name,
                             const char *msg1, const char* msg2,
                             const char* filename, int line_number);
 
     /**
      * Tests that two values are not equal.
-     * If this condition is false then test case name, the filename, and line 
-     * number are reported and the error count is increased. Note that because 
+     * If this condition is false then test case name, the filename, and line
+     * number are reported and the error count is increased. Note that because
      * this sets an error status the method cannot be static.
-     * 
+     *
      * @param lhs - the value on the left hand side of the expression (lhs == rhs)
      * @param rhs - the value on the right hand side of the expression (lhs == rhs)
      * @param test_case_name - the name of the enclosing test case
      * @param msg - the message to be printed on failure
      * @param filename - the name of the file containing the test
-     * @param line_number - the location of the test assertion in the test source 
+     * @param line_number - the location of the test assertion in the test source
      * file
      */
     template <typename lhs_type, typename rhs_type>
     void test_assert_ne(const lhs_type& lhs, const rhs_type& rhs,
-                            const std::string& test_case_name, 
+                            const std::string& test_case_name,
                             const char *msg1, const char* msg2,
                             const char* filename, int line_number);
 
     /**
      * Tests that two values are equal.
-     * If this condition is false then test case name, the filename, and line 
-     * number are reported and the error count is increased. Note that because 
+     * If this condition is false then test case name, the filename, and line
+     * number are reported and the error count is increased. Note that because
      * this sets an error status the method cannot be static.
      */
     void test_assert_same_data(const void* lhs, const void* rhs,
                                unsigned int data_length,
-                               const std::string& test_case_name, 
+                               const std::string& test_case_name,
                                const char *msg1, const char* msg2,
                                const char* filename, int line_number);
 
@@ -299,20 +299,20 @@ public:
      * Tests that two doubles are equal.
      * The floating point comparison is made using default values
      * for relative and absolute tolerance.
-     * If this condition is false then test case name, the filename, and line 
-     * number are reported and the error count is increased. Note that because 
+     * If this condition is false then test case name, the filename, and line
+     * number are reported and the error count is increased. Note that because
      * this sets an error status the method cannot be static.
-     * 
+     *
      * @param lhs - the value on the left hand side of the expression (lhs == rhs)
      * @param rhs - the value on the right hand side of the expression (lhs == rhs)
      * @param test_case_name - the name of the enclosing test case
      * @param msg - the message to be printed on failure
      * @param filename - the name of the file containing the test
-     * @param line_number - the location of the test assertion in the test source 
+     * @param line_number - the location of the test assertion in the test source
      * file
      */
     void test_assert_double_eq(double lhs, double rhs,
-                                   const std::string& test_case_name, 
+                                   const std::string& test_case_name,
                                    const char *msg1, const char* msg2,
                                    const char* filename, int line_number);
 
@@ -320,7 +320,7 @@ public:
      * Tests that two doubles are not equal.
      */
     void test_assert_double_ne(double lhs, double rhs,
-                                   const std::string& test_case_name, 
+                                   const std::string& test_case_name,
                                    const char *msg1, const char* msg2,
                                    const char* filename, int line_number);
 
@@ -328,7 +328,7 @@ public:
      * tests that lhs < rhs.
      */
     void test_assert_double_lt(double lhs, double rhs,
-                                   const std::string& test_case_name, 
+                                   const std::string& test_case_name,
                                    const char *msg1, const char* msg2,
                                    const char* filename, int line_number);
 
@@ -336,7 +336,7 @@ public:
      * tests that lhs <= rhs.
      */
     void test_assert_double_le(double lhs, double rhs,
-                                   const std::string& test_case_name, 
+                                   const std::string& test_case_name,
                                    const char *msg1, const char* msg2,
                                    const char* filename, int line_number);
 
@@ -344,7 +344,7 @@ public:
      * tests that lhs > rhs.
      */
     void test_assert_double_gt(double lhs, double rhs,
-                                   const std::string& test_case_name, 
+                                   const std::string& test_case_name,
                                    const char *msg1, const char* msg2,
                                    const char* filename, int line_number);
 
@@ -352,7 +352,7 @@ public:
      * tests that lhs >= rhs.
      */
     void test_assert_double_ge(double lhs, double rhs,
-                                   const std::string& test_case_name, 
+                                   const std::string& test_case_name,
                                    const char *msg1, const char* msg2,
                                    const char* filename, int line_number);
 
@@ -360,21 +360,21 @@ public:
      * Tests that two doubles are equal.
      * The floating point comparison is made with specified values
      * for relative and absolute tolerance.
-     * If this condition is false then test case name, the filename, and line 
-     * number are reported and the error count is increased. Note that because 
+     * If this condition is false then test case name, the filename, and line
+     * number are reported and the error count is increased. Note that because
      * this sets an error status the method cannot be static.
-     * 
+     *
      * @param lhs - the value on the left hand side of the expression (lhs == rhs)
      * @param rhs - the value on the right hand side of the expression (lhs == rhs)
      * @param test_case_name - the name of the enclosing test case
      * @param msg - the message to be printed on failure
      * @param filename - the name of the file containing the test
-     * @param line_number - the location of the test assertion in the test source 
+     * @param line_number - the location of the test assertion in the test source
      * file
      */
     void test_assert_double_eq(double lhs, double rhs,
                    double relative_tolerance, double absolute_tolerance,
-                            const std::string& test_case_name, 
+                            const std::string& test_case_name,
                             const char *msg1, const char* msg2,
                             const char* filename, int line_number);
 
@@ -383,7 +383,7 @@ public:
      */
     void test_assert_double_ne(double lhs, double rhs,
                    double relative_tolerance, double absolute_tolerance,
-                                   const std::string& test_case_name, 
+                                   const std::string& test_case_name,
                                    const char *msg1, const char* msg2,
                                    const char* filename, int line_number);
 
@@ -392,7 +392,7 @@ public:
      */
     void test_assert_double_lt(double lhs, double rhs,
                    double relative_tolerance, double absolute_tolerance,
-                                   const std::string& test_case_name, 
+                                   const std::string& test_case_name,
                                    const char *msg1, const char* msg2,
                                    const char* filename, int line_number);
 
@@ -401,7 +401,7 @@ public:
      */
     void test_assert_double_le(double lhs, double rhs,
                    double relative_tolerance, double absolute_tolerance,
-                                   const std::string& test_case_name, 
+                                   const std::string& test_case_name,
                                    const char *msg1, const char* msg2,
                                    const char* filename, int line_number);
 
@@ -410,7 +410,7 @@ public:
      */
     void test_assert_double_gt(double lhs, double rhs,
                    double relative_tolerance, double absolute_tolerance,
-                                   const std::string& test_case_name, 
+                                   const std::string& test_case_name,
                                    const char *msg1, const char* msg2,
                                    const char* filename, int line_number);
 
@@ -419,39 +419,39 @@ public:
      */
     void test_assert_double_ge(double lhs, double rhs,
                    double relative_tolerance, double absolute_tolerance,
-                                   const std::string& test_case_name, 
+                                   const std::string& test_case_name,
                                    const char *msg1, const char* msg2,
                                    const char* filename, int line_number);
 
     /**
      * Type of test suite
-     * 
+     *
      * A suite is  list of test case names along with their associated
      * command line parameters.
      */
     typedef std::vector<test_info> suite;
-    
+
     /**
      * Generic execption handler for use in test drivers
-     * 
+     *
      * Rethrow current exception, print what string for standard exceptions
      * and "unknown exception" for any other exception. Return EXIT_FAILURE
-     * for use as exit code by the main function of the test driver. 
-     * 
+     * for use as exit code by the main function of the test driver.
+     *
      * @return EXIT_FAILURE
-     */    
+     */
     int exception_handler();
 
     /**
      * Convenience function for underlying a title
-     * 
-     * Create a string of a specifyable underline character for underlying 
+     *
+     * Create a string of a specifyable underline character for underlying
      * a given title. This is used when the verbose flag is on, to show
      * in a pretty way which test is being run.
-     * 
+     *
      * @param title - The title to be underlined
      * @param uline - The character to be used for underlining
-     * 
+     *
      * @return The underlining string
      */
     static std::string underline(const std::string& title, char uline = '=');
@@ -459,16 +459,15 @@ public:
     /**
      * Decrease error count.
      * It is possible to have tests involving exception handling that
-     * cause std::uncaught_exception to be true, even if no exception 
-     * escapes.
+     * cause std::uncaught_exception to be true, even if no exception escapes.
      * These routines can call this method to fix the error count.
-     */    
+     */
     void decrease_error_count();
 
 protected:
 
      /**
-      * 
+      *
       * Increase error count by one.
       */
     void increase_error_count();
@@ -484,7 +483,7 @@ protected:
     }
 
      /**
-      * 
+      *
       * Set the exception_happened flag.
       * This is for when a test method experiences an exception
       * and has no tests for it. The method will blow out but we
@@ -494,24 +493,23 @@ protected:
 
     /**
      * Populate test suite.
-     * 
-     * Populate suite from command line, taking into account 
+     *
+     * Populate suite from command line, taking into account
      * the test case available_tests.
      * Display usage info and exit if -h flag set.
-     * 
+     *
      * @param available_tests - The list of available tests
      * @param argc     - The argument counter parameter passed to main
      * @param argv     - The argument array passed to main
-     * 
+     *
      * @return The list of test cases selected by the user
      */
     suite do_get_suite(const suite& available_tests, int argc, char* argv[]);
-    
+
 private:
     void split(std::vector<std::string> &tokens, const std::string& text, char sep)
     {
         size_t start = 0, end = 0;
-        // YTA: Added the cast to int
         while ((end = text.find(sep, start)) != std::string::npos) {
             tokens.push_back(text.substr(start, end - start));
             start = end + 1;
@@ -537,7 +535,7 @@ private:
 
     /**
      * The error count
-     */    
+     */
     int m_error_count;
 
     /**
@@ -567,8 +565,8 @@ private:
 // ====================
 
 inline
-test_root::test_root() 
-    : m_verbose(false) 
+test_root::test_root()
+    : m_verbose(false)
     , m_stop_on_failure(false)
     , m_reverse_mode(false)
     , m_error_count(0)
@@ -585,11 +583,11 @@ test_root::~test_root()
     {
         increase_error_count();
     }
-        
+
     if (error_count() > 0)
     {
-        std::cout << "\nTest driver failed: " 
-            << error_count() << (error_count() == 1 ? " error" : " errors") 
+        std::cout << "\nTest driver failed: "
+            << error_count() << (error_count() == 1 ? " error" : " errors")
             << std::endl;
     }
     else if (m_exception_happened)
@@ -615,11 +613,11 @@ test_root::~test_root()
 inline
 bool test_root::verbose() const
 {
-    return m_verbose;    
+    return m_verbose;
 }
 
 inline
-void test_root::verbose(bool flag) 
+void test_root::verbose(bool flag)
 {
     m_verbose = flag;
 }
@@ -627,11 +625,11 @@ void test_root::verbose(bool flag)
 inline
 bool test_root::stop_on_failure() const
 {
-    return m_stop_on_failure;    
+    return m_stop_on_failure;
 }
 
 inline
-void test_root::stop_on_failure(bool flag) 
+void test_root::stop_on_failure(bool flag)
 {
     m_stop_on_failure = flag;
 }
@@ -639,17 +637,17 @@ void test_root::stop_on_failure(bool flag)
 inline
 bool test_root::reverse_mode() const
 {
-    return m_reverse_mode;    
+    return m_reverse_mode;
 }
 
 inline
-void test_root::reverse_mode(bool flag) 
+void test_root::reverse_mode(bool flag)
 {
     m_reverse_mode = flag;
 }
 
 inline
-int test_root::error_count() const 
+int test_root::error_count() const
 {
     return m_error_count;
 }
@@ -657,14 +655,14 @@ int test_root::error_count() const
 inline
 bool test_root::error() const
 {
-    return m_error_count > 0;    
+    return m_error_count > 0;
 }
 
 inline
 int test_root::return_status() const
 {
-    return (m_error_count == 0 && 
-            !m_exception_happened) ? EXIT_SUCCESS : EXIT_FAILURE;    
+    return (m_error_count == 0 &&
+            !m_exception_happened) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
 inline
@@ -718,7 +716,7 @@ void test_root::decrease_error_count()
 
 inline
 void test_root::test_assert(
-    bool condition, const std::string& test_case_name, 
+    bool condition, const std::string& test_case_name,
     const char *msg, const char* filename, int line_number)
 {
     set_assertion_tested();
@@ -726,12 +724,10 @@ void test_root::test_assert(
     if (condition == reverse_mode())
     {
         std::cout
-            << "Error: " << test_case_name << " in " 
-            << filename << "(" << line_number << "): " 
+            << "Error: " << test_case_name << " in "
+            << filename << "(" << line_number << "): "
             << msg << " failed." << std::endl;
-                
         increase_error_count();
-        
         if (stop_on_failure())
         {
             // decrement error count to compensate for later increase
@@ -745,8 +741,8 @@ void test_root::test_assert(
 }
 
 inline
-test_root::suite 
-test_root::do_get_suite(const test_root::suite& available_tests, 
+test_root::suite
+test_root::do_get_suite(const test_root::suite& available_tests,
                       int argc, char* argv[])
 {
     std::stringstream str;
@@ -774,7 +770,7 @@ test_root::do_get_suite(const test_root::suite& available_tests,
     test_info current_test_info;
     bool include_all = false;
 
-    for (size_t i = 1; i < (unsigned int)argc; i++)
+    for (int i = 1; i < argc; i++)
     {
         if (found_tests)
         {
@@ -782,13 +778,13 @@ test_root::do_get_suite(const test_root::suite& available_tests,
             {
                 if (strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--args") == 0)
                 {
-                    if ((i+1) < (unsigned int) argc)
+                    if ((i+1) < argc)
                     {
                         std::vector<test_info>::iterator it = result.begin();
                         for (; it != result.end(); ++it)
                         {
                             if (it->m_test_name == current_test_info.m_test_name)
-                            { 
+                            {
                                 test_info& info_ref = *it;
                                 split(info_ref.m_arguments, argv[i+1], ' ');
                                 i++;
@@ -864,7 +860,7 @@ test_root::do_get_suite(const test_root::suite& available_tests,
     {
         std::cout << usage_text << std::endl;
         std::cout << "Supported test names are:" << std::endl;
-        for (suite::const_iterator it = available_tests.begin(); 
+        for (suite::const_iterator it = available_tests.begin();
              it != available_tests.end(); ++it)
         {
             std::cout << "    " << it->m_test_name << std::endl;
@@ -884,14 +880,14 @@ int test_root::exception_handler()
     }
     catch (std::exception& e)
     {
-        std::cout << "Error: " << e.what() << std::endl;        
+        std::cout << "Error: " << e.what() << std::endl;
 	m_exception_happened = true;
     }
     catch (...)
     {
         std::cout << "Error: " << "unknown exception" << std::endl;
 	m_exception_happened = true;
-    }    
+    }
     return EXIT_FAILURE;
 }
 
@@ -900,7 +896,7 @@ std::string test_root::underline(const std::string& title, char c)
 {
     std::string result;
     for (size_t i = 0; i != title.size(); ++i)
-        result += c;        
+        result += c;
     return result;
 }
 
@@ -916,7 +912,7 @@ std::string test_root::underline(const std::string& title, char c)
 inline \
 void test_root::test_assert_double_##comparison_function(double lhs, \
                                    double rhs, \
-                                   const std::string& /*test_case_name*/, \
+                                   const std::string& test_case_name, \
                                    const char* lhs_name, \
                                    const char* rhs_name,\
                                    const char* filename, int line_number) \
@@ -1001,7 +997,7 @@ generate_fructose_assert_double_compare_tol(ge, ">=")
 template <typename lhs_type, typename rhs_type>
 inline
 void test_root::test_assert_eq(const lhs_type& lhs, const rhs_type& rhs,
-                                   const std::string& test_case_name, 
+                                   const std::string& test_case_name,
                                    const char *msg1, const char* msg2,
                                    const char* filename, int line_number)
 {
@@ -1010,12 +1006,11 @@ void test_root::test_assert_eq(const lhs_type& lhs, const rhs_type& rhs,
     if ((lhs == rhs) == reverse_mode())
     {
         std::cout
-            << "Error: " << test_case_name << " in " 
-            << filename << "(" << line_number << "): " 
+            << "Error: " << test_case_name << " in "
+            << filename << "(" << line_number << "): "
             << msg1 << " == " << msg2
             << " (" << lhs << " == " << rhs << ")"
             << " failed." << std::endl;
-                
         increase_error_count();
         if (stop_on_failure())
         {
@@ -1032,7 +1027,7 @@ void test_root::test_assert_eq(const lhs_type& lhs, const rhs_type& rhs,
 template <typename lhs_type, typename rhs_type>
 inline
 void test_root::test_assert_ne(const lhs_type& lhs, const rhs_type& rhs,
-                                   const std::string& test_case_name, 
+                                   const std::string& test_case_name,
                                    const char *msg1, const char* msg2,
                                    const char* filename, int line_number)
 {
@@ -1041,12 +1036,11 @@ void test_root::test_assert_ne(const lhs_type& lhs, const rhs_type& rhs,
     if ((lhs != rhs) == reverse_mode())
     {
         std::cout
-            << "Error: " << test_case_name << " in " 
-            << filename << "(" << line_number << "): " 
+            << "Error: " << test_case_name << " in "
+            << filename << "(" << line_number << "): "
             << msg1 << " != " << msg2
             << " (" << lhs << " != " << rhs << ")"
             << " failed." << std::endl;
-                
         increase_error_count();
         if (stop_on_failure())
         {
@@ -1063,8 +1057,8 @@ void test_root::test_assert_ne(const lhs_type& lhs, const rhs_type& rhs,
 inline
 void test_root::test_assert_same_data(const void* lhs, const void* rhs,
                                       unsigned int data_length,
-                                      const std::string& test_case_name, 
-                                      const char * /*msg1*/, const char* /*msg2*/,
+                                      const std::string& test_case_name,
+                                      const char *msg1, const char* msg2,
                                       const char* filename, int line_number)
 {
     set_assertion_tested();
@@ -1079,12 +1073,11 @@ void test_root::test_assert_same_data(const void* lhs, const void* rhs,
         std::string address1 = str1.str();
         std::string address2 = str2.str();
         std::cout
-            << "Error: " << test_case_name << " in " 
-            << filename << "(" << line_number << "): " 
+            << "Error: " << test_case_name << " in "
+            << filename << "(" << line_number << "): "
             << "The data at " << address1 << " and " << address2 << " (" << data_length << " bytes) is different. "
             << "First difference is at offset " << data_index
             << ". Assertion failed." << std::endl;
-                
         increase_error_count();
         if (stop_on_failure())
         {
@@ -1419,7 +1412,7 @@ bool test_root::same_as (const void* lhs, const void* rhs, unsigned int data_len
    std::cout << "expected an exception to be thrown but catchall caught nothing" << std::endl; \
             }                \
         }                    \
-        fructose::test_root::test_assert(ok, get_test_name(),  #X " throws " #E, __FILE__, __LINE__);} 
+        fructose::test_root::test_assert(ok, get_test_name(),  #X " throws " #E, __FILE__, __LINE__);}
 
 #define FRUCTOSE_ASSERT_EXCEPTION(X, E) fructose_assert_exception(X, E)
 
