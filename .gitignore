@@ -14,4 +14,9 @@ make/objs/*
 test/*/objs/*
 libs/*/objs/*
 libs/*/build/*
+#botan
+*.lib
+*.exe
+*.pdb
+*.ilk
 
