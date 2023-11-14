@@ -237,7 +237,6 @@ LicenseError LicenseManager::generateRequestString(std::string& _request, const 
     LicenseRequest request(idType, hashedFingerprint, DateTime::now(), _version);
 
     // Encrypt content of licence file
-    std::string fuck = request.toString();
     if (!CryptoHelper::encrypt(LicenseManager::sm_key, request.toString(), _request)) {
         LoggerHelper logger;
         logger.error("Cannot encrypt license file.");
