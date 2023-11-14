@@ -295,10 +295,10 @@ int main(int argc, char** argv)
     res = computingComponentConcentrationTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        //std::cerr << "Computing Component Concentration test failed\n";
+        std::cerr << "Computing Component Concentration test failed\n";
     }
     else {
-        // std::cout << "Computing Component Concentration test succeeded\n";
+        std::cout << "Computing Component Concentration test succeeded\n";
     }
 #endif
 
