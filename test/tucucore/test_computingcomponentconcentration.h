@@ -351,6 +351,8 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
         resultM = component->compute(requestM, responseM);
 
         fructose_assert_eq(resultM, ComputingStatus::SampleBeforeTreatmentStart);
+
+        delete component;
     }
 };
 
