@@ -49,7 +49,7 @@ int main(int argc, char** argv)
         exit(1);
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        std::cout << "Date and time test succeeded\n";
     }
 #endif
 
@@ -63,7 +63,7 @@ int main(int argc, char** argv)
         exit(1);
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        std::cout << "ComponentManager test succeeded\n";
     }
 #endif
 
@@ -78,7 +78,7 @@ int main(int argc, char** argv)
         exit(1);
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        std::cout << "Logger test succeeded\n";
     }
 
     Tucuxi::Common::LoggerHelper::beforeExit();
@@ -94,7 +94,7 @@ int main(int argc, char** argv)
         exit(1);
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        std::cout << "Script engine test succeeded\n";
     }
 #endif
 
@@ -110,7 +110,7 @@ int main(int argc, char** argv)
         exit(1);
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        std::cout << "XML test succeeded\n";
     }
 #endif
 
@@ -124,7 +124,7 @@ int main(int argc, char** argv)
         exit(1);
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        std::cout << "Iterator test succeeded\n";
     }
 #endif
 
@@ -138,7 +138,7 @@ int main(int argc, char** argv)
         exit(1);
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        std::cout << "xmlImporter test succeeded\n";
     }
 #endif
 
@@ -152,7 +152,7 @@ int main(int argc, char** argv)
         exit(1);
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        std::cout << "unit test succeeded\n";
     }
 #endif
 
