@@ -15,7 +15,7 @@ INCLUDES := ../../libs/fructose/include \
             ../../libs/date/include \
             ../../libs/rapidxml \
             ../../libs/eigen \
-            ../../libs/botan-2.19.3/build/include
+            ../../libs/botan/build/include
 
 LIBS := tucucommon botan
 EXTLIBS := 

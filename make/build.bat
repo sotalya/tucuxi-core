@@ -37,7 +37,7 @@ if not defined VisualStudioVersion (
 set MAKE="C:\Qt\Tools\mingw810_64\bin\mingw32-make.exe"
 
 if "%BuildLibs%" == "1" (
-  for %%i in (tiny-js-master-20170629 botan-2.19.3) do (
+  for %%i in (tiny-js-master-20170629 botan) do (
     echo *********************************************
     echo *** Compiling %%i
     cd "%TUCUXI_ROOT%\libs\%%i"

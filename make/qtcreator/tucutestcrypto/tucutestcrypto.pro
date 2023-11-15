@@ -6,11 +6,11 @@ CONFIG -= qt
 win32{
     exists(C:/Botan/Botan2-64) {
         CONFIG(debug, debug|release) {
-            LIBS += -LC:\Botan\botan2-64\lib -lbotan
+            LIBS += -LC:\Botan\botan2-64\lib -lbotan \
 #            LIBS += -LC:\Botan\botan2-64\lib -lbotand
         }
         CONFIG(release, debug|release) {
-            LIBS += -LC:\Botan\botan2-64\lib -lbotan
+            LIBS += -LC:\Botan\botan2-64\lib -lbotan \
         }
         INCLUDEPATH += C:\Botan\botan2-64\include\botan-2
     }

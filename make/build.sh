@@ -31,7 +31,7 @@ for i in "$@" ; do
 done
 
 if [ $BUILD_LIBS -eq 1 ] ; then
-   for MODULE in tiny-js-master-20170629 botan-2.1.0
+   for MODULE in tiny-js-master-20170629 botan
    do
       cd $TUCUXI_ROOT/libs/$MODULE
       mkdir -p objs
