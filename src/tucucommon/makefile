@@ -24,11 +24,12 @@ SOURCES := componentmanager.cpp \
            xmlnode.cpp
 
 INCLUDES := ../../libs/spdlog/include \
-            ../../libs/eigen-3.3.2 \
+            ../../libs/eigen \
             ../../libs/tiny-js \
             ../../libs/date/include \
             ../../libs/rapidxml \
             ../../libs/botan-2.19.3/build/include
+            
 LIBS := tinyjs
 EXTLIBS :=
 DEFINES :=
