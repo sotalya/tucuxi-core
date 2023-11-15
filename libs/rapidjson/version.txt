@@ -1,0 +1,1 @@
+rapidjson is version unreleased @ commit f9d53419e912910fd8fa57d5705fa41425428c35

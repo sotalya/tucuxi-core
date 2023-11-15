@@ -8,7 +8,7 @@ INCLUDEPATH += $$PWD/../../src \
     $$PWD/../../libs/tiny-js-master-20170629 \
     $$PWD/../../libs/rapidxml-1.13 \
     $$PWD/../../libs/cxxopts \
-    $$PWD/../../libs/rapidjson-master-20190220/include
+    $$PWD/../../libs/rapidjson/include
 
 !win32 {
     # There is a duplicate here, for nice includes. Using -isystem
@@ -23,7 +23,7 @@ INCLUDEPATH += $$PWD/../../src \
         -isystem $$PWD/../../libs/tiny-js-master-20170629 \
         -isystem $$PWD/../../libs/rapidxml-1.13 \
         -isystem $$PWD/../../libs/cxxopts \
-        -isystem $$PWD/../../libs/rapidjson-master-20190220/include
+        -isystem $$PWD/../../libs/rapidjson/include
 }
 
 !config_nobotan {
