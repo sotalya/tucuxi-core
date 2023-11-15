@@ -100,7 +100,7 @@ INCLUDES := . \
             ../../libs/boost-1.83.0 \
             ../../libs/date/include \
             ../../libs/spdlog-master-20170622/include \
-            ../../libs/rapidjson-master-20190220/include \
+            ../../libs/rapidjson/include \
             ../../libs/tiny-js-master-20170629 \
 LIBS :=
 EXTLIBS :=
