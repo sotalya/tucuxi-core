@@ -101,7 +101,7 @@ INCLUDES := . \
             ../../libs/date/include \
             ../../libs/spdlog/include \
             ../../libs/rapidjson/include \
-            ../../libs/tiny-js-master-20170629 \
+            ../../libs/tiny-js \
 LIBS :=
 EXTLIBS :=
 DEFINES :=
