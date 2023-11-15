@@ -18,6 +18,8 @@
 /// As all the tests are in headers, a compilation can be quite time consuming.
 /// Therefore, only selecting the test of interest allows to gain some time.
 
+#define PRINT_SUCCESS(x)    (std::cout << "\033[1;32m" << x << "\033[0m" << std::endl)
+#define PRINT_FAIL(x)    (std::cerr << "\033[1;31m" << x << "\033[0m" << std::endl)
 
 
 namespace Tucuxi {
@@ -178,10 +180,10 @@ int main(int argc, char** argv)
     res = parameterTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Parameter test failed\n";
+        PRINT_FAIL("Parameter test failed");
     }
     else {
-        std::cout << "Parameter test succeeded\n";
+        PRINT_SUCCESS("Parameter test succeeded");
     }
 #endif
 
@@ -194,10 +196,10 @@ int main(int argc, char** argv)
     res = residualErrorModelTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "ResidualErrorModel test failed\n";
+        PRINT_FAIL("ResidualErrorModel test failed");
     }
     else {
-        std::cout << "ResidualErrorModel test succeeded\n";
+        PRINT_SUCCESS("ResidualErrorModel test succeeded");
     }
 #endif
 
@@ -210,10 +212,10 @@ int main(int argc, char** argv)
     res = pertinentTimesCalculatorTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Pertinent times calculator test failed\n";
+        PRINT_FAIL("Pertinent times calculator test failed");
     }
     else {
-        std::cout << "Pertinent times calculator test succeeded\n";
+        PRINT_SUCCESS("Pertinent times calculator test succeeded");
     }
 #endif
 
@@ -230,10 +232,10 @@ int main(int argc, char** argv)
     res = drugDomainConstraintsEvaluatorTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Drug model domain constraints evaluator test failed\n";
+        PRINT_FAIL("Drug model domain constraints evaluator test failed");
     }
     else {
-        std::cout << "Drug model domain constraints evaluator test succeeded\n";
+        PRINT_SUCCESS("Drug model domain constraints evaluator test succeeded");
     }
 #endif
 
@@ -258,10 +260,10 @@ int main(int argc, char** argv)
     res = targetEvaluatorTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Target evaluator test failed\n";
+        PRINT_FAIL("Target evaluator test failed");
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        PRINT_SUCCESS("Target evaluator test succeeded");
     }
 #endif
 
@@ -274,10 +276,10 @@ int main(int argc, char** argv)
     res = drugModelImportTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Drug model import test failed\n";
+        PRINT_FAIL("Drug model import test failed");
     }
     else {
-        std::cout << "Drug model import test succeeded\n";
+        PRINT_SUCCESS("Drug model import test succeeded");
     }
 #endif
 
@@ -295,10 +297,10 @@ int main(int argc, char** argv)
     res = computingComponentConcentrationTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        //std::cerr << "Computing Component Concentration test failed\n";
+        PRINT_FAIL("Computing Component Concentration test failed");
     }
     else {
-        // std::cout << "Computing Component Concentration test succeeded\n";
+        PRINT_SUCCESS("Computing Component Concentration test succeeded");
     }
 #endif
 
@@ -337,10 +339,10 @@ int main(int argc, char** argv)
     res = computingComponentAdjusementsTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Computing Component Adjustments test failed\n";
+        PRINT_FAIL("Computing Component Adjustments test failed");
     }
     else {
-        std::cout << "Computing Component Adjustments test succeeded\n";
+        PRINT_SUCCESS("Computing Component Adjustments test succeeded");
     }
 #endif
 
@@ -390,10 +392,10 @@ int main(int argc, char** argv)
     res = calculatorsTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Calculators test failed\n";
+        PRINT_FAIL("Calculators test failed");
     }
     else {
-        std::cout << "Calculators test succeeded\n";
+        PRINT_SUCCESS("Calculators test succeeded");
     }
 #endif
 
@@ -418,10 +420,10 @@ int main(int argc, char** argv)
     res = concentrationCalculatorTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "ConcentrationCalculator test failed\n";
+        PRINT_FAIL("ConcentrationCalculator test failed");
     }
     else {
-        std::cout << "ConcentrationCalculator test succeeded\n";
+        PRINT_SUCCESS("ConcentrationCalculator test succeeded");
     }
 #endif
 
@@ -434,10 +436,10 @@ int main(int argc, char** argv)
     res = multiConstantEliminationBolusTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "MultiConstantEliminationBolus test failed\n";
+        PRINT_FAIL("MultiConstantEliminationBolus test failed");
     }
     else {
-        std::cout << "MultiConstantEliminationBolus test succeeded\n";
+        PRINT_SUCCESS("MultiConstantEliminationBolus test succeeded");
     }
 #endif
 
@@ -461,10 +463,10 @@ int main(int argc, char** argv)
     res = multiConcentrationCalculatorTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "MultiConcentrationCalculator test failed\n";
+        PRINT_FAIL("MultiConcentrationCalculator test failed");
     }
     else {
-        std::cout << "MultiConcentrationCalculator test succeeded\n";
+        PRINT_SUCCESS("MultiConcentrationCalculator test succeeded");
     }
 #endif
 #if defined(test_dosage) || !defined(DO_NOT_COMPILE_ALL_TESTS)
@@ -479,10 +481,10 @@ int main(int argc, char** argv)
     res = dosageTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Dosage test failed\n";
+        PRINT_FAIL("Dosage test failed");
     }
     else {
-        std::cout << "Dosage test succeeded\n";
+        PRINT_SUCCESS("Dosage test succeeded");
     }
 #endif
 
@@ -500,10 +502,10 @@ int main(int argc, char** argv)
     res = multilikelihoodTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Multilikelihood test failed\n";
+        PRINT_FAIL("Multilikelihood test failed");
     }
     else {
-        std::cout << "Multilikelihood test succeeded\n";
+        PRINT_SUCCESS("Multilikelihood test succeeded");
     }
 #endif
 
@@ -530,10 +532,10 @@ int main(int argc, char** argv)
     res = intakeExtractorTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "IntakeExtractor test failed\n";
+        PRINT_FAIL("IntakeExtractor test failed");
     }
     else {
-        std::cout << "IntakeExtractor test succeeded\n";
+        PRINT_SUCCESS("IntakeExtractor test succeeded");
     }
 #endif
 
@@ -556,10 +558,10 @@ int main(int argc, char** argv)
     res = operationTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Operation test failed\n";
+        PRINT_FAIL("Operation test failed");
     }
     else {
-        std::cout << "Operation test succeeded\n";
+        PRINT_SUCCESS("Operation test succeeded");
     }
 #endif
 
@@ -571,10 +573,10 @@ int main(int argc, char** argv)
     res = operationCollectionTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "OperationCollection test failed\n";
+        PRINT_FAIL("OperationCollection test failed");
     }
     else {
-        std::cout << "OperationCollection test succeeded\n";
+        PRINT_SUCCESS("OperationCollection test succeeded");
     }
 
     // --- PkModel --- //
@@ -584,10 +586,10 @@ int main(int argc, char** argv)
     res = pkmodelTest.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "PkModel test failed\n";
+        PRINT_FAIL("PkModel test failed");
     }
     else {
-        std::cout << "PkModel test succeeded\n";
+        PRINT_SUCCESS("PkModel test succeeded");
     }
 #endif
 
@@ -613,10 +615,10 @@ int main(int argc, char** argv)
     tot_res |= res;
 
     if (res != 0) {
-        std::cerr << "Covariate Extractor test failed\n";
+        PRINT_FAIL("Covariate Extractor test failed");
     }
     else {
-        std::cout << "Covariate Extractor test succeeded\n";
+        PRINT_SUCCESS("Covariate Extractor test succeeded");
     }
 #endif
 
@@ -632,10 +634,10 @@ int main(int argc, char** argv)
     tot_res |= res;
 
     if (res != 0) {
-        std::cerr << "Parameter Extractor test failed\n";
+        PRINT_FAIL("Parameter Extractor test failed");
     }
     else {
-        std::cout << "Parameter Extractor test succeeded\n";
+        PRINT_SUCCESS("Parameter Extractor test succeeded");
     }
 #endif
 
@@ -650,10 +652,10 @@ int main(int argc, char** argv)
     tot_res |= res;
 
     if (res != 0) {
-        std::cerr << "Operable Graph Manager test failed\n";
+        PRINT_FAIL("Operable Graph Manager test failed");
     }
     else {
-        std::cout << "Operable Graph Manager test succeeded\n";
+        PRINT_SUCCESS("Operable Graph Manager test succeeded");
     }
 #endif
 
@@ -684,7 +686,10 @@ int main(int argc, char** argv)
     res = percentileCalculatorTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Percentile Calculator test failed\n";
+        PRINT_FAIL("Percentile Calculator test failed");
+    }
+    else {
+        PRINT_SUCCESS("Percentile Calculator test succeeded");
     }
 #endif
 
@@ -698,9 +703,11 @@ int main(int argc, char** argv)
     res = nonMemDrugsTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "NonMem Drugs test failed\n";
+        PRINT_FAIL("NonMem Drugs test failed");
     }
-    std::cout << "NonMem Drugs test succeeded\n";
+    else {
+        PRINT_SUCCESS("NonMem Drugs test succeeded");
+    }
 #endif
 
 #if defined(test_drugmodels) || !defined(DO_NOT_COMPILE_ALL_TESTS)
@@ -712,9 +719,11 @@ int main(int argc, char** argv)
     res = drugModelsTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "DrugModels test failed\n";
+        PRINT_FAIL("DrugModels test failed");
     }
-    std::cout << "DrugModels test succeeded\n";
+    else {
+        PRINT_SUCCESS("DrugModels test succeeded");
+    }
 #endif
 
 #if defined(test_cyclestatistics) || !defined(DO_NOT_COMPILE_ALL_TESTS)
@@ -725,11 +734,13 @@ int main(int argc, char** argv)
     cycleStatisticsTests.add_test("test1CycleStatistics", &TestCycleStatistics::test1CycleStatistics);
 
     res = cycleStatisticsTests.run(argc, argv);
+    tot_res |= res;
     if (res != 0) {
-        std::cerr << "Cycle Statistics Calculators test failed\n";
-        tot_res |= res;
+        PRINT_FAIL("Cycle Statistics Calculators test failed");
     }
-    std::cout << "Cycle Statistics Calculators test succeeded\n";
+    else {
+        PRINT_SUCCESS("Cycle Statistics Calculators test succeeded");
+    }
 #endif
 
 #if defined(test_computingcomponentpercentiles) || !defined(DO_NOT_COMPILE_ALL_TESTS)
@@ -748,10 +759,10 @@ int main(int argc, char** argv)
     res = computingComponentPercentilesTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Computing Component Percentiles test failed\n";
+        PRINT_FAIL("Computing Component Percentiles test failed");
     }
     else {
-        std::cout << "Computing Component Percentiles test succeeded\n";
+        PRINT_SUCCESS("Computing Component Percentiles test succeeded");
     }
 #endif
 
@@ -765,10 +776,10 @@ int main(int argc, char** argv)
     res = sampleExtractorTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "SampleExtractor test failed\n";
+        PRINT_FAIL("SampleExtractor test failed");
     }
     else {
-        std::cout << "SampleExtractor test succeeded\n";
+        PRINT_SUCCESS("SampleExtractor test succeeded");
     }
 #endif
 
@@ -782,10 +793,10 @@ int main(int argc, char** argv)
     res = targetExtractorTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "TargetExtractor test failed\n";
+        PRINT_FAIL("TargetExtractor test failed");
     }
     else {
-        std::cout << "TargetExtractor test succeeded\n";
+        PRINT_SUCCESS("TargetExtractor test succeeded");
     }
 #endif
 
@@ -799,10 +810,10 @@ int main(int argc, char** argv)
     res = tobramycinTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Drug Tobramycin test failed\n";
+        PRINT_FAIL("Drug Tobramycin test failed");
     }
     else {
-        std::cout << "Drug Tobramycin test succeeded\n";
+        PRINT_SUCCESS("Drug Tobramycin test succeeded");
     }
 #endif
 
@@ -816,10 +827,10 @@ int main(int argc, char** argv)
     res = vancomycinTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Drug Vancomycin test failed\n";
+        PRINT_FAIL("Drug Vancomycin test failed");
     }
     else {
-        std::cout << "Drug Vancomycin test succeeded\n";
+        PRINT_SUCCESS("Drug Vancomycin test succeeded");
     }
 #endif
 
@@ -833,10 +844,10 @@ int main(int argc, char** argv)
     res = constantEliminationBolusTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Constant Elimination Bolus test failed\n";
+        PRINT_FAIL("Constant Elimination Bolus test failed");
     }
     else {
-        std::cout << "Constant Elimination Bolus test succeeded\n";
+        PRINT_SUCCESS("Constant Elimination Bolus test succeeded");
     }
 #endif
 
@@ -850,10 +861,10 @@ int main(int argc, char** argv)
     res = pkAsymptoticTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Pk asymptotic test failed\n";
+        PRINT_FAIL("Pk asymptotic test failed");
     }
     else {
-        std::cout << "Pk asymptotic test succeeded\n";
+        PRINT_SUCCESS("Pk asymptotic test succeeded");
     }
 #endif
 
@@ -873,10 +884,10 @@ int main(int argc, char** argv)
     res = multiAnalytesSingleActiveMoietyTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Multi analytes single active moiety test failed\n";
+        PRINT_FAIL("Multi analytes single active moiety test failed");
     }
     else {
-        std::cout << "Multi analytes single active moiety test succeeded\n";
+        PRINT_SUCCESS("Multi analytes single active moiety test succeeded");
     }
 #endif
 
@@ -897,10 +908,10 @@ int main(int argc, char** argv)
     res = multiAnalytesMultiActiveMoietiesTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Multi analytes multi active moieties test failed\n";
+        PRINT_FAIL("Multi analytes multi active moieties test failed");
     }
     else {
-        std::cout << "Multi analytes multi active moieties test succeeded\n";
+        PRINT_SUCCESS("Multi analytes multi active moieties test succeeded");
     }
 #endif
 */
@@ -916,10 +927,10 @@ int main(int argc, char** argv)
     res = michaelisMentent1compTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Michaelis Menten 1 comp test failed\n";
+        PRINT_FAIL("Michaelis Menten 1 comp test failed");
     }
     else {
-        std::cout << "Michaelis Menten 1 comp test succeeded\n";
+        PRINT_SUCCESS("Michaelis Menten 1 comp test succeeded");
     }
 #endif
 
@@ -939,10 +950,10 @@ int main(int argc, char** argv)
     res = michaelisMentent2compTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Michaelis Menten 2 comp test failed\n";
+        PRINT_FAIL("Michaelis Menten 2 comp test failed");
     }
     else {
-        std::cout << "Michaelis Menten 2 comp test succeeded\n";
+        PRINT_SUCCESS("Michaelis Menten 2 comp test succeeded");
     }
 #endif
 
@@ -962,10 +973,10 @@ int main(int argc, char** argv)
     res = likelihoodTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Likelihood comp test failed\n";
+        PRINT_FAIL("Likelihood comp test failed");
     }
     else {
-        std::cout << "Likelihood test succeeded\n";
+        PRINT_SUCCESS("Likelihood test succeeded");
     }
 #endif
 
@@ -980,10 +991,10 @@ int main(int argc, char** argv)
     res = cacheComputingTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Cache Computing test failed\n";
+        PRINT_FAIL("Cache Computing test failed");
     }
     else {
-        std::cout << "Cache Computing test succeeded\n";
+        PRINT_SUCCESS("Cache Computing test succeeded");
     }
 #endif
 
@@ -1004,10 +1015,10 @@ int main(int argc, char** argv)
     res = michaelisMententEnzyme1compTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "Michaelis Menten Enzyme 1 comp test failed\n";
+        PRINT_FAIL("Michaelis Menten Enzyme 1 comp test failed");
     }
     else {
-        std::cout << "Michaelis Menten Enzyme 1 comp test succeeded\n";
+        PRINT_SUCCESS("Michaelis Menten Enzyme 1 comp test succeeded");
     }
 #endif
 
@@ -1022,10 +1033,10 @@ int main(int argc, char** argv)
     res = twoCompartmentExtraLagTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "2 comp extra lag test failed\n";
+        PRINT_FAIL("2 comp extra lag test failed");
     }
     else {
-        std::cout << "2 comp extra lag test succeeded\n";
+        PRINT_SUCCESS("2 comp extra lag test succeeded");
     }
 #endif
 
@@ -1041,10 +1052,10 @@ int main(int argc, char** argv)
     res = twoCompMMVmaxAmountTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "2 comp Michaelis Menten VMax Amount test failed\n";
+        PRINT_FAIL("2 comp Michaelis Menten VMax Amount test failed");
     }
     else {
-        std::cout << "2 comp Michaelis Menten VMax Amount test succeeded\n";
+        PRINT_SUCCESS("2 comp Michaelis Menten VMax Amount test succeeded");
     }
 #endif
 
