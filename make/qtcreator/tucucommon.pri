@@ -1,4 +1,4 @@
-include(../tinyjs.pri)
+include(tinyjs.pri)
 
 SOURCES +=  \
     $$PWD/../../libs/spdlog-master-20170622/include/spdlog/fmt/bundled/format.cc \

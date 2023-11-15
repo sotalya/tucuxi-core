@@ -9,7 +9,7 @@ NAME := tucucore
 TYPE := TEST
 
 SOURCES := tests.cpp
-INCLUDES := ../../libs/fructose-1.3/fructose/include \
+INCLUDES := ../../libs/fructose/include \
             ../../libs/spdlog-master-20170622/include \
             ../../libs/eigen-3.3.2 \
             ../../libs/boost-1.83.0 \
