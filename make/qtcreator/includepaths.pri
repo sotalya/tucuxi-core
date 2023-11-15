@@ -1,7 +1,7 @@
 
 INCLUDEPATH += $$PWD/../../src \
     $$PWD/../../libs/spdlog/include/ \
-    $$PWD/../../libs/boost-1.83.0 \
+    $$PWD/../../libs/boost \
     $$PWD/../../libs/eigen/ \
     $$PWD/../../libs/fructose/include \
     $$PWD/../../libs/date/include \
@@ -16,7 +16,7 @@ INCLUDEPATH += $$PWD/../../src \
     # strict on the Tucuxi code
     QMAKE_CXXFLAGS += \
         -isystem $$PWD/../../libs/spdlog/include/ \
-        -isystem $$PWD/../../libs/boost-1.83.0 \
+        -isystem $$PWD/../../libs/boost \
         -isystem $$PWD/../../libs/eigen/ \
         -isystem $$PWD/../../libs/fructose/include \
         -isystem $$PWD/../../libs/date/include \
