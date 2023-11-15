@@ -6,7 +6,7 @@ INCLUDEPATH += $$PWD/../../src \
     $$PWD/../../libs/fructose-1.3/fructose/include \
     $$PWD/../../libs/date/include \
     $$PWD/../../libs/tiny-js-master-20170629 \
-    $$PWD/../../libs/rapidxml-1.13 \
+    $$PWD/../../libs/rapidxml \
     $$PWD/../../libs/cxxopts \
     $$PWD/../../libs/rapidjson-master-20190220/include
 
@@ -21,7 +21,7 @@ INCLUDEPATH += $$PWD/../../src \
         -isystem $$PWD/../../libs/fructose-1.3/fructose/include \
         -isystem $$PWD/../../libs/date/include \
         -isystem $$PWD/../../libs/tiny-js-master-20170629 \
-        -isystem $$PWD/../../libs/rapidxml-1.13 \
+        -isystem $$PWD/../../libs/rapidxml \
         -isystem $$PWD/../../libs/cxxopts \
         -isystem $$PWD/../../libs/rapidjson-master-20190220/include
 }

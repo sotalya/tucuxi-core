@@ -66,14 +66,14 @@ EXmlNodeType XmlNode::getType() const
     if (m_pNode != nullptr) {
         // clang-format off
         switch (m_pNode->type()) {
-            case rapidxml::node_document:    return EXmlNodeType::Document;
-            case rapidxml::node_element:     return EXmlNodeType::Element;
-            case rapidxml::node_data:        return EXmlNodeType::Data;
-            case rapidxml::node_cdata:       return EXmlNodeType::CData;
-            case rapidxml::node_comment:     return EXmlNodeType::Comment;
-            case rapidxml::node_declaration: return EXmlNodeType::Declaration;
-            case rapidxml::node_doctype:     return EXmlNodeType::Doctype;
-            case rapidxml::node_pi:          return EXmlNodeType::Pi;
+            case rapidxml::node_type::node_document:    return EXmlNodeType::Document;
+            case rapidxml::node_type::node_element:     return EXmlNodeType::Element;
+            case rapidxml::node_type::node_data:        return EXmlNodeType::Data;
+            case rapidxml::node_type::node_cdata:       return EXmlNodeType::CData;
+            case rapidxml::node_type::node_comment:     return EXmlNodeType::Comment;
+            case rapidxml::node_type::node_declaration: return EXmlNodeType::Declaration;
+            case rapidxml::node_type::node_doctype:     return EXmlNodeType::Doctype;
+            case rapidxml::node_type::node_pi:          return EXmlNodeType::Pi;
             default:                         break;
         }
         // clang-format on
