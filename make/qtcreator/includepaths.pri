@@ -5,7 +5,7 @@ INCLUDEPATH += $$PWD/../../src \
     $$PWD/../../libs/eigen-3.3.2/ \
     $$PWD/../../libs/fructose/include \
     $$PWD/../../libs/date/include \
-    $$PWD/../../libs/tiny-js-master-20170629 \
+    $$PWD/../../libs/tiny-js \
     $$PWD/../../libs/rapidxml \
     $$PWD/../../libs/cxxopts \
     $$PWD/../../libs/rapidjson/include
@@ -20,7 +20,7 @@ INCLUDEPATH += $$PWD/../../src \
         -isystem $$PWD/../../libs/eigen-3.3.2/ \
         -isystem $$PWD/../../libs/fructose/include \
         -isystem $$PWD/../../libs/date/include \
-        -isystem $$PWD/../../libs/tiny-js-master-20170629 \
+        -isystem $$PWD/../../libs/tiny-js \
         -isystem $$PWD/../../libs/rapidxml \
         -isystem $$PWD/../../libs/cxxopts \
         -isystem $$PWD/../../libs/rapidjson/include

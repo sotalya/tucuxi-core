@@ -1,12 +1,10 @@
 
 HEADERS += \
-    $$PWD/../../libs/tiny-js-master-20170629/TinyJS.h \
-    $$PWD/../../libs/tiny-js-master-20170629/TinyJS_Functions.h \
-    $$PWD/../../libs/tiny-js-master-20170629/TinyJS_MathFunctions.h \
-    $$PWD/../../libs/tiny-js-master-20170629/TinyJS_SyntaxTree.h
+    $$PWD/../../libs/tiny-js/TinyJS.h \
+    $$PWD/../../libs/tiny-js/TinyJS_Functions.h \
+    $$PWD/../../libs/tiny-js/TinyJS_MathFunctions.h \
 
 SOURCES += \
-    $$PWD/../../libs/tiny-js-master-20170629/TinyJS.cpp \
-    $$PWD/../../libs/tiny-js-master-20170629/TinyJS_Functions.cpp \
-    $$PWD/../../libs/tiny-js-master-20170629/TinyJS_MathFunctions.cpp \
-    $$PWD/../../libs/tiny-js-master-20170629/TinyJS_SyntaxTree.cpp
+    $$PWD/../../libs/tiny-js/TinyJS.cpp \
+    $$PWD/../../libs/tiny-js/TinyJS_Functions.cpp \
+    $$PWD/../../libs/tiny-js/TinyJS_MathFunctions.cpp \
