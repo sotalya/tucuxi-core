@@ -99,7 +99,7 @@ INCLUDES := . \
             ../../libs/eigen-3.3.2 \
             ../../libs/boost-1.83.0 \
             ../../libs/date/include \
-            ../../libs/spdlog-master-20170622/include \
+            ../../libs/spdlog/include \
             ../../libs/rapidjson/include \
             ../../libs/tiny-js-master-20170629 \
 LIBS :=

@@ -13,7 +13,7 @@ SOURCES := tucucli.cpp \
 
 INCLUDES := . \
             ../../libs/eigen-3.3.2 \
-            ../../libs/spdlog-master-20170622/include \
+            ../../libs/spdlog/include \
             ../../libs/date/include \
             ../../libs/cxxopts
 

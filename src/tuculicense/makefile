@@ -10,7 +10,7 @@ TYPE := APP
 
 SOURCES := main.cpp
 
-INCLUDES := ../../libs/spdlog-master-20170622/include \
+INCLUDES := ../../libs/spdlog/include \
             ../../libs/date/include \
             ../../libs/botan-2.19.3/build/include
 

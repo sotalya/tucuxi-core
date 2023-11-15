@@ -1,6 +1,6 @@
 
 INCLUDEPATH += $$PWD/../../src \
-    $$PWD/../../libs/spdlog-master-20170622/include/ \
+    $$PWD/../../libs/spdlog/include/ \
     $$PWD/../../libs/boost-1.83.0 \
     $$PWD/../../libs/eigen-3.3.2/ \
     $$PWD/../../libs/fructose/include \
@@ -15,7 +15,7 @@ INCLUDEPATH += $$PWD/../../src \
     # disables warnings on these libraries, so we can be very
     # strict on the Tucuxi code
     QMAKE_CXXFLAGS += \
-        -isystem $$PWD/../../libs/spdlog-master-20170622/include/ \
+        -isystem $$PWD/../../libs/spdlog/include/ \
         -isystem $$PWD/../../libs/boost-1.83.0 \
         -isystem $$PWD/../../libs/eigen-3.3.2/ \
         -isystem $$PWD/../../libs/fructose/include \
