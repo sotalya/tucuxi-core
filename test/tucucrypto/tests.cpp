@@ -8,6 +8,9 @@
 #include "test_cryptohelper.h"
 #include "test_licensemanager.h"
 
+#define PRINT_SUCCESS(x)    (std::cout << "\033[1;32m" << x << "\033[0m" << std::endl)
+#define PRINT_FAIL(x)    (std::cerr << "\033[1;31m" << x << "\033[0m" << std::endl)
+
 int main(int argc, char** argv)
 {
     // Get application folder
@@ -23,10 +26,10 @@ int main(int argc, char** argv)
     res = licenseManagerTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "\033[1;31mLicense Manager test failed\033[0m\n";
+        PRINT_FAIL("License Manager test failed");
     }
     else {
-        std::cout << "\033[1;32mLicense Manager test succeeded\033[0m\n";
+        PRINT_SUCCESS("License Manager test succeeded");
     }
 
     TestCryptoHelper cryptoHelperTests(appFolder);
@@ -34,10 +37,10 @@ int main(int argc, char** argv)
     res = cryptoHelperTests.run(argc, argv);
     tot_res |= res;
     if (res != 0) {
-        std::cerr << "\033[1;31mCrypto Helper test failed\033[0m\n";
+        PRINT_FAIL("Crypto Helper test failed");
     }
     else {
-        std::cout << "\033[1;32mCrypto Helper test succeeded\033[0m\n";
+        PRINT_SUCCESS("Crypto Helper test succeeded");
     }
 
     return tot_res;
