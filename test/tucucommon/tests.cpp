@@ -5,8 +5,8 @@
 
 #include "tucucommon/utils.h"
 
-#define PRINT_SUCCESS(x)    (std::cout << "\033[1;32m" << x << "\033[0m" << std::endl)
-#define PRINT_FAIL(x)    (std::cerr << "\033[1;31m" << x << "\033[0m" << std::endl)
+#define PRINT_SUCCESS(x) (std::cout << "\033[1;32m" << x << "\033[0m" << std::endl)
+#define PRINT_FAIL(x) (std::cerr << "\033[1;31m" << x << "\033[0m" << std::endl)
 
 #if defined(test_datetime) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_datetime.h"

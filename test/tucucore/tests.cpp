@@ -18,8 +18,8 @@
 /// As all the tests are in headers, a compilation can be quite time consuming.
 /// Therefore, only selecting the test of interest allows to gain some time.
 
-#define PRINT_SUCCESS(x)    (std::cout << "\033[1;32m" << x << "\033[0m" << std::endl)
-#define PRINT_FAIL(x)    (std::cerr << "\033[1;31m" << x << "\033[0m" << std::endl)
+#define PRINT_SUCCESS(x) (std::cout << "\033[1;32m" << x << "\033[0m" << std::endl)
+#define PRINT_FAIL(x) (std::cerr << "\033[1;31m" << x << "\033[0m" << std::endl)
 
 
 namespace Tucuxi {

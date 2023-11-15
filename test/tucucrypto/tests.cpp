@@ -8,8 +8,8 @@
 #include "test_cryptohelper.h"
 #include "test_licensemanager.h"
 
-#define PRINT_SUCCESS(x)    (std::cout << "\033[1;32m" << x << "\033[0m" << std::endl)
-#define PRINT_FAIL(x)    (std::cerr << "\033[1;31m" << x << "\033[0m" << std::endl)
+#define PRINT_SUCCESS(x) (std::cout << "\033[1;32m" << x << "\033[0m" << std::endl)
+#define PRINT_FAIL(x) (std::cerr << "\033[1;31m" << x << "\033[0m" << std::endl)
 
 int main(int argc, char** argv)
 {
