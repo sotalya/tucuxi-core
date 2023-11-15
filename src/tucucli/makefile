@@ -12,7 +12,7 @@ SOURCES := tucucli.cpp \
            clicomputer.cpp
 
 INCLUDES := . \
-            ../../libs/eigen-3.3.2 \
+            ../../libs/eigen\
             ../../libs/spdlog/include \
             ../../libs/date/include \
             ../../libs/cxxopts/include
