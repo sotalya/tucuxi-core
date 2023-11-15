@@ -1,0 +1,1 @@
+spdlog is version 1.12.0
