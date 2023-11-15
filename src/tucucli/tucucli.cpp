@@ -16,7 +16,7 @@
 #include "tucuquery/querystatus.h"
 
 #include "clicomputer.h"
-#include "cxxopts/include/cxxopts.hpp"
+#include "cxxopts.hpp"
 
 #ifdef CONFIG_SIGN
 #include "tucusign/signparser.h"
@@ -159,7 +159,7 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
 
         return static_cast<int>(queryStatus);
     }
-    catch (const cxxopts::OptionException& e) {
+    catch (const cxxopts::exceptions::exception& e) {
         logHelper.error("error parsing options: {}", e.what());
         return -1;
     }
