@@ -7,7 +7,7 @@ INCLUDEPATH += $$PWD/../../src \
     $$PWD/../../libs/date/include \
     $$PWD/../../libs/tiny-js \
     $$PWD/../../libs/rapidxml \
-    $$PWD/../../libs/cxxopts \
+    $$PWD/../../libs/cxxopts/include \
     $$PWD/../../libs/rapidjson/include
 
 !win32 {
@@ -22,7 +22,7 @@ INCLUDEPATH += $$PWD/../../src \
         -isystem $$PWD/../../libs/date/include \
         -isystem $$PWD/../../libs/tiny-js \
         -isystem $$PWD/../../libs/rapidxml \
-        -isystem $$PWD/../../libs/cxxopts \
+        -isystem $$PWD/../../libs/cxxopts/include \
         -isystem $$PWD/../../libs/rapidjson/include
 }
 
