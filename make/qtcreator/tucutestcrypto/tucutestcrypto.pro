@@ -4,17 +4,16 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 win32{
-    exists(C:/Botan/Botan2-64) {
+    exists(C:/Botan) {
         CONFIG(debug, debug|release) {
-            LIBS += -LC:\Botan\botan2-64\lib -lbotan \
+            LIBS += -LC:\Botan\lib -lbotan \
                     -luser32
-#            LIBS += -LC:\Botan\botan2-64\lib -lbotand
         }
         CONFIG(release, debug|release) {
-            LIBS += -LC:\Botan\botan2-64\lib -lbotan \
+            LIBS += -LC:\Botan\lib -lbotan \
                     -luser32
         }
-        INCLUDEPATH += C:\Botan\botan2-64\include\botan-2
+        INCLUDEPATH += C:\Botan\include\botan-2
     }
     else {
         error("Error: Botan-64 directory not found in C:/Botan")
