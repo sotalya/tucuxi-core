@@ -3,25 +3,7 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-win32{
-    exists($$PWD/../../../libs/botan/build) {
-        CONFIG(debug, debug|release) {
-            LIBS += -L$$PWD/../../../libs/botan -lbotan \
-                    -luser32
-        }
-        CONFIG(release, debug|release) {
-            LIBS += -L$$PWD/../../../libs/botan -lbotan \
-                    -luser32
-        }
-        INCLUDEPATH += $$PWD/../../../libs/botan/build/include
-    }
-    else {
-        error("Error: Build directory not found in libs/botan. Run the setup.bat file found in tucuxi-core")
-    }
-
-    LIBS += Iphlpapi.lib
-}
-
+include(../botan.pri)
 include(../general.pri)
 include(../tucucommon.pri)
 include(../tucucore.pri)
