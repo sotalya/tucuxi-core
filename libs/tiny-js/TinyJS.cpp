@@ -235,7 +235,7 @@ bool isIDString(const char *s) {
 }
 
 void replace(string &str, char textFrom, const char *textTo) {
-    int sLen = strlen(textTo);
+    int sLen = static_cast<int>(strlen(textTo));
     size_t p = str.find(textFrom);
     while (p != string::npos) {
         str = str.substr(0, p) + textTo + str.substr(p+1);
@@ -296,7 +296,7 @@ CScriptLex::CScriptLex(const string &input) {
     data = _strdup(input.c_str());
     dataOwned = true;
     dataStart = 0;
-    dataEnd = strlen(data);
+    dataEnd = static_cast<int>(strlen(data));
     reset();
 }
 
@@ -604,7 +604,7 @@ void CScriptLex::getNextToken() {
 }
 
 string CScriptLex::getSubString(int lastPosition) {
-    int lastCharIdx = tokenLastEnd+1;
+    int lastCharIdx = static_cast<int>(tokenLastEnd+1);
     if (lastCharIdx < dataEnd) {
         /* save a memory alloc by using our data array to create the
            substring */
@@ -1113,8 +1113,6 @@ CScriptVar *CScriptVar::mathsOp(CScriptVar *b, int op) {
            default: throw new CScriptException("Operation "+CScriptLex::getTokenStr(op)+" not supported on the string datatype");
        }
     }
-    ASSERT(0);
-    return 0;
 }
 
 void CScriptVar::copySimpleData(CScriptVar *val) {
@@ -1324,7 +1322,7 @@ void CTinyJS::execute(const string &code) {
         ostringstream msg;
         msg << "Error " << e->text;
 #ifdef TINYJS_CALL_STACK
-        for (int i=(int)call_stack.size()-1;i>=0;i--)
+        for (int i = static_cast<int>(call_stack.size()-1); i >= 0; i--)
           msg << "\n" << i << ": " << call_stack.at(i);
 #endif
         msg << " at " << l->getPosition();
@@ -1360,7 +1358,7 @@ CScriptVarLink CTinyJS::evaluateComplex(const string &code) {
       ostringstream msg;
       msg << "Error " << e->text;
 #ifdef TINYJS_CALL_STACK
-      for (int i=(int)call_stack.size()-1;i>=0;i--)
+      for (int i = static_cast<int>(call_stack.size()-1); i >= 0; i--)
         msg << "\n" << i << ": " << call_stack.at(i);
 #endif
       msg << " at " << l->getPosition();
@@ -1589,11 +1587,11 @@ CScriptVarLink *CTinyJS::factor(bool &execute) {
                     /* if we haven't found this defined yet, use the built-in
                        'length' properly */
                     if (a->var->isArray() && name == "length") {
-                      int l = a->var->getArrayLength();
-                      child = new CScriptVarLink(new CScriptVar(l));
+                      int length = a->var->getArrayLength();
+                      child = new CScriptVarLink(new CScriptVar(length));
                     } else if (a->var->isString() && name == "length") {
-                      int l = a->var->getString().size();
-                      child = new CScriptVarLink(new CScriptVar(l));
+                      int length = static_cast<int>(a->var->getString().size());
+                      child = new CScriptVarLink(new CScriptVar(length));
                     } else {
                       child = a->var->addChild(name);
                     }
@@ -1793,7 +1791,7 @@ CScriptVarLink *CTinyJS::shift(bool &execute) {
     if (execute) {
       if (op==LEX_LSHIFT) a->var->setInt(a->var->getInt() << shift);
       if (op==LEX_RSHIFT) a->var->setInt(a->var->getInt() >> shift);
-      if (op==LEX_RSHIFTUNSIGNED) a->var->setInt(((unsigned int)a->var->getInt()) >> shift);
+      if (op==LEX_RSHIFTUNSIGNED) a->var->setInt((static_cast<unsigned int>(a->var->getInt())) >> shift);
     }
   }
   return a;
@@ -2157,7 +2155,7 @@ bool CTinyJS::setVariable(const std::string &path, const std::string &varData) {
 
 /// Finds a child, looking recursively up the scopes
 CScriptVarLink *CTinyJS::findInScopes(const std::string &childName) {
-    for (int s=scopes.size()-1;s>=0;s--) {
+    for (int s = static_cast<int>(scopes.size()-1); s >= 0; s--) {
       CScriptVarLink *v = scopes[s]->findChild(childName);
       if (v) return v;
     }
