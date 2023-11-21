@@ -35,7 +35,7 @@
 
 using namespace std;
 // ----------------------------------------------- Actual Functions
-void scTrace(CScriptVar *c, void *userdata) {
+void scTrace(CScriptVar * /*c*/, void* userdata) {
     CTinyJS *js = (CTinyJS*)userdata;
     js->root->trace();
 }
@@ -72,7 +72,7 @@ void scStringIndexOf(CScriptVar *c, void *) {
     string str = c->getParameter("this")->getString();
     string search = c->getParameter("search")->getString();
     size_t p = str.find(search);
-    int val = (p==string::npos) ? -1 : p;
+    int val = (p==string::npos) ? -1 : static_cast<int>(p);
     c->getReturnVar()->setInt(val);
 }
 
@@ -126,7 +126,7 @@ void scStringSplit(CScriptVar *c, void *) {
 
 void scStringFromCharCode(CScriptVar *c, void *) {
     char str[2];
-    str[0] = c->getParameter("char")->getInt();
+    str[0] = static_cast<char>(c->getParameter("char")->getInt());
     str[1] = 0;
     c->getReturnVar()->setString(str);
 }
@@ -164,7 +164,7 @@ void scEval(CScriptVar *c, void *data) {
     c->setReturnVar(tinyJS->evaluateComplex(str).var);
 }
 
-void scArrayContains(CScriptVar *c, void *data) {
+void scArrayContains(CScriptVar *c, void * /*data*/) {
   CScriptVar *obj = c->getParameter("obj");
   CScriptVarLink *v = c->getParameter("this")->firstChild;
 
@@ -180,7 +180,7 @@ void scArrayContains(CScriptVar *c, void *data) {
   c->getReturnVar()->setInt(contains);
 }
 
-void scArrayRemove(CScriptVar *c, void *data) {
+void scArrayRemove(CScriptVar *c, void * /*data*/) {
   CScriptVar *obj = c->getParameter("obj");
   vector<int> removedIndices;
   CScriptVarLink *v;
@@ -206,7 +206,7 @@ void scArrayRemove(CScriptVar *c, void *data) {
   }
 }
 
-void scArrayJoin(CScriptVar *c, void *data) {
+void scArrayJoin(CScriptVar *c, void * /*data*/) {
   string sep = c->getParameter("separator")->getString();
   CScriptVar *arr = c->getParameter("this");
 
