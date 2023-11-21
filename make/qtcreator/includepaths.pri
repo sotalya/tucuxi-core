@@ -29,7 +29,7 @@ INCLUDEPATH += $$PWD/../../src \
 !config_nobotan {
 
 win32 {
-    INCLUDEPATH += C:\Botan\include\botan-2
+    INCLUDEPATH += $$PWD/../../libs/botan/build/include
 }
 else {
     INCLUDEPATH +=  $$PWD/../../libs/botan/build/include/ \

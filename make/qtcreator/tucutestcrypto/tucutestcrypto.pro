@@ -4,20 +4,21 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 win32{
-    exists(C:/Botan) {
+    exists($$PWD/../../../libs/botan/build) {
         CONFIG(debug, debug|release) {
-            LIBS += -LC:\Botan\lib -lbotan \
+            LIBS += -L$$PWD/../../../libs/botan -lbotan \
                     -luser32
         }
         CONFIG(release, debug|release) {
-            LIBS += -LC:\Botan\lib -lbotan \
+            LIBS += -L$$PWD/../../../libs/botan -lbotan \
                     -luser32
         }
-        INCLUDEPATH += C:\Botan\include\botan-2
+        INCLUDEPATH += $$PWD/../../../libs/botan/build/include
     }
     else {
-        error("Error: Botan-64 directory not found in C:/Botan")
+        error("Error: Build directory not found in libs/botan. Run the setup.bat file found in tucuxi-core")
     }
+
     LIBS += Iphlpapi.lib
 }
 
