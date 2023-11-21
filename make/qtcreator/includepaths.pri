@@ -25,13 +25,3 @@ INCLUDEPATH += $$PWD/../../src \
         -isystem $$PWD/../../libs/cxxopts/include \
         -isystem $$PWD/../../libs/rapidjson/include
 }
-
-!config_nobotan {
-
-win32 {
-    INCLUDEPATH += $$PWD/../../libs/botan/build/include
-}
-else {
-    INCLUDEPATH +=  $$PWD/../../libs/botan/build/include/ \
-}
-}
