@@ -3,12 +3,10 @@
     win32{
         exists($$PWD/../../libs/botan/build) {
             CONFIG(debug, debug|release) {
-                LIBS += -L$$PWD/../../libs/botan -lbotan \
-                        -luser32
+                LIBS += -L$$PWD/../../libs/botan -lbotanD \
             }
             CONFIG(release, debug|release) {
-                LIBS += -L$$PWD/../../libs/botan -lbotan \
-                        -luser32
+                LIBS += -L$$PWD/../../libs/botan -lbotan
             }
             INCLUDEPATH += $$PWD/../..//libs/botan/build/include
         }
@@ -16,7 +14,8 @@
             error("Error: Build directory not found in libs/botan. Run the setup.bat file found in tucuxi-core")
         }
 
-        LIBS += Iphlpapi.lib
+        LIBS += Iphlpapi.lib \
+                -luser32
     }
 
 
