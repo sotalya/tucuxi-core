@@ -36,7 +36,7 @@
 using namespace std;
 // ----------------------------------------------- Actual Functions
 void scTrace(CScriptVar * /*c*/, void* userdata) {
-    CTinyJS *js = (CTinyJS*)userdata;
+    CTinyJS *js = static_cast<CTinyJS*>(userdata);
     js->root->trace();
 }
 
@@ -50,13 +50,13 @@ void scObjectClone(CScriptVar *c, void *) {
 }
 
 void scMathRand(CScriptVar *c, void *) {
-    c->getReturnVar()->setDouble((double)rand()/RAND_MAX);
+    c->getReturnVar()->setDouble(static_cast<double>(rand())/RAND_MAX);
 }
 
 void scMathRandInt(CScriptVar *c, void *) {
     int min = c->getParameter("min")->getInt();
     int max = c->getParameter("max")->getInt();
-    int val = min + (int)(rand()%(1+max-min));
+    int val = min + static_cast<int>(rand()%(1+max-min));
     c->getReturnVar()->setInt(val);
 }
 
@@ -64,7 +64,7 @@ void scCharToInt(CScriptVar *c, void *) {
     string str = c->getParameter("ch")->getString();;
     int val = 0;
     if (str.length()>0)
-        val = (int)str.c_str()[0];
+        val = static_cast<int>(str.c_str()[0]);
     c->getReturnVar()->setInt(val);
 }
 
@@ -82,8 +82,8 @@ void scStringSubstring(CScriptVar *c, void *) {
     int hi = c->getParameter("hi")->getInt();
 
     int l = hi-lo;
-    if (l>0 && lo>=0 && lo+l<=(int)str.length())
-      c->getReturnVar()->setString(str.substr(lo, l));
+    if (l>0 && lo>=0 && lo+l<=static_cast<int>(str.length()))
+        c->getReturnVar()->setString(str.substr(static_cast<size_t>(lo), static_cast<size_t>(l)));
     else
       c->getReturnVar()->setString("");
 }
@@ -91,8 +91,8 @@ void scStringSubstring(CScriptVar *c, void *) {
 void scStringCharAt(CScriptVar *c, void *) {
     string str = c->getParameter("this")->getString();
     int p = c->getParameter("pos")->getInt();
-    if (p>=0 && p<(int)str.length())
-      c->getReturnVar()->setString(str.substr(p, 1));
+    if (p>=0 && p<static_cast<int>(str.length()))
+      c->getReturnVar()->setString(str.substr(static_cast<size_t>(p), 1));
     else
       c->getReturnVar()->setString("");
 }
@@ -100,8 +100,8 @@ void scStringCharAt(CScriptVar *c, void *) {
 void scStringCharCodeAt(CScriptVar *c, void *) {
     string str = c->getParameter("this")->getString();
     int p = c->getParameter("pos")->getInt();
-    if (p>=0 && p<(int)str.length())
-      c->getReturnVar()->setInt(str.at(p));
+    if (p>=0 && p<static_cast<int>(str.length()))
+      c->getReturnVar()->setInt(str.at(static_cast<size_t>(p)));
     else
       c->getReturnVar()->setInt(0);
 }
@@ -133,7 +133,7 @@ void scStringFromCharCode(CScriptVar *c, void *) {
 
 void scIntegerParseInt(CScriptVar *c, void *) {
     string str = c->getParameter("str")->getString();
-    int val = strtol(str.c_str(),0,0);
+    int val = static_cast<int>(strtol(str.c_str(),0,0));
     c->getReturnVar()->setInt(val);
 }
 
@@ -153,13 +153,13 @@ void scJSONStringify(CScriptVar *c, void *) {
 }
 
 void scExec(CScriptVar *c, void *data) {
-    CTinyJS *tinyJS = (CTinyJS *)data;
+    CTinyJS *tinyJS = static_cast<CTinyJS*>(data);
     std::string str = c->getParameter("jsCode")->getString();
     tinyJS->execute(str);
 }
 
 void scEval(CScriptVar *c, void *data) {
-    CTinyJS *tinyJS = (CTinyJS *)data;
+    CTinyJS *tinyJS = static_cast<CTinyJS*>(data);
     std::string str = c->getParameter("jsCode")->getString();
     c->setReturnVar(tinyJS->evaluateComplex(str).var);
 }

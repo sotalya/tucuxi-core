@@ -235,7 +235,7 @@ bool isIDString(const char *s) {
 }
 
 void replace(string &str, char textFrom, const char *textTo) {
-    int sLen = static_cast<int>(strlen(textTo));
+    size_t sLen = strlen(textTo);
     size_t p = str.find(textFrom);
     while (p != string::npos) {
         str = str.substr(0, p) + textTo + str.substr(p+1);
@@ -257,7 +257,7 @@ std::string getJSString(const std::string &str) {
         case '\a': replaceWith = "\\a"; break;
         case '"': replaceWith = "\\\""; break;
         default: {
-          int nCh = ((int)nStr[i]) &0xFF;
+            int nCh = (static_cast<int>(nStr[i])) &0xFF;
           if (nCh<32 || nCh>127) {
             char buffer[5];
             sprintf_s(buffer, 5, "\\x%02X", nCh);
@@ -311,7 +311,7 @@ CScriptLex::CScriptLex(CScriptLex *owner, int startChar, int endChar) {
 CScriptLex::~CScriptLex(void)
 {
     if (dataOwned)
-        free((void*)data);
+        free(static_cast<void*>(data));
 }
 
 void CScriptLex::reset() {
@@ -339,7 +339,7 @@ void CScriptLex::match(int expected_tk) {
 string CScriptLex::getTokenStr(int token) {
     if (token>32 && token<128) {
         char buf[4] = "' '";
-        buf[1] = (char)token;
+        buf[1] = static_cast<char>(token);
         return buf;
     }
     switch (token) {
@@ -509,7 +509,7 @@ void CScriptLex::getNextToken() {
                               char buf[3] = "??";
                               getNextCh(); buf[0] = currCh;
                               getNextCh(); buf[1] = currCh;
-                              tkStr += (char)strtol(buf,0,16);
+                              tkStr += static_cast<char>(strtol(buf,0,16));
                            } break;
                 default: if (currCh>='0' && currCh<='7') {
                            // octal digits
@@ -517,7 +517,7 @@ void CScriptLex::getNextToken() {
                            buf[0] = currCh;
                            getNextCh(); buf[1] = currCh;
                            getNextCh(); buf[2] = currCh;
-                           tkStr += (char)strtol(buf,0,8);
+                           tkStr += static_cast<char>(strtol(buf,0,8));
                          } else
                            tkStr += currCh;
                 }
@@ -935,16 +935,16 @@ int CScriptVar::getChildren() {
 
 int CScriptVar::getInt() {
     /* strtol understands about hex and octal */
-    if (isInt()) return intData;
+    if (isInt()) return static_cast<int>(intData);
     if (isNull()) return 0;
     if (isUndefined()) return 0;
-    if (isDouble()) return (int)doubleData;
+    if (isDouble()) return static_cast<int>(doubleData);
     return 0;
 }
 
 double CScriptVar::getDouble() {
     if (isDouble()) return doubleData;
-    if (isInt()) return intData;
+    if (isInt()) return static_cast<double>(intData);
     if (isNull()) return 0;
     if (isUndefined()) return 0;
     return 0; /* or NaN? */
@@ -1323,7 +1323,7 @@ void CTinyJS::execute(const string &code) {
         msg << "Error " << e->text;
 #ifdef TINYJS_CALL_STACK
         for (int i = static_cast<int>(call_stack.size()-1); i >= 0; i--)
-          msg << "\n" << i << ": " << call_stack.at(i);
+            msg << "\n" << i << ": " << call_stack.at(static_cast<size_t>(i));
 #endif
         msg << " at " << l->getPosition();
         delete l;
@@ -1359,7 +1359,7 @@ CScriptVarLink CTinyJS::evaluateComplex(const string &code) {
       msg << "Error " << e->text;
 #ifdef TINYJS_CALL_STACK
       for (int i = static_cast<int>(call_stack.size()-1); i >= 0; i--)
-        msg << "\n" << i << ": " << call_stack.at(i);
+          msg << "\n" << i << ": " << call_stack.at(static_cast<size_t>(i));
 #endif
       msg << " at " << l->getPosition();
       delete l;
@@ -1791,7 +1791,7 @@ CScriptVarLink *CTinyJS::shift(bool &execute) {
     if (execute) {
       if (op==LEX_LSHIFT) a->var->setInt(a->var->getInt() << shift);
       if (op==LEX_RSHIFT) a->var->setInt(a->var->getInt() >> shift);
-      if (op==LEX_RSHIFTUNSIGNED) a->var->setInt((static_cast<unsigned int>(a->var->getInt())) >> shift);
+      if (op==LEX_RSHIFTUNSIGNED) a->var->setInt(static_cast<int>((static_cast<unsigned int>(a->var->getInt())) >> shift));
     }
   }
   return a;
@@ -2142,7 +2142,7 @@ bool CTinyJS::setVariable(const std::string &path, const std::string &varData) {
     // return result
     if (var) {
         if (var->isInt())
-            var->setInt((int)strtol(varData.c_str(),0,0));
+          var->setInt(static_cast<int>(strtol(varData.c_str(),0,0)));
         else if (var->isDouble())
             var->setDouble(strtod(varData.c_str(),0));
         else
@@ -2156,7 +2156,7 @@ bool CTinyJS::setVariable(const std::string &path, const std::string &varData) {
 /// Finds a child, looking recursively up the scopes
 CScriptVarLink *CTinyJS::findInScopes(const std::string &childName) {
     for (int s = static_cast<int>(scopes.size()-1); s >= 0; s--) {
-      CScriptVarLink *v = scopes[s]->findChild(childName);
+        CScriptVarLink *v = scopes[static_cast<size_t>(s)]->findChild(childName);
       if (v) return v;
     }
     return NULL;
