@@ -39,6 +39,7 @@ HEADERS += \
     ../../../test/tucucore/pkmodels/test_twocompartmentextralag.h \
     ../../../test/tucucore/test_cachecomputing.h \
     ../../../test/tucucore/test_computingcomponentadjustments.h \
+    ../../../test/tucucore/test_computingcomponentattimes.h \
     ../../../test/tucucore/test_concentrationcalculator.h \ \
     ../../../test/tucucore/test_dosage.h \
     ../../../test/tucucore/test_drugmodels.h \

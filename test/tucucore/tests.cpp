@@ -158,6 +158,9 @@ std::ostream& operator<<(typename std::enable_if<std::is_enum<T>::value, std::os
 #if defined(test_rkmichaelismententwocompvmaxamount) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "pkmodels/test_rkmichaelismententwocompvmaxamount.h"
 #endif
+#if defined(test_computingcomponentattimes) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+#include "test_computingcomponentattimes.h"
+#endif
 
 int main(int argc, char** argv)
 {
@@ -1056,6 +1059,23 @@ int main(int argc, char** argv)
     }
     else {
         PRINT_SUCCESS("2 comp Michaelis Menten VMax Amount test succeeded");
+    }
+#endif
+
+#if defined(test_computingcomponentattimes) || !defined(DO_NOT_COMPILE_ALL_TESTS)
+    // --- Multi analytes multi active moieties tests --- //
+    TestComputingComponentAtTimes computingComponentAtTimesTests;
+
+    computingComponentAtTimesTests.add_test("testMeasureFar", &TestComputingComponentAtTimes::testMeasureFar);
+    computingComponentAtTimesTests.add_test("testMeasureFarTimes", &TestComputingComponentAtTimes::testMeasureFarTimes);
+
+    res = computingComponentAtTimesTests.run(argc, argv);
+    tot_res |= res;
+    if (res != 0) {
+        PRINT_FAIL("Computing Component At Times test failed");
+    }
+    else {
+        PRINT_SUCCESS("Computing Component At Times test succeeded");
     }
 #endif
 
