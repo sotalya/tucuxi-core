@@ -984,6 +984,15 @@ ComputingStatus ComputingComponent::compute(
         }
     }
 
+    for (const auto& sample : _request.getDrugTreatment().getSamples()) {
+        if (sample->getDate() < firstDate) {
+            firstDate = sample->getDate();
+        }
+        if (sample->getDate() > lastDate) {
+            lastDate = sample->getDate();
+        }
+    }
+
     lastDate = lastDate + Duration(std::chrono::hours(1));
 
     // TODO : Check if 3 is necessary or not
