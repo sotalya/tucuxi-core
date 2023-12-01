@@ -64,6 +64,8 @@ protected:
     Value m_Int{NAN};           /// Interval (hours)
     Eigen::Index m_nbPoints{0}; /// number measure points during interval
 
+    bool m_timeMaxHigherThanTinf{true};
+
 private:
     typedef OneCompartmentInfusionCompartments Compartments;
 };

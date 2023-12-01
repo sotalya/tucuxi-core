@@ -81,6 +81,7 @@ protected:
     Value m_Int{NAN};           /// Interval (Hours)
     Eigen::Index m_nbPoints{0}; /// number measure points during interval
 
+    bool m_timeMaxHigherThanTinf{true};
     // Only used for debugging purpose
     // Value m_V2;
     // Value m_Q;
@@ -167,16 +168,18 @@ inline void TwoCompartmentInfusionMicro::compute(
         _concentrations2.head(_forceSize) += ((p2p1 * p2p2) / m_Divider).matrix();
     }
 
-    // After infusion
-    int nbPostInfusionPoints = static_cast<int>(_concentrations1.size() - _forceSize);
+    if (m_timeMaxHigherThanTinf) {
+        // After infusion
+        int nbPostInfusionPoints = static_cast<int>(_concentrations1.size() - _forceSize);
 
-    // Add the concentration part related to the dose after infusion
-    _concentrations1.tail(nbPostInfusionPoints) += (APostInf * alphaPostInfLogV.tail(nbPostInfusionPoints)
-                                                    + BPostInf * betaPostInfLogV.tail(nbPostInfusionPoints))
-                                                   / (2 * m_RootK);
-    _concentrations2.tail(nbPostInfusionPoints) += (A2PostInf * alphaPostInfLogV.tail(nbPostInfusionPoints)
-                                                    + B2PostInf * betaPostInfLogV.tail(nbPostInfusionPoints))
-                                                   / (2 * m_RootK);
+        // Add the concentration part related to the dose after infusion
+        _concentrations1.tail(nbPostInfusionPoints) += (APostInf * alphaPostInfLogV.tail(nbPostInfusionPoints)
+                                                        + BPostInf * betaPostInfLogV.tail(nbPostInfusionPoints))
+                                                       / (2 * m_RootK);
+        _concentrations2.tail(nbPostInfusionPoints) += (A2PostInf * alphaPostInfLogV.tail(nbPostInfusionPoints)
+                                                        + B2PostInf * betaPostInfLogV.tail(nbPostInfusionPoints))
+                                                       / (2 * m_RootK);
+    }
 }
 
 class TwoCompartmentInfusionMacro : public TwoCompartmentInfusionMicro
