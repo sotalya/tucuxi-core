@@ -304,12 +304,23 @@ struct Frprmn : Dlinemethod<T>
             xi[j] = h[j] = g[j];
         }
 
+        bool equal = false;
         for (int its = 0; its < ITMAX; its++) {
             // iter=its;
             fret = linmin();
-            if (2.0 * std::abs(fret - fp) <= ftol * (std::abs(fret) + std::abs(fp) + EPS)) {
-                return p;
+            //if (its > 5) {
+            if (equal) {
+                if (2.0 * std::abs(fret - fp) <= ftol * (std::abs(fret) + std::abs(fp) + EPS)) {
+                    return p;
+                }
             }
+            if (fret == fp) {
+                equal = true;
+            }
+            else {
+                equal = false;
+            }
+            //}
             fp = fret;
             func.df(p, xi);
             double test = 0.0;
