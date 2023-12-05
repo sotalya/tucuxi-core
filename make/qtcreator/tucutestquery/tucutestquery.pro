@@ -22,7 +22,6 @@ config_coverage {
 
 
 HEADERS += \
-    ../../../test/tucuquery/gtest_query.h \
     ../../../test/tucuquery/gtest_queryinputstrings.h
 
 SOURCES += \
