@@ -26,7 +26,9 @@ HEADERS += \
     ../../../test/tucuquery/gtest_queryinputstrings.h
 
 SOURCES += \
-    ../../../test/tucuquery/gtest_query.cpp
+    ../../../test/tucuquery/gtest_dosageimportexport.cpp \
+    ../../../test/tucuquery/gtest_query.cpp \
+    ../../../test/tucuquery/gtest_query1comp.cpp
 
 
 !win32 {

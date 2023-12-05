@@ -4,7 +4,6 @@
 #define GTEST_QUERY_H
 
 #include <string>
-#include <gtest/gtest.h>
 
 #include "tucuquery/parametersdata.h"
 

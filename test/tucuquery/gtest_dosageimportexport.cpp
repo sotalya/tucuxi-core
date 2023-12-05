@@ -1,5 +1,7 @@
 //@@license@@
 
+#include <gtest/gtest.h>
+
 #include "tucucommon/xmldocument.h"
 
 #include "tucuquery/queryimport.h"
@@ -10,7 +12,7 @@
 #define PRINT_MESSAGE(x)    (std::cout << "\033[1;36m" << x << "\033[0m" << std::endl)
 
 
-TEST (TucuTestQuery, DosageImportExportTests){
+TEST (DosageImportExportTests, Test1){
     Tucuxi::Query::QueryImport queryImport;
     Tucuxi::Common::XmlDocument xmlDocument;
     GtestTucuQuery gTestTucuQuery;

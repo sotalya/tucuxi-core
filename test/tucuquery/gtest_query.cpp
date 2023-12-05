@@ -1,5 +1,7 @@
 //@@license@@
 
+#include <gtest/gtest.h>
+
 #include "tucucommon/xmldocument.h"
 #include "tucucommon/xmlnode.h"
 

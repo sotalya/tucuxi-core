@@ -1,5 +1,7 @@
 //@@license@@
 
+#include <gtest/gtest.h>
+
 #include "tucucore/definitions.h"
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugmodelimport.h"
@@ -9,9 +11,8 @@
 #include "tucuquery/querylogger.h"
 
 #include "gtest_queryinputstrings.h"
-#include "gtest_query.h"
 
-TEST (TucuTestQuery, Query1CompTests){
+TEST (Query1CompTests, Test1){
     Tucuxi::Common::ComponentManager* pCmpMgr = Tucuxi::Common::ComponentManager::getInstance();
 
     auto drugModelRepository =
