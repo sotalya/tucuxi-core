@@ -13,7 +13,7 @@
 
 #include "querystatus.h"
 
-struct TestDosageImportExport;
+class GtestTucuQuery;
 
 namespace Tucuxi {
 namespace Query {
@@ -109,7 +109,7 @@ public:
 
 
 private:
-    friend TestDosageImportExport;
+    friend GtestTucuQuery;
 };
 
 } // namespace Query

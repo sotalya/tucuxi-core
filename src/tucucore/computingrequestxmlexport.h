@@ -10,7 +10,7 @@
 #include "tucucore/computingservice/computingrequest.h"
 
 
-struct TestDosageImportExport;
+class GtestTucuQuery;
 
 namespace Tucuxi {
 namespace Core {
@@ -126,7 +126,7 @@ protected:
     Tucuxi::Common::XmlDocument m_doc;
 
 private:
-    friend TestDosageImportExport;
+    friend GtestTucuQuery;
 };
 
 } // namespace Core

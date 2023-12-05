@@ -1,34 +1,181 @@
 //@@license@@
 
-#ifndef TEST_QUERY1COMP_H
-#define TEST_QUERY1COMP_H
+#ifndef GTEST_QUERYINPUTSTRINGS_H
+#define GTEST_QUERYINPUTSTRINGS_H
 
-
-#include <array>
-#include <iostream>
-#include <stdexcept>
 #include <string>
 
-#include "tucucommon/utils.h"
-#include "tucucommon/xmlattribute.h"
-#include "tucucommon/xmldocument.h"
-#include "tucucommon/xmliterator.h"
-#include "tucucommon/xmlnode.h"
+// clang-format off
+static const std::string xmlInputTests[4] = {
+    // TEST1
+    "<root>"
+        "<treatment>"
+            "<dosageHistory>"
+                "<dosageTimeRange>"
+                    "<start>2018-10-02T10:00:00</start>"
+                    "<end>2018-10-13T10:00:00</end>"
+                    "<dosage>"
+                        "<dosageLoop>"
+                            "<lastingDosage>"
+                                "<interval>24:00:00</interval>"
+                                "<dose>"
+                                    "<value>400.000000</value>"
+                                    "<unit>mg</unit>"
+                                    "<infusionTimeInMinutes>30.000000</infusionTimeInMinutes>"
+                                "</dose>"
+                                "<formulationAndRoute>"
+                                    "<formulation>parenteralSolution</formulation>"
+                                    "<administrationName>foo bar</administrationName>"
+                                    "<administrationRoute>intravenousDrip</administrationRoute>"
+                                    "<absorptionModel>infusion</absorptionModel>"
+                                "</formulationAndRoute>"
+                            "</lastingDosage>"
+                        "</dosageLoop>"
+                    "</dosage>"
+                "</dosageTimeRange>"
+            "</dosageHistory>"
+        "</treatment>"
+    "</root>",
 
-#include "tucucore/definitions.h"
-#include "tucucore/dosage.h"
-#include "tucucore/drugmodel/drugmodel.h"
-#include "tucucore/drugmodelimport.h"
-#include "tucucore/drugmodelrepository.h"
+    // TEST2
+    "<root>"
+        "<treatment>"
+            "<dosageHistory>"
+                "<dosageTimeRange>"
+                    "<start>2018-07-06T13:45:30</start>"
+                    "<end>2018-07-08T23:45:30</end>"
+                    "<dosage>"
+                        "<dosageLoop>"
+                            "<lastingDosage>"
+                                "<interval>12:00:00</interval>"
+                                "<dose>"
+                                    "<value>400.000000</value>"
+                                    "<unit>mg</unit>"
+                                    "<infusionTimeInMinutes>60.000000</infusionTimeInMinutes>"
+                                "</dose>"
+                                "<formulationAndRoute>"
+                                    "<formulation>parenteralSolution</formulation>"
+                                    "<administrationName>foo bar</administrationName>"
+                                    "<administrationRoute>oral</administrationRoute>"
+                                    "<absorptionModel>extravascular</absorptionModel>"
+                                "</formulationAndRoute>"
+                            "</lastingDosage>"
+                        "</dosageLoop>"
+                    "</dosage>"
+                "</dosageTimeRange>"
+                "<dosageTimeRange>"
+                    "<start>2018-07-08T23:45:30</start>"
+                    "<end>2018-07-10T23:45:30</end>"
+                    "<dosage>"
+                        "<dosageLoop>"
+                            "<lastingDosage>"
+                                "<interval>12:00:00</interval>"
+                                "<dose>"
+                                    "<value>200.000000</value>"
+                                    "<unit>mg</unit>"
+                                    "<infusionTimeInMinutes>60.000000</infusionTimeInMinutes>"
+                                "</dose>"
+                                "<formulationAndRoute>"
+                                    "<formulation>parenteralSolution</formulation>"
+                                    "<administrationName>foo bar</administrationName>"
+                                    "<administrationRoute>oral</administrationRoute>"
+                                    "<absorptionModel>extravascular</absorptionModel>"
+                                "</formulationAndRoute>"
+                            "</lastingDosage>"
+                        "</dosageLoop>"
+                    "</dosage>"
+                "</dosageTimeRange>"
+            "</dosageHistory>"
+        "</treatment>"
+    "</root>",
 
-#include "tucuquery/computingqueryresponsexmlexport.h"
-#include "tucuquery/querycomputer.h"
-#include "tucuquery/queryimport.h"
-#include "tucuquery/querylogger.h"
+    // Test steady state
+    "<root>"
+        "<treatment>"
+            "<dosageHistory>"
+                "<dosageTimeRange>"
+                    "<start/>"
+                    "<end>2018-10-13T10:00:00</end>"
+                    "<dosage>"
+                        "<dosageSteadyState>"
+                            "<lastDoseDate>2018-10-13T10:00:00</lastDoseDate>"
+                            "<lastingDosage>"
+                                "<interval>24:00:00</interval>"
+                                "<dose>"
+                                    "<value>400.000000</value>"
+                                    "<unit>mg</unit>"
+                                    "<infusionTimeInMinutes>30.000000</infusionTimeInMinutes>"
+                                "</dose>"
+                                "<formulationAndRoute>"
+                                    "<formulation>parenteralSolution</formulation>"
+                                    "<administrationName>foo bar</administrationName>"
+                                    "<administrationRoute>intravenousDrip</administrationRoute>"
+                                    "<absorptionModel>infusion</absorptionModel>"
+                                "</formulationAndRoute>"
+                            "</lastingDosage>"
+                        "</dosageSteadyState>"
+                    "</dosage>"
+                "</dosageTimeRange>"
+            "</dosageHistory>"
+        "</treatment>"
+    "</root>",
 
-#include "fructose/fructose.h"
+    // Test dosageRepeat
+    "<root>"
+        "<treatment>"
+            "<dosageHistory>"
+                "<dosageTimeRange>"
+                    "<start>2021-09-30T00:36:30</start>"
+                    "<end>2021-09-30T12:36:30</end>"
+                    "<dosage>"
+                        "<dosageRepeat>"
+                            "<iterations>1</iterations>"
+                            "<lastingDosage>"
+                                "<interval>12:00:00</interval>"
+                                "<dose>"
+                                    "<value>10.000000</value>"
+                                    "<unit>mg</unit>"
+                                    "<infusionTimeInMinutes>0.000000</infusionTimeInMinutes>"
+                                "</dose>"
+                                "<formulationAndRoute>"
+                                    "<formulation>oralSolution</formulation>"
+                                    "<administrationName>Eliquis° oral tablet</administrationName>"
+                                    "<administrationRoute>oral</administrationRoute>"
+                                    "<absorptionModel>extravascular</absorptionModel>"
+                                "</formulationAndRoute>"
+                            "</lastingDosage>"
+                        "</dosageRepeat>"
+                    "</dosage>"
+                "</dosageTimeRange>"
+                "<dosageTimeRange>"
+                    "<start>2021-09-30T12:36:30</start>"
+                    "<end>2021-10-01T00:36:30</end>"
+                    "<dosage>"
+                        "<dosageRepeat>"
+                            "<iterations>2</iterations>"
+                            "<lastingDosage>"
+                                "<interval>12:00:00</interval>"
+                                "<dose>"
+                                    "<value>6.250000</value>"
+                                    "<unit>mg</unit>"
+                                    "<infusionTimeInMinutes>0.000000</infusionTimeInMinutes>"
+                                "</dose>"
+                                "<formulationAndRoute>"
+                                    "<formulation>oralSolution</formulation>"
+                                    "<administrationName>Eliquis° oral tablet</administrationName>"
+                                    "<administrationRoute>oral</administrationRoute>"
+                                    "<absorptionModel>extravascular</absorptionModel>"
+                                "</formulationAndRoute>"
+                            "</lastingDosage>"
+                        "</dosageRepeat>"
+                    "</dosage>"
+                "</dosageTimeRange>"
+            "</dosageHistory>"
+        "</treatment>"
+    "</root>"
 
-
+// clang-format on
+};
 
 static const std::string tdd = R"(<?xml version='1.0' encoding='UTF-8'?>
 <model version='0.6' xsi:noNamespaceSchemaLocation='drugfile.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
@@ -77,7 +224,8 @@ static const std::string tdd = R"(<?xml version='1.0' encoding='UTF-8'?>
             <references/>
         </study>
         <comments/>
-    </head>
+    </head>"
+          R"(
     <drugModel>
         <drugId>virtualdrug</drugId>
         <drugModelId>ch.tucuxi.virtualdrug.mod1</drugModelId>
@@ -130,7 +278,7 @@ static const std::string tdd = R"(<?xml version='1.0' encoding='UTF-8'?>
                 <comments/>
             </covariate>
         </covariates>)"
-                               R"(
+                      R"(
         <activeMoieties>
             <activeMoiety>
                 <activeMoietyId>virtualdrug</activeMoietyId>
@@ -255,7 +403,8 @@ static const std::string tdd = R"(<?xml version='1.0' encoding='UTF-8'?>
                     <correlations />
                 </dispositionParameters>
             </analyteGroup>
-        </analyteGroups>
+        </analyteGroups>"
+                        R"(
         <formulationAndRoutes>
             <formulationAndRoute>
                 <formulationAndRouteId>id0</formulationAndRouteId>
@@ -386,7 +535,8 @@ static const std::string tdd = R"(<?xml version='1.0' encoding='UTF-8'?>
                         </parameterSetAnalyteGroup>
                     </absorptionParameters>
                 </formulationAndRoute>
-            </formulationAndRoutes>
+            </formulationAndRoutes>"
+                                  R"(
             <timeConsiderations>
                 <halfLife>
                     <unit>h</unit>
@@ -477,7 +627,8 @@ static const std::string tqf = R"(<?xml version='1.0' ?>
 							</dosage>
 						</dosageTimeRange>
 					</dosageHistory>
-				</treatment>
+				</treatment>"
+                    R"(
 				<!-- Samples history -->
 				<samples>
 					<sample>
@@ -515,7 +666,7 @@ static const std::string tqf = R"(<?xml version='1.0' ?>
 					</sample>
 					<sample>
 						<sampleId>c1</sampleId>
-                        <sampleDate>2023-01-02T08:00:00</sampleDate>
+            <sampleDate>2023-01-02T08:00:00</sampleDate>
 						<concentrations>
 							<concentration>
 								<analyteId>virtualdrug</analyteId>
@@ -527,7 +678,8 @@ static const std::string tqf = R"(<?xml version='1.0' ?>
 				</samples>
 			</drug>
 		</drugs>
-	</drugTreatment>
+	</drugTreatment>"
+                  R"(
 	<!-- List of the requests we want the server to take care of -->
 	<requests>
 		<request>
@@ -536,7 +688,7 @@ static const std::string tqf = R"(<?xml version='1.0' ?>
 			<drugModelId>ch.tucuxi.virtualdrug.mod1</drugModelId>
 			<predictionTraits>
 				<computingOption>
-                    <parametersType>aposteriori</parametersType>
+          <parametersType>aposteriori</parametersType>
 					<compartmentOption>allActiveMoieties</compartmentOption>
 					<retrieveStatistics>true</retrieveStatistics>
 					<retrieveParameters>true</retrieveParameters>
@@ -555,7 +707,7 @@ static const std::string tqf = R"(<?xml version='1.0' ?>
 			<drugModelId>ch.tucuxi.virtualdrug.mod1</drugModelId>
 			<predictionAtTimesTraits>
 				<computingOption>
-                    <parametersType>aposteriori</parametersType>
+          <parametersType>aposteriori</parametersType>
 					<compartmentOption>allActiveMoieties</compartmentOption>
 					<retrieveStatistics>true</retrieveStatistics>
 					<retrieveParameters>true</retrieveParameters>
@@ -563,9 +715,9 @@ static const std::string tqf = R"(<?xml version='1.0' ?>
 				</computingOption>
 				<dates>
 					<date>2023-01-01T09:00:00</date>
-                    <date>2023-01-01T12:00:00</date>
+          <date>2023-01-01T12:00:00</date>
 					<date>2023-01-01T16:00:00</date>
-                    <date>2023-01-02T08:00:00</date>
+          <date>2023-01-02T08:00:00</date>
 				</dates>
 			</predictionAtTimesTraits>
 		</request>
@@ -574,56 +726,4 @@ static const std::string tqf = R"(<?xml version='1.0' ?>
 
 
 
-struct TestQuery1Comp : public fructose::test_base<TestQuery1Comp>
-{
-    void testSingle(const std::string& /*_testName*/)
-    {
-        Tucuxi::Common::ComponentManager* pCmpMgr = Tucuxi::Common::ComponentManager::getInstance();
-
-
-
-        auto drugModelRepository =
-                dynamic_cast<Tucuxi::Core::DrugModelRepository*>(Tucuxi::Core::DrugModelRepository::createComponent());
-
-        pCmpMgr->registerComponent("DrugModelRepository", drugModelRepository);
-
-        Tucuxi::Core::DrugModelImport importer;
-
-        std::unique_ptr<Tucuxi::Core::DrugModel> drugModel;
-
-        auto status = importer.importFromString(drugModel, tdd);
-        fructose_assert_eq(status, Tucuxi::Core::DrugModelImport::Status::Ok);
-
-        fructose_assert(drugModel != nullptr);
-
-        drugModelRepository->addDrugModel(drugModel.get());
-
-        std::string queryLogPath = "./log.txt";
-        auto* queryLogger =
-                dynamic_cast<Tucuxi::Query::QueryLogger*>(Tucuxi::Query::QueryLogger::createComponent(queryLogPath));
-
-        pCmpMgr->registerComponent("QueryLogger", queryLogger);
-
-        Tucuxi::Query::QueryComputer computer;
-        Tucuxi::Query::ComputingQueryResponse response;
-        computer.compute(tqf, response);
-
-        fructose_assert(response.getRequestResponses().size() == 2);
-
-        auto& r1 = response.getRequestResponses()[0];
-        auto& r2 = response.getRequestResponses()[1];
-
-        auto resp1 = r1.m_computingResponse.get();
-        auto resp2 = r2.m_computingResponse.get();
-
-        const auto* d1 = dynamic_cast<const Tucuxi::Core::SinglePredictionData*>(resp1->getData());
-        const auto* d2 = dynamic_cast<const Tucuxi::Core::SinglePointsData*>(resp2->getData());
-
-        //fructose_assert_eq(d2->m_concentrations[0].size(), 4);
-        fructose_assert_double_eq(d1->getData()[0].m_concentrations[0][20], d2->m_concentrations[0][0]);
-    }
-};
-
-
-
-#endif // TEST_QUERY1COMP_H
+#endif // GTEST_QUERYINPUTSTRINGS_H
