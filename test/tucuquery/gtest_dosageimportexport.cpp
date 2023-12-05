@@ -17,7 +17,7 @@
 using namespace Tucuxi;
 using namespace Query;
 
-class GtestTucuQuery{
+class GTestTucuQuery{
 public:
     std::unique_ptr<Tucuxi::Query::Treatment> importXml(std::string _xmlString)
     {
@@ -72,10 +72,10 @@ public:
 };
 
 
-TEST (DosageImportExportTests, Test1){
+TEST (Query_DosageImportExportTests, Test1){
     Tucuxi::Query::QueryImport queryImport;
     Tucuxi::Common::XmlDocument xmlDocument;
-    GtestTucuQuery gTestTucuQuery;
+    GTestTucuQuery gTestTucuQuery;
 
     int iteration = 0;
     for (std::string xmlInput : xmlInputTests){

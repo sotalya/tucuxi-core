@@ -7,6 +7,7 @@ include(../botan.pri)
 include(../general.pri)
 include(../tucucommon.pri)
 include(../tinyjs.pri)
+include(../gtest.pri)
 
 config_coverage {
     QMAKE_CXXFLAGS += --coverage
@@ -18,15 +19,22 @@ config_coverage {
 }
 
 HEADERS += \
-    ../../../test/tucucommon/test_componentmanager.h \
     ../../../test/tucucommon/test_logger.h \
-    ../../../test/tucucommon/test_datetime.h \
     ../../../test/tucucommon/test_scriptengine.h \
     ../../../test/tucucommon/test_unit.h \
     ../../../test/tucucommon/test_xmlimporter.h
 
 SOURCES += \
-    ../../../test/tucucommon/tests.cpp
+    ../../../test/tucucommon/gtest_common.cpp \
+    ../../../test/tucucommon/gtest_componentmanager.cpp \
+    ../../../test/tucucommon/gtest_datetime.cpp \
+    ../../../test/tucucommon/gtest_iterator.cpp \
+    ../../../test/tucucommon/gtest_logger.cpp \
+    ../../../test/tucucommon/gtest_scriptengine.cpp \
+    ../../../test/tucucommon/gtest_unit.cpp \
+    ../../../test/tucucommon/gtest_xml.cpp \
+    ../../../test/tucucommon/gtest_xmlimporter.cpp \
+    #../../../test/tucucommon/tests.cpp
 
 
 !win32 {

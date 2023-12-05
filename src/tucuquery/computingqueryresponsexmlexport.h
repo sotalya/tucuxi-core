@@ -13,7 +13,7 @@
 
 #include "querystatus.h"
 
-class GtestTucuQuery;
+class GTestTucuQuery;
 
 namespace Tucuxi {
 namespace Query {
@@ -109,7 +109,7 @@ public:
 
 
 private:
-    friend GtestTucuQuery;
+    friend GTestTucuQuery;
 };
 
 } // namespace Query

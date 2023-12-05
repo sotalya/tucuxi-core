@@ -25,7 +25,7 @@
 
 #include "querydata.h"
 
-class GtestTucuQuery;
+class GTestTucuQuery;
 
 namespace Tucuxi {
 namespace Query {
@@ -130,7 +130,7 @@ protected:
             Common::XmlNodeIterator _rootIterator, const std::string& _childName);
 
 private:
-    friend GtestTucuQuery;
+    friend GTestTucuQuery;
 };
 
 

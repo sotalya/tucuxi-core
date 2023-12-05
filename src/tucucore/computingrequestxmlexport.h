@@ -10,7 +10,7 @@
 #include "tucucore/computingservice/computingrequest.h"
 
 
-class GtestTucuQuery;
+class GTestTucuQuery;
 
 namespace Tucuxi {
 namespace Core {
@@ -126,7 +126,7 @@ protected:
     Tucuxi::Common::XmlDocument m_doc;
 
 private:
-    friend GtestTucuQuery;
+    friend GTestTucuQuery;
 };
 
 } // namespace Core
