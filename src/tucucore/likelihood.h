@@ -99,10 +99,10 @@ public:
             return;
         }
 
-        double factor = _deriv[0] / m_omax[0];
-        for (unsigned int i = 1; i < _x.size(); i++) {
+        double factor = 0.0;
+        for (unsigned int i = 0; i < _x.size(); i++) {
             factor = std::max(factor, _deriv[i] / m_omax[i]);
-            factor = std::max(factor, (-_deriv[i]) / (-m_omin[i]));
+            factor = std::max(factor, _deriv[i] / m_omin[i]);
         }
         for (unsigned int i = 0; i < _x.size(); i++) {
             _deriv[i] /= factor;
