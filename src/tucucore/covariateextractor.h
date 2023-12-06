@@ -7,8 +7,6 @@
 #include <string>
 #include <vector>
 
-#include "tucucommon/datetime.h"
-
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/covariateevent.h"
 #include "tucucore/definitions.h"

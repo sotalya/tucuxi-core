@@ -15,13 +15,9 @@
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/computingservice/icomputingservice.h"
 #include "tucucore/concentrationprediction.h"
-#include "tucucore/covariateevent.h"
 #include "tucucore/definitions.h"
 #include "tucucore/dosage.h"
-#include "tucucore/idatamodelservices.h"
 #include "tucucore/pkmodel.h"
-#include "tucucore/residualerrormodel.h"
-#include "tucucore/sampleevent.h"
 
 namespace Tucuxi {
 namespace Core {

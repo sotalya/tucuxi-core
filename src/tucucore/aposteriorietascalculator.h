@@ -3,12 +3,12 @@
 #ifndef APOSTERIORIETASCALCULATOR_H
 #define APOSTERIORIETASCALCULATOR_H
 
-#include "computingservice/computingresult.h"
-#include "definitions.h"
-#include "dosage.h"
-#include "parameter.h"
-#include "residualerrormodel.h"
-#include "sampleevent.h"
+#include "tucucore/computingservice/computingresult.h"
+#include "tucucore/definitions.h"
+#include "tucucore/intakeevent.h"
+#include "tucucore/parameter.h"
+#include "tucucore/sampleevent.h"
+
 
 namespace Tucuxi {
 namespace Core {
