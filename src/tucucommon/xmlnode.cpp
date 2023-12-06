@@ -222,9 +222,8 @@ void XmlNode::removeNodes(const std::string& _nodeName)
             parent.m_pNode->remove_node(child);
             break;
         }
-        else {
-            m_pNode = child;
-        }
+        m_pNode = child;
+
         removeNodes(_nodeName);
     }
 }

@@ -135,8 +135,8 @@ class DrugModel //Some modifications required for checking the structure of the 
                     Invariants::INV_DRUGMODEL_0004,
                     {
                         bool ok = true;
-                        for (size_t i = 0; i < m_analyteSets.size(); i++) {
-                            ok &= m_analyteSets[i]->checkInvariants();
+                        for (const auto& analyteSet : m_analyteSets) {
+                            ok &= analyteSet->checkInvariants();
                         }
                         return ok;
                     },
@@ -149,8 +149,8 @@ class DrugModel //Some modifications required for checking the structure of the 
                     Invariants::INV_DRUGMODEL_0007,
                     {
                         bool ok = true;
-                        for (size_t i = 0; i < m_covariates.size(); i++) {
-                            ok &= m_covariates[i]->checkInvariants();
+                        for (const auto& covariate : m_covariates) {
+                            ok &= covariate->checkInvariants();
                         }
                         return ok;
                     },
@@ -167,8 +167,8 @@ class DrugModel //Some modifications required for checking the structure of the 
                     Invariants::INV_DRUGMODEL_0010,
                     {
                         bool ok = true;
-                        for (size_t i = 0; i < m_interParameterSetCorrelations.size(); i++) {
-                            ok &= m_interParameterSetCorrelations[i].checkInvariants();
+                        for (const auto& interParameterSetCorrelation : m_interParameterSetCorrelations) {
+                            ok &= interParameterSetCorrelation.checkInvariants();
                         }
                         return ok;
                     },
@@ -178,8 +178,8 @@ class DrugModel //Some modifications required for checking the structure of the 
                     Invariants::INV_DRUGMODEL_0012,
                     {
                         bool ok = true;
-                        for (size_t i = 0; i < m_activeMoieties.size(); i++) {
-                            ok &= m_activeMoieties[i]->checkInvariants();
+                        for (const auto& activeMoietie : m_activeMoieties) {
+                            ok &= activeMoietie->checkInvariants();
                         }
                         return ok;
                     },

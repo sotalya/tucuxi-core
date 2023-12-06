@@ -317,8 +317,8 @@ public:
                        Invariants::INV_PARAMETERSETDEFINITION_0001,
                        {
                            bool ok = true;
-                           for (size_t i = 0; i < m_parameters.size(); i++) {
-                               ok &= m_parameters[i] != nullptr;
+                           for (const auto& parameter : m_parameters) {
+                               ok &= parameter != nullptr;
                            }
                            return ok;
                        },
@@ -327,8 +327,8 @@ public:
                        Invariants::INV_PARAMETERSETDEFINITION_0002,
                        {
                            bool ok = true;
-                           for (size_t i = 0; i < m_parameters.size(); i++) {
-                               ok &= m_parameters[i]->checkInvariants();
+                           for (const auto& parameter : m_parameters) {
+                               ok &= parameter->checkInvariants();
                            }
                            return ok;
                        },
@@ -337,8 +337,8 @@ public:
                        Invariants::INV_PARAMETERSETDEFINITION_0003,
                        {
                            bool ok = true;
-                           for (size_t i = 0; i < m_correlations.size(); i++) {
-                               ok &= m_correlations[i]->checkInvariants();
+                           for (const auto& correlation : m_correlations) {
+                               ok &= correlation->checkInvariants();
                            }
                            return ok;
                        },

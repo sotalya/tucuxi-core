@@ -35,7 +35,7 @@ void QueryComputer::compute(
         std::unique_ptr<Core::ComputingResponse> computingResponse =
                 std::make_unique<Core::ComputingResponse>(computingRequest->getId());
 
-        if (_tqfOutputFileName != "") {
+        if (!_tqfOutputFileName.empty()) {
             Tucuxi::Core::ComputingRequestXmlExport exporter;
             exporter.exportToFile(*(computingRequest.get()), _tqfOutputFileName + computingRequest->getId());
         }
