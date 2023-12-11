@@ -26,7 +26,7 @@ std::string m_fingerprint; // Fingerprint
 MachineIdType m_type;      // Type of fingerprint
 std::string m_licenses[6]; // Licenses
 
-void testLicenseManager(std::string& _path)
+static void testLicenseManager(std::string& _path)
 {
     // Path
     m_path = _path;

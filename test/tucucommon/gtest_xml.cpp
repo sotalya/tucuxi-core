@@ -10,7 +10,7 @@
 
 extern std::string appFolder;
 
-int countNodes(Tucuxi::Common::XmlNodeIterator& iter)
+static int countNodes(Tucuxi::Common::XmlNodeIterator& iter)
 {
     int n = 0;
     while (iter != iter.none()) {

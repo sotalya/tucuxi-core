@@ -386,7 +386,8 @@ struct TestComputingComponentAtTimes : public fructose::test_base<TestComputingC
                         </parameterSetAnalyteGroup>
                     </absorptionParameters>
                 </formulationAndRoute>
-            </formulationAndRoutes>
+            </formulationAndRoutes>)"
+                                   R"(
             <timeConsiderations>
                 <halfLife>
                     <unit>h</unit>

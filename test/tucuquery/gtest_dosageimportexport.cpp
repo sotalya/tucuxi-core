@@ -19,7 +19,7 @@ using namespace Query;
 
 class GTestTucuQuery{
 public:
-    std::unique_ptr<Tucuxi::Query::Treatment> importXml(std::string _xmlString)
+    static std::unique_ptr<Tucuxi::Query::Treatment> importXml(std::string _xmlString)
     {
         Tucuxi::Query::QueryImport queryImport;
         Tucuxi::Common::XmlDocument xmlDocument;
@@ -31,7 +31,7 @@ public:
         return queryImport.createTreatment(xmlNodeIterator);
     }
 
-    void exportXml(std::unique_ptr<Tucuxi::Query::Treatment> _pTreatment, std::string& _xmlString)
+    static void exportXml(std::unique_ptr<Tucuxi::Query::Treatment> _pTreatment, std::string& _xmlString)
     {
         Tucuxi::Query::ComputingQueryResponseXmlExport computingXmlExport;
 
@@ -48,7 +48,7 @@ public:
         xmlDocument.toString(_xmlString, true);
     }
 
-    void removeSpecialsCharacters(std::string& _exportedXmlString)
+    static void removeSpecialsCharacters(std::string& _exportedXmlString)
     {
         std::vector<char> specialCharacters{'\t', '\n', '\r'};
 
@@ -59,7 +59,7 @@ public:
         }
     }
 
-    void printImportExportString(std::string& _importString, std::string& _exportString)
+    static void printImportExportString(std::string& _importString, std::string& _exportString)
     {
         std::cout << std::endl;
         std::cout << "Imported String : " << std::endl << std::endl;
