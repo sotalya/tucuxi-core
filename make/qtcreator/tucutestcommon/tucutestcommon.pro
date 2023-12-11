@@ -18,11 +18,7 @@ config_coverage {
     # lcov --no-external --capture --directory . --base-directory ../../../../../src/ --output-file report.info
 }
 
-HEADERS += \
-    ../../../test/tucucommon/test_logger.h \
-    ../../../test/tucucommon/test_scriptengine.h \
-    ../../../test/tucucommon/test_unit.h \
-    ../../../test/tucucommon/test_xmlimporter.h
+HEADERS +=
 
 SOURCES += \
     ../../../test/tucucommon/gtest_common.cpp \

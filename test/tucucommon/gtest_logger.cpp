@@ -48,7 +48,7 @@ public:
     }
 };
 
-TEST (Common_LoggerTest, basic){
+TEST (Common_LoggerTest, Basic){
     GTestLogger gTestLogger;
 
     gTestLogger.reset("LogTest2.log", appFolder);
@@ -70,7 +70,7 @@ TEST (Common_LoggerTest, basic){
     gTestLogger.checkLogfileLine(infile, "critical", "Tcho les topiots");
 }
 
-TEST (Common_LoggerTest, crashes){
+TEST (Common_LoggerTest, Crashes){
     GTestLogger gTestLogger;
 
     // Work with an uninitialized logger
