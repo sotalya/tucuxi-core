@@ -8,7 +8,6 @@
 #include "likelihood.h"
 
 #include "concentrationcalculator.h"
-#include "residualerrormodel.h"
 
 
 namespace Tucuxi {

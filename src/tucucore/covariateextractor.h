@@ -3,16 +3,9 @@
 #ifndef TUCUXI_CORE_COVARIATEEXTRACTOR_H
 #define TUCUXI_CORE_COVARIATEEXTRACTOR_H
 
-#include <algorithm>
-#include <iostream>
 #include <map>
-#include <memory>
-#include <set>
 #include <string>
 #include <vector>
-
-#include "tucucommon/datetime.h"
-#include "tucucommon/utils.h"
 
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/covariateevent.h"
@@ -23,8 +16,6 @@ struct TestCovariateExtractor;
 
 namespace Tucuxi {
 namespace Core {
-
-using Tucuxi::Common::Duration;
 
 /// \brief Interface for the covariate extractor.
 class ICovariateExtractor

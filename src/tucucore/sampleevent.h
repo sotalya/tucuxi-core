@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "tucucore/definitions.h"
-#include "tucucore/drugdefinitions.h"
 #include "tucucore/timedevent.h"
 
 namespace Tucuxi {

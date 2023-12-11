@@ -6,10 +6,8 @@
 #include <fstream>
 #include <memory>
 
-#include "tucucommon/general.h"
-
 #include "tucucore/definitions.h"
-#include "tucucore/dosage.h"
+#include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -31,8 +29,8 @@ public:
             size_t nbPoints = times.size();
             for (size_t i = 0; i < nbPoints - 1; i++) {
                 ostrm << (times[i]) + offset << " ";
-                for (size_t perc = 0; perc < m_values.size(); perc++) {
-                    ostrm << m_values[perc][cycle][i] << " ";
+                for (auto& value : m_values) {
+                    ostrm << value[cycle][i] << " ";
                 }
                 ostrm << std::endl;
             }
@@ -47,11 +45,11 @@ public:
         m_times = _times;
         m_values.clear();
 
-        PercentileRanks::iterator itRank = m_ranks.begin();
+        auto itRank = m_ranks.begin();
         while (itRank != m_ranks.end()) {
             std::vector<Concentrations> vec;
-            for (size_t cycle = 0; cycle < _intakes.size(); cycle++) {
-                vec.push_back(Concentrations(_intakes[cycle].getNbPoints()));
+            for (const auto& intake : _intakes) {
+                vec.emplace_back(Concentrations(intake.getNbPoints()));
             }
             m_values.push_back(vec);
             itRank++;

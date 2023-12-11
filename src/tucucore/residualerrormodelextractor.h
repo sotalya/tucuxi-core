@@ -7,7 +7,6 @@
 
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/covariateevent.h"
-#include "tucucore/sampleevent.h"
 
 namespace Tucuxi {
 namespace Core {

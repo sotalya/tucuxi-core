@@ -1138,8 +1138,8 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     // probably means there is an error with the unit of samples, making
     // their value very unlikely
     int sumNbZeros = 0;
-    for (size_t i = 0; i < nbZeros.size(); i++) {
-        sumNbZeros += nbZeros[i];
+    for (int nbZero : nbZeros) {
+        sumNbZeros += nbZero;
     }
     if (sumNbZeros == weight.size()) {
         return ComputingStatus::AposterioriPercentilesNoLikelySample;

@@ -3,11 +3,11 @@
 #ifndef TUCUXI_COMMON_LOOGER
 #define TUCUXI_COMMON_LOOGER
 
+#include <iostream>
+
 #include "tucucommon/componentmanager.h"
 #include "tucucommon/ilogger.h"
 #include "tucucommon/logger.h"
-
-#include <iostream>
 
 namespace Tucuxi {
 namespace Common {

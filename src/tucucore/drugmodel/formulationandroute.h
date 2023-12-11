@@ -9,7 +9,7 @@
 #include "tucucommon/unit.h"
 
 #include "tucucore/definitions.h"
-#include "tucucore/drugmodel/activesubstance.h"
+#include "tucucore/drugmodel/analyte.h"
 #include "tucucore/drugmodel/parameterdefinition.h"
 #include "tucucore/drugmodel/validdose.h"
 #include "tucucore/drugmodel/validduration.h"
@@ -208,25 +208,25 @@ public:
         if (m_formulation < _f.m_formulation) {
             return true;
         }
-        else if (m_formulation > _f.m_formulation) {
+        if (m_formulation > _f.m_formulation) {
             return false;
         }
         if (m_route < _f.m_route) {
             return true;
         }
-        else if (m_route > _f.m_route) {
+        if (m_route > _f.m_route) {
             return false;
         }
         if (m_absorptionModel < _f.m_absorptionModel) {
             return true;
         }
-        else if (m_absorptionModel > _f.m_absorptionModel) {
+        if (m_absorptionModel > _f.m_absorptionModel) {
             return false;
         }
         if (m_administrationName < _f.m_administrationName) {
             return true;
         }
-        else if (m_administrationName > _f.m_administrationName) {
+        if (m_administrationName > _f.m_administrationName) {
             return false;
         }
         return false;
@@ -416,8 +416,8 @@ public:
                        Invariants::INV_FULLFORMULATIONANDROUTE_0009,
                        {
                            bool ok = true;
-                           for (size_t i = 0; i < m_associations.size(); i++) {
-                               ok &= m_associations[i]->checkInvariants();
+                           for (const auto& association : m_associations) {
+                               ok &= association->checkInvariants();
                            }
                            return ok;
                        },
@@ -430,8 +430,8 @@ public:
                        Invariants::INV_FULLFORMULATIONANDROUTE_0011,
                        {
                            bool ok = true;
-                           for (size_t i = 0; i < m_analyteConversions.size(); i++) {
-                               ok &= m_analyteConversions[i] != nullptr;
+                           for (const auto& analyteConversion : m_analyteConversions) {
+                               ok &= analyteConversion != nullptr;
                            }
                            return ok;
                        },
@@ -440,8 +440,8 @@ public:
                        Invariants::INV_FULLFORMULATIONANDROUTE_0012,
                        {
                            bool ok = true;
-                           for (size_t i = 0; i < m_analyteConversions.size(); i++) {
-                               ok &= m_analyteConversions[i]->checkInvariants();
+                           for (const auto& analyteConversion : m_analyteConversions) {
+                               ok &= analyteConversion->checkInvariants();
                            }
                            return ok;
                        },
@@ -556,8 +556,8 @@ public:
                     Invariants::INV_FORMULATIONANDROUTE_0002,
                     {
                         bool ok = true;
-                        for (size_t i = 0; i < m_fars.size(); i++) {
-                            ok &= m_fars[i]->checkInvariants();
+                        for (const auto& far : m_fars) {
+                            ok &= far->checkInvariants();
                         }
                         return ok;
                     },

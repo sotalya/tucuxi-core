@@ -72,7 +72,6 @@ HEADERS += \
     $$PWD/../../src/tucucore/drugdefinitions.h \
     $$PWD/../../src/tucucore/drugmodel/activemoiety.h \
     $$PWD/../../src/tucucore/drugmodel/analyte.h \
-    $$PWD/../../src/tucucore/drugmodel/activesubstance.h \
     $$PWD/../../src/tucucore/drugmodel/drugmodeldomain.h \
     $$PWD/../../src/tucucore/drugmodel/formulationandroute.h \
     $$PWD/../../src/tucucore/drugmodel/parameterdefinition.h \
@@ -168,7 +167,6 @@ SOURCES += \
     $$PWD/../../src/tucucore/residualerrormodel.cpp \
     $$PWD/../../src/tucucore/drugmodel/activemoiety.cpp \
     $$PWD/../../src/tucucore/drugmodel/analyte.cpp \
-    $$PWD/../../src/tucucore/drugmodel/activesubstance.cpp \
     $$PWD/../../src/tucucore/drugmodel/drugmodeldomain.cpp \
     $$PWD/../../src/tucucore/drugmodel/formulationandroute.cpp \
     $$PWD/../../src/tucucore/drugmodel/parameterdefinition.cpp \

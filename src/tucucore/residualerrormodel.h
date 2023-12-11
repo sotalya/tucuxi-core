@@ -6,7 +6,6 @@
 #include "tucucommon/general.h"
 
 #include "tucucore/definitions.h"
-#include "tucucore/drugdefinitions.h"
 #include "tucucore/iresidualerrormodel.h"
 
 namespace Tucuxi {
