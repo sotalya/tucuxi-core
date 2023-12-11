@@ -556,8 +556,8 @@ public:
                     Invariants::INV_FORMULATIONANDROUTE_0002,
                     {
                         bool ok = true;
-                        for (const auto& far : m_fars) {
-                            ok &= far->checkInvariants();
+                        for (const auto& f : m_fars) {
+                            ok &= f->checkInvariants();
                         }
                         return ok;
                     },
