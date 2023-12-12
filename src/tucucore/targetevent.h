@@ -13,7 +13,7 @@
 #include "tucucore/timedevent.h"
 
 
-struct TestTargetExtractor;
+class TestTargetExtractor;
 
 namespace Tucuxi {
 namespace Core {

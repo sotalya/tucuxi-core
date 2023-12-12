@@ -18,7 +18,7 @@
 #include "tucucore/parameterids.h"
 #include "tucucore/timedevent.h"
 
-struct TestParameterExtractor;
+class TestParameterExtractor;
 
 namespace Tucuxi {
 namespace Core {

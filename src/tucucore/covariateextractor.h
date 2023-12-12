@@ -12,7 +12,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/intakeevent.h"
 
-struct TestCovariateExtractor;
+class TestCovariateExtractor;
 
 namespace Tucuxi {
 namespace Core {
