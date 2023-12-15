@@ -1,0 +1,3 @@
+Eigen is under multiple licenses.
+
+Have a look to the COPYING.README file to know more

@@ -9,10 +9,11 @@ NAME := tuculicense
 TYPE := TEST
 
 SOURCES := tests.cpp
-INCLUDES := ../../libs/fructose-1.3/fructose/include \
-            ../../libs/spdlog-master-20170622/include \
-            ../../libs/date-master-20170711 \
-            ../../libs/botan-2.1.0/build/include
+
+INCLUDES := ../../libs/fructose/include \
+            ../../libs/spdlog/include \
+            ../../libs/date/include \
+            ../../libs/botan/build/include
 
 LIBS := tucucommon tuculicense botan
 EXTLIBS := 

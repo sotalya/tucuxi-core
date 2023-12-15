@@ -42,7 +42,7 @@ public:
     /// The list of responses embedded in the query response correspond to the
     /// ComputingRequest embedded in _query
     ///
-    void compute(ComputingQuery& _query, ComputingQueryResponse& _response);
+    void compute(ComputingQuery& _query, ComputingQueryResponse& _response, const std::string& _tqfOutputFileName = "");
 
     ///
     /// \brief computes a full query, and populates the responses
@@ -51,7 +51,10 @@ public:
     /// The list of responses embedded in the query response correspond to the
     /// ComputingRequest embedded in _queryString
     ///
-    void compute(const std::string& _queryString, ComputingQueryResponse& _response);
+    void compute(
+            const std::string& _queryString,
+            ComputingQueryResponse& _response,
+            const std::string& _tqfOutputFileName = "");
 };
 
 

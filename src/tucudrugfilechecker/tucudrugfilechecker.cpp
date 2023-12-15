@@ -31,7 +31,7 @@
 #include "tucucore/drugmodelimport.h"
 #include "tucucore/pkmodel.h"
 
-#include "cxxopts/include/cxxopts.hpp"
+#include "cxxopts.hpp"
 
 cxxopts::ParseResult parse(int _argc, char* _argv[])
 {
@@ -177,7 +177,7 @@ cxxopts::ParseResult parse(int _argc, char* _argv[])
 
         return result;
     }
-    catch (const cxxopts::OptionException& e) {
+    catch (const cxxopts::exceptions::exception& e) {
         Tucuxi::Common::LoggerHelper logHelper;
         logHelper.error("error parsing options: {}", e.what());
         exit(1);

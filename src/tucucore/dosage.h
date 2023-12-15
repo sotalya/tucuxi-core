@@ -447,6 +447,16 @@ public:
         return m_dosages;
     }
 
+    size_t getNumberOfDosages()
+    {
+        return m_dosages.size();
+    }
+
+    DosageBounded* getDosageAtIndex(size_t _index) const
+    {
+        return m_dosages[_index].get();
+    }
+
 
 private:
     /// \brief Sequence of bounded dosages that is administered.
@@ -553,6 +563,21 @@ public:
     const TimeOffsetList& getOffsetsList() const
     {
         return m_offsets;
+    }
+
+    size_t getNumberOfDosages()
+    {
+        return m_dosages.size();
+    }
+
+    DosageBounded* getDosageAtIndex(size_t _index) const
+    {
+        return m_dosages[_index].get();
+    }
+
+    Duration getOffsetAtIndex(size_t _index) const
+    {
+        return m_offsets[_index];
     }
 
 private:
@@ -1083,6 +1108,16 @@ public:
     const DosageTimeRangeList& getDosageTimeRanges() const
     {
         return m_history;
+    }
+
+    DosageTimeRange* getDosageTimeRangeAtIndex(size_t _index)
+    {
+        return m_history[_index].get();
+    }
+
+    size_t getNumberOfTimeRanges()
+    {
+        return m_history.size();
     }
 
 private:

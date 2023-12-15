@@ -37,7 +37,7 @@ if not defined VisualStudioVersion (
 set MAKE="C:\Qt\Tools\mingw810_64\bin\mingw32-make.exe"
 
 if "%BuildLibs%" == "1" (
-  for %%i in (tiny-js-master-20170629 botan-2.19.3) do (
+  for %%i in (tiny-js-master-20170629 botan) do (
     echo *********************************************
     echo *** Compiling %%i
     cd "%TUCUXI_ROOT%\libs\%%i"
@@ -45,16 +45,7 @@ if "%BuildLibs%" == "1" (
   )
 )
 
-if "%BuildLibs%" == "1" (
-  for %%i in () do (
-    echo *********************************************
-    echo *** Compiling %%i
-    cd "C:\Users\admin\Documents\Tucuxi\botan"
-    %MAKE% TARGET=WINDOWS -f "C:\Users\admin\Documents\Tucuxi\botan\makefile" %MakeCmd%
-  )
-)
-
-for %%i in (tucucommon tucucore tucucli tucuvalidator tuculicense) do (
+for %%i in (tucucommon tucucore tucuquery tucucli tucuvalidator tucucrypto tuculicense tucudrugfilechecker) do (
   echo *********************************************
   echo *** Compiling %%i
   cd "%TUCUXI_ROOT%\Src\%%i"

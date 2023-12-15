@@ -29,7 +29,7 @@
 #include "tucucommon/unit.h"
 
 #include "tucucore/definitions.h"
-#include "tucucore/drugmodel/activesubstance.h"
+#include "tucucore/drugmodel/analyte.h"
 #include "tucucore/drugmodel/parameterdefinition.h"
 #include "tucucore/drugmodel/validdose.h"
 #include "tucucore/drugmodel/validduration.h"
@@ -209,13 +209,18 @@ public:
         return m_administrationName;
     }
 
-    friend bool operator==(const FormulationAndRoute& _v1, const FormulationAndRoute& _v2)
+    bool operator==(const FormulationAndRoute& _v2) const
     {
-        return (_v1.m_absorptionModel == _v2.m_absorptionModel) && (_v1.m_route == _v2.m_route);
-        return (_v1.m_absorptionModel == _v2.m_absorptionModel) && (_v1.m_route == _v2.m_route)
-               && (_v1.m_formulation == _v2.m_formulation);
+        return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route)
+               && (m_formulation == _v2.m_formulation) && (this->m_administrationName == _v2.m_administrationName);
     }
 
+    bool isCompatible(const FormulationAndRoute& _v2) const
+    {
+        return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route);
+        return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route)
+               && (m_formulation == _v2.m_formulation);
+    }
 
     /// \brief Is the duration smaller?
     bool operator<(const FormulationAndRoute& _f) const
@@ -223,14 +228,26 @@ public:
         if (m_formulation < _f.m_formulation) {
             return true;
         }
+        if (m_formulation > _f.m_formulation) {
+            return false;
+        }
         if (m_route < _f.m_route) {
             return true;
+        }
+        if (m_route > _f.m_route) {
+            return false;
         }
         if (m_absorptionModel < _f.m_absorptionModel) {
             return true;
         }
+        if (m_absorptionModel > _f.m_absorptionModel) {
+            return false;
+        }
         if (m_administrationName < _f.m_administrationName) {
             return true;
+        }
+        if (m_administrationName > _f.m_administrationName) {
+            return false;
         }
         return false;
     }
@@ -419,8 +436,8 @@ public:
                        Invariants::INV_FULLFORMULATIONANDROUTE_0009,
                        {
                            bool ok = true;
-                           for (size_t i = 0; i < m_associations.size(); i++) {
-                               ok &= m_associations[i]->checkInvariants();
+                           for (const auto& association : m_associations) {
+                               ok &= association->checkInvariants();
                            }
                            return ok;
                        },
@@ -433,8 +450,8 @@ public:
                        Invariants::INV_FULLFORMULATIONANDROUTE_0011,
                        {
                            bool ok = true;
-                           for (size_t i = 0; i < m_analyteConversions.size(); i++) {
-                               ok &= m_analyteConversions[i] != nullptr;
+                           for (const auto& analyteConversion : m_analyteConversions) {
+                               ok &= analyteConversion != nullptr;
                            }
                            return ok;
                        },
@@ -443,8 +460,8 @@ public:
                        Invariants::INV_FULLFORMULATIONANDROUTE_0012,
                        {
                            bool ok = true;
-                           for (size_t i = 0; i < m_analyteConversions.size(); i++) {
-                               ok &= m_analyteConversions[i]->checkInvariants();
+                           for (const auto& analyteConversion : m_analyteConversions) {
+                               ok &= analyteConversion->checkInvariants();
                            }
                            return ok;
                        },
@@ -559,8 +576,8 @@ public:
                     Invariants::INV_FORMULATIONANDROUTE_0002,
                     {
                         bool ok = true;
-                        for (size_t i = 0; i < m_fars.size(); i++) {
-                            ok &= m_fars[i]->checkInvariants();
+                        for (const auto& f : m_fars) {
+                            ok &= f->checkInvariants();
                         }
                         return ok;
                     },

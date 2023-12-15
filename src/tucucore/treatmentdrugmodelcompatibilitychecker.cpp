@@ -50,7 +50,7 @@ bool TreatmentDrugModelCompatibilityChecker::checkCompatibility(
         bool found = false;
         // Try to get a formulation and route compatible within the drug model
         for (const auto& f : _drugModel->getFormulationAndRoutes().getList()) {
-            if (f->getFormulationAndRoute() == formulationAndRoute) {
+            if (f->getFormulationAndRoute().isCompatible(formulationAndRoute)) {
                 found = true;
             }
         }

@@ -88,7 +88,7 @@ bool CacheComputing::getSpecificIntervalFromCache(
             // This check is required if something went strangely with the insertion of percentiles.
             // It happens when we ask for data in a far future, where the computation ended up with
             // values very close to 0
-            if (pData->getPercentileData(0).size() == 0) {
+            if (pData->getPercentileData(0).empty()) {
                 continue;
             }
             // We have cycles of the first percentiles through pData->getPercentileData(0)

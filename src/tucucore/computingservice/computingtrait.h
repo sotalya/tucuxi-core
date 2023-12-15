@@ -214,7 +214,7 @@ public:
     /// \brief get the Id of the ComputingTrait.
     /// \return The Id
     ///
-    // RequestResponseId getId() const;
+    RequestResponseId getId() const;
 
     ///
     /// \brief ~ComputingTrait virtual destructor

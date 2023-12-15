@@ -25,6 +25,9 @@
 
 #include "tucucommon/utils.h"
 
+#define PRINT_SUCCESS(x) (std::cout << "\033[1;32m" << x << "\033[0m" << std::endl)
+#define PRINT_FAIL(x) (std::cerr << "\033[1;31m" << x << "\033[0m" << std::endl)
+
 #if defined(test_datetime) || !defined(DO_NOT_COMPILE_ALL_TESTS)
 #include "test_datetime.h"
 #endif
@@ -65,11 +68,10 @@ int main(int argc, char** argv)
     dateTimeTests.add_test("DateTime-duration", &TestDateTime::duration);
     res = dateTimeTests.run(argc, argv);
     if (res != 0) {
-        printf("Date and time test failed\n");
-        exit(1);
+        PRINT_FAIL("Date and time test failed");
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        PRINT_SUCCESS("Date and time test succeeded");
     }
 #endif
 
@@ -79,11 +81,10 @@ int main(int argc, char** argv)
     componentManagerTests.add_test("CreateComponent", &TestComponentManager::createComponent);
     res = componentManagerTests.run(argc, argv);
     if (res != 0) {
-        printf("ComponentManager test failed\n");
-        exit(1);
+        PRINT_FAIL("ComponentManager test failed");
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        PRINT_SUCCESS("ComponentManager test succeeded");
     }
 #endif
 
@@ -94,11 +95,10 @@ int main(int argc, char** argv)
     loggerTests.add_test("Logger-basic", &TestLogger::basic);
     res = loggerTests.run(argc, argv);
     if (res != 0) {
-        printf("Logger test failed\n");
-        exit(1);
+        PRINT_FAIL("Logger test failed");
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        PRINT_SUCCESS("Logger test succeeded");
     }
 
     Tucuxi::Common::LoggerHelper::beforeExit();
@@ -110,11 +110,10 @@ int main(int argc, char** argv)
     scriptEngineTests.add_test("ScriptEngine-basic", &TestScriptEngine::basic);
     res = scriptEngineTests.run(argc, argv);
     if (res != 0) {
-        printf("Script engine test failed\n");
-        exit(1);
+        PRINT_FAIL("Script engine test failed");
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        PRINT_SUCCESS("Script engine test succeeded");
     }
 #endif
 
@@ -126,11 +125,10 @@ int main(int argc, char** argv)
     xmlTests.add_test("XML-files", &TestXml::files);
     res = xmlTests.run(argc, argv);
     if (res != 0) {
-        printf("XML test failed\n");
-        exit(1);
+        PRINT_FAIL("XML test failed");
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        PRINT_SUCCESS("XML test succeeded");
     }
 #endif
 
@@ -140,11 +138,10 @@ int main(int argc, char** argv)
     iteratorTests.add_test("Iterators", &TestIterator::basic);
     res = iteratorTests.run(argc, argv);
     if (res != 0) {
-        printf("Iterator test failed\n");
-        exit(1);
+        PRINT_FAIL("Iterator test failed");
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        PRINT_SUCCESS("Iterator test succeeded");
     }
 #endif
 
@@ -154,11 +151,10 @@ int main(int argc, char** argv)
     xmlImporterTests.add_test("XmlImporter", &TestXmlImporter::xmlImporter);
     res = xmlImporterTests.run(argc, argv);
     if (res != 0) {
-        printf("xmlImporter test failed\n");
-        exit(1);
+        PRINT_FAIL("xmlImporter test failed");
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        PRINT_SUCCESS("xmlImporter test succeeded");
     }
 #endif
 
@@ -168,11 +164,10 @@ int main(int argc, char** argv)
     unitTests.add_test("Unit", &TestUnit::unit);
     res = unitTests.run(argc, argv);
     if (res != 0) {
-        printf("unit test failed\n");
-        exit(1);
+        PRINT_FAIL("unit test failed");
     }
     else {
-        std::cout << "Target evaluator test succeeded\n";
+        PRINT_SUCCESS("unit test succeeded");
     }
 #endif
 

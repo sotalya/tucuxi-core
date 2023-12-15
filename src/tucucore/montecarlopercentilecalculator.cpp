@@ -1053,6 +1053,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
             static_cast<unsigned int>(ceil(static_cast<double>(nbInitialSamples) / static_cast<double>(nbThreads)));
 
     std::vector<std::thread> workers;
+    std::vector<int> nbZeros(nbThreads, 0);
     for (unsigned thread = 0; thread < nbThreads; thread++) {
 
         workers.push_back(std::thread([thread,
@@ -1078,6 +1079,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
                                        &_residualErrorModel,
                                        &_parameters,
                                        &_concentrationCalculator,
+                                       &nbZeros,
                                        nbInitialSamples]() {
             // Duplicate an IntakeSeries for avoid a possible problem with multi-thread
             IntakeSeries newIntakes;
@@ -1131,9 +1133,13 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
 
                         // Set the ratio
                         ratio[sample] = exp(-hstart) / g;
+                        if (ratio[sample] == 0.0) {
+                            nbZeros[thread]++;
+                        }
                     }
                     else {
                         ratio[sample] = 0.0;
+                        nbZeros[thread]++;
                     }
                 }
             }
@@ -1147,6 +1153,18 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
     }
 
     const auto& weight = ratio;
+
+    // Checks if all weights are 0. If yes, then return an error, it
+    // probably means there is an error with the unit of samples, making
+    // their value very unlikely
+    int sumNbZeros = 0;
+    for (int nbZero : nbZeros) {
+        sumNbZeros += nbZero;
+    }
+    if (sumNbZeros == weight.size()) {
+        return ComputingStatus::AposterioriPercentilesNoLikelySample;
+    }
+
 
 
     //    EigenVector weight(nbInitialSamples);

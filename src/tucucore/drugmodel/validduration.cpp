@@ -71,13 +71,13 @@ Tucuxi::Common::Duration ValidDurations::valueToDuration(Value _value) const
     if (m_unit == TucuUnit("d")) {
         return Duration(24h) * _value;
     }
-    else if (m_unit == TucuUnit("h")) {
+    if (m_unit == TucuUnit("h")) {
         return Duration(1h) * _value;
     }
-    else if (m_unit == TucuUnit("min")) {
+    if (m_unit == TucuUnit("min")) {
         return Duration(1min) * _value;
     }
-    else if (m_unit == TucuUnit("s")) {
+    if (m_unit == TucuUnit("s")) {
         return Duration(1s) * _value;
     }
     throw std::runtime_error("Internal error. valueToDuration() with invalid unit");

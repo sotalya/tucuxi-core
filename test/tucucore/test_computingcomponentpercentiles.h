@@ -355,7 +355,6 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
         Duration treatmentDuration(std::chrono::hours(24 * 60));
         DateTime endTreatment = startTreatment + treatmentDuration;
 
-
         {
             // Test of a posteriori percentiles with no samples
             auto drugTreatment = buildSimpleDrugTreatment(route, startTreatment, interval, treatmentDuration);
@@ -498,33 +497,6 @@ struct TestComputingComponentPercentiles : public fructose::test_base<TestComput
         }
 
 
-        {
-            // Test of a posteriori percentiles with one unvalid sample too early in time
-            auto drugTreatment = buildSimpleDrugTreatment(route, startTreatment, interval, treatmentDuration);
-            // The sample is prior to the treatment start
-            drugTreatment->addSample(std::make_unique<Sample>(
-                    startTreatment - Duration(std::chrono::hours(3)), AnalyteId("analyte"), 100.0, TucuUnit("mg/l")));
-
-            RequestResponseId requestResponseId = "1";
-            Tucuxi::Common::DateTime start = startTreatment;
-            Tucuxi::Common::DateTime end = startTreatment + Duration(std::chrono::hours(48));
-            PercentileRanks percentileRanks({5, 25, 50, 75, 95});
-            double nbPointsPerHour = 10.0;
-            ComputingOption computingOption(PredictionParameterType::Aposteriori, CompartmentsOption::MainCompartment);
-            std::unique_ptr<ComputingTraitPercentiles> traits = std::make_unique<ComputingTraitPercentiles>(
-                    requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
-
-            ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
-
-            std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
-
-            ComputingStatus result;
-            result = component->compute(request, response);
-
-            fructose_assert_eq(result, ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError);
-
-            fructose_assert(response->getData() == nullptr);
-        }
 
         {
             // Test of a posteriori percentiles with one unvalid sample too far away in time

@@ -23,12 +23,13 @@ SOURCES := componentmanager.cpp \
            xmlimporter.cpp \
            xmlnode.cpp
 
-INCLUDES := ../../libs/spdlog-master-20170622/include \
-            ../../libs/eigen-3.3.2 \
-            ../../libs/tiny-js-master-20170629 \
+INCLUDES := ../../libs/spdlog/include \
+            ../../libs/eigen \
+            ../../libs/tiny-js \
             ../../libs/date/include \
-            ../../libs/rapidxml-1.13 \
-            ../../libs/botan-2.19.3/build/include
+            ../../libs/rapidxml \
+            ../../libs/botan/build/include
+
 LIBS := tinyjs
 EXTLIBS :=
 DEFINES :=

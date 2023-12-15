@@ -89,6 +89,11 @@ bool OneCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
 void OneCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 {
     setExponentials(Exponentials::Ke, (-m_Ke * _times).array().exp());
+
+    // We need to determine if the post infusion part needs to be calculated or not
+    if (_times[_times.size() - 1] <= m_Tinf) {
+        m_timeMaxHigherThanTinf = false;
+    }
 }
 
 
@@ -136,8 +141,13 @@ bool OneCompartmentInfusionMicro::computeConcentration(
 
     int forcesize = 0;
 
-    if (_atTime < m_Tinf) {
-        forcesize = 1;
+    if (_atTime <= m_Tinf) {
+        if (m_timeMaxHigherThanTinf) {
+            forcesize = 1;
+        }
+        else {
+            forcesize = 2;
+        }
     }
 
     // Calculate concentrations

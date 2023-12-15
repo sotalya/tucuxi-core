@@ -72,7 +72,7 @@ public:
         m_target = _target;
     }
 
-    const TargetEvent getTarget() const
+    const TargetEvent& getTarget() const
     {
         return m_target;
     }

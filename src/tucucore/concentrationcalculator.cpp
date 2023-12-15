@@ -349,11 +349,9 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtTimes(
 
     IntakeSeries::const_iterator it;
     IntakeSeries::const_iterator intakeEnd;
-    IntakeSeries::const_iterator intakeNext;
 
     intakeEnd = _intakes.end();
-    intakeNext = it = _intakes.begin();
-    intakeNext++;
+    it = _intakes.begin();
 
     // The size of residuals vectors equals the number of compartments. This shouldnt be hardcoded here.
     auto sampleEnd = _samples.end();
@@ -445,7 +443,6 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtTimes(
             inResiduals = outResiduals;
         }
         it++;
-        intakeNext++;
     }
     return ComputingStatus::Ok;
 }

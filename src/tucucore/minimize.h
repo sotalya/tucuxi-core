@@ -325,13 +325,15 @@ struct Frprmn : Dlinemethod<T>
         }
 
         for (int its = 0; its < ITMAX; its++) {
-            // iter=its;
             fret = linmin();
+
             if (2.0 * std::abs(fret - fp) <= ftol * (std::abs(fret) + std::abs(fp) + EPS)) {
                 return p;
             }
+
             fp = fret;
             func.df(p, xi);
+
             double test = 0.0;
             double den = std::max(fp, 1.0);
 

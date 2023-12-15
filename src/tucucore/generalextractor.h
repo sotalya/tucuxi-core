@@ -54,6 +54,8 @@ public:
 
     Duration secureStartDuration(const HalfLife& _halfLife);
 
+    ComputingStatus checkSamplesValidity(const DosageHistory& _dosageHistory, const Samples& _samples);
+
     ComputingStatus extractAposterioriEtas(
             Etas& _etas,
             const ComputingRequest& _request,

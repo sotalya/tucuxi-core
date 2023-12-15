@@ -23,6 +23,7 @@
 #include "querycomputer.h"
 
 #include "tucucore/computingcomponent.h"
+#include "tucucore/computingrequestxmlexport.h"
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/computingservice/icomputingservice.h"
 #include "tucucore/definitions.h"
@@ -42,7 +43,8 @@ namespace Query {
 
 QueryComputer::QueryComputer() = default;
 
-void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _response)
+void QueryComputer::compute(
+        ComputingQuery& _query, ComputingQueryResponse& _response, const std::string& _tqfOutputFileName)
 {
 
     auto computingComponent = dynamic_cast<Core::IComputingService*>(Core::ComputingComponent::createComponent());
@@ -52,6 +54,11 @@ void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _res
         // A ComputingResponse local to the loop iteration. Moved to the _response at the end of the loop
         std::unique_ptr<Core::ComputingResponse> computingResponse =
                 std::make_unique<Core::ComputingResponse>(computingRequest->getId());
+
+        if (!_tqfOutputFileName.empty()) {
+            Tucuxi::Core::ComputingRequestXmlExport exporter;
+            exporter.exportToFile(*(computingRequest.get()), _tqfOutputFileName + computingRequest->getId());
+        }
 
         Core::ComputingStatus result = computingComponent->compute(*computingRequest, computingResponse);
 
@@ -83,7 +90,8 @@ void QueryComputer::compute(ComputingQuery& _query, ComputingQueryResponse& _res
     delete computingComponent;
 }
 
-void QueryComputer::compute(const std::string& _queryString, ComputingQueryResponse& _response)
+void QueryComputer::compute(
+        const std::string& _queryString, ComputingQueryResponse& _response, const std::string& _tqfOutputFileName)
 {
     Tucuxi::Common::LoggerHelper logHelper;
 
@@ -130,7 +138,7 @@ void QueryComputer::compute(const std::string& _queryString, ComputingQueryRespo
         return;
     }
 
-    compute(*computingQuery, _response);
+    compute(*computingQuery, _response, _tqfOutputFileName);
 }
 
 

@@ -23,9 +23,6 @@
 #ifndef HARDCODEDOPERATION_H
 #define HARDCODEDOPERATION_H
 
-#include <algorithm>
-#include <cmath>
-#include <iostream>
 #include <memory>
 
 #include "tucucore/operation.h"

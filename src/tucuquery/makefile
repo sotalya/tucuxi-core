@@ -25,10 +25,10 @@ SOURCES := \
            requestdata.cpp
 
 INCLUDES := . \
-            ../../libs/eigen-3.3.2 \
-            ../../libs/boost-1.63.0 \
+            ../../libs/eigen \
+            ../../libs/boost \
             ../../libs/date/include \
-            ../../libs/spdlog-master-20170622/include
+            ../../libs/spdlog/include
 LIBS :=
 EXTLIBS :=
 DEFINES :=

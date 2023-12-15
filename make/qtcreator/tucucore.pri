@@ -9,6 +9,7 @@ config_openmp {
 
 HEADERS += \
     $$PWD/../../src/tucucore/cachecomputing.h \
+    $$PWD/../../src/tucucore/computingrequestxmlexport.h \
     $$PWD/../../src/tucucore/computingutils.h \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.h \
     $$PWD/../../src/tucucore/cachedexponentials.h \
@@ -71,7 +72,6 @@ HEADERS += \
     $$PWD/../../src/tucucore/drugdefinitions.h \
     $$PWD/../../src/tucucore/drugmodel/activemoiety.h \
     $$PWD/../../src/tucucore/drugmodel/analyte.h \
-    $$PWD/../../src/tucucore/drugmodel/activesubstance.h \
     $$PWD/../../src/tucucore/drugmodel/drugmodeldomain.h \
     $$PWD/../../src/tucucore/drugmodel/formulationandroute.h \
     $$PWD/../../src/tucucore/drugmodel/parameterdefinition.h \
@@ -115,6 +115,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/../../src/tucucore/cachecomputing.cpp \
+    $$PWD/../../src/tucucore/computingrequestxmlexport.cpp \
     $$PWD/../../src/tucucore/computingservice/computingresult.cpp \
     $$PWD/../../src/tucucore/computingutils.cpp \
     $$PWD/../../src/tucucore/drugmodel/drugmodel.cpp \
@@ -166,7 +167,6 @@ SOURCES += \
     $$PWD/../../src/tucucore/residualerrormodel.cpp \
     $$PWD/../../src/tucucore/drugmodel/activemoiety.cpp \
     $$PWD/../../src/tucucore/drugmodel/analyte.cpp \
-    $$PWD/../../src/tucucore/drugmodel/activesubstance.cpp \
     $$PWD/../../src/tucucore/drugmodel/drugmodeldomain.cpp \
     $$PWD/../../src/tucucore/drugmodel/formulationandroute.cpp \
     $$PWD/../../src/tucucore/drugmodel/parameterdefinition.cpp \

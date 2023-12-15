@@ -36,7 +36,7 @@
 #include "tucuquery/querystatus.h"
 
 #include "clicomputer.h"
-#include "cxxopts/include/cxxopts.hpp"
+#include "cxxopts.hpp"
 
 #ifdef CONFIG_SIGN
 #include "tucusign/signparser.h"
@@ -64,6 +64,7 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
                 "i,input", "Input request file", cxxopts::value<std::string>())(
                 "o,output", "Output response file", cxxopts::value<std::string>())(
                 "q,querylogpath", "Query folder path", cxxopts::value<std::string>())(
+                "t,tqfoutput", "Path of a copy of the query file, for testing purpose", cxxopts::value<std::string>())(
                 "csv", "Data file (.dat) folder path", cxxopts::value<std::string>())
 #ifdef CONFIG_SIGN
                 ("s,signature", "Signed drug file path", cxxopts::value<std::string>())
@@ -136,11 +137,17 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
             datafilepath = result["csv"].as<std::string>();
         }
 
+        std::string tqfoutputfilepath;
+        if (result.count("tqfoutput") > 0) {
+            tqfoutputfilepath = result["tqfoutput"].as<std::string>();
+        }
+
         logHelper.info("Drugs directory : {}", drugPath);
         logHelper.info("Input file : {}", inputFileName);
         logHelper.info("Output file name : {}", outputFileName);
         logHelper.info("QueryLogs directory : {}", queryLogPath);
         logHelper.info("Data file directory : {}", datafilepath);
+        logHelper.info("Tqf copy output file : {}", tqfoutputfilepath);
 
         Tucuxi::Common::ComponentManager* pCmpMgr = Tucuxi::Common::ComponentManager::getInstance();
 
@@ -159,7 +166,7 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
         pCmpMgr->registerComponent("QueryLogger", queryLogger);
 
         CliComputer computer;
-        auto queryStatus = computer.compute(inputFileName, outputFileName, datafilepath);
+        auto queryStatus = computer.compute(inputFileName, outputFileName, datafilepath, tqfoutputfilepath);
 
 
         pCmpMgr->unregisterComponent("DrugModelRepository");
@@ -172,7 +179,7 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
 
         return static_cast<int>(queryStatus);
     }
-    catch (const cxxopts::OptionException& e) {
+    catch (const cxxopts::exceptions::exception& e) {
         logHelper.error("error parsing options: {}", e.what());
         return -1;
     }

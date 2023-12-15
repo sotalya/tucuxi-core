@@ -55,10 +55,10 @@ void ComputingTraits::addTrait(std::unique_ptr<ComputingTrait> _trait)
 ComputingTrait::ComputingTrait(RequestResponseId _id) : m_id(std::move(_id)) {}
 
 
-//RequestResponseId ComputingTrait::getId() const
-//{
-//    return m_id;
-//}
+RequestResponseId ComputingTrait::getId() const
+{
+    return m_id;
+}
 
 
 ComputingTraitStandard::ComputingTraitStandard(

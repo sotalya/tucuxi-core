@@ -23,9 +23,6 @@
 #ifndef TUCUXI_CORE_PKMODEL_H
 #define TUCUXI_CORE_PKMODEL_H
 
-#include <algorithm>
-#include <iostream>
-#include <iterator>
 #include <map>
 #include <memory>
 #include <string>

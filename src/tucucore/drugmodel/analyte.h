@@ -290,8 +290,8 @@ public:
                     Invariants::INV_ANALYTESET_0004,
                     {
                         bool ok = true;
-                        for (size_t i = 0; i < m_analytes.size(); i++) {
-                            ok &= m_analytes[i]->checkInvariants();
+                        for (const auto& analyte : m_analytes) {
+                            ok &= analyte->checkInvariants();
                         }
                         return ok;
                     },

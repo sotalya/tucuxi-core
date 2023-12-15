@@ -48,6 +48,10 @@ class ComputingResponseMetaData
 {
 public:
     ComputingResponseMetaData(std::string _drugModelId);
+    std::string getDrugModelId()
+    {
+        return m_drugModelId;
+    }; // todo : document
 
 private:
     std::string m_drugModelId;

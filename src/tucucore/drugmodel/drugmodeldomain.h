@@ -110,8 +110,8 @@ public:
                     Invariants::INV_CONSTRAINT_0004,
                     {
                         bool ok = true;
-                        for (size_t i = 0; i < m_requiredCovariateIds.size(); i++) {
-                            ok &= !m_requiredCovariateIds[i].empty();
+                        for (const auto& requiredCovariateId : m_requiredCovariateIds) {
+                            ok &= !requiredCovariateId.empty();
                         }
                         return ok;
                     },
@@ -155,8 +155,8 @@ public:
             Invariants::INV_DRUGMODELDOMAIN_0001,
             {
                 bool ok = true;
-                for (size_t i = 0; i < m_constraints.size(); i++) {
-                    ok &= m_constraints[i]->checkInvariants();
+                for (const auto& constraint : m_constraints) {
+                    ok &= constraint->checkInvariants();
                 }
                 return ok;
             },

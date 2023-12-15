@@ -45,7 +45,6 @@
 
 #include "Eigen/Dense"
 
-using Tucuxi::Common::DateTime; // NOLINT(google-global-names-in-headers)
 using Tucuxi::Common::TucuUnit; // NOLINT(google-global-names-in-headers)
 
 namespace Tucuxi {

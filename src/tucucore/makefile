@@ -96,12 +96,12 @@ SOURCES := \
            pkmodels/twocompartmentinfusion.cpp
 
 INCLUDES := . \
-            ../../libs/eigen-3.3.2 \
-            ../../libs/boost-1.83.0 \
+            ../../libs/eigen \
+            ../../libs/boost \
             ../../libs/date/include \
-            ../../libs/spdlog-master-20170622/include \
-            ../../libs/rapidjson-master-20190220/include \
-            ../../libs/tiny-js-master-20170629 \
+            ../../libs/spdlog/include \
+            ../../libs/rapidjson/include \
+            ../../libs/tiny-js \
 LIBS :=
 EXTLIBS :=
 DEFINES :=

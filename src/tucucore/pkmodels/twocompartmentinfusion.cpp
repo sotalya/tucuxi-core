@@ -115,6 +115,11 @@ void TwoCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
     times = _times - m_Tinf * Eigen::VectorXd::Ones(_times.size());
     setExponentials(Exponentials::AlphaPostInf, (-m_Alpha * times).array().exp());
     setExponentials(Exponentials::BetaPostInf, (-m_Beta * times).array().exp());
+
+    // We need to determine if the post infusion part needs to be calculated or not
+    if (_times[_times.size() - 1] <= m_Tinf) {
+        m_timeMaxHigherThanTinf = false;
+    }
 }
 
 
@@ -183,27 +188,27 @@ bool TwoCompartmentInfusionMicro::computeConcentration(
 
     // remove following code after verification with unit test
 #if 0
-    Eigen::VectorXd& alphaLogV = logs(Exponentials::Alpha); 
-    Eigen::VectorXd& betaLogV = logs(Exponentials::Beta); 
-    Eigen::VectorXd& alphaInfLogV = logs(Exponentials::AlphaInf); 
-    Eigen::VectorXd& betaInfLogV = logs(Exponentials::BetaInf); 
-    Eigen::VectorXd& betaInf2LogV = logs(Exponentials::BetaInf2); 
-    Eigen::VectorXd& rootLogV = logs(Exponentials::Root); 
+    Eigen::VectorXd& alphaLogV = logs(Exponentials::Alpha);
+    Eigen::VectorXd& betaLogV = logs(Exponentials::Beta);
+    Eigen::VectorXd& alphaInfLogV = logs(Exponentials::AlphaInf);
+    Eigen::VectorXd& betaInfLogV = logs(Exponentials::BetaInf);
+    Eigen::VectorXd& betaInf2LogV = logs(Exponentials::BetaInf2);
+    Eigen::VectorXd& rootLogV = logs(Exponentials::Root);
 
     Concentration resid1 = _inResiduals[0];
     Concentration resid2 = _inResiduals[1];
 
-    Value deltaD = (m_D / m_V1) / m_Tinf; 
+    Value deltaD = (m_D / m_V1) / m_Tinf;
 
     Concentration residInf1 =
         (2 * deltaD * std::exp(m_Beta * m_Tinf) * m_K21
-        * (std::exp(-m_Beta * m_Tinf) * (-m_K12 - m_K21 + m_Ke - m_RootK) 
+        * (std::exp(-m_Beta * m_Tinf) * (-m_K12 - m_K21 + m_Ke - m_RootK)
             + std::exp(-2 * m_Beta * m_Tinf) * (m_K12 + m_K21 - m_Ke + m_RootK)
             + std::exp(m_RootK*m_Tinf - m_Alpha*m_Tinf) * (m_K12 + m_K21 - m_Ke - m_RootK)
             + std::exp(-m_Alpha*m_Tinf - m_Beta*m_Tinf) * (-m_K12 - m_K21 + m_Ke + m_RootK))
 	) / m_Divider;
 
-    Concentration residInf2 = 
+    Concentration residInf2 =
         (2 * deltaD * std::exp(m_Beta * m_Tinf) * m_K12
 	* (std::exp(-m_Beta * m_Tinf) * (-m_SumK - m_RootK)
 	    + std::exp(-2 * m_Beta * m_Tinf) * (m_SumK + m_RootK)
@@ -223,7 +228,7 @@ bool TwoCompartmentInfusionMicro::computeConcentration(
     // Calculate concentrations for comp1 and comp2
     concentrations1 = ((A * alphaLogV) + (B * betaLogV)) / (2 * m_RootK);
     concentrations2 = ((A2 * alphaLogV) + (BB2 * betaLogV)) / (2 * m_RootK);
-    
+
     if (_atTime <= m_Tinf)
     {
 	// During infusion
@@ -231,37 +236,37 @@ bool TwoCompartmentInfusionMicro::computeConcentration(
 	Value p1p2 = AInf * (betaLogV(0) - betaInf2LogV(0));
 	Value p1p3 = BInf * ((rootLogV(0) / alphaInfLogV(0)) - (alphaLogV(0) / betaInfLogV(0)));
 	Value p2p1 = 2 * deltaD * m_K12 * betaInfLogV(0);
-	Value p2p2 = 
-	    betaLogV(0) 
-	    * (-m_SumK - m_RootK) 
+	Value p2p2 =
+	    betaLogV(0)
+	    * (-m_SumK - m_RootK)
 	    + betaInf2LogV(0) * (m_SumK + m_RootK)
-	    + rootLogV(0)/alphaInfLogV(0) * (m_SumK - m_RootK) 
+	    + rootLogV(0)/alphaInfLogV(0) * (m_SumK - m_RootK)
 	    + alphaLogV(0)/betaInfLogV(0) * (-m_SumK + m_RootK);
-	
-	concentrations1(0) = 
+
+	concentrations1(0) =
 	    concentrations1(0) + ((p1p1 * (p1p2 + p1p3)) / m_Divider);
-	concentrations2(0) = 
+	concentrations2(0) =
 	    concentrations2(0) + ((p2p1 * p2p2) / m_Divider);
 
     }
     else
     {
 	// After infusion
-	concentrations1(0) = 
-	    concentrations1(0) 
+	concentrations1(0) =
+	    concentrations1(0)
 	    + (APostInf * alphaLogV(0) + BPostInf * betaLogV(0)) / (2 * m_RootK);
-	
+
 	BB2 = 2 * m_K12 * residInf1 + (m_K12 - m_K21 + m_Ke + m_RootK)*residInf2;
 	A2 = -2 * m_K12 * residInf1 + (-m_K12 + m_K21 - m_Ke + m_RootK)*residInf2;
-	concentrations2(0) = 
-	    concentrations2(0) 
+	concentrations2(0) =
+	    concentrations2(0)
 	    + (A2 * alphaLogV(0) + BB2 * betaLogV(0)) / (2 * m_RootK);
     }
 
     // return concentraions (computation with atTime (current time))
     _concentrations.push_back(concentrations1[0]);
     _concentrations.push_back(concentrations2[0]);
-    
+
     // return final residual of comp1 and comp2
     _outResiduals.push_back
     (concentrations1[0] + (APostInf * alphaLogV(1) + BPostInf * betaLogV(1)) / (2 * m_RootK));
@@ -278,7 +283,12 @@ bool TwoCompartmentInfusionMicro::computeConcentration(
 
 #else
     if (_atTime <= m_Tinf) {
-        forcesize = 1;
+        if (m_timeMaxHigherThanTinf) {
+            forcesize = 1;
+        }
+        else {
+            forcesize = 2;
+        }
     }
 
     // Compute concentrations
@@ -288,6 +298,18 @@ bool TwoCompartmentInfusionMicro::computeConcentration(
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
     if (_isAll == true) {
         _concentrations[secondCompartment].push_back(concentrations2[atTime]);
+    }
+
+
+    for (auto& val : concentrations2) {
+        // This check is here because for some medical drugs the variability on V1 is
+        // too big (typically 0.5 proportional), and ends up with infinite values
+        if (std::isnan(val)) {
+            std::cout << "isNan" << std::endl;
+        }
+        if (val < 0.0) {
+            std::cout << "less than 0" << std::endl;
+        }
     }
 
     // Return final residual of comp1 and comp2

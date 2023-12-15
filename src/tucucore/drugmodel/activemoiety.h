@@ -94,8 +94,8 @@ public:
                        Invariants::INV_ACTIVEMOIETY_0003,
                        {
                            bool ok = true;
-                           for (size_t i = 0; i < m_analyteIds.size(); i++) {
-                               ok &= !m_analyteIds[i].empty();
+                           for (const auto& analyteId : m_analyteIds) {
+                               ok &= !analyteId.empty();
                            }
                            return ok;
                        },
@@ -110,8 +110,8 @@ public:
                        Invariants::INV_ACTIVEMOIETY_0005,
                        {
                            bool ok = true;
-                           for (size_t i = 0; i < m_targets.size(); i++) {
-                               ok &= m_targets[i]->checkInvariants();
+                           for (const auto& target : m_targets) {
+                               ok &= target->checkInvariants();
                            }
                            return ok;
                        },

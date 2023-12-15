@@ -66,7 +66,7 @@ struct TestLicenseManager : public fructose::test_base<TestLicenseManager>
         CryptoHelper::hash(m_fingerprint, m_fingerprint);
 
         // Build Date
-        DateTime dateToday;
+        DateTime dateToday = DateTime::now();
 
         char today[9];
         char endLicense1[9];

@@ -10,9 +10,9 @@ TYPE := APP
 
 SOURCES := main.cpp
 
-INCLUDES := ../../libs/spdlog-master-20170622/include \
+INCLUDES := ../../libs/spdlog/include \
             ../../libs/date/include \
-            ../../libs/botan-2.1.0/build/include
+            ../../libs/botan/build/include
 
 LIBS := tucucommon botan
 EXTLIBS :=

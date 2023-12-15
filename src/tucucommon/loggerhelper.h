@@ -23,6 +23,8 @@
 #ifndef TUCUXI_COMMON_LOOGER
 #define TUCUXI_COMMON_LOOGER
 
+#include <iostream>
+
 #include "tucucommon/componentmanager.h"
 #include "tucucommon/ilogger.h"
 #include "tucucommon/logger.h"
@@ -133,9 +135,9 @@ public:
     void debug(const char* _fmt, const Args&... _args)
     {
         try {
-            fmt::MemoryWriter writer;
-            writer.write(_fmt, _args...);
-            debug(writer.c_str());
+            auto out = fmt::memory_buffer();
+            fmt::format_to(std::back_inserter(out), _fmt, _args...);
+            debug(fmt::to_string(out));
         }
         catch (const std::exception& ex) {
         }
@@ -167,9 +169,9 @@ public:
     void info(const char* _fmt, const Args&... _args)
     {
         try {
-            fmt::MemoryWriter writer;
-            writer.write(_fmt, _args...);
-            info(writer.c_str());
+            auto out = fmt::memory_buffer();
+            fmt::format_to(std::back_inserter(out), _fmt, _args...);
+            info(fmt::to_string(out));
         }
         catch (const std::exception&) {
         }
@@ -201,9 +203,9 @@ public:
     void warn(const char* _fmt, const Args&... _args)
     {
         try {
-            fmt::MemoryWriter writer;
-            writer.write(_fmt, _args...);
-            warn(writer.c_str());
+            auto out = fmt::memory_buffer();
+            fmt::format_to(std::back_inserter(out), _fmt, _args...);
+            warn(fmt::to_string(out));
         }
         catch (const std::exception&) {
         }
@@ -235,9 +237,9 @@ public:
     void error(const char* _fmt, const Args&... _args)
     {
         try {
-            fmt::MemoryWriter writer;
-            writer.write(_fmt, _args...);
-            error(writer.c_str());
+            auto out = fmt::memory_buffer();
+            fmt::format_to(std::back_inserter(out), _fmt, _args...);
+            error(fmt::to_string(out));
         }
         catch (const std::exception& /*ex*/) {
         }
@@ -269,9 +271,9 @@ public:
     void critical(const char* _fmt, const Args&... _args)
     {
         try {
-            fmt::MemoryWriter writer;
-            writer.write(_fmt, _args...);
-            critical(writer.c_str());
+            auto out = fmt::memory_buffer();
+            fmt::format_to(std::back_inserter(out), _fmt, _args...);
+            critical(fmt::to_string(out));
         }
         catch (const std::exception&) {
         }

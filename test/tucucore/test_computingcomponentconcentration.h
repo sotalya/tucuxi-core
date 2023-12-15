@@ -37,6 +37,7 @@
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
 
+#include "drugmodels/buildconstantelimination.h"
 #include "drugmodels/buildimatinib.h"
 #include "fructose/fructose.h"
 
@@ -280,6 +281,97 @@ struct TestComputingComponentConcentration : public fructose::test_base<TestComp
                 data[0].m_concentrations[0][0], data[3].m_concentrations[0][0], 0.0001, 0.0001);
 
         // Delete all dynamically allocated objects
+        delete component;
+    }
+
+    std::unique_ptr<DrugTreatment> buildSimpleDrugTreatment(
+            FormulationAndRoute _route, DateTime& _startTime, Duration _interval, Duration _treatmentDuration)
+    {
+        auto drugTreatment = std::make_unique<DrugTreatment>();
+
+        // List of time ranges that will be pushed into the history
+        DosageTimeRangeList timeRangeList;
+
+        // Create a time range starting at the beginning of june 2018, with no upper end (to test that the repetitions
+        // are handled correctly)
+
+
+        //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+        // Add a treatment intake every ten days in June
+        // 200mg via a intravascular at 08h30, starting the 01.06
+        LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), _route, Duration(), _interval);
+        DosageRepeat repeatedDose(periodicDose, static_cast<int>(_treatmentDuration / _interval));
+        auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(_startTime, repeatedDose);
+
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*dosageTimeRange);
+
+        return drugTreatment;
+    }
+
+
+    void testSampleBeforeTreatmentStart(const std::string& /* _testName */)
+    {
+        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+        BuildConstantElimination builder;
+        auto drugModel = builder.buildDrugModel(
+                ResidualErrorType::ADDITIVE,
+                std::vector<Value>({10000.0}),
+                ParameterVariabilityType::Additive,
+                ParameterVariabilityType::None,
+                ParameterVariabilityType::None,
+                ParameterVariabilityType::None,
+                1000.0,
+                0.0,
+                0.0,
+                0.0);
+
+        const FormulationAndRoute route(
+                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+
+
+        DateTime startTreatment(
+                date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+                Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+        Duration interval(std::chrono::hours(6));
+        Duration treatmentDuration(std::chrono::hours(24 * 60));
+        DateTime endTreatment = startTreatment + treatmentDuration;
+
+        // Test of a posteriori concentration prediction with one unvalid sample too early in time
+        auto drugTreatment = buildSimpleDrugTreatment(route, startTreatment, interval, treatmentDuration);
+        // The sample is prior to the treatment start
+        drugTreatment->addSample(std::make_unique<Sample>(
+                startTreatment - Duration(std::chrono::hours(3)), AnalyteId("analyte"), 100.0, TucuUnit("mg/l")));
+
+        RequestResponseId requestResponseId = "1";
+        Tucuxi::Common::DateTime start = startTreatment;
+        Tucuxi::Common::DateTime end = startTreatment + Duration(std::chrono::hours(48));
+        PercentileRanks percentileRanks({5, 25, 50, 75, 95});
+        double nbPointsPerHour = 10.0;
+        ComputingOption computingOption(PredictionParameterType::Aposteriori, CompartmentsOption::MainCompartment);
+
+        std::unique_ptr<ComputingTraitConcentration> traitsC = std::make_unique<ComputingTraitConcentration>(
+                requestResponseId, start, end, nbPointsPerHour, computingOption);
+        ComputingRequest requestC(requestResponseId, *drugModel, *drugTreatment, std::move(traitsC));
+
+        std::unique_ptr<ComputingResponse> responseC = std::make_unique<ComputingResponse>(requestResponseId);
+
+        ComputingStatus resultC;
+        resultC = component->compute(requestC, responseC);
+
+        fructose_assert_eq(resultC, ComputingStatus::SampleBeforeTreatmentStart);
+
+
+        auto traitsM = std::make_unique<ComputingTraitAtMeasures>(requestResponseId, computingOption);
+        ComputingRequest requestM(requestResponseId, *drugModel, *drugTreatment, std::move(traitsM));
+
+        std::unique_ptr<ComputingResponse> responseM = std::make_unique<ComputingResponse>(requestResponseId);
+
+        ComputingStatus resultM;
+        resultM = component->compute(requestM, responseM);
+
+        fructose_assert_eq(resultM, ComputingStatus::SampleBeforeTreatmentStart);
+
         delete component;
     }
 };

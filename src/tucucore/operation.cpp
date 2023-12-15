@@ -441,7 +441,7 @@ bool JSOperation::checkOperation(const OperationInputList& _inputs)
         std::string exp = m_expression.substr(18);
         exp = exp.substr(0, exp.size() - 20);
         size_t pos = exp.rfind("return ");
-        if (pos != exp.npos) {
+        if (pos != std::string::npos) {
             exp = exp.substr(0, pos);
         }
         else {

@@ -4,7 +4,13 @@ CONFIG -= app_bundle
 
 TARGET      = tucuvalidator
 
-LIBS += -lpthread
+unix {
+    LIBS += -lpthread
+}
+
+win32 {
+    include(../tinyjs.pri)
+}
 
 
 include(../general.pri)
