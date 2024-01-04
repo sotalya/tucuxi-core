@@ -60,16 +60,16 @@ TEST (Common_ComponentManagerTests, CreateComponent){
     cmpMgr->registerComponent("Toto", i1);
     ITest2* i2 = cmpMgr->getComponent<ITest2>("Toto");
 
-    EXPECT_TRUE(i1 != nullptr);
-    EXPECT_TRUE(i2 != nullptr);
+    ASSERT_TRUE(i1 != nullptr);
+    ASSERT_TRUE(i2 != nullptr);
 
-    EXPECT_NO_THROW(i1->Test1());
-    EXPECT_NO_THROW(i2->Test2());
+    ASSERT_NO_THROW(i1->Test1());
+    ASSERT_NO_THROW(i2->Test2());
 
     ITest1* i3 = i2->getInterface<ITest1>();
-    EXPECT_EQ(i1, i3);
+    ASSERT_EQ(i1, i3);
 
     //i3 = nullptr;
-    EXPECT_TRUE(i3 != nullptr);
-    EXPECT_NO_THROW(i3->Test1());
+    ASSERT_TRUE(i3 != nullptr);
+    ASSERT_NO_THROW(i3->Test1());
 }

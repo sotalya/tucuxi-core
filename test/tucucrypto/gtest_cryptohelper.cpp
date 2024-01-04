@@ -37,5 +37,5 @@ TEST (Common_IteratorTest, Basic){
     Tucuxi::Common::CryptoHelper::decrypt(key, secret, plaintext);
     std::cout << "Plaintext: " << plaintext << std::endl;
 
-    ASSERT_TRUE(test == plaintext);
+    ASSERT_EQ(test, plaintext);
 }

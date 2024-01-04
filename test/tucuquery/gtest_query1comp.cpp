@@ -25,9 +25,9 @@ TEST (Query_Query1CompTests, Test1){
     std::unique_ptr<Tucuxi::Core::DrugModel> drugModel;
 
     auto status = importer.importFromString(drugModel, tdd);
-    EXPECT_EQ(status, Tucuxi::Core::DrugModelImport::Status::Ok);
+    ASSERT_EQ(status, Tucuxi::Core::DrugModelImport::Status::Ok);
 
-    EXPECT_TRUE(drugModel != nullptr);
+    ASSERT_TRUE(drugModel != nullptr);
 
     drugModelRepository->addDrugModel(drugModel.get());
 
@@ -41,7 +41,7 @@ TEST (Query_Query1CompTests, Test1){
     Tucuxi::Query::ComputingQueryResponse response;
     computer.compute(tqf, response);
 
-    EXPECT_EQ(response.getRequestResponses().size(), 2);
+    ASSERT_EQ(response.getRequestResponses().size(), static_cast<size_t>(2));
 
     auto& r1 = response.getRequestResponses()[0];
     auto& r2 = response.getRequestResponses()[1];
@@ -52,6 +52,6 @@ TEST (Query_Query1CompTests, Test1){
     const auto* d1 = dynamic_cast<const Tucuxi::Core::SinglePredictionData*>(resp1->getData());
     const auto* d2 = dynamic_cast<const Tucuxi::Core::SinglePointsData*>(resp2->getData());
 
-    //fructose_assert_eq(d2->m_concentrations[0].size(), 4);
-    EXPECT_DOUBLE_EQ(d1->getData()[0].m_concentrations[0][20], d2->m_concentrations[0][0]);
+    //ASSERT_EQ(d2->m_concentrations[0].size(), static_cast<size_t>(4));
+    ASSERT_DOUBLE_EQ(d1->getData()[0].m_concentrations[0][20], d2->m_concentrations[0][0]);
 }

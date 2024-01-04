@@ -46,7 +46,7 @@ public:
         Tucuxi::Common::XmlDocument xmlDocument;
 
         if (_conversionState) {
-            ASSERT_TRUE(xmlDocument.fromString(xmlString) == _conversionState);
+            ASSERT_EQ(xmlDocument.fromString(xmlString), _conversionState);
 
             TestXmlImporter xmlImporterTestClass;
 
@@ -56,26 +56,26 @@ public:
 
             //BAD
             ASSERT_EQ(xmlImporterTestClass.getChildInt(xmlIterator, INT_1), 0);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
             ASSERT_EQ(xmlImporterTestClass.getChildInt(xmlIterator, INT_2), 0);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
             ASSERT_EQ(xmlImporterTestClass.getChildInt(xmlIterator, INT_3), 0);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
             //GOOD
             ASSERT_EQ(xmlImporterTestClass.getChildInt(xmlIterator, INT_4), 23);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Ok);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
         }
         else {
 
             xmlString += "<wrong>";
-            ASSERT_TRUE(xmlDocument.fromString(xmlString) == _conversionState);
+            ASSERT_EQ(xmlDocument.fromString(xmlString), _conversionState);
         }
     }
 
@@ -100,7 +100,7 @@ public:
 
         if (_conversionState) {
 
-            ASSERT_TRUE(xmlDocument.fromString(xmlString) == _conversionState);
+            ASSERT_EQ(xmlDocument.fromString(xmlString), _conversionState);
 
             TestXmlImporter xmlImporterTestClass;
 
@@ -109,27 +109,27 @@ public:
             Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(DOUBLE);
 
             //BAD
-            ASSERT_EQ(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_1), 0.0);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_DOUBLE_EQ(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_1), 0.0);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
-            ASSERT_EQ(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_2), 0.0);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_DOUBLE_EQ(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_2), 0.0);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
-            ASSERT_EQ(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_3), 0.0);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_DOUBLE_EQ(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_3), 0.0);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
             //GOOD
-            ASSERT_EQ(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_4), 12.12);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            ASSERT_DOUBLE_EQ(xmlImporterTestClass.getChildDouble(xmlIterator, DOUBLE_4), 12.12);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Ok);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
         }
         else {
 
             xmlString += "<wrong>";
-            ASSERT_TRUE(xmlDocument.fromString(xmlString) == _conversionState);
+            ASSERT_EQ(xmlDocument.fromString(xmlString), _conversionState);
         }
     }
 
@@ -166,7 +166,7 @@ public:
 
         if (_conversionState) {
 
-            ASSERT_TRUE(xmlDocument.fromString(xmlString) == _conversionState);
+            ASSERT_EQ(xmlDocument.fromString(xmlString), _conversionState);
 
             TestXmlImporter xmlImporterTestClass;
 
@@ -175,52 +175,52 @@ public:
             Tucuxi::Common::XmlNodeIterator xmlIterator = xmlNode.getChildren(BOOL);
 
             //BAD
-            ASSERT_EQ(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_1), false);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_FALSE(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_1));
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
-            ASSERT_EQ(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_2), false);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_FALSE(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_2));
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
-            ASSERT_EQ(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_3), false);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_FALSE(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_3));
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
-            ASSERT_EQ(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_4), false);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_FALSE(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_4));
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
 
             //GOOD
-            ASSERT_EQ(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_5), true);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            ASSERT_TRUE(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_5));
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Ok);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
-            ASSERT_EQ(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_6), true);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            ASSERT_TRUE(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_6));
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Ok);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
-            ASSERT_EQ(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_7), true);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            ASSERT_TRUE(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_7));
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Ok);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
-            ASSERT_EQ(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_8), false);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            ASSERT_FALSE(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_8));
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Ok);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
-            ASSERT_EQ(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_9), false);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            ASSERT_FALSE(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_9));
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Ok);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
-            ASSERT_EQ(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_10), false);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            ASSERT_FALSE(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_10));
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Ok);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
         }
         else {
 
             xmlString += "<wrong>";
-            ASSERT_TRUE(xmlDocument.fromString(xmlString) == _conversionState);
+            ASSERT_EQ(xmlDocument.fromString(xmlString), _conversionState);
         }
     }
 
@@ -242,7 +242,7 @@ public:
 
         if (_conversionState) {
 
-            ASSERT_TRUE(xmlDocument.fromString(xmlString) == _conversionState);
+            ASSERT_EQ(xmlDocument.fromString(xmlString), _conversionState);
 
             TestXmlImporter xmlImporterTestClass;
 
@@ -254,12 +254,12 @@ public:
             Tucuxi::Common::TucuUnit u2("min");
 
             //GOOD
-            ASSERT_TRUE(xmlImporterTestClass.getChildUnit(xmlIterator, UNIT_1) == u1);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            ASSERT_EQ(xmlImporterTestClass.getChildUnit(xmlIterator, UNIT_1), u1);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Ok);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
-            ASSERT_TRUE(xmlImporterTestClass.getChildUnit(xmlIterator, UNIT_2) == u2);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            ASSERT_EQ(xmlImporterTestClass.getChildUnit(xmlIterator, UNIT_2), u2);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Ok);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
             //BAD --> TODO : NO ERROR FOR THE TIME
@@ -267,7 +267,7 @@ public:
         else {
 
             xmlString += "<wrong>";
-            ASSERT_TRUE(xmlDocument.fromString(xmlString) == _conversionState);
+            ASSERT_EQ(xmlDocument.fromString(xmlString), _conversionState);
         }
     }
 
@@ -296,7 +296,7 @@ public:
 
         if (_conversionState) {
 
-            ASSERT_TRUE(xmlDocument.fromString(xmlString) == _conversionState);
+            ASSERT_EQ(xmlDocument.fromString(xmlString), _conversionState);
 
             TestXmlImporter xmlImporterTestClass;
 
@@ -308,29 +308,29 @@ public:
             Tucuxi::Common::DateTime dt1("1993-11-11 12:34:56", "%Y-%m-%d %H:%M:%S");
 
             //GOOD
-            ASSERT_TRUE(xmlImporterTestClass.getChildDateTime(xmlIterator, DATE_TIME_1) == dt1);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            ASSERT_EQ(xmlImporterTestClass.getChildDateTime(xmlIterator, DATE_TIME_1), dt1);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Ok);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
             //BAD
             Tucuxi::Common::DateTime::disableChecks();
             checkDateTime(xmlImporterTestClass.getChildDateTime(xmlIterator, DATE_TIME_2), currentDateTime);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
             checkDateTime(xmlImporterTestClass.getChildDateTime(xmlIterator, DATE_TIME_3), currentDateTime);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
             checkDateTime(xmlImporterTestClass.getChildDateTime(xmlIterator, DATE_TIME_4), currentDateTime);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
             Tucuxi::Common::DateTime::enableChecks();
         }
         else {
 
             xmlString += "<wrong>";
-            ASSERT_TRUE(xmlDocument.fromString(xmlString) == _conversionState);
+            ASSERT_EQ(xmlDocument.fromString(xmlString), _conversionState);
         }
     }
 
@@ -360,7 +360,7 @@ public:
 
         if (_conversionState) {
 
-            ASSERT_TRUE(xmlDocument.fromString(xmlString) == _conversionState);
+            ASSERT_EQ(xmlDocument.fromString(xmlString), _conversionState);
 
             TestXmlImporter xmlImporterTestClass;
 
@@ -374,34 +374,34 @@ public:
 
             //GOOD
             ASSERT_EQ(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_1), d1);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Ok);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Ok);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
             //BAD
             ASSERT_EQ(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_2), emptyDuration);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
             ASSERT_EQ(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_3), emptyDuration);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
             ASSERT_EQ(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_4), emptyDuration);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
             ASSERT_EQ(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_5), emptyDuration);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
             ASSERT_EQ(xmlImporterTestClass.getChildDuration(xmlIterator, DURATION_6), emptyDuration);
-            ASSERT_TRUE(xmlImporterTestClass.getStatus() == Tucuxi::Common::IImport::Status::Error);
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
         }
         else {
 
             xmlString += "<wrong>";
-            ASSERT_TRUE(xmlDocument.fromString(xmlString) == _conversionState);
+            ASSERT_EQ(xmlDocument.fromString(xmlString), _conversionState);
         }
     }
 

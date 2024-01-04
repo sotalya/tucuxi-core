@@ -192,12 +192,12 @@ TEST (Crypto_LicenseManager, InstallNewLicense){
 
     // Detect missing license file
     LicenseError res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-    ASSERT_TRUE(res == Tucuxi::Common::LicenseError::MISSING_LICENSE_FILE);
+    ASSERT_EQ(res, Tucuxi::Common::LicenseError::MISSING_LICENSE_FILE);
 
     // Generate a request to get a new license file
     std::string request;
     res = Tucuxi::Common::LicenseManager::generateRequestString(request, "1.0");
-    ASSERT_TRUE(res == Tucuxi::Common::LicenseError::REQUEST_SUCCESSFUL);
+    ASSERT_EQ(res, Tucuxi::Common::LicenseError::REQUEST_SUCCESSFUL);
     std::cout << "Request string: " << request << std::endl;
 
     std::string decryptedRequest;
@@ -208,15 +208,15 @@ TEST (Crypto_LicenseManager, InstallNewLicense){
 
     // Install a new license file
     res = Tucuxi::Common::LicenseManager::installLicense(m_licenses[0], fileName);
-    ASSERT_TRUE(res == Tucuxi::Common::LicenseError::INSTALLATION_SUCCESSFUL);
+    ASSERT_EQ(res, Tucuxi::Common::LicenseError::INSTALLATION_SUCCESSFUL);
 
     // Check license file
     res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-    ASSERT_TRUE(res == Tucuxi::Common::LicenseError::VALID_LICENSE);
+    ASSERT_EQ(res, Tucuxi::Common::LicenseError::VALID_LICENSE);
 
     // Check license file
     res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-    ASSERT_TRUE(res == Tucuxi::Common::LicenseError::VALID_LICENSE);
+    ASSERT_EQ(res, Tucuxi::Common::LicenseError::VALID_LICENSE);
 }
 
 TEST (Crypto_LicenseManager, CheckInvalidLicense){
@@ -238,7 +238,7 @@ TEST (Crypto_LicenseManager, CheckInvalidLicense){
 
         // Install a invalid license file (wrong type)
         Tucuxi::Common::LicenseManager::installLicense(m_licenses[i], fileName);
-        ASSERT_TRUE(res == Tucuxi::Common::LicenseError::INVALID_LICENSE);
+        ASSERT_EQ(res, Tucuxi::Common::LicenseError::INVALID_LICENSE);
 
         // Write result in license file
         std::ofstream file(fileName);
@@ -250,10 +250,10 @@ TEST (Crypto_LicenseManager, CheckInvalidLicense){
 
         // Check license file
         res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-        ASSERT_TRUE(res == Tucuxi::Common::LicenseError::INVALID_LICENSE);
+        ASSERT_EQ(res, Tucuxi::Common::LicenseError::INVALID_LICENSE);
 
         // Check license file
         res = Tucuxi::Common::LicenseManager::checkLicenseFile(fileName);
-        ASSERT_TRUE(res == Tucuxi::Common::LicenseError::INVALID_LICENSE);
+        ASSERT_EQ(res, Tucuxi::Common::LicenseError::INVALID_LICENSE);
     }
 }

@@ -92,7 +92,7 @@ TEST (Query_DosageImportExportTests, Test1){
 
         int comparison1 = xmlInput.compare(exportedXmlString);
 
-        EXPECT_EQ(comparison1, 0);
+        ASSERT_EQ(comparison1, 0);
 
         if (comparison1 != 0) {
             gTestTucuQuery.printImportExportString(xmlInput, exportedXmlString);

@@ -76,26 +76,26 @@ TEST (Common_DateTimeTest, DateTime){
     checkDateTime(d12, 1951, 12, 17, 17, 34, 20);
 
     // Test thrown exception
-    EXPECT_THROW(
+    ASSERT_THROW(
             Tucuxi::Common::DateTime d13("mauvais format", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
-    EXPECT_THROW(
+    ASSERT_THROW(
             Tucuxi::Common::DateTime d14("1911-12-17 s", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
-    EXPECT_THROW(Tucuxi::Common::DateTime d15("", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
-    EXPECT_THROW(Tucuxi::Common::DateTime d16("17:34:20", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
+    ASSERT_THROW(Tucuxi::Common::DateTime d15("", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
+    ASSERT_THROW(Tucuxi::Common::DateTime d16("17:34:20", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
 
     // Test differences
     Tucuxi::Common::Duration diff = d2 - d1;
-    EXPECT_TRUE(diff.toDays() == 365);
-    EXPECT_TRUE(diff.toMonths() != 12); // Since a year is 365.2425 days
-    EXPECT_TRUE(diff.toYears() != 1);   // Since a month is 365.2425/12
+    ASSERT_DOUBLE_EQ(diff.toDays(), 365.0);
+    ASSERT_NE(diff.toMonths(), 12.0); // Since a year is 365.2425 days
+    ASSERT_NE(diff.toYears(), 1.0);   // Since a month is 365.2425/12
     diff = diff + Tucuxi::Common::Duration(24h) * 0.25;
-    EXPECT_TRUE(diff.toMonths() == 12);
-    EXPECT_TRUE(diff.toYears() == 1);
+    ASSERT_DOUBLE_EQ(diff.toMonths(), 12);
+    ASSERT_DOUBLE_EQ(diff.toYears(), 1);
 
     // Test getDate
     Tucuxi::Common::DateTime d20(2017_y / jan / 1, 10h + 22min);
     checkDateTime(d20, 2017, 1, 1, 10, 22, 0);
-    EXPECT_TRUE(d1.getDate() == d20.getDate());
+    ASSERT_EQ(d1.getDate(), d20.getDate());
 
     // Test getTimeOfDay
     checkTimeOfDay(d20.getTimeOfDay(), 10, 22, 0);
@@ -107,11 +107,11 @@ TEST (Common_DateTimeTest, DateTime){
     checkDateTime(d21, 2017, 1, 1, 11, 22, 30);
 
     // Test reset and isUndefined
-    EXPECT_FALSE(d1.isUndefined());
+    ASSERT_FALSE(d1.isUndefined());
     d1.reset();
-    EXPECT_TRUE(d1.isUndefined());
+    ASSERT_TRUE(d1.isUndefined());
     d1.setDate(d2.getDate());
-    EXPECT_FALSE(d1.isUndefined());
+    ASSERT_FALSE(d1.isUndefined());
 
     // Test to and from seconds
     double nSeconds = d10.toSeconds();
@@ -151,12 +151,12 @@ TEST (Common_DateTimeTest, DateTime){
         Tucuxi::Common::DateTime d100(2016_y / jun / 26, 23min + 24s);
         Tucuxi::Common::DateTime d101(2017_y / jun / 26, 23min + 24s);
 
-        EXPECT_EQ(Tucuxi::Common::Utils::dateDiffInYears(d100, d101), 1);
-        EXPECT_EQ(Tucuxi::Common::Utils::dateDiffInYears(d101, d100), 1);
-        EXPECT_EQ(Tucuxi::Common::Utils::dateDiffInDays(d100, d101), 365);
-        EXPECT_EQ(Tucuxi::Common::Utils::dateDiffInDays(d101, d100), 365);
-        EXPECT_EQ(Tucuxi::Common::Utils::dateDiffInWeeks(d100, d101), 52);
-        EXPECT_EQ(Tucuxi::Common::Utils::dateDiffInWeeks(d101, d100), 52);
+        ASSERT_EQ(Tucuxi::Common::Utils::dateDiffInYears(d100, d101), 1);
+        ASSERT_EQ(Tucuxi::Common::Utils::dateDiffInYears(d101, d100), 1);
+        ASSERT_EQ(Tucuxi::Common::Utils::dateDiffInDays(d100, d101), 365);
+        ASSERT_EQ(Tucuxi::Common::Utils::dateDiffInDays(d101, d100), 365);
+        ASSERT_EQ(Tucuxi::Common::Utils::dateDiffInWeeks(d100, d101), 52);
+        ASSERT_EQ(Tucuxi::Common::Utils::dateDiffInWeeks(d101, d100), 52);
     }
 }
 
@@ -215,12 +215,12 @@ TEST (Common_DateTimeTest, Duration){
     checkDuration(d10, 4);
 
     double n = d2 / 15min;
-    EXPECT_TRUE(n == 8);
+    ASSERT_EQ(n, 8);
 
-    EXPECT_TRUE(d2 > d3);
-    EXPECT_TRUE(d2 > d4);
-    EXPECT_TRUE(d4 > d1);
-    EXPECT_TRUE(d4 > d3);
+    ASSERT_GT(d2, d3);
+    ASSERT_GT(d2, d4);
+    ASSERT_GT(d4, d1);
+    ASSERT_GT(d4, d3);
 
     // Test other functions
     d2.clear();
@@ -228,11 +228,11 @@ TEST (Common_DateTimeTest, Duration){
 
     Tucuxi::Common::DateTime now = Tucuxi::Common::DateTime::now();
     Tucuxi::Common::DateTime later = now + 2h;
-    EXPECT_TRUE(later - now == 2h);
-    EXPECT_TRUE(now - later == -2h);
+    ASSERT_EQ(later - now, 2h);
+    ASSERT_EQ(now - later, -2h);
 
     // TODO : Rethink this test, as if done before midnight it fails
     Tucuxi::Common::TimeOfDay tod1 = now.getTimeOfDay().getRealDuration();
     Tucuxi::Common::TimeOfDay tod2 = later.getTimeOfDay().getRealDuration();
-    EXPECT_TRUE(tod2 - tod1 == 2h);
+    ASSERT_EQ(tod2 - tod1, 2h);
 }

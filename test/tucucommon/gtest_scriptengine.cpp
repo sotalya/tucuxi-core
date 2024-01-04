@@ -13,26 +13,26 @@ TEST (Common_ScriptEngineTest, Basic){
     engine.evaluate("a = 34*2;");
     int value;
     engine.getVariable("a", value);
-    ASSERT_TRUE(value == 68);
+    ASSERT_EQ(value, 68);
 
     engine.evaluate("b = a-10;");
     engine.getVariable("b", value);
-    ASSERT_TRUE(value == 58);
+    ASSERT_EQ(value, 58);
 
     engine.setVariable("c", "12");
     engine.evaluate("d = b+c;");
     engine.getVariable("d", value);
-    ASSERT_TRUE(value == 70);
+    ASSERT_EQ(value, 70);
 
     engine.evaluate("e = Math.pow(3, 2);");
     double dblValue;
     engine.getVariable("e", dblValue);
-    ASSERT_TRUE(dblValue == 9.0);
+    ASSERT_DOUBLE_EQ(dblValue, 9.0);
 
     engine.evaluate("str = 'Tcho les' + ' topiots';");
     std::string strValue;
     engine.getVariable("str", strValue);
-    ASSERT_TRUE(strValue == "Tcho les topiots");
+    ASSERT_EQ(strValue, "Tcho les topiots");
 
     engine.evaluate("f = 2 == 3;");
     bool bValue;

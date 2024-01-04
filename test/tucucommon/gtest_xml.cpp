@@ -39,16 +39,16 @@ TEST (Common_XmlTest, Read){
         }
         iterNodes++;
     }
-    ASSERT_TRUE(test == "CHILDSaluttextabcid1CHILDTchotextdefid2AAAbbb");
+    ASSERT_EQ(test, "CHILDSaluttextabcid1CHILDTchotextdefid2AAAbbb");
 
     iterNodes = root.getChildren("CHILD");
-    ASSERT_TRUE(countNodes(iterNodes) == 2);
+    ASSERT_EQ(countNodes(iterNodes), 2);
 
     iterNodes = root.getChildren("AAA");
-    ASSERT_TRUE(countNodes(iterNodes) == 1);
+    ASSERT_EQ(countNodes(iterNodes), 1);
 
     iterNodes = root.getChildren("ZZZ");
-    ASSERT_TRUE(countNodes(iterNodes) == 0);
+    ASSERT_EQ(countNodes(iterNodes), 0);
 }
 
 TEST (Common_XmlTest, Write){
@@ -67,8 +67,8 @@ TEST (Common_XmlTest, Write){
     std::string strXml;
     doc.toString(strXml);
 
-    ASSERT_TRUE(
-            strXml == "<ROOT><CHILD text='abc' id='1'>Salut</CHILD><CHILD text='def' id='2'>Tcho</CHILD></ROOT>");
+    ASSERT_EQ(
+            strXml, "<ROOT><CHILD text='abc' id='1'>Salut</CHILD><CHILD text='def' id='2'>Tcho</CHILD></ROOT>");
 }
 
 TEST (Common_XmlTest, Files){
@@ -102,12 +102,12 @@ TEST (Common_XmlTest, Files){
         int n = 0;
         Tucuxi::Common::XmlNodeIterator iterNodes = root.getChildren();
         while (iterNodes != iterNodes.none()) {
-            ASSERT_TRUE(iterNodes->getAttribute("text").getValue() == "abc");
-            ASSERT_TRUE(iterNodes->getAttribute("id").getValue() == Tucuxi::Common::Utils::strFormat("%i", n));
+            ASSERT_EQ(iterNodes->getAttribute("text").getValue(), "abc");
+            ASSERT_EQ(iterNodes->getAttribute("id").getValue(), Tucuxi::Common::Utils::strFormat("%i", n));
             n++;
             iterNodes++;
         }
-        ASSERT_TRUE(n == nChildren);
+        ASSERT_EQ(n, nChildren);
     }
 }
 

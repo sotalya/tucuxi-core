@@ -39,8 +39,8 @@ static void checkLogfileLine(std::ifstream& _file, const char* _level, const cha
     bool isMatching = std::regex_search(line, match, rgx);
     EXPECT_TRUE(isMatching);
     if (isMatching) {
-        EXPECT_TRUE(match[1].str() == _level);
-        EXPECT_TRUE(match[2].str() == _msg);
+        EXPECT_EQ(match[1].str(), _level);
+        EXPECT_EQ(match[2].str(), _msg);
     }
 }
 
