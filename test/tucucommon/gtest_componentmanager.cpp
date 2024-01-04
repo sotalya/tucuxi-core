@@ -52,7 +52,7 @@ private:
     }
 };
 
-TEST (Common_ComponentManagerTests, CreateComponent){
+TEST (Common_TestComponentManager, CreateComponent){
 
     Tucuxi::Common::ComponentManager* cmpMgr = Tucuxi::Common::ComponentManager::getInstance();
     cmpMgr->registerComponentFactory("TestComponent", &TestComponent::createComponent);

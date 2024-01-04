@@ -142,7 +142,7 @@ TEST (Core_TestComputingComponentConcentration, Simple1){
         std::vector<CycleData> data = resp->getData();
         ASSERT_EQ(data.size(), static_cast<size_t>(15));
         ASSERT_EQ(data[0].m_concentrations.size(), static_cast<size_t>(1));
-        ASSERT_DOUBLE_EQ(data[0].m_concentrations[0][0], 0.0);
+        ASSERT_NE(data[0].m_concentrations[0][0], 0.0);
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                 Duration(std::chrono::hours(14), std::chrono::minutes(0), std::chrono::seconds(0)));

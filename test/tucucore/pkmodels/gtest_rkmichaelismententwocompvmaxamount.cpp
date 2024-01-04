@@ -19,8 +19,6 @@
 #include "tucucore/drugmodelimport.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
 
-#include "fructose/fructose.h"
-
 using namespace std::chrono_literals;
 using namespace date;
 

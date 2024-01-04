@@ -142,7 +142,7 @@ static void testLicenseManager(std::string& _path)
     }
 }
 
-TEST (Crypto_LicenseManager, Basic){
+TEST (Crypto_TestLicenseManager, Basic){
     std::string id;
     testLicenseManager(appFolder);
 
@@ -184,7 +184,7 @@ TEST (Crypto_LicenseManager, Basic){
     ASSERT_TRUE(idType != MachineIdType::UNDEFINED);
 }
 
-TEST (Crypto_LicenseManager, InstallNewLicense){
+TEST (Crypto_TestLicenseManager, InstallNewLicense){
     // Make sure to remove delete licence file.
     testLicenseManager(appFolder);
     const std::string& fileName = Tucuxi::Common::Utils::strFormat("%s/%s", m_path.c_str(), "license.txt");
@@ -219,7 +219,7 @@ TEST (Crypto_LicenseManager, InstallNewLicense){
     ASSERT_EQ(res, Tucuxi::Common::LicenseError::VALID_LICENSE);
 }
 
-TEST (Crypto_LicenseManager, CheckInvalidLicense){
+TEST (Crypto_TestLicenseManager, CheckInvalidLicense){
     LicenseError res = LicenseError::INVALID_LICENSE;
     testLicenseManager(appFolder);
 

@@ -416,7 +416,7 @@ public:
     }
 };
 
-TEST (Common_XmlImporterTest, XmlImporter){
+TEST (Common_TestXmlImporter, XmlImporter){
 
     bool conversionSuccess = true;
     bool conversionIssue = false;

@@ -44,7 +44,7 @@ static void checkLogfileLine(std::ifstream& _file, const char* _level, const cha
     }
 }
 
-TEST (Common_LoggerTest, Basic){
+TEST (Common_TestLogger, Basic){
     reset("LogTest2.log", appFolder);
     Tucuxi::Common::LoggerHelper logger;
     logger.debug("Tcho les topiots");
@@ -64,7 +64,7 @@ TEST (Common_LoggerTest, Basic){
     checkLogfileLine(infile, "critical", "Tcho les topiots");
 }
 
-TEST (Common_LoggerTest, Crashes){
+TEST (Common_TestLogger, Crashes){
     // Work with an uninitialized logger
     Tucuxi::Common::LoggerHelper logger;
     logger.info("asdfa");

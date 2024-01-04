@@ -8,7 +8,7 @@
 #include "tucucommon/jsengine.h"
 
 
-TEST (Common_ScriptEngineTest, Basic){
+TEST (Common_TestScriptEngine, Basic){
     Tucuxi::Common::JSEngine engine;
     engine.evaluate("a = 34*2;");
     int value;

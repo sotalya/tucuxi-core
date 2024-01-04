@@ -45,7 +45,7 @@ static void checkDuration(const Tucuxi::Common::Duration& _duration, double _nbS
     EXPECT_DOUBLE_EQ(d, _nbSeconds);
 }
 
-TEST (Common_DateTimeTest, DateTime){
+TEST (Common_TestDateTime, DateTime){
 
 
     // Test constructors and getter methods
@@ -89,8 +89,8 @@ TEST (Common_DateTimeTest, DateTime){
     ASSERT_NE(diff.toMonths(), 12.0); // Since a year is 365.2425 days
     ASSERT_NE(diff.toYears(), 1.0);   // Since a month is 365.2425/12
     diff = diff + Tucuxi::Common::Duration(24h) * 0.25;
-    ASSERT_DOUBLE_EQ(diff.toMonths(), 12);
-    ASSERT_DOUBLE_EQ(diff.toYears(), 1);
+    ASSERT_EQ(diff.toMonths(), 12);
+    ASSERT_EQ(diff.toYears(), 1);
 
     // Test getDate
     Tucuxi::Common::DateTime d20(2017_y / jan / 1, 10h + 22min);
@@ -160,7 +160,7 @@ TEST (Common_DateTimeTest, DateTime){
     }
 }
 
-TEST (Common_DateTimeTest, TimeOfDay){
+TEST (Common_TestDateTime, TimeOfDay){
 
 
     // Test constructors
@@ -179,7 +179,7 @@ TEST (Common_DateTimeTest, TimeOfDay){
 
 }
 
-TEST (Common_DateTimeTest, Duration){
+TEST (Common_TestDateTime, Duration){
 
 
     // Test constructors

@@ -10,7 +10,7 @@
 
 using namespace std;
 
-TEST (Common_Unit, WeightUnit){
+TEST (Common_TestUnit, WeightUnit){
     // clang-format off
     vector<string> weightUnits
         {
@@ -121,7 +121,7 @@ TEST (Common_Unit, WeightUnit){
                 20000000.0);
 }
 
-TEST (Common_Unit, HeightUnit){
+TEST (Common_TestUnit, HeightUnit){
     // clang-format off
     vector<string> lengthUnits
         {
@@ -209,7 +209,7 @@ TEST (Common_Unit, HeightUnit){
                 20.0);
 }
 
-TEST (Common_Unit, TimeUnit){
+TEST (Common_TestUnit, TimeUnit){
     // clang-format off
     vector<string> timeUnits
         {
@@ -472,7 +472,7 @@ TEST (Common_Unit, TimeUnit){
 //        ASSERT_DOUBLE_EQ(unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::Time>(value, Tucuxi::Common::Unit("y"), Tucuxi::Common::Unit("year")), 1.0);
 }
 
-TEST (Common_Unit, ConcentrationUnit){
+TEST (Common_TestUnit, ConcentrationUnit){
     // clang-format off
     vector<string> concentrationUnits
         {
@@ -768,7 +768,7 @@ TEST (Common_Unit, ConcentrationUnit){
                 1000000.0);
 }
 
-TEST (Common_Unit, ConcentrationTimeUnit){
+TEST (Common_TestUnit, ConcentrationTimeUnit){
     // clang-format off
     vector<string> concentrationTimeUnits
         {
@@ -3139,7 +3139,7 @@ TEST (Common_Unit, ConcentrationTimeUnit){
                 1.0);
 }
 
-TEST (Common_Unit, ConcentrationMoleUnit){
+TEST (Common_TestUnit, ConcentrationMoleUnit){
     // clang-format off
     vector<string> concentrationMoleUnits
         {
@@ -3498,7 +3498,7 @@ TEST (Common_Unit, ConcentrationMoleUnit){
                 1.0);
 }
 
-TEST (Common_Unit, MolarMassUnit){
+TEST (Common_TestUnit, MolarMassUnit){
     // clang-format off
     vector<string> molarMass
         {
@@ -3648,7 +3648,7 @@ TEST (Common_Unit, MolarMassUnit){
                 0.001);
 }
 
-TEST (Common_Unit, FlowRateUnit){
+TEST (Common_TestUnit, FlowRateUnit){
     // clang-format off
     vector<string> flowRate
         {
@@ -3736,7 +3736,7 @@ TEST (Common_Unit, FlowRateUnit){
                 1.0);
 }
 
-TEST (Common_Unit, TemperatureUnit){
+TEST (Common_TestUnit, TemperatureUnit){
     // clang-format off
     vector<string> temperatureUnits
         {
@@ -3763,7 +3763,7 @@ TEST (Common_Unit, TemperatureUnit){
             1.0);
 }
 
-TEST (Common_Unit, NoUnit){
+TEST (Common_TestUnit, NoUnit){
     // clang-format off
     vector<string> noUnit
         {

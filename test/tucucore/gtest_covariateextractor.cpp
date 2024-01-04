@@ -1962,7 +1962,7 @@ TEST (Core_TestCovariateExtractor, CovariateExtraction_test3_3){
 
     rc2 = extractor2.extract(cSeries2);
 
-    AssERT_EQ(rc2, ComputingStatus::Ok);
+    ASSERT_EQ(rc2, ComputingStatus::Ok);
 
     for (const auto& covariate : cSeries2) {
         if (covariate.getId() == "Weight") {

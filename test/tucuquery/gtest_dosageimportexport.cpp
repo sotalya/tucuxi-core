@@ -72,7 +72,7 @@ public:
 };
 
 
-TEST (Query_DosageImportExportTests, Test1){
+TEST (Query_TestDosageImportExport, Test1){
     Tucuxi::Query::QueryImport queryImport;
     Tucuxi::Common::XmlDocument xmlDocument;
     GTestTucuQuery gTestTucuQuery;
