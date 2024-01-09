@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project (tucudrugfilechecker LANGUAGES CXX)
+project (tucucli LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 17)
@@ -14,22 +14,27 @@ include(${CMAKE_CURRENT_LIST_DIR}/../../libs/tucuxi-core_libs)
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../tucucommon tucucommon)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../tucucore tucucore)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../tucuquery tucuquery)
 
-file(GLOB TUCUDRUGFILECHECKER_SOURCE_FILES    
-    ${CMAKE_CURRENT_LIST_DIR}/tucudrugfilechecker.cpp)
+file(GLOB TUCUCLI_HEADER_FILES    
+    ${CMAKE_CURRENT_LIST_DIR}/clicomputer.h)
 
-add_executable(tucudrugfilechecker ${TUCUDRUGFILECHECKER_SOURCE_FILES})
+file(GLOB TUCUCLI_SOURCE_FILES    
+    ${CMAKE_CURRENT_LIST_DIR}/clicomputer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/tucucli.cpp)
+
+add_executable(tucucli ${TUCUCLI_SOURCE_FILES})
 
 if (WIN32)
-    set(LIBS_TO_LINK tucucore tucucommon)
+    set(LIBS_TO_LINK tucucore tucucommon tucuquery)
 else (UNIX)
-    set(LIBS_TO_LINK pthread tucucore tucucommon)
+    set(LIBS_TO_LINK pthread tucucore tucucommon tucuquery)
 endif (WIN32)
 
 target_link_libraries(tucucli PRIVATE ${LIBS_TO_LINK})
 
 include(GNUInstallDirs)
-install(TARGETS tucudrugfilechecker
+install(TARGETS tucucli
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )

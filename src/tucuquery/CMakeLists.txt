@@ -41,7 +41,6 @@ file(GLOB TUCUQUERY_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/queryimport.cpp
     ${CMAKE_CURRENT_LIST_DIR}/querylogger.cpp
     ${CMAKE_CURRENT_LIST_DIR}/querytocoreextractor.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/requestdata.cpp
-)
+    ${CMAKE_CURRENT_LIST_DIR}/requestdata.cpp)
 
 add_library(tucuquery STATIC ${TUCUQUERY_SOURCE_FILES} ${TUCUQUERY_HEADERS_FILES})

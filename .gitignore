@@ -21,3 +21,6 @@ src/build*
 *.pdb
 *.ilk
 
+#CMake files
+*.txt.user*
+
