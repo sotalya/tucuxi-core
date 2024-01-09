@@ -9,7 +9,7 @@ include(../tucucommon.pri)
 include(../tucucore.pri)
 include(../tucucrypto.pri)
 include(../tucuquery.pri)
-include(../tinyjs.pri)
+#include(../tinyjs.pri)
 include(../gtest.pri)
 
 config_coverage {
@@ -68,7 +68,6 @@ SOURCES += \
     $$PWD/../../../test/tucucore/gtest_covariateextractor.cpp \
     $$PWD/../../../test/tucucore/gtest_cyclestatistics.cpp \
     $$PWD/../../../test/tucucore/gtest_dosage.cpp \
-    $$PWD/../../../test/tucucore/gtest_drugdomainconstraintsevaluator.cpp \
     $$PWD/../../../test/tucucore/gtest_drugdomainconstraintsevaluator.cpp \
     $$PWD/../../../test/tucucore/gtest_drugmodelimport.cpp \
     $$PWD/../../../test/tucucore/gtest_drugmodels.cpp \
