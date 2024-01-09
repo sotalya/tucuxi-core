@@ -23,4 +23,5 @@ src/build*
 
 #CMake files
 *.txt.user*
+src/*/build
 

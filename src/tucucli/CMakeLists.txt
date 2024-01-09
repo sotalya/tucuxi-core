@@ -25,11 +25,11 @@ file(GLOB TUCUCLI_SOURCE_FILES
 
 add_executable(tucucli ${TUCUCLI_SOURCE_FILES})
 
-if (WIN32)
-    set(LIBS_TO_LINK tucucore tucucommon tucuquery)
-else (UNIX)
-    set(LIBS_TO_LINK pthread tucucore tucucommon tucuquery)
-endif (WIN32)
+set(LIBS_TO_LINK tucuquery tucucore tucucommon)
+
+if(UNIX)
+    set(LIBS_TO_LINK pthread ${LIBS_TO_LINK})
+endif(UNIX)
 
 target_link_libraries(tucucli PRIVATE ${LIBS_TO_LINK})
 
