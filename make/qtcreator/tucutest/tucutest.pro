@@ -9,7 +9,6 @@ include(../tucucommon.pri)
 include(../tucucore.pri)
 include(../tucucrypto.pri)
 include(../tucuquery.pri)
-#include(../tinyjs.pri)
 include(../gtest.pri)
 
 config_coverage {
