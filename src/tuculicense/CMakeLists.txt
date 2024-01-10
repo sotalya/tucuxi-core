@@ -21,7 +21,7 @@ file(GLOB TUCULICENSE_SOURCE_FILES
 
 add_executable(tuculicense ${TUCULICENSE_SOURCE_FILES})
 
-set(LIBS_TO_LINK tucucrypto tucucore tucucommon)
+set(LIBS_TO_LINK tucucrypto tucucommon)
 
 if(UNIX)
     set(LIBS_TO_LINK pthread ${LIBS_TO_LINK})
