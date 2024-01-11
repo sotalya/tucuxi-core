@@ -26,7 +26,7 @@ if(UNIX)
     set(LIBS_TO_LINK pthread ${LIBS_TO_LINK})
 endif(UNIX)
 
-target_link_libraries(tucucli PRIVATE ${LIBS_TO_LINK})
+target_link_libraries(tucudrugfilechecker PRIVATE ${LIBS_TO_LINK})
 
 include(GNUInstallDirs)
 install(TARGETS tucudrugfilechecker

@@ -312,6 +312,19 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtTimes(
 
     _concentrations.clear();
 
+    size_t nbSamplesOut = 0;
+    for (const auto& sample : _samples) {
+        if ((sample.getEventTime() < _intakes.at(0).getEventTime())
+            || (sample.getEventTime()
+                > _intakes.at(_intakes.size() - 1).getEventTime() + _intakes.at(_intakes.size() - 1).getInterval())) {
+            nbSamplesOut++;
+        }
+    }
+    if (nbSamplesOut == _samples.size()) {
+        // If there is no sample on the intake series time, then something goes wrong
+        return ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError;
+    }
+
     // First calculate the size of residuals
     unsigned int residualSize = 0;
     for (const auto& intake : _intakes) {
