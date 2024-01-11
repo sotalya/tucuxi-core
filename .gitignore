@@ -15,6 +15,7 @@ test/*/objs/*
 libs/*/objs/*
 libs/*/build/*
 src/build*
+test/build*
 #botan
 *.lib
 *.exe
