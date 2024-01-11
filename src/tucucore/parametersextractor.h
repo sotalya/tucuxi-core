@@ -15,7 +15,7 @@
 #include "tucucore/covariateevent.h"
 #include "tucucore/parameter.h"
 
-struct TestParameterExtractor;
+class TestParameterExtractor;
 
 namespace Tucuxi {
 namespace Core {

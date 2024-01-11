@@ -13,8 +13,6 @@
 #include "tucucore/targetevent.h"
 #include "tucucore/timedevent.h"
 
-struct TestTargetExtractor;
-
 namespace Tucuxi {
 namespace Core {
 
@@ -194,8 +192,6 @@ private:
 
     friend TargetExtractor;
     friend TargetEvaluator;
-
-    friend TestTargetExtractor;
 };
 
 ///

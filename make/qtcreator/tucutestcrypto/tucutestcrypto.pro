@@ -7,13 +7,14 @@ include(../botan.pri)
 include(../general.pri)
 include(../tucucommon.pri)
 include(../tucucrypto.pri)
+include(../gtest.pri)
 
 HEADERS += \
-    ../../../test/tucucrypto/test_licensemanager.h \
-    ../../../test/tucucrypto/test_cryptohelper.h \
 
 SOURCES += \
-    ../../../test/tucucrypto/tests.cpp
+    ../../../test/tucucrypto/gtest_crypto.cpp \
+    ../../../test/tucucrypto/gtest_cryptohelper.cpp \
+    ../../../test/tucucrypto/gtest_licensemanager.cpp
 
 
 !win32 {

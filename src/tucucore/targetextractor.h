@@ -10,8 +10,7 @@
 #include "tucucore/drugtreatment/target.h"
 #include "tucucore/targetevent.h"
 
-struct TestTargetExtractor;
-struct TestTargetEvaluator;
+class TestTargetEvaluator;
 
 namespace Tucuxi {
 namespace Core {
@@ -54,7 +53,6 @@ protected:
 
     TargetEvent targetEventFromTargetDefinition(const TargetDefinition* _target, const TucuUnit& _concentrationUnit);
 
-    friend TestTargetExtractor;
     friend TestTargetEvaluator;
 };
 

@@ -33,7 +33,7 @@ bool ComputingResponseExport::exportToFiles(
             return false;
         }
 
-        // We start by checking for adjustements, as AdjustmentResponse is a subclass of SinglePredictionResponse
+        // We start by checking for adjustments, as AdjustmentResponse is a subclass of SinglePredictionResponse
         if (dynamic_cast<const Tucuxi::Core::AdjustmentData*>(response.m_computingResponse->getData()) != nullptr) {
             const Tucuxi::Core::AdjustmentData* prediction =
                     dynamic_cast<const Tucuxi::Core::AdjustmentData*>(response.m_computingResponse->getData());

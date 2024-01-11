@@ -3,6 +3,8 @@
 #ifndef TESTUTILS_H
 #define TESTUTILS_H
 
+#include "tucucommon/timeofday.h"
+
 /// \brief Create a DateTime temporary variable (without creating an explicit named variable for this).
 /// \param YY Year in 4 digits format.
 /// \param MM Month in 2 digits format.
@@ -229,8 +231,8 @@
 /// \param REFRESH_MAP Refresh map where the covariate has be to sought.
 #define CHECK_REFRESH(NAME, DATE, REFRESH_MAP)                                                                    \
     do {                                                                                                          \
-        fructose_assert(                                                                                          \
-                std::find(REFRESH_MAP[DATE].begin(), REFRESH_MAP[DATE].end(), #NAME) != REFRESH_MAP[DATE].end()); \
+        ASSERT_FALSE(                                                                                          \
+                std::find(REFRESH_MAP[DATE].begin(), REFRESH_MAP[DATE].end(), #NAME) == REFRESH_MAP[DATE].end()); \
     } while (0);
 
 
