@@ -9,7 +9,10 @@ include_directories(${CMAKE_CURRENT_LIST_DIR}/../)
 
 include(${CMAKE_CURRENT_LIST_DIR}/../../libs/tucuxi-core_libs)
 
-include(${CMAKE_CURRENT_LIST_DIR}/../../libs/botan/tucuxi-core_add_botan)
+# Check if botan exist
+if(NOT TARGET botan)
+    include(${CMAKE_CURRENT_LIST_DIR}/../../libs/botan/tucuxi-core_add_botan)
+endif(NOT TARGET botan)
 
 ADD_DEFINITIONS(-DUNICODE)
 ADD_DEFINITIONS(-D_UNICODE)

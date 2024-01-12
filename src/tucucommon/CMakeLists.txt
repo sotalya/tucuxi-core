@@ -9,7 +9,9 @@ include_directories(${CMAKE_CURRENT_LIST_DIR}/../)
 
 include(${CMAKE_CURRENT_LIST_DIR}/../../libs/tucuxi-core_libs)
 
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../../libs/tiny-js tiny-js)
+if(NOT TARGET tiny-js)
+  add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../../libs/tiny-js tiny-js)
+endif(NOT TARGET tiny-js)
 
 file(GLOB TUCUCOMMON_HEADERS_FILES
     ${CMAKE_CURRENT_LIST_DIR}/basetypes.h
