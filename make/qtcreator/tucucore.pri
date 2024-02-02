@@ -33,6 +33,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/parameterids.h \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenenzyme.h \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenonecomp.h \
+    $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenonecompvmaxamount.h \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismententwocomp.h \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismententwocompvmaxamount.h \
     $$PWD/../../src/tucucore/pkmodels/rktwocompartmentextralag.h \
@@ -136,6 +137,7 @@ SOURCES += \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentextra.cpp \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenenzyme.cpp \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenonecomp.cpp \
+    $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenonecompvmaxamount.cpp \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismententwocomp.cpp \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismententwocompvmaxamount.cpp \
     $$PWD/../../src/tucucore/pkmodels/rkonecompartmentextra.cpp \

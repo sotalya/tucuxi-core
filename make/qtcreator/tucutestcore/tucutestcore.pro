@@ -61,7 +61,6 @@ SOURCES += \
     $$PWD/../../../test/tucucore/gtest_cyclestatistics.cpp \
     $$PWD/../../../test/tucucore/gtest_dosage.cpp \
     $$PWD/../../../test/tucucore/gtest_drugdomainconstraintsevaluator.cpp \
-    $$PWD/../../../test/tucucore/gtest_drugdomainconstraintsevaluator.cpp \
     $$PWD/../../../test/tucucore/gtest_drugmodelimport.cpp \
     $$PWD/../../../test/tucucore/gtest_drugmodels.cpp \
     $$PWD/../../../test/tucucore/gtest_intakeextractor.cpp \
