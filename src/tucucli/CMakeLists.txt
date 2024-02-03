@@ -28,7 +28,7 @@ add_executable(tucucli ${TUCUCLI_SOURCE_FILES})
 set(LIBS_TO_LINK tucuquery tucucore tucucommon)
 
 if(UNIX)
-    set(LIBS_TO_LINK pthread ${LIBS_TO_LINK})
+    set(LIBS_TO_LINK ${LIBS_TO_LINK} pthread)
 endif(UNIX)
 
 target_link_libraries(tucucli PRIVATE ${LIBS_TO_LINK})

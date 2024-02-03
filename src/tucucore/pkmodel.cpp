@@ -402,7 +402,7 @@ bool defaultPopulate(PkModelCollection& _collection)
 
     {
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("michaelismentenlinear.1comp.micro", PkModel::AllowMultipleRoutes::Yes);
+        sharedPkModel = std::make_shared<PkModel>("michaelismentenlinear.1comp.vmaxamount.micro", PkModel::AllowMultipleRoutes::Yes);
 
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
                 AbsorptionModel::Extravascular, RkMichaelisMentenLinearOneCompVmaxAmountExtraMicro::getCreator());
@@ -437,7 +437,7 @@ bool defaultPopulate(PkModelCollection& _collection)
 
     {
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel = std::make_shared<PkModel>("michaelismentenlinear.1comp.macro", PkModel::AllowMultipleRoutes::Yes);
+        sharedPkModel = std::make_shared<PkModel>("michaelismentenlinear.1comp.vmaxamount.macro", PkModel::AllowMultipleRoutes::Yes);
 
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
                 AbsorptionModel::Extravascular, RkMichaelisMentenLinearOneCompVmaxAmountExtraMacro::getCreator());
