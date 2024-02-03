@@ -68,7 +68,7 @@ bool RkMichaelisMentenOneCompBolus::checkInputs(const IntakeEvent& _intakeEvent,
     m_V = _parameters.getValue(ParameterId::V);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
-    m_F = _parameters.getValue(ParameterId::F);
+    m_F = _parameters.getOptionalValue(ParameterId::F, 1.0);
     m_Ka = 0.0; // _parameters.getValue(ParameterId::Ka);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
@@ -106,7 +106,7 @@ bool RkMichaelisMentenOneCompInfusion::checkInputs(
     m_V = _parameters.getValue(ParameterId::V);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
-    m_F = _parameters.getValue(ParameterId::F);
+    m_F = _parameters.getOptionalValue(ParameterId::F, 1.0);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
