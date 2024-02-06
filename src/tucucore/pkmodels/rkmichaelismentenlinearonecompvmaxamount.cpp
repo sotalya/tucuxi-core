@@ -36,7 +36,7 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountExtraMicro::checkInputs(
     }
 
     m_D = _intakeEvent.getDose();
-    m_V = _parameters.getValue(ParameterId::V1);
+    m_V = _parameters.getValue(ParameterId::V);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_F = _parameters.getValue(ParameterId::F);
@@ -82,7 +82,7 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMicro::checkInputs(
     }
 
     m_D = _intakeEvent.getDose();
-    m_V = _parameters.getValue(ParameterId::V1);
+    m_V = _parameters.getValue(ParameterId::V);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_F = _parameters.getValue(ParameterId::F);
@@ -132,7 +132,7 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountBolusMicro::checkInputs(
     }
 
     m_D = _intakeEvent.getDose();
-    m_V = _parameters.getValue(ParameterId::V1);
+    m_V = _parameters.getValue(ParameterId::V);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_F = _parameters.getOptionalValue(ParameterId::F);
@@ -180,7 +180,7 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountInfusionMicro::checkInputs(
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
 
     m_D = _intakeEvent.getDose();
-    m_V = _parameters.getValue(ParameterId::V1);
+    m_V = _parameters.getValue(ParameterId::V);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_F = _parameters.getValue(ParameterId::F);
@@ -243,7 +243,7 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountExtraMacro::checkInputs(
     }
 
     m_D = _intakeEvent.getDose();
-    m_V = _parameters.getValue(ParameterId::V1);
+    m_V = _parameters.getValue(ParameterId::V);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_F = _parameters.getValue(ParameterId::F);
@@ -285,7 +285,7 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMacro::checkInputs(
     }
 
     m_D = _intakeEvent.getDose();
-    m_V = _parameters.getValue(ParameterId::V1);
+    m_V = _parameters.getValue(ParameterId::V);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_F = _parameters.getValue(ParameterId::F);
@@ -328,7 +328,7 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountBolusMacro::checkInputs(
     }
 
     m_D = _intakeEvent.getDose();
-    m_V = _parameters.getValue(ParameterId::V1);
+    m_V = _parameters.getValue(ParameterId::V);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_nbPoints = _intakeEvent.getNbPoints();
@@ -384,7 +384,7 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountInfusionMacro::checkInputs(
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
 
     m_D = _intakeEvent.getDose();
-    m_V = _parameters.getValue(ParameterId::V1);
+    m_V = _parameters.getValue(ParameterId::V);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_nbPoints = _intakeEvent.getNbPoints();

@@ -107,7 +107,7 @@ bool RkMichaelisMentenOneCompInfusion::checkInputs(
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_F = _parameters.getOptionalValue(ParameterId::F, 1.0);
-    m_Ka = _parameters.getValue(ParameterId::Ka);
+    m_Ka = _parameters.getOptionalValue(ParameterId::Ka, 0.0);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
