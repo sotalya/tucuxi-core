@@ -9,19 +9,24 @@ namespace Core {
 
 
 RkMichaelisMentenOneCompVmaxAmount::RkMichaelisMentenOneCompVmaxAmount()
-    : IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenOneCompVmaxAmount>(std::make_unique<PertinentTimesCalculatorStandard>())
+    : IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenOneCompVmaxAmount>(
+            std::make_unique<PertinentTimesCalculatorStandard>())
 {
 }
 
 
-RkMichaelisMentenOneCompVmaxAmountExtra::RkMichaelisMentenOneCompVmaxAmountExtra() : RkMichaelisMentenOneCompVmaxAmount() {}
+RkMichaelisMentenOneCompVmaxAmountExtra::RkMichaelisMentenOneCompVmaxAmountExtra()
+    : RkMichaelisMentenOneCompVmaxAmount()
+{
+}
 
 std::vector<std::string> RkMichaelisMentenOneCompVmaxAmountExtra::getParametersId()
 {
     return {"V", "Km", "Vmax", "F", "Ka"};
 }
 
-bool RkMichaelisMentenOneCompVmaxAmountExtra::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool RkMichaelisMentenOneCompVmaxAmountExtra::checkInputs(
+        const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
         return false;
@@ -51,14 +56,18 @@ bool RkMichaelisMentenOneCompVmaxAmountExtra::checkInputs(const IntakeEvent& _in
 }
 
 
-RkMichaelisMentenOneCompVmaxAmountBolus::RkMichaelisMentenOneCompVmaxAmountBolus() : RkMichaelisMentenOneCompVmaxAmount() {}
+RkMichaelisMentenOneCompVmaxAmountBolus::RkMichaelisMentenOneCompVmaxAmountBolus()
+    : RkMichaelisMentenOneCompVmaxAmount()
+{
+}
 
 std::vector<std::string> RkMichaelisMentenOneCompVmaxAmountBolus::getParametersId()
 {
     return {"V", "Km", "Vmax", "F"};
 }
 
-bool RkMichaelisMentenOneCompVmaxAmountBolus::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool RkMichaelisMentenOneCompVmaxAmountBolus::checkInputs(
+        const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
         return false;
@@ -88,7 +97,10 @@ bool RkMichaelisMentenOneCompVmaxAmountBolus::checkInputs(const IntakeEvent& _in
 }
 
 
-RkMichaelisMentenOneCompVmaxAmountInfusion::RkMichaelisMentenOneCompVmaxAmountInfusion() : RkMichaelisMentenOneCompVmaxAmount() {}
+RkMichaelisMentenOneCompVmaxAmountInfusion::RkMichaelisMentenOneCompVmaxAmountInfusion()
+    : RkMichaelisMentenOneCompVmaxAmount()
+{
+}
 
 std::vector<std::string> RkMichaelisMentenOneCompVmaxAmountInfusion::getParametersId()
 {

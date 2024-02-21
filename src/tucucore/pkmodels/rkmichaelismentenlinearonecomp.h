@@ -58,7 +58,7 @@ protected:
     Value m_D{NAN};  /// Quantity of drug
     Value m_F{1.0};  /// bioavailability
     Value m_Ka{0.0}; /// Absorption rate constant
-    Value m_V{NAN}; /// Volume of the compartment
+    Value m_V{NAN};  /// Volume of the compartment
     Value m_Ke{NAN};
     Value m_Km{NAN};
     Value m_Vmax{NAN};

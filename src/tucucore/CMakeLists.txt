@@ -109,6 +109,7 @@ file(GLOB TUCUCORE_HEADERS_FILES
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkonecompartmentgammaextra.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rktwocompartmenterlang.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rktwocompartmentextralag.h
+    ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkthreecompartment.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/threecompartmentbolus.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/threecompartmentextra.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/threecompartmentinfusion.h
@@ -207,6 +208,7 @@ file(GLOB TUCUCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkonecompartmentgammaextra.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rktwocompartmenterlang.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rktwocompartmentextralag.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkthreecompartment.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/threecompartmentbolus.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/threecompartmentextra.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/threecompartmentinfusion.cpp

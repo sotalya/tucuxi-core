@@ -91,7 +91,7 @@ bool ThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent,
 
 
 
-    return true;
+    return bOK;
 }
 
 void ThreeCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
@@ -207,15 +207,16 @@ bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent,
     m_D = _intakeEvent.getDose();
     Value cl = _parameters.getValue(ParameterId::CL);
     m_F = _parameters.getValue(ParameterId::F);
-    Value q1 = _parameters.getValue(ParameterId::Q1);
+    Value q3 = _parameters.getValue(ParameterId::Q3);
     Value q2 = _parameters.getValue(ParameterId::Q2);
     m_V1 = _parameters.getValue(ParameterId::V1);
     Value v2 = _parameters.getValue(ParameterId::V2);
+    Value v3 = _parameters.getValue(ParameterId::V3);
     m_Ke = cl / m_V1;
-    m_K12 = q1 / m_V1;
-    m_K21 = q1 / v2;
-    m_K13 = q2 / m_V1;
-    m_K31 = q2 / v2;
+    m_K12 = q2 / m_V1;
+    m_K21 = q2 / v2;
+    m_K13 = q3 / m_V1;
+    m_K31 = q3 / v3;
     m_Tinf = _intakeEvent.getInfusionTime().toHours();
     m_Int = _intakeEvent.getInterval().toHours();
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
@@ -238,7 +239,7 @@ bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent,
     bOK &= checkStrictlyPositiveValue(m_F, "F");
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkStrictlyPositiveValue(q, "Q");
-    bOK &= checkStrictlyPositiveValue(q1, "Q1");
+    bOK &= checkStrictlyPositiveValue(q3, "Q3");
     bOK &= checkStrictlyPositiveValue(q2, "Q2");
     bOK &= checkStrictlyPositiveValue(m_V1, "V1");
     bOK &= checkStrictlyPositiveValue(v2, "V2");
@@ -249,7 +250,7 @@ bool ThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent,
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
-    return true;
+    return bOK;
 }
 
 } // namespace Core

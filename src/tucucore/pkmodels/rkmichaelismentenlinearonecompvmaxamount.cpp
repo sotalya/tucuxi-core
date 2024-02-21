@@ -9,14 +9,16 @@ namespace Core {
 
 
 RkMichaelisMentenLinearOneCompVmaxAmount::RkMichaelisMentenLinearOneCompVmaxAmount()
-    : IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenLinearOneCompVmaxAmount>(std::make_unique<PertinentTimesCalculatorStandard>())
+    : IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenLinearOneCompVmaxAmount>(
+            std::make_unique<PertinentTimesCalculatorStandard>())
 {
     m_Tinf = 0.0;
     m_Tlag = 0.0;
 }
 
 
-RkMichaelisMentenLinearOneCompVmaxAmountExtraMicro::RkMichaelisMentenLinearOneCompVmaxAmountExtraMicro() : RkMichaelisMentenLinearOneCompVmaxAmount()
+RkMichaelisMentenLinearOneCompVmaxAmountExtraMicro::RkMichaelisMentenLinearOneCompVmaxAmountExtraMicro()
+    : RkMichaelisMentenLinearOneCompVmaxAmount()
 {
     m_delivered = true;
     m_isInfusion = false;
@@ -62,7 +64,8 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountExtraMicro::checkInputs(
 }
 
 
-RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMicro::RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMicro() : RkMichaelisMentenLinearOneCompVmaxAmount()
+RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMicro::RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMicro()
+    : RkMichaelisMentenLinearOneCompVmaxAmount()
 {
     m_delivered = false;
     m_isInfusion = false;
@@ -109,7 +112,8 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMicro::checkInputs(
 }
 
 
-RkMichaelisMentenLinearOneCompVmaxAmountBolusMicro::RkMichaelisMentenLinearOneCompVmaxAmountBolusMicro() : RkMichaelisMentenLinearOneCompVmaxAmount()
+RkMichaelisMentenLinearOneCompVmaxAmountBolusMicro::RkMichaelisMentenLinearOneCompVmaxAmountBolusMicro()
+    : RkMichaelisMentenLinearOneCompVmaxAmount()
 {
     m_delivered = true;
     m_isInfusion = false;
@@ -158,7 +162,8 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountBolusMicro::checkInputs(
 }
 
 
-RkMichaelisMentenLinearOneCompVmaxAmountInfusionMicro::RkMichaelisMentenLinearOneCompVmaxAmountInfusionMicro() : RkMichaelisMentenLinearOneCompVmaxAmount()
+RkMichaelisMentenLinearOneCompVmaxAmountInfusionMicro::RkMichaelisMentenLinearOneCompVmaxAmountInfusionMicro()
+    : RkMichaelisMentenLinearOneCompVmaxAmount()
 {
     m_delivered = true;
     m_isInfusion = true;
@@ -270,7 +275,8 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountExtraMacro::checkInputs(
 }
 
 
-RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMacro::RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMacro() = default;
+RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMacro::RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMacro() =
+        default;
 
 std::vector<std::string> RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMacro::getParametersId()
 {
@@ -367,7 +373,8 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountBolusMacro::checkInputs(
 
 
 
-RkMichaelisMentenLinearOneCompVmaxAmountInfusionMacro::RkMichaelisMentenLinearOneCompVmaxAmountInfusionMacro() = default;
+RkMichaelisMentenLinearOneCompVmaxAmountInfusionMacro::RkMichaelisMentenLinearOneCompVmaxAmountInfusionMacro() =
+        default;
 
 std::vector<std::string> RkMichaelisMentenLinearOneCompVmaxAmountInfusionMacro::getParametersId()
 {

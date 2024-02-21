@@ -9,7 +9,8 @@ namespace Core {
 
 
 RkMichaelisMentenLinearOneComp::RkMichaelisMentenLinearOneComp()
-    : IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenLinearOneComp>(std::make_unique<PertinentTimesCalculatorStandard>())
+    : IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenLinearOneComp>(
+            std::make_unique<PertinentTimesCalculatorStandard>())
 {
     m_Tinf = 0.0;
     m_Tlag = 0.0;
@@ -62,7 +63,8 @@ bool RkMichaelisMentenLinearOneCompExtraMicro::checkInputs(
 }
 
 
-RkMichaelisMentenLinearOneCompExtraLagMicro::RkMichaelisMentenLinearOneCompExtraLagMicro() : RkMichaelisMentenLinearOneComp()
+RkMichaelisMentenLinearOneCompExtraLagMicro::RkMichaelisMentenLinearOneCompExtraLagMicro()
+    : RkMichaelisMentenLinearOneComp()
 {
     m_delivered = false;
     m_isInfusion = false;
@@ -158,7 +160,8 @@ bool RkMichaelisMentenLinearOneCompBolusMicro::checkInputs(
 }
 
 
-RkMichaelisMentenLinearOneCompInfusionMicro::RkMichaelisMentenLinearOneCompInfusionMicro() : RkMichaelisMentenLinearOneComp()
+RkMichaelisMentenLinearOneCompInfusionMicro::RkMichaelisMentenLinearOneCompInfusionMicro()
+    : RkMichaelisMentenLinearOneComp()
 {
     m_delivered = true;
     m_isInfusion = true;

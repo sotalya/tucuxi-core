@@ -40,6 +40,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismentenonecompvmaxamount.h \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismententwocomp.h \
     $$PWD/../../src/tucucore/pkmodels/rkmichaelismententwocompvmaxamount.h \
+    $$PWD/../../src/tucucore/pkmodels/rkthreecompartment.h \
     $$PWD/../../src/tucucore/pkmodels/rktwocompartmentextralag.h \
     $$PWD/../../src/tucucore/pkmodels/twocompartmentextralag.h \
     $$PWD/../../src/tucucore/timedevent.h \
@@ -151,6 +152,7 @@ SOURCES += \
     $$PWD/../../src/tucucore/pkmodels/rkonecompartmentextra.cpp \
     $$PWD/../../src/tucucore/pkmodels/rkonecompartmentgammaextra.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentinfusion.cpp \
+    $$PWD/../../src/tucucore/pkmodels/rkthreecompartment.cpp \
     $$PWD/../../src/tucucore/pkmodels/rktwocompartmentextralag.cpp \
     $$PWD/../../src/tucucore/pkmodels/threecompartmentbolus.cpp \
     $$PWD/../../src/tucucore/pkmodels/threecompartmentextra.cpp \

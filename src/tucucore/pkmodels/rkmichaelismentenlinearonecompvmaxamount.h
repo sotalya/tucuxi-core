@@ -18,7 +18,8 @@ enum class RkMichaelisMentenLinearOneCompVmaxAmountCompartments : int
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm
 /// \sa IntakeIntervalCalculator
-class RkMichaelisMentenLinearOneCompVmaxAmount : public IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenLinearOneCompVmaxAmount>
+class RkMichaelisMentenLinearOneCompVmaxAmount :
+    public IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenLinearOneCompVmaxAmount>
 {
 
 public:
@@ -58,7 +59,7 @@ protected:
     Value m_D{NAN};  /// Quantity of drug
     Value m_F{1.0};  /// bioavailability
     Value m_Ka{0.0}; /// Absorption rate constant
-    Value m_V{NAN}; /// Volume of the compartment
+    Value m_V{NAN};  /// Volume of the compartment
     Value m_Ke{NAN};
     Value m_Km{NAN};
     Value m_Vmax{NAN};
@@ -200,7 +201,8 @@ protected:
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm
 /// \sa IntakeIntervalCalculator
-class RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMacro : public RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMicro
+class RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMacro :
+    public RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMicro
 {
     INTAKEINTERVALCALCULATOR_UTILS(RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMacro)
 public:
@@ -237,7 +239,8 @@ protected:
 /// \ingroup TucuCore
 /// \brief Intake interval calculator for the one compartment extravascular algorithm
 /// \sa IntakeIntervalCalculator
-class RkMichaelisMentenLinearOneCompVmaxAmountInfusionMacro : public RkMichaelisMentenLinearOneCompVmaxAmountInfusionMicro
+class RkMichaelisMentenLinearOneCompVmaxAmountInfusionMacro :
+    public RkMichaelisMentenLinearOneCompVmaxAmountInfusionMicro
 {
     INTAKEINTERVALCALCULATOR_UTILS(RkMichaelisMentenLinearOneCompVmaxAmountInfusionMacro)
 public:
