@@ -33,16 +33,11 @@ public:
     inline void derive(double _t, const Compartments_t& _c, Compartments_t& _dcdt)
     {
         FINAL_UNUSED_PARAMETER(_t);
-        // This function _dcdt[0] needs to be checked. I used the one of ADAPT5-User-Guide, but used
-        // c[0] = x1/Vc, as Tucuxi does not allow to calculate an output easily (could be implemented in the future
-        //
-        // Actually it considers VMax to be amout/time
-        // _dcdt[0] = (m_Ka * _c[2] + m_K21 * _c[1] - m_K12 * _c[0] * m_V - m_Vmax * _c[0] / (m_Km + _c[0])) / m_V;
 
         // This version considers VMax to be concentration/time
-        _dcdt[0] = m_Ka * _c[3] + m_K21 * _c[1] - m_K12 * _c[0] + m_K31 * _c[2] - m_K13 * _c[3] - m_Ke * _c[0];
+        _dcdt[0] = m_Ka * _c[3] + m_K21 * _c[1] - m_K12 * _c[0] + m_K31 * _c[2] - m_K13 * _c[0] - m_Ke * _c[0];
         _dcdt[1] = m_K12 * _c[0] - m_K21 * _c[1];
-        _dcdt[2] = m_K13 * _c[0] - m_K31 * _c[1];
+        _dcdt[2] = m_K13 * _c[0] - m_K31 * _c[2];
         _dcdt[3] = -m_Ka * _c[3];
 
         if (m_isInfusion) {

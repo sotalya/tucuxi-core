@@ -25,7 +25,7 @@ RkThreeCompartmentExtraMicro::RkThreeCompartmentExtraMicro() : RkThreeCompartmen
 
 std::vector<std::string> RkThreeCompartmentExtraMicro::getParametersId()
 {
-    return {"V1", "Km", "Vmax", "K12", "K21", "F", "Ka"};
+    return {"V1", "Ke", "K12", "K21", "K13", "K31", "F", "Ka"};
 }
 
 bool RkThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
@@ -73,12 +73,12 @@ RkThreeCompartmentExtraLagMicro::RkThreeCompartmentExtraLagMicro() : RkThreeComp
 
 std::vector<std::string> RkThreeCompartmentExtraLagMicro::getParametersId()
 {
-    return {"V1", "Km", "Vmax", "K12", "K21", "F", "Ka", "Tlag"};
+    return {"V1", "Ke", "K12", "K21", "K13", "K31", "F", "Ka", "Tlag"};
 }
 
 bool RkThreeCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkCondition(_parameters.size() >= 8, "The number of parameters should be equal to 8.")) {
+    if (!checkCondition(_parameters.size() >= 9, "The number of parameters should be equal to 9.")) {
         return false;
     }
 
@@ -124,12 +124,12 @@ RkThreeCompartmentBolusMicro::RkThreeCompartmentBolusMicro() : RkThreeCompartmen
 
 std::vector<std::string> RkThreeCompartmentBolusMicro::getParametersId()
 {
-    return {"V1", "Km", "Vmax", "K12", "K21"};
+    return {"V1", "Ke", "K12", "K21", "K13", "K31"};
 }
 
 bool RkThreeCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
+    if (!checkCondition(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
         return false;
     }
 
@@ -171,12 +171,12 @@ RkThreeCompartmentInfusionMicro::RkThreeCompartmentInfusionMicro() : RkThreeComp
 
 std::vector<std::string> RkThreeCompartmentInfusionMicro::getParametersId()
 {
-    return {"V1", "Km", "Vmax", "K12", "K21"};
+    return {"V1", "Ke", "K12", "K21", "K13", "K31"};
 }
 
 bool RkThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkCondition(_parameters.size() >= 5, "The number of parameters should be equal to 5.")) {
+    if (!checkCondition(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
         return false;
     }
 
