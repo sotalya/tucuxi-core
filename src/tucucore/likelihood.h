@@ -87,7 +87,7 @@ public:
                _x,
                _deriv,
                static_cast<Value>(_x.size()));
-    
+
         // This way of doing causes troubles in a specific example with a very small
         // additive residual error model
         for (unsigned int i = 0; i < _x.size(); i++) {
