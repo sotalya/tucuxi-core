@@ -3,11 +3,9 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+
 #include <date/date.h>
-
 #include <gtest/gtest.h>
-
-#include "../gtest_core.h"
 
 #include "tucucore/computingcomponent.h"
 #include "tucucore/computingservice/computingrequest.h"
@@ -16,6 +14,7 @@
 #include "tucucore/drugtreatment/patientcovariate.h"
 #include "tucucore/pkmodel.h"
 
+#include "../gtest_core.h"
 #include "../pkmodels/constanteliminationbolus.h"
 #include "../testutils.h"
 #include "buildmultianalytessingleactivemoiety.h"
@@ -37,7 +36,8 @@ static std::vector<double> invCdf = {-1.6449, -1.2816, -0.67449, 0.0, 0.67449, 1
 
 static std::vector<Value> percentileRanks = {5, 10, 25, 50, 75, 90, 95};
 
-TEST (Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoiety){
+TEST(Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoiety)
+{
     BuildMultiAnalytesSingleActiveMoiety builder;
     auto drugModel = builder.buildDrugModel();
 
@@ -126,8 +126,7 @@ TEST (Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoiety)
 
             ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(3));
             ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "activeMoietyMulti");
-            ASSERT_EQ(
-                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoiety);
+            ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoiety);
             ASSERT_EQ(resp->getCompartmentInfos()[1].getId(), "analyte0");
             ASSERT_EQ(resp->getCompartmentInfos()[1].getType(), CompartmentInfo::CompartmentType::Analyte);
             ASSERT_EQ(resp->getCompartmentInfos()[2].getId(), "analyte1");
@@ -147,8 +146,7 @@ TEST (Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoiety)
                     date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-            ASSERT_DOUBLE_EQ(
-                    data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
+            ASSERT_DOUBLE_EQ(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
             ASSERT_DOUBLE_EQ(
                     data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0,
                     startSept2018.toSeconds() + 3600.0 * 6.0);
@@ -185,7 +183,8 @@ TEST (Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoiety)
     delete component;
 }
 
-TEST (Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoietyConversion){
+TEST(Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoietyConversion)
+{
     BuildMultiAnalytesSingleActiveMoiety builder;
     auto drugModel = builder.buildDrugModel(0.3, 0.5);
 
@@ -275,8 +274,7 @@ TEST (Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoietyC
 
             ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(3));
             ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "activeMoietyMulti");
-            ASSERT_EQ(
-                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoiety);
+            ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoiety);
             ASSERT_EQ(resp->getCompartmentInfos()[1].getId(), "analyte0");
             ASSERT_EQ(resp->getCompartmentInfos()[1].getType(), CompartmentInfo::CompartmentType::Analyte);
             ASSERT_EQ(resp->getCompartmentInfos()[2].getId(), "analyte1");
@@ -296,8 +294,7 @@ TEST (Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoietyC
                     date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-            ASSERT_DOUBLE_EQ(
-                    data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
+            ASSERT_DOUBLE_EQ(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
             ASSERT_DOUBLE_EQ(
                     data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0,
                     startSept2018.toSeconds() + 3600.0 * 6.0);
@@ -321,7 +318,8 @@ TEST (Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoietyC
             ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 0.8, DEFAULT_PRECISION, DEFAULT_PRECISION);
 
             data[1].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
-            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 0.8 * 2.0, DEFAULT_PRECISION, DEFAULT_PRECISION);
+            ASSERT_PRED4(
+                    double_eq_rel_abs, statValue, 200000.0 * 6.0 * 0.8 * 2.0, DEFAULT_PRECISION, DEFAULT_PRECISION);
 
             data[1].m_statistics.getStatistic(0, CycleStatisticType::Peak).getValue(statTime, statValue);
             ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.8, DEFAULT_PRECISION, DEFAULT_PRECISION);
@@ -360,7 +358,8 @@ TEST (Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoietyC
     delete component;
 }
 
-TEST (Core_TestMultiAnalytesSingleActiveMoiety, Adjustments){
+TEST(Core_TestMultiAnalytesSingleActiveMoiety, Adjustments)
+{
     BuildMultiAnalytesSingleActiveMoiety builder;
     auto drugModel = builder.buildDrugModel(0.3, 0.7);
 

@@ -4,13 +4,13 @@
 
 #include <gtest/gtest.h>
 
-#include "../gtest_core.h"
-
 #include "tucucommon/duration.h"
 
 #include "tucucore/drugmodel/formulationandroute.h"
 #include "tucucore/intakeevent.h"
 #include "tucucore/pkmodels/twocompartmentextralag.h"
+
+#include "../gtest_core.h"
 
 using namespace Tucuxi::Core;
 using namespace std::chrono_literals;
@@ -90,21 +90,22 @@ void testFirstDose(
 /// A calculator is instanciated, and residuals are computed with both
 ///     calculateIntakePoints and calculateIntakeSinglePoint.
 /// The residuals are then compared and shall be identical.
-TEST (Core_TestTwoCompartmentExtraLag, twoCompExtraLagSingleDose){
+TEST(Core_TestTwoCompartmentExtraLag, twoCompExtraLagSingleDose)
+{
     // parameter for macro class
     Tucuxi::Core::ParameterDefinitions macroParameterDefs;
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "Q", 20, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("Q", 20, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V2", 342, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);

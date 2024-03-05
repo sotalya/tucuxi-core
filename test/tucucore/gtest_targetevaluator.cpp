@@ -2,8 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include "gtest_core.h"
-
 #include "tucucore/concentrationprediction.h"
 #include "tucucore/definitions.h"
 #include "tucucore/drugmodel/formulationandroute.h"
@@ -13,6 +11,7 @@
 #include "tucucore/targetevaluator.h"
 #include "tucucore/targetextractor.h"
 
+#include "gtest_core.h"
 #include "testutils.h"
 
 using namespace Tucuxi::Core;
@@ -21,7 +20,8 @@ static constexpr double NB_POINTS_PER_HOUR = CYCLE_SIZE / 24.0;
 
 static constexpr std::size_t NB_ARRAY_ELEMENTS = 10;
 
-class TestTargetEvaluator{
+class TestTargetEvaluator
+{
 public:
     ///
     /// \brief fillConcentrations is used to fill Concentrations vector (fixed number) with incremental values between boudaries
@@ -96,7 +96,8 @@ public:
 
 
 
-TEST (Core_TestTargetEvaluator, Residual){
+TEST(Core_TestTargetEvaluator, Residual)
+{
     IntakeSeries expectedIntakes = TestTargetEvaluator::createIntakeSeries();
 
     TargetEvaluationResult targetEvaluationResult;
@@ -147,7 +148,8 @@ TEST (Core_TestTargetEvaluator, Residual){
     }
 }
 
-TEST (Core_TestTargetEvaluator, Peak){
+TEST(Core_TestTargetEvaluator, Peak)
+{
     IntakeSeries expectedIntakes = TestTargetEvaluator::createIntakeSeries();
 
     TargetEvaluationResult targetEvaluationResult;
@@ -191,7 +193,8 @@ TEST (Core_TestTargetEvaluator, Peak){
     }
 }
 
-TEST (Core_TestTargetEvaluator, Mean){
+TEST(Core_TestTargetEvaluator, Mean)
+{
     IntakeSeries expectedIntakes = TestTargetEvaluator::createIntakeSeries();
 
     TargetEvaluationResult targetEvaluationResult;
@@ -234,7 +237,8 @@ TEST (Core_TestTargetEvaluator, Mean){
     }
 }
 
-TEST (Core_TestTargetEvaluator, Auc){
+TEST(Core_TestTargetEvaluator, Auc)
+{
     IntakeSeries expectedIntakes = TestTargetEvaluator::createIntakeSeries();
 
     TargetEvaluationResult targetEvaluationResult;
@@ -277,7 +281,8 @@ TEST (Core_TestTargetEvaluator, Auc){
     }
 }
 
-TEST (Core_TestTargetEvaluator, Auc24){
+TEST(Core_TestTargetEvaluator, Auc24)
+{
     IntakeSeries expectedIntakes = TestTargetEvaluator::createIntakeSeries();
 
     TargetEvaluationResult targetEvaluationResult;
@@ -322,7 +327,8 @@ TEST (Core_TestTargetEvaluator, Auc24){
     }
 }
 
-TEST (Core_TestTargetEvaluator, CumulativeAuc){
+TEST(Core_TestTargetEvaluator, CumulativeAuc)
+{
     IntakeSeries expectedIntakes = TestTargetEvaluator::createIntakeSeries();
 
     TargetEvaluationResult targetEvaluationResult;
@@ -365,7 +371,8 @@ TEST (Core_TestTargetEvaluator, CumulativeAuc){
     }
 }
 
-TEST (Core_TestTargetEvaluator, AucOverMic){
+TEST(Core_TestTargetEvaluator, AucOverMic)
+{
     IntakeSeries expectedIntakes = TestTargetEvaluator::createIntakeSeries();
 
     TargetEvaluationResult targetEvaluationResult;
@@ -409,7 +416,8 @@ TEST (Core_TestTargetEvaluator, AucOverMic){
     }
 }
 
-TEST (Core_TestTargetEvaluator, Auc24OverMic){
+TEST(Core_TestTargetEvaluator, Auc24OverMic)
+{
     IntakeSeries expectedIntakes = TestTargetEvaluator::createIntakeSeries();
 
     TargetEvaluationResult targetEvaluationResult;
@@ -453,7 +461,8 @@ TEST (Core_TestTargetEvaluator, Auc24OverMic){
     }
 }
 
-TEST (Core_TestTargetEvaluator, TimeOverMic){
+TEST(Core_TestTargetEvaluator, TimeOverMic)
+{
     IntakeSeries expectedIntakes = TestTargetEvaluator::createIntakeSeries();
 
     TargetEvaluationResult targetEvaluationResult;
@@ -489,8 +498,8 @@ TEST (Core_TestTargetEvaluator, TimeOverMic){
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
 
         TargetEvaluator targetEvaluator;
-        ComputingStatus status = targetEvaluator.evaluate(
-                concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
+        ComputingStatus status =
+                targetEvaluator.evaluate(concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
 
 
         ASSERT_EQ(status, ComputingStatus::Ok);
@@ -515,8 +524,8 @@ TEST (Core_TestTargetEvaluator, TimeOverMic){
 
 
         TargetEvaluator targetEvaluator;
-        ComputingStatus status = targetEvaluator.evaluate(
-                concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
+        ComputingStatus status =
+                targetEvaluator.evaluate(concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
 
 
         ASSERT_EQ(status, ComputingStatus::Ok);
@@ -540,8 +549,8 @@ TEST (Core_TestTargetEvaluator, TimeOverMic){
 
 
         TargetEvaluator targetEvaluator;
-        ComputingStatus status = targetEvaluator.evaluate(
-                concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
+        ComputingStatus status =
+                targetEvaluator.evaluate(concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
 
         ASSERT_EQ(status, ComputingStatus::Ok);
 
@@ -579,8 +588,8 @@ TEST (Core_TestTargetEvaluator, TimeOverMic){
 
 
         TargetEvaluator targetEvaluator;
-        ComputingStatus status = targetEvaluator.evaluate(
-                concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
+        ComputingStatus status =
+                targetEvaluator.evaluate(concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
 
         ASSERT_EQ(status, ComputingStatus::Ok);
 
@@ -620,8 +629,8 @@ TEST (Core_TestTargetEvaluator, TimeOverMic){
 
 
         TargetEvaluator targetEvaluator;
-        ComputingStatus status = targetEvaluator.evaluate(
-                concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
+        ComputingStatus status =
+                targetEvaluator.evaluate(concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
 
         ASSERT_EQ(status, ComputingStatus::Ok);
 
@@ -633,7 +642,8 @@ TEST (Core_TestTargetEvaluator, TimeOverMic){
     }
 }
 
-TEST (Core_TestTargetEvaluator, AucDividedByMic){
+TEST(Core_TestTargetEvaluator, AucDividedByMic)
+{
     IntakeSeries expectedIntakes = TestTargetEvaluator::createIntakeSeries();
 
     TargetEvaluationResult targetEvaluationResult;
@@ -676,7 +686,8 @@ TEST (Core_TestTargetEvaluator, AucDividedByMic){
     }
 }
 
-TEST (Core_TestTargetEvaluator, Auc24DividedByMic){
+TEST(Core_TestTargetEvaluator, Auc24DividedByMic)
+{
     IntakeSeries expectedIntakes = TestTargetEvaluator::createIntakeSeries();
 
     TargetEvaluationResult targetEvaluationResult;
@@ -719,7 +730,8 @@ TEST (Core_TestTargetEvaluator, Auc24DividedByMic){
     }
 }
 
-TEST (Core_TestTargetEvaluator, PeakDividedByMic){
+TEST(Core_TestTargetEvaluator, PeakDividedByMic)
+{
     IntakeSeries expectedIntakes = TestTargetEvaluator::createIntakeSeries();
 
     TargetEvaluationResult targetEvaluationResult;
@@ -762,7 +774,8 @@ TEST (Core_TestTargetEvaluator, PeakDividedByMic){
     }
 }
 
-TEST (Core_TestTargetEvaluator, FractionTimeOverMic){
+TEST(Core_TestTargetEvaluator, FractionTimeOverMic)
+{
     IntakeSeries expectedIntakes = TestTargetEvaluator::createIntakeSeries();
 
     TargetEvaluationResult targetEvaluationResult;
@@ -798,8 +811,8 @@ TEST (Core_TestTargetEvaluator, FractionTimeOverMic){
         concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
 
         TargetEvaluator targetEvaluator;
-        ComputingStatus status = targetEvaluator.evaluate(
-                concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
+        ComputingStatus status =
+                targetEvaluator.evaluate(concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
 
 
         ASSERT_EQ(status, ComputingStatus::Ok);
@@ -824,8 +837,8 @@ TEST (Core_TestTargetEvaluator, FractionTimeOverMic){
 
 
         TargetEvaluator targetEvaluator;
-        ComputingStatus status = targetEvaluator.evaluate(
-                concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
+        ComputingStatus status =
+                targetEvaluator.evaluate(concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
 
 
         ASSERT_EQ(status, ComputingStatus::Ok);
@@ -849,8 +862,8 @@ TEST (Core_TestTargetEvaluator, FractionTimeOverMic){
 
 
         TargetEvaluator targetEvaluator;
-        ComputingStatus status = targetEvaluator.evaluate(
-                concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
+        ComputingStatus status =
+                targetEvaluator.evaluate(concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
 
         ASSERT_EQ(status, ComputingStatus::Ok);
 
@@ -888,8 +901,8 @@ TEST (Core_TestTargetEvaluator, FractionTimeOverMic){
 
 
         TargetEvaluator targetEvaluator;
-        ComputingStatus status = targetEvaluator.evaluate(
-                concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
+        ComputingStatus status =
+                targetEvaluator.evaluate(concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
 
         ASSERT_EQ(status, ComputingStatus::Ok);
 
@@ -929,8 +942,8 @@ TEST (Core_TestTargetEvaluator, FractionTimeOverMic){
 
 
         TargetEvaluator targetEvaluator;
-        ComputingStatus status = targetEvaluator.evaluate(
-                concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
+        ComputingStatus status =
+                targetEvaluator.evaluate(concentrationPrediction, expectedIntakes, targetEvent, targetEvaluationResult);
 
         ASSERT_EQ(status, ComputingStatus::Ok);
 
@@ -942,7 +955,8 @@ TEST (Core_TestTargetEvaluator, FractionTimeOverMic){
     }
 }
 
-TEST (Core_TestTargetEvaluator, ResidualDividedByMic){
+TEST(Core_TestTargetEvaluator, ResidualDividedByMic)
+{
     IntakeSeries expectedIntakes = TestTargetEvaluator::createIntakeSeries();
 
     TargetEvaluationResult targetEvaluationResult;

@@ -14,7 +14,8 @@ static std::unique_ptr<DrugModel> buildImatinib()
     return builder.buildDrugModel();
 }
 
-TEST (Core_TestDrugModels, Imatinib){
+TEST(Core_TestDrugModels, Imatinib)
+{
     auto imatinib = buildImatinib();
 
     ASSERT_TRUE(imatinib != nullptr);

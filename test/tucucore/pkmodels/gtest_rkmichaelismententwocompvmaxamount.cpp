@@ -3,11 +3,9 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+
 #include <date/date.h>
-
 #include <gtest/gtest.h>
-
-#include "../gtest_core.h"
 
 #include "tucucommon/datetime.h"
 
@@ -18,6 +16,8 @@
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugmodelimport.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
+
+#include "../gtest_core.h"
 
 using namespace std::chrono_literals;
 using namespace date;
@@ -948,8 +948,7 @@ static std::unique_ptr<DrugTreatment> buildMixedDrugTreatment(const std::vector<
         //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
-        LastingDose periodicDose(
-                DoseValue(500.0), TucuUnit("mg"), route, Duration(), Duration(std::chrono::hours(6)));
+        LastingDose periodicDose(DoseValue(500.0), TucuUnit("mg"), route, Duration(), Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 4);
         auto dosageTimeRange = Tucuxi::Core::DosageTimeRange(currentDate, repeatedDose);
 
@@ -961,7 +960,8 @@ static std::unique_ptr<DrugTreatment> buildMixedDrugTreatment(const std::vector<
 }
 
 /// \brief Check that objects are correctly constructed by the constructor.
-TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountBolus){
+TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountBolus)
+{
     DrugModelImport importer;
 
     std::unique_ptr<DrugModel> drugModel;
@@ -1013,8 +1013,7 @@ TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountBolus){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "voriconazole");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         //std::cout << "Population parameters : " << std::endl;
         //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1047,8 +1046,7 @@ TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountBolus){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "voriconazole");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         //std::cout << "A priori parameters : " << std::endl;
         //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1062,7 +1060,8 @@ TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountBolus){
 }
 
 /// \brief Check that objects are correctly constructed by the constructor.
-TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountInfu){
+TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountInfu)
+{
     DrugModelImport importer;
 
     std::unique_ptr<DrugModel> drugModel;
@@ -1114,8 +1113,7 @@ TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountInfu){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "voriconazole");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         //std::cout << "Population parameters : " << std::endl;
         //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1148,8 +1146,7 @@ TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountInfu){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "voriconazole");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         //std::cout << "A priori parameters : " << std::endl;
         //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1163,7 +1160,8 @@ TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountInfu){
 }
 
 /// \brief Check that objects are correctly constructed by the constructor.
-TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountExtra){
+TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountExtra)
+{
     DrugModelImport importer;
 
     std::unique_ptr<DrugModel> drugModel;
@@ -1215,8 +1213,7 @@ TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountExtra){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "voriconazole");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         //std::cout << "Population parameters : " << std::endl;
         //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1249,8 +1246,7 @@ TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountExtra){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "voriconazole");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         //std::cout << "A priori parameters : " << std::endl;
         //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1263,7 +1259,8 @@ TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountExtra){
     }
 }
 
-TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix){
+TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix)
+{
     DrugModelImport importer;
 
     std::unique_ptr<DrugModel> drugModel;
@@ -1282,32 +1279,20 @@ TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix){
     {
 
         const std::vector<FormulationAndRoute> routes = {
-                                                         {Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion},
-                                                         {Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag},
-                                                         {Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag}};
+                {Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion},
+                {Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag},
+                {Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag}};
 
 
         auto drugTreatment = buildMixedDrugTreatment(routes);
         auto covF = std::make_unique<Tucuxi::Core::PatientCovariate>(
-                "covF",
-                "2.0",
-                DataType::Double,
-                TucuUnit("-"),
-                Tucuxi::Common::DateTime(2018_y / sep / 2, 8h + 0min));
+                "covF", "2.0", DataType::Double, TucuUnit("-"), Tucuxi::Common::DateTime(2018_y / sep / 2, 8h + 0min));
         drugTreatment->addCovariate(std::move(covF));
         auto covF2 = std::make_unique<Tucuxi::Core::PatientCovariate>(
-                "covF",
-                "3.0",
-                DataType::Double,
-                TucuUnit("-"),
-                Tucuxi::Common::DateTime(2018_y / sep / 3, 8h + 0min));
+                "covF", "3.0", DataType::Double, TucuUnit("-"), Tucuxi::Common::DateTime(2018_y / sep / 3, 8h + 0min));
         drugTreatment->addCovariate(std::move(covF2));
         auto covF3 = std::make_unique<Tucuxi::Core::PatientCovariate>(
-                "covF",
-                "4.0",
-                DataType::Double,
-                TucuUnit("-"),
-                Tucuxi::Common::DateTime(2018_y / sep / 4, 8h + 0min));
+                "covF", "4.0", DataType::Double, TucuUnit("-"), Tucuxi::Common::DateTime(2018_y / sep / 4, 8h + 0min));
         drugTreatment->addCovariate(std::move(covF3));
 
         RequestResponseId requestResponseId = "1";
@@ -1342,8 +1327,7 @@ TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "voriconazole");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         ASSERT_EQ(resp->getData().at(0).m_parameters.size(), static_cast<size_t>(8));
         ASSERT_EQ(resp->getData().at(4).m_parameters.size(), static_cast<size_t>(8));
@@ -1363,32 +1347,20 @@ TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix){
     {
 
         const std::vector<FormulationAndRoute> routes = {
-                                                         {Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag},
-                                                         {Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion},
-                                                         {Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag}};
+                {Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag},
+                {Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion},
+                {Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag}};
 
         auto drugTreatment = buildMixedDrugTreatment(routes);
 
         auto covF = std::make_unique<Tucuxi::Core::PatientCovariate>(
-                "covF",
-                "2.0",
-                DataType::Double,
-                TucuUnit("-"),
-                Tucuxi::Common::DateTime(2018_y / sep / 2, 8h + 0min));
+                "covF", "2.0", DataType::Double, TucuUnit("-"), Tucuxi::Common::DateTime(2018_y / sep / 2, 8h + 0min));
         drugTreatment->addCovariate(std::move(covF));
         auto covF2 = std::make_unique<Tucuxi::Core::PatientCovariate>(
-                "covF",
-                "3.0",
-                DataType::Double,
-                TucuUnit("-"),
-                Tucuxi::Common::DateTime(2018_y / sep / 3, 8h + 0min));
+                "covF", "3.0", DataType::Double, TucuUnit("-"), Tucuxi::Common::DateTime(2018_y / sep / 3, 8h + 0min));
         drugTreatment->addCovariate(std::move(covF2));
         auto covF3 = std::make_unique<Tucuxi::Core::PatientCovariate>(
-                "covF",
-                "4.0",
-                DataType::Double,
-                TucuUnit("-"),
-                Tucuxi::Common::DateTime(2018_y / sep / 4, 8h + 0min));
+                "covF", "4.0", DataType::Double, TucuUnit("-"), Tucuxi::Common::DateTime(2018_y / sep / 4, 8h + 0min));
         drugTreatment->addCovariate(std::move(covF3));
 
         RequestResponseId requestResponseId = "1";
@@ -1423,8 +1395,7 @@ TEST (Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "voriconazole");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         ASSERT_EQ(resp->getData().at(0).m_parameters.size(), static_cast<size_t>(8));
         ASSERT_EQ(resp->getData().at(4).m_parameters.size(), static_cast<size_t>(8));

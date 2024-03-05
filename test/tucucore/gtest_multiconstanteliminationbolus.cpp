@@ -3,17 +3,18 @@
 #include <memory>
 
 #include <gtest/gtest.h>
-#include "gtest_core.h"
 
 #include "tucucore/dosage.h"
 #include "tucucore/intakeextractor.h"
 #include "tucucore/intakeintervalcalculator.h"
 
+#include "gtest_core.h"
 #include "pkmodels/multiconstanteliminationbolus.h"
 
 using namespace Tucuxi::Core;
 
-TEST (Core_TestMultiConstantEliminationBolus, MultiConstantEliminationBolus){
+TEST(Core_TestMultiConstantEliminationBolus, MultiConstantEliminationBolus)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::None));

@@ -9,7 +9,8 @@
 
 using namespace Tucuxi::Core;
 
-TEST (Core_TestOpGraph, OperableFunctions){
+TEST(Core_TestOpGraph, OperableFunctions)
+{
     // Register three inputs, then perform a simple operation with them.
     std::shared_ptr<OperableImpl> a = std::make_shared<OperableImpl>(1.234);
     std::shared_ptr<OperableImpl> b = std::make_shared<OperableImpl>(2);
@@ -91,7 +92,8 @@ TEST (Core_TestOpGraph, OperableFunctions){
     ASSERT_DOUBLE_EQ(ret, 2.345 * (5 + 3.231));
 }
 
-TEST (Core_TestOpGraph, OperableCockcroftGaultIBW){
+TEST(Core_TestOpGraph, OperableCockcroftGaultIBW)
+{
     std::shared_ptr<OperableImpl> weight = std::make_shared<OperableImpl>(71.4);
     std::shared_ptr<OperableImpl> height = std::make_shared<OperableImpl>(165);
     std::shared_ptr<OperableImpl> age = std::make_shared<OperableImpl>(49);
@@ -128,7 +130,8 @@ TEST (Core_TestOpGraph, OperableCockcroftGaultIBW){
     ASSERT_DOUBLE_EQ(292.979167, opCG_IBW->getValue());
 }
 
-TEST (Core_TestOpGraph, OperableCyclic){
+TEST(Core_TestOpGraph, OperableCyclic)
+{
     // Register three inputs, then perform a simple operation with them.
     std::shared_ptr<OperableImpl> a = std::make_shared<OperableImpl>(1.234);
     std::shared_ptr<OperableImpl> b = std::make_shared<OperableImpl>(2);

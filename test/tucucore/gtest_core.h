@@ -20,68 +20,57 @@ static const double DEFAULT_PRECISION = 0.00001;
 
 using namespace Tucuxi::Core;
 
-static int bouble_fuzzy_compare(double a, double b,
-                                 double relative_tolerance,
-                                 double absolute_tolerance)
+static int bouble_fuzzy_compare(double a, double b, double relative_tolerance, double absolute_tolerance)
 {
-    if (a == b){
+    if (a == b) {
         return 0;
     }
 
-    if (a == -b){
+    if (a == -b) {
         // Special case: Relative difference
-        if (std::fabs(a - b) <= absolute_tolerance)
-        {
+        if (std::fabs(a - b) <= absolute_tolerance) {
             // is "infinite"
             // Fuzzy equality (via abs. tol. only)
             return 0;
         }
-        else if (a > b){
-            return 1;           // Fuzzy greater than
+        else if (a > b) {
+            return 1; // Fuzzy greater than
         }
-        else{
-            return -1;          // Fuzzy less than
+        else {
+            return -1; // Fuzzy less than
         }
     }
 
     const double diff = std::fabs(a - b);
     const double average = std::fabs((a + b) / 2.0);
 
-    if (diff <= absolute_tolerance || diff / average <= relative_tolerance){
-        return 0;               // Fuzzy equality.
+    if (diff <= absolute_tolerance || diff / average <= relative_tolerance) {
+        return 0; // Fuzzy equality.
     }
-    else if (a > b){
-        return 1;               // Fuzzy greater than
+    else if (a > b) {
+        return 1; // Fuzzy greater than
     }
-    else{
-        return -1;              // Fuzzy less than
+    else {
+        return -1; // Fuzzy less than
     }
 }
 
-static bool double_eq_rel_abs(double a, double b,
-                              double relative_tolerance,
-                              double absolute_tolerance)
+static bool double_eq_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance)
 {
     return bouble_fuzzy_compare(a, b, relative_tolerance, absolute_tolerance) == 0;
 }
 
-static bool double_ge_rel_abs(double a, double b,
-                              double relative_tolerance,
-                              double absolute_tolerance)
+static bool double_ge_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance)
 {
     return bouble_fuzzy_compare(a, b, relative_tolerance, absolute_tolerance) >= 0;
 }
 
-static bool double_le_rel_abs(double a, double b,
-                              double relative_tolerance,
-                              double absolute_tolerance)
+static bool double_le_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance)
 {
     return bouble_fuzzy_compare(a, b, relative_tolerance, absolute_tolerance) <= 0;
 }
 
-static bool double_ne_rel_abs(double a, double b,
-                              double relative_tolerance,
-                              double absolute_tolerance)
+static bool double_ne_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance)
 {
     return bouble_fuzzy_compare(a, b, relative_tolerance, absolute_tolerance) != 0;
 }
@@ -100,8 +89,7 @@ static Tucuxi::Core::FormulationAndRoute getBolusFormulationAndRoute()
 
 static Tucuxi::Core::FormulationAndRoute getExtraFormulationAndRoute()
 {
-    return FormulationAndRoute(
-            Formulation::Test, AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
+    return FormulationAndRoute(Formulation::Test, AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
 }
 
 static const int CYCLE_SIZE = 251;
@@ -233,7 +221,7 @@ static void testCalculator(
                     concentrations, times, intakeEvent, event, inResiduals, isAll, outResiduals, true);
 
 #if GTEST_VERBOSE
-            for(int testPoint = 0; testPoint < (_nbPoints - 1 ) * nbCycles + 1; testPoint++) {
+            for (int testPoint = 0; testPoint < (_nbPoints - 1) * nbCycles + 1; testPoint++) {
                 std::cout << "concentration[" << testPoint << "]: " << concentrations[0][testPoint] << std::endl;
             }
 #endif
@@ -272,17 +260,19 @@ static void testCalculator(
             ASSERT_EQ(status, ComputingStatus::Ok);
 
 #if GTEST_VERBOSE
-            for(int testCycle = 0; testCycle < nbCycles; testCycle++) {
-                for(int testNbPoint = 0; testNbPoint < _nbPoints; testNbPoint++)  {
-                    std::cout << "concentration[" << testCycle << "]" << "[" << testNbPoint<< "]" << ": " << predictionPtr->getValues()[testCycle][testNbPoint] << std::endl;
+            for (int testCycle = 0; testCycle < nbCycles; testCycle++) {
+                for (int testNbPoint = 0; testNbPoint < _nbPoints; testNbPoint++) {
+                    std::cout << "concentration[" << testCycle << "]"
+                              << "[" << testNbPoint << "]"
+                              << ": " << predictionPtr->getValues()[testCycle][testNbPoint] << std::endl;
                 }
             }
 #endif
         }
 
         // Only works for linear elimination, so do not perform that for some classes
-        if (!(typeid(CalculatorClass) == typeid(ConstantEliminationBolus) ||
-              typeid(CalculatorClass) == typeid(MultiConstantEliminationBolus))) {
+        if (!(typeid(CalculatorClass) == typeid(ConstantEliminationBolus)
+              || typeid(CalculatorClass) == typeid(MultiConstantEliminationBolus))) {
             for (size_t cycle = 0; cycle < nbCycles; cycle++) {
                 Tucuxi::Core::Concentrations concentration2;
                 concentration2 = predictionPtr->getValues()[cycle];
@@ -294,7 +284,11 @@ static void testCalculator(
                     }
                     // std::cout << cycle <<  " : " << i << " :: " << predictionPtr->getTimes()[cycle][i] << " . " << sumConcentration << " : " << concentration2[i] << std::endl;
                     ASSERT_PRED4(
-                            double_eq_rel_abs, sumConcentration, concentration2[i], DEFAULT_PRECISION, DEFAULT_PRECISION);
+                            double_eq_rel_abs,
+                            sumConcentration,
+                            concentration2[i],
+                            DEFAULT_PRECISION,
+                            DEFAULT_PRECISION);
                 }
             }
         }
@@ -345,7 +339,7 @@ static void testCalculator(
             ASSERT_EQ(status, ComputingStatus::Ok);
 
 #if GTEST_VERBOSE
-            for (int i = 0; i<nbPoints; i++) {
+            for (int i = 0; i < nbPoints; i++) {
                 std::cout << i << ":" << predictionPtr->getValues()[0][i] << std::endl;
             }
 #endif
@@ -386,12 +380,13 @@ static void testCalculator(
     // synchronized with the times at which the concentration points are expected
 }
 
-static std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRoute& _route,
-                                                         const DateTime startDateTime,
-                                                         DoseValue _doseValue = DoseValue(200),
-                                                         TucuUnit _unit = TucuUnit("mg"),
-                                                         int interval = 6,
-                                                         int nbrDoses = 16)
+static std::unique_ptr<DrugTreatment> buildDrugTreatment(
+        const FormulationAndRoute& _route,
+        const DateTime startDateTime,
+        DoseValue _doseValue = DoseValue(200),
+        TucuUnit _unit = TucuUnit("mg"),
+        int interval = 6,
+        int nbrDoses = 16)
 {
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
@@ -408,12 +403,13 @@ static std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRou
 }
 
 
-static std::unique_ptr<DosageTimeRange> buildDosageTimeRange(const FormulationAndRoute& _route,
-                                                         const DateTime startDateTime,
-                                                         DoseValue _doseValue = DoseValue(200),
-                                                         TucuUnit _unit = TucuUnit("mg"),
-                                                         int interval = 6,
-                                                         int nbrDoses = 16)
+static std::unique_ptr<DosageTimeRange> buildDosageTimeRange(
+        const FormulationAndRoute& _route,
+        const DateTime startDateTime,
+        DoseValue _doseValue = DoseValue(200),
+        TucuUnit _unit = TucuUnit("mg"),
+        int interval = 6,
+        int nbrDoses = 16)
 {
     auto drugTreatment = std::make_unique<DrugTreatment>();
 

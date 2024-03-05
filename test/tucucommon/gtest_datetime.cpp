@@ -45,7 +45,8 @@ static void checkDuration(const Tucuxi::Common::Duration& _duration, double _nbS
     EXPECT_DOUBLE_EQ(d, _nbSeconds);
 }
 
-TEST (Common_TestDateTime, DateTime){
+TEST(Common_TestDateTime, DateTime)
+{
 
 
     // Test constructors and getter methods
@@ -76,10 +77,8 @@ TEST (Common_TestDateTime, DateTime){
     checkDateTime(d12, 1951, 12, 17, 17, 34, 20);
 
     // Test thrown exception
-    ASSERT_THROW(
-            Tucuxi::Common::DateTime d13("mauvais format", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
-    ASSERT_THROW(
-            Tucuxi::Common::DateTime d14("1911-12-17 s", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
+    ASSERT_THROW(Tucuxi::Common::DateTime d13("mauvais format", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
+    ASSERT_THROW(Tucuxi::Common::DateTime d14("1911-12-17 s", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
     ASSERT_THROW(Tucuxi::Common::DateTime d15("", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
     ASSERT_THROW(Tucuxi::Common::DateTime d16("17:34:20", "%Y-%m-%dT%H:%M:%S"), std::runtime_error);
 
@@ -160,7 +159,8 @@ TEST (Common_TestDateTime, DateTime){
     }
 }
 
-TEST (Common_TestDateTime, TimeOfDay){
+TEST(Common_TestDateTime, TimeOfDay)
+{
 
 
     // Test constructors
@@ -176,10 +176,10 @@ TEST (Common_TestDateTime, TimeOfDay){
     checkTimeOfDay(t4, 0, 5, 33);
     checkTimeOfDay(t5, 0, 10, 3);
     checkTimeOfDay(t6, 2, 0, 0);
-
 }
 
-TEST (Common_TestDateTime, Duration){
+TEST(Common_TestDateTime, Duration)
+{
 
 
     // Test constructors

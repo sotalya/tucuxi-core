@@ -2,11 +2,9 @@
 
 #include <chrono>
 #include <memory>
+
 #include <date/date.h>
-
 #include <gtest/gtest.h>
-
-#include "../gtest_core.h"
 
 #include "tucucommon/datetime.h"
 
@@ -16,6 +14,8 @@
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugmodelimport.h"
+
+#include "../gtest_core.h"
 
 
 using namespace std::chrono_literals;
@@ -450,7 +450,8 @@ static const std::string test_mm_1comp_bolus_tdd = R"(<?xml version="1.0" encodi
     </drugModel>
 </model>)";
 
-TEST (Core_TestMichaelisMenten1comp, MichaelisMenten1comp){
+TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1comp)
+{
     DrugModelImport importer;
 
     std::unique_ptr<DrugModel> drugModel;
@@ -498,8 +499,7 @@ TEST (Core_TestMichaelisMenten1comp, MichaelisMenten1comp){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         //std::cout << "Population parameters : " << std::endl;
         //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -531,8 +531,7 @@ TEST (Core_TestMichaelisMenten1comp, MichaelisMenten1comp){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         //std::cout << "A priori parameters : " << std::endl;
         //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -546,7 +545,8 @@ TEST (Core_TestMichaelisMenten1comp, MichaelisMenten1comp){
 }
 
 
-TEST (Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes){
+TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes)
+{
     DrugModelImport importer;
 
     std::unique_ptr<DrugModel> drugModel;
@@ -584,8 +584,11 @@ TEST (Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes){
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
         Tucuxi::Common::DateTime end(2018_y / sep / 9, 8h + 0min);
         double nbPointsPerHour = 10.0;
-        ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment,RetrieveStatisticsOption::RetrieveStatistics,
-                                        RetrieveParametersOption::RetrieveParameters);
+        ComputingOption computingOption(
+                PredictionParameterType::Population,
+                CompartmentsOption::MainCompartment,
+                RetrieveStatisticsOption::RetrieveStatistics,
+                RetrieveParametersOption::RetrieveParameters);
         std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
                 requestResponseId, start, end, nbPointsPerHour, computingOption);
 
@@ -603,12 +606,11 @@ TEST (Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         for (int i = 0; i < resp->getData().size(); i++) {
             std::cout << "Cycle " << i << std::endl;
-            for (const auto& p: resp->getData()[i].m_parameters) {
+            for (const auto& p : resp->getData()[i].m_parameters) {
                 std::cout << p.m_parameterId << " : " << p.m_value << std::endl;
             }
         }

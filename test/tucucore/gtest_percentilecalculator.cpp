@@ -4,8 +4,6 @@
 
 #include <gtest/gtest.h>
 
-#include "gtest_core.h"
-
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/concentrationcalculator.h"
 #include "tucucore/intakeintervalcalculator.h"
@@ -14,7 +12,10 @@
 #include "tucucore/pkmodels/onecompartmentextra.h"
 #include "tucucore/residualerrormodel.h"
 
-TEST (Core_TestPercentileCalculator, AprioriInvalidParameters){
+#include "gtest_core.h"
+
+TEST(Core_TestPercentileCalculator, AprioriInvalidParameters)
+{
     // Apriori Monte Carlo Percentile with invalid parameters
 
     // Simple test with imatinib values
@@ -44,8 +45,8 @@ TEST (Core_TestPercentileCalculator, AprioriInvalidParameters){
                     Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
     parametersSeries.addParameterSetEvent(parameters);
 
@@ -166,7 +167,8 @@ TEST (Core_TestPercentileCalculator, AprioriInvalidParameters){
     ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::PercentilesNoValidPrediction);
 }
 
-TEST (Core_TestPercentileCalculator, Apriori){
+TEST(Core_TestPercentileCalculator, Apriori)
+{
     // Apriori Monte Carlo Percentile
 
     // Simple test with imatinib values
@@ -194,8 +196,8 @@ TEST (Core_TestPercentileCalculator, Apriori){
                     Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
     parametersSeries.addParameterSetEvent(parameters);
 
@@ -332,7 +334,8 @@ TEST (Core_TestPercentileCalculator, Apriori){
     ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::Ok);
 }
 
-TEST (Core_TestPercentileCalculator, AposterioriNormal){
+TEST(Core_TestPercentileCalculator, AposterioriNormal)
+{
     // Aposteriori Normal Monte Carlo Percentile
 
     Tucuxi::Core::IntakeSeries intakeSeries;
@@ -358,8 +361,8 @@ TEST (Core_TestPercentileCalculator, AposterioriNormal){
                     Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
     parametersSeries.addParameterSetEvent(parameters);
 
@@ -451,7 +454,8 @@ TEST (Core_TestPercentileCalculator, AposterioriNormal){
     ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::Ok);
 }
 
-TEST (Core_TestPercentileCalculator, AposterioriMatrixCache){
+TEST(Core_TestPercentileCalculator, AposterioriMatrixCache)
+{
     // Aposteriori Matrix cache
 
     // Here the volume is set to 0 with proportional variability, so all predictions should
@@ -480,8 +484,8 @@ TEST (Core_TestPercentileCalculator, AposterioriMatrixCache){
                     Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
     parametersSeries.addParameterSetEvent(parameters);
 
@@ -572,7 +576,8 @@ TEST (Core_TestPercentileCalculator, AposterioriMatrixCache){
     ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::PercentilesNoValidPrediction);
 }
 
-TEST (Core_TestPercentileCalculator, Aposteriori){
+TEST(Core_TestPercentileCalculator, Aposteriori)
+{
     // Aposteriori Monte Carlo Percentile
 
     Tucuxi::Core::IntakeSeries intakeSeries;
@@ -598,8 +603,8 @@ TEST (Core_TestPercentileCalculator, Aposteriori){
                     Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
     parametersSeries.addParameterSetEvent(parameters);
 
@@ -691,7 +696,8 @@ TEST (Core_TestPercentileCalculator, Aposteriori){
     ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::Ok);
 }
 
-TEST (Core_TestPercentileCalculator, AposterioriUnlikelySample){
+TEST(Core_TestPercentileCalculator, AposterioriUnlikelySample)
+{
     // Aposteriori Monte Carlo Percentile Unlikely Sample
 
     Tucuxi::Core::IntakeSeries intakeSeries;
@@ -717,8 +723,8 @@ TEST (Core_TestPercentileCalculator, AposterioriUnlikelySample){
                     Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
     parametersSeries.addParameterSetEvent(parameters);
 
@@ -810,7 +816,8 @@ TEST (Core_TestPercentileCalculator, AposterioriUnlikelySample){
     ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::AposterioriPercentilesNoLikelySample);
 }
 
-TEST (Core_TestPercentileCalculator, AposterioriInvalidParameters){
+TEST(Core_TestPercentileCalculator, AposterioriInvalidParameters)
+{
     // Aposteriori Monte Carlo Percentile with invalid parameters
 
     Tucuxi::Core::IntakeSeries intakeSeries;
@@ -836,8 +843,8 @@ TEST (Core_TestPercentileCalculator, AposterioriInvalidParameters){
                     Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629)));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
     parametersSeries.addParameterSetEvent(parameters);
 
@@ -969,7 +976,8 @@ TEST (Core_TestPercentileCalculator, AposterioriInvalidParameters){
     }
 }
 
-TEST (Core_TestPercentileCalculator, AposterioriFarSamples){
+TEST(Core_TestPercentileCalculator, AposterioriFarSamples)
+{
     // Aposteriori percentiles with samples far away in time
 
     Tucuxi::Core::AposterioriMatrixCache cache;

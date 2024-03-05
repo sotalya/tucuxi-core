@@ -2,8 +2,8 @@
 
 #include <iostream>
 #include <memory>
-#include <date/date.h>
 
+#include <date/date.h>
 #include <gtest/gtest.h>
 
 #include "tucucommon/timeofday.h"
@@ -51,51 +51,64 @@ static void printCovariateSeries(const CovariateSeries& _series)
 class TestCovariateExtractor
 {
 public:
-    static bool get_m_hasBirthDate(CovariateExtractor* extractor){
+    static bool get_m_hasBirthDate(CovariateExtractor* extractor)
+    {
         return extractor->m_hasBirthDate;
     };
 
-    static DateTime get_m_birthDate(CovariateExtractor* extractor){
+    static DateTime get_m_birthDate(CovariateExtractor* extractor)
+    {
         return extractor->m_birthDate;
     };
 
-    static double get_m_initAgeInDays(CovariateExtractor* extractor){
+    static double get_m_initAgeInDays(CovariateExtractor* extractor)
+    {
         return extractor->m_initAgeInDays;
     };
 
-    static double get_m_initAgeInWeeks(CovariateExtractor* extractor){
+    static double get_m_initAgeInWeeks(CovariateExtractor* extractor)
+    {
         return extractor->m_initAgeInWeeks;
     };
 
-    static double get_m_initAgeInMonths(CovariateExtractor* extractor){
+    static double get_m_initAgeInMonths(CovariateExtractor* extractor)
+    {
         return extractor->m_initAgeInMonths;
     };
 
-    static double get_m_initAgeInYears(CovariateExtractor* extractor){
+    static double get_m_initAgeInYears(CovariateExtractor* extractor)
+    {
         return extractor->m_initAgeInYears;
     };
 
-    static OperableGraphManager get_m_ogm(CovariateExtractor* extractor){
+    static OperableGraphManager get_m_ogm(CovariateExtractor* extractor)
+    {
         return extractor->m_ogm;
     };
 
-    static std::map<std::string, cdIterator_t> get_m_cdValued(CovariateExtractor* extractor){
+    static std::map<std::string, cdIterator_t> get_m_cdValued(CovariateExtractor* extractor)
+    {
         return extractor->m_cdValued;
     };
 
-    static std::map<std::string, cdIterator_t> get_m_cdComputed(CovariateExtractor* extractor){
+    static std::map<std::string, cdIterator_t> get_m_cdComputed(CovariateExtractor* extractor)
+    {
         return extractor->m_cdComputed;
     };
 
-    static std::map<std::string, std::vector<pvIterator_t>> get_m_pvValued(CovariateExtractor* extractor){
+    static std::map<std::string, std::vector<pvIterator_t>> get_m_pvValued(CovariateExtractor* extractor)
+    {
         return extractor->m_pvValued;
     };
 
-    static void test_sortPatientVariates(CovariateExtractor* extractor){
+    static void test_sortPatientVariates(CovariateExtractor* extractor)
+    {
         extractor->sortPatientVariates();
     }
 
-    static void test_collectRefreshIntervals(std::map<DateTime, std::vector<std::string>>& _refreshMap, CovariateExtractor* extractor){
+    static void test_collectRefreshIntervals(
+            std::map<DateTime, std::vector<std::string>>& _refreshMap, CovariateExtractor* extractor)
+    {
         extractor->collectRefreshIntervals(_refreshMap);
     }
 
@@ -107,12 +120,14 @@ public:
             const DateTime& _dateRes,
             const InterpolationType _interpolationType,
             Value& _valRes,
-            CovariateExtractor* extractor){
+            CovariateExtractor* extractor)
+    {
         return extractor->interpolateValues(_val1, _date1, _val2, _date2, _dateRes, _interpolationType, _valRes);
     }
 };
 
-TEST (Core_TestCovariateExtractor, CE_constructor){
+TEST(Core_TestCovariateExtractor, CE_constructor)
+{
     // Even without covariates, no exception should be raised.
     {
         ASSERT_NO_THROW(CovariateExtractor(
@@ -560,7 +575,8 @@ TEST (Core_TestCovariateExtractor, CE_constructor){
     }
 }
 
-TEST (Core_TestCovariateExtractor, CE_collectRefreshIntervals){
+TEST(Core_TestCovariateExtractor, CE_collectRefreshIntervals)
+{
     // Sanity check on TimeDate/Duration functions that are used by collectRefreshIntervals().
     {
         DATE_TIME_VAR(t1, 2017, 8, 17, 14, 0, 0);
@@ -883,7 +899,8 @@ TEST (Core_TestCovariateExtractor, CE_collectRefreshIntervals){
     }
 }
 
-TEST (Core_TestCovariateExtractor, CE_interpolateValues){
+TEST(Core_TestCovariateExtractor, CE_interpolateValues)
+{
     CovariateExtractor extractor(
             CovariateDefinitions(),
             PatientVariates(),
@@ -984,7 +1001,8 @@ TEST (Core_TestCovariateExtractor, CE_interpolateValues){
     ASSERT_DOUBLE_EQ(valRes, 10.0);
 }
 
-TEST (Core_TestCovariateExtractor, CE_sortPatientVariates){
+TEST(Core_TestCovariateExtractor, CE_sortPatientVariates)
+{
     // The weight measurement the 11.08 and the one at 16h30 on the 30.08 should disappear. The remaining ones
     // should be sorted.
     {
@@ -1011,35 +1029,15 @@ TEST (Core_TestCovariateExtractor, CE_sortPatientVariates){
 
         std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.6),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0)));
+                "Weight", varToString(7.6), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.2),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0)));
+                "Weight", varToString(7.2), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(6.3),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0)));
+                "Weight", varToString(6.3), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.4),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0)));
+                "Weight", varToString(7.4), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.0),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0)));
+                "Weight", varToString(7.0), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0)));
 
         const auto pvVals = TestCovariateExtractor::get_m_pvValued(&extractor).at("Weight");
 
@@ -1091,47 +1089,19 @@ TEST (Core_TestCovariateExtractor, CE_sortPatientVariates){
 
         std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.9),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 11, 12, 32, 0)));
+                "Weight", varToString(7.9), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 11, 12, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.6),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0)));
+                "Weight", varToString(7.6), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.2),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0)));
+                "Weight", varToString(7.2), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(6.3),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0)));
+                "Weight", varToString(6.3), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.4),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0)));
+                "Weight", varToString(7.4), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.0),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0)));
+                "Weight", varToString(7.0), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.8),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 30, 16, 32, 0)));
+                "Weight", varToString(7.8), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 30, 16, 32, 0)));
 
         const auto pvVals = TestCovariateExtractor::get_m_pvValued(&extractor).at("Weight");
 
@@ -1166,47 +1136,19 @@ TEST (Core_TestCovariateExtractor, CE_sortPatientVariates){
 
         std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.9),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 11, 12, 32, 0)));
+                "Weight", varToString(7.9), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 11, 12, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.6),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0)));
+                "Weight", varToString(7.6), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.2),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0)));
+                "Weight", varToString(7.2), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(6.3),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0)));
+                "Weight", varToString(6.3), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.4),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0)));
+                "Weight", varToString(7.4), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.0),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0)));
+                "Weight", varToString(7.0), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 30, 12, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.8),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 30, 16, 32, 0)));
+                "Weight", varToString(7.8), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 30, 16, 32, 0)));
 
         const auto pvVals = TestCovariateExtractor::get_m_pvValued(&extractor).at("Weight");
 
@@ -1238,11 +1180,7 @@ TEST (Core_TestCovariateExtractor, CE_sortPatientVariates){
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
                 "Weight", varToString(6.3), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 9, 22, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.2),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0)));
+                "Weight", varToString(7.2), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0)));
 
         const auto pvVals = TestCovariateExtractor::get_m_pvValued(&extractor).at("Weight");
 
@@ -1277,17 +1215,9 @@ TEST (Core_TestCovariateExtractor, CE_sortPatientVariates){
 
         std::vector<std::unique_ptr<PatientCovariate>> res_pvVec;
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(7.2),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0)));
+                "Weight", varToString(7.2), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0)));
         res_pvVec.push_back(std::make_unique<PatientCovariate>(
-                "Weight",
-                varToString(6.3),
-                DataType::Double,
-                TucuUnit(),
-                DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0)));
+                "Weight", varToString(6.3), DataType::Double, TucuUnit(), DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0)));
 
         const auto pvVals = TestCovariateExtractor::get_m_pvValued(&extractor).at("Weight");
 
@@ -1298,7 +1228,8 @@ TEST (Core_TestCovariateExtractor, CE_sortPatientVariates){
     }
 }
 
-TEST (Core_TestCovariateExtractor, CovariateExtraction_test1_0){
+TEST(Core_TestCovariateExtractor, CovariateExtraction_test1_0)
+{
     CovariateDefinitions cDefinitions;
 
     ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
@@ -1407,7 +1338,8 @@ TEST (Core_TestCovariateExtractor, CovariateExtraction_test1_0){
     ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 17.125, series));
 }
 
-TEST (Core_TestCovariateExtractor, CovariateExtraction_test2_0){
+TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_0)
+{
     CovariateDefinitions cDefinitions;
     ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
@@ -1425,11 +1357,7 @@ TEST (Core_TestCovariateExtractor, CovariateExtraction_test2_0){
     ADD_PV_NO_UNIT(Gist, false, Bool, DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0), pVariates);
 
     ADD_PV_NO_UNIT(
-            birthdate,
-            DATE_TIME_NO_VAR(2017, 8, 5, 8, 0, 0),
-            Date,
-            DATE_TIME_NO_VAR(2017, 8, 5, 8, 0, 0),
-            pVariates);
+            birthdate, DATE_TIME_NO_VAR(2017, 8, 5, 8, 0, 0), Date, DATE_TIME_NO_VAR(2017, 8, 5, 8, 0, 0), pVariates);
 
     const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
     const DATE_TIME_VAR(endDate, 2017, 8, 17, 21, 0, 0);
@@ -1454,15 +1382,15 @@ TEST (Core_TestCovariateExtractor, CovariateExtraction_test2_0){
     ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 16.75, series));
     // This should be computed from IsMale, Weight, and Gist.
     ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 41.75, series));
-    ASSERT_TRUE(
-            covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0), 16.75, series));
+    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0), 16.75, series));
 
     ASSERT_EQ(TestCovariateExtractor::get_m_birthDate(&extractor), DATE_TIME_NO_VAR(2017, 8, 5, 8, 0, 0));
     ASSERT_TRUE(TestCovariateExtractor::get_m_hasBirthDate(&extractor));
     //ASSERT_EQ(extractor.m_pvValued.count(CovariateExtractor::sm_birthDateCName), static_cast<size_t>(1));
 }
 
-TEST (Core_TestCovariateExtractor, CovariateExtraction_test2_1){
+TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_1)
+{
     CovariateDefinitions cDefinitions;
     ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
     ADD_CDEF_NO_R_UNIT(Weight, 3.5, Standard, Double, Linear, "kg", cDefinitions);
@@ -1518,7 +1446,8 @@ TEST (Core_TestCovariateExtractor, CovariateExtraction_test2_1){
     ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 15, 14, 32, 0), 35.0, series));
 }
 
-TEST (Core_TestCovariateExtractor, CovariateExtraction_test2_2){
+TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_2)
+{
     CovariateDefinitions cDefinitions;
     ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
@@ -1580,7 +1509,8 @@ TEST (Core_TestCovariateExtractor, CovariateExtraction_test2_2){
     ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 54.0, series));
 }
 
-TEST (Core_TestCovariateExtractor, CovariateExtraction_test2_3){
+TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_3)
+{
     CovariateDefinitions cDefinitions;
     ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
@@ -1655,7 +1585,8 @@ TEST (Core_TestCovariateExtractor, CovariateExtraction_test2_3){
     ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 419.0, series));
 }
 
-TEST (Core_TestCovariateExtractor, CovariateExtraction_test3_0){
+TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_0)
+{
     CovariateDefinitions cDefinitions;
     ADD_CDEF_NO_R_UNIT(Weight, 3.5, Standard, Double, Linear, "kg", cDefinitions);
     ADD_CDEF_NO_R(AgeDays, 35, AgeInDays, Double, Direct, cDefinitions);
@@ -1670,11 +1601,7 @@ TEST (Core_TestCovariateExtractor, CovariateExtraction_test3_0){
     // weight = 30.0 @ 13.08.2017, 14h00
     ADD_PV_W_UNIT(Weight, 100.0, Double, "kg", DATE_TIME_NO_VAR(2017, 8, 17, 12, 0, 0), pVariates);
     ADD_PV_NO_UNIT(
-            birthdate,
-            DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0),
-            Date,
-            DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0),
-            pVariates);
+            birthdate, DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), Date, DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), pVariates);
 
     const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
     const DATE_TIME_VAR(endDate, 2017, 8, 18, 21, 0, 0);
@@ -1719,7 +1646,8 @@ TEST (Core_TestCovariateExtractor, CovariateExtraction_test3_0){
     ASSERT_TRUE(TestCovariateExtractor::get_m_pvValued(&extractor).count(CovariateExtractor::BIRTHDATE_CNAME) == 0);
 }
 
-TEST (Core_TestCovariateExtractor, CovariateExtraction_test3_1){
+TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_1)
+{
     CovariateDefinitions cDefinitions;
     ADD_CDEF_NO_R_UNIT(Weight, 3.5, Standard, Double, Linear, "kg", cDefinitions);
     ADD_CDEF_NO_R(AgeDays, 35, AgeInDays, Double, Direct, cDefinitions);
@@ -1737,11 +1665,7 @@ TEST (Core_TestCovariateExtractor, CovariateExtraction_test3_1){
     ADD_PV_W_UNIT(Weight, 100.0, Double, "kg", DATE_TIME_NO_VAR(2017, 8, 17, 12, 0, 0), pVariates);
 
     ADD_PV_NO_UNIT(
-            birthdate,
-            DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0),
-            Date,
-            DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0),
-            pVariates);
+            birthdate, DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), Date, DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), pVariates);
 
     const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
     const DATE_TIME_VAR(endDate, 2017, 8, 18, 21, 0, 0);
@@ -1796,7 +1720,8 @@ TEST (Core_TestCovariateExtractor, CovariateExtraction_test3_1){
     ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count(CovariateExtractor::BIRTHDATE_CNAME), 0);
 }
 
-TEST (Core_TestCovariateExtractor, CovariateExtraction_test3_2){
+TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_2)
+{
     CovariateDefinitions cDefinitions;
     ADD_CDEF_NO_R_UNIT(Weight, 3.5, Standard, Double, Linear, "kg", cDefinitions);
     ADD_CDEF_NO_R(AgeDays, 42, AgeInDays, Double, Direct, cDefinitions);
@@ -1848,7 +1773,8 @@ TEST (Core_TestCovariateExtractor, CovariateExtraction_test3_2){
     ASSERT_FALSE(TestCovariateExtractor::get_m_hasBirthDate(&extractor));
 }
 
-TEST (Core_TestCovariateExtractor, CovariateExtraction_test3_3){
+TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_3)
+{
     CovariateDefinitions cDefinitions;
 
     ADD_CDEF_W_R_UNIT(Weight, 40, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
@@ -2004,7 +1930,8 @@ TEST (Core_TestCovariateExtractor, CovariateExtraction_test3_3){
     }
 }
 
-TEST (Core_TestCovariateExtractor, CovariateExtraction_test3_4){
+TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_4)
+{
     CovariateDefinitions cDefinitions;
 
     ADD_CDEF_W_R_UNIT(Weight, 40, Standard, Double, Linear, Tucuxi::Common::days(1), "g", cDefinitions);
@@ -2025,10 +1952,7 @@ TEST (Core_TestCovariateExtractor, CovariateExtraction_test3_4){
 
 
     CovariateExtractor extractor(
-            cDefinitions,
-            pVariates,
-            DATE_TIME_NO_VAR(2017, 8, 13, 15, 0, 0),
-            DATE_TIME_NO_VAR(2017, 8, 14, 17, 0, 0));
+            cDefinitions, pVariates, DATE_TIME_NO_VAR(2017, 8, 13, 15, 0, 0), DATE_TIME_NO_VAR(2017, 8, 14, 17, 0, 0));
 
     CovariateSeries cSeries;
     ComputingStatus rc;

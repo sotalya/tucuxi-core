@@ -4,8 +4,6 @@
 
 #include <gtest/gtest.h>
 
-#include "gtest_core.h"
-
 #include "tucucore/dosage.h"
 #include "tucucore/drugmodel/formulationandroute.h"
 #include "tucucore/intakeevent.h"
@@ -16,13 +14,15 @@
 #include "tucucore/multilikelihood.h"
 #include "tucucore/residualerrormodel.h"
 
+#include "gtest_core.h"
 #include "pkmodels/constanteliminationbolus.h"
 #include "pkmodels/multiconstanteliminationbolus.h"
 
 
 using namespace Tucuxi::Core;
 
-TEST (Core_TestMultiLikeliHood, oneAnalyte1Sample){
+TEST(Core_TestMultiLikeliHood, oneAnalyte1Sample)
+{
     //first scenario: Only a single analyte and one sample (Using ConstantEliminationBolus intakes)
 #if GTEST_VERBOSE
     std::cout << __FUNCTION__ << std::endl;
@@ -142,7 +142,8 @@ TEST (Core_TestMultiLikeliHood, oneAnalyte1Sample){
     ASSERT_DOUBLE_EQ(x, expectedValue);
 }
 
-TEST (Core_TestMultiLikeliHood, oneAnalyte3Samples){
+TEST(Core_TestMultiLikeliHood, oneAnalyte3Samples)
+{
     //Second scenario: A single analyte and 3 samples
 #if GTEST_VERBOSE
     std::cout << __FUNCTION__ << std::endl;
@@ -275,7 +276,8 @@ TEST (Core_TestMultiLikeliHood, oneAnalyte3Samples){
     ASSERT_DOUBLE_EQ(x, expectedValue);
 }
 
-TEST (Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte1){
+TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte1)
+{
     // Third scenario: A 2-analyte with one sample on analyte 1 (using MultiConstantEliminationBolus)
 #if GTEST_VERBOSE
     std::cout << __FUNCTION__ << std::endl;
@@ -417,12 +419,12 @@ TEST (Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte1){
                                 - residualErrorModel[0]->calculateSampleLikelihood(
                                         expectedSampleValue, s0.getValue()); //0 as the second sample is empty
 
-    ASSERT_PRED4(
-            double_ne_rel_abs, x, std::numeric_limits<double>::max(), DEFAULT_PRECISION, DEFAULT_PRECISION);
+    ASSERT_PRED4(double_ne_rel_abs, x, std::numeric_limits<double>::max(), DEFAULT_PRECISION, DEFAULT_PRECISION);
     ASSERT_DOUBLE_EQ(x, expectedValuestep1);
 }
 
-TEST (Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte2){
+TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte2)
+{
     //A 2-analyte with one sample on analyte 2
 #if GTEST_VERBOSE
     std::cout << __FUNCTION__ << std::endl;
@@ -558,12 +560,12 @@ TEST (Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte2){
     double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
                            - residualErrorModel[1]->calculateSampleLikelihood(
                                    expectedSampleValue, s1.getValue()); //0 as the first sample is empty
-    ASSERT_PRED4(
-            double_ne_rel_abs, x, std::numeric_limits<double>::max(), DEFAULT_PRECISION, DEFAULT_PRECISION);
+    ASSERT_PRED4(double_ne_rel_abs, x, std::numeric_limits<double>::max(), DEFAULT_PRECISION, DEFAULT_PRECISION);
     ASSERT_DOUBLE_EQ(x, expectedValue);
 }
 
-TEST (Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesDifferentTimes){
+TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesDifferentTimes)
+{
 //A 2-analyte with one sample per analytes at different times
 #if GTEST_VERBOSE
     std::cout << __FUNCTION__ << std::endl;
@@ -710,12 +712,12 @@ TEST (Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesDifferentTimes){
     double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
                            - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue0, s0.getValue())
                            - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue1, s1.getValue());
-    ASSERT_PRED4(
-            double_ne_rel_abs, x, std::numeric_limits<double>::max(), DEFAULT_PRECISION, DEFAULT_PRECISION);
+    ASSERT_PRED4(double_ne_rel_abs, x, std::numeric_limits<double>::max(), DEFAULT_PRECISION, DEFAULT_PRECISION);
     ASSERT_DOUBLE_EQ(x, expectedValue);
 }
 
-TEST (Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesSameTime){
+TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesSameTime)
+{
     //A 2-analyte with one sample per analytes at the same time
 #if GTEST_VERBOSE
     std::cout << __FUNCTION__ << std::endl;
@@ -852,18 +854,17 @@ TEST (Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesSameTime){
     etasmd[0] = 0.1;
     etasmd[1] = 0.1;
 
-    double expectedValue =
-            0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
-            - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue, s0.getValue())
-            - residualErrorModel[1]->calculateSampleLikelihood(
-                    expectedSampleValue,
-                    s1.getValue()); //WE CAN NOT USE 2.0 * m_residual... as they are 2 different analytes
-    ASSERT_PRED4(
-            double_ne_rel_abs, x, std::numeric_limits<double>::max(), DEFAULT_PRECISION, DEFAULT_PRECISION);
+    double expectedValue = 0.5 * (etasmd.transpose() * omega.inverse() * etasmd + omegaAdd)
+                           - residualErrorModel[0]->calculateSampleLikelihood(expectedSampleValue, s0.getValue())
+                           - residualErrorModel[1]->calculateSampleLikelihood(
+                                   expectedSampleValue,
+                                   s1.getValue()); //WE CAN NOT USE 2.0 * m_residual... as they are 2 different analytes
+    ASSERT_PRED4(double_ne_rel_abs, x, std::numeric_limits<double>::max(), DEFAULT_PRECISION, DEFAULT_PRECISION);
     ASSERT_DOUBLE_EQ(x, expectedValue);
 }
 
-TEST (Core_TestMultiLikeliHood, DISABLED_twoAnalytes6Samples){
+TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes6Samples)
+{
     //A 2-analyte with three samples per analyte, with one of them at the same time, the others at different times.
 #if GTEST_VERBOSE
     std::cout << __FUNCTION__ << std::endl;
@@ -1049,9 +1050,6 @@ TEST (Core_TestMultiLikeliHood, DISABLED_twoAnalytes6Samples){
             expectedValue2 - residualErrorModel[1]->calculateSampleLikelihood(expectedSampleValue5, s5.getValue());
 
 
-    ASSERT_PRED4(
-            double_ne_rel_abs, x, std::numeric_limits<double>::max(), DEFAULT_PRECISION, DEFAULT_PRECISION);
+    ASSERT_PRED4(double_ne_rel_abs, x, std::numeric_limits<double>::max(), DEFAULT_PRECISION, DEFAULT_PRECISION);
     ASSERT_DOUBLE_EQ(x, expectedValue3);
 }
-
-

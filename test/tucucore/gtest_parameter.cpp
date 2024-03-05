@@ -7,7 +7,8 @@
 
 using namespace Tucuxi::Core;
 
-TEST (Core_TestParameter, ApplyEta){
+TEST(Core_TestParameter, ApplyEta)
+{
     {
         // Test Proportional variability
         ParameterDefinition pDef(
@@ -67,7 +68,8 @@ TEST (Core_TestParameter, ApplyEta){
     }
 }
 
-TEST (Core_TestParameter, GetTime){
+TEST(Core_TestParameter, GetTime)
+{
     ParameterSetSeries series;
 
     Tucuxi::Core::ParameterDefinitions parameterDefs;

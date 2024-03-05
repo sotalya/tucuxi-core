@@ -2,11 +2,9 @@
 
 #include <chrono>
 #include <memory>
+
 #include <date/date.h>
-
 #include <gtest/gtest.h>
-
-#include "../gtest_core.h"
 
 #include "tucucommon/datetime.h"
 
@@ -16,6 +14,8 @@
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugmodelimport.h"
+
+#include "../gtest_core.h"
 
 using namespace std::chrono_literals;
 using namespace date;
@@ -724,7 +724,8 @@ static const std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8
                                         </drugModel>
                                     </model>)";
 
-TEST (Core_TestDrugVancomycin, Vancomycin){
+TEST(Core_TestDrugVancomycin, Vancomycin)
+{
     DrugModelImport importer;
 
     std::unique_ptr<DrugModel> drugModel;
@@ -777,8 +778,7 @@ TEST (Core_TestDrugVancomycin, Vancomycin){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "vancomycin");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         //std::cout << "Population parameters : " << std::endl;
         //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -811,8 +811,7 @@ TEST (Core_TestDrugVancomycin, Vancomycin){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "vancomycin");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         //std::cout << "A priori parameters : " << std::endl;
         //for (auto parameter : resp->getData()[0].m_parameters) {

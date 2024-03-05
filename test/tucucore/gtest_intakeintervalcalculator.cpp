@@ -4,8 +4,6 @@
 
 #include <gtest/gtest.h>
 
-#include "gtest_core.h"
-
 #include "tucucommon/duration.h"
 
 #include "tucucore/drugmodel/formulationandroute.h"
@@ -18,13 +16,15 @@
 #include "tucucore/pkmodels/rkonecompartmentgammaextra.h"
 #include "tucucore/pkmodels/rktwocompartmenterlang.h"
 #include "tucucore/pkmodels/rktwocompartmentextralag.h"
+#include "tucucore/pkmodels/threecompartmentbolus.h"
+#include "tucucore/pkmodels/threecompartmentextra.h"
+#include "tucucore/pkmodels/threecompartmentinfusion.h"
 #include "tucucore/pkmodels/twocompartmentbolus.h"
 #include "tucucore/pkmodels/twocompartmentextra.h"
 #include "tucucore/pkmodels/twocompartmentextralag.h"
 #include "tucucore/pkmodels/twocompartmentinfusion.h"
-#include "tucucore/pkmodels/threecompartmentbolus.h"
-#include "tucucore/pkmodels/threecompartmentextra.h"
-#include "tucucore/pkmodels/threecompartmentinfusion.h"
+
+#include "gtest_core.h"
 
 
 using namespace Tucuxi::Core;
@@ -110,7 +110,8 @@ static void testSteadyState(
 #if GTEST_VERBOSE
         std::cout << "[" << cycle << "]";
         for (unsigned int i = 0; i < residualSize; i++) {
-            std::cout << inMicroResiduals[i] << ":" << outMicroResiduals[i] << " " << inMacroResiduals[i] << ":" << outMacroResiduals[i] << " ";
+            std::cout << inMicroResiduals[i] << ":" << outMicroResiduals[i] << " " << inMacroResiduals[i] << ":"
+                      << outMacroResiduals[i] << " ";
         }
         std::cout << std::endl;
 #endif
@@ -118,10 +119,8 @@ static void testSteadyState(
 
     if (res == Tucuxi::Core::ComputingStatus::Ok) {
         for (unsigned int i = 0; i < residualSize; i++) {
-            ASSERT_PRED4(
-                    double_eq_rel_abs, inMicroResiduals[i], outMicroResiduals[i], 0.01, 0.01);
-            ASSERT_PRED4(
-                    double_eq_rel_abs, inMacroResiduals[i], outMacroResiduals[i], 0.01, 0.01);
+            ASSERT_PRED4(double_eq_rel_abs, inMicroResiduals[i], outMicroResiduals[i], 0.01, 0.01);
+            ASSERT_PRED4(double_eq_rel_abs, inMacroResiduals[i], outMacroResiduals[i], 0.01, 0.01);
         }
     }
 }
@@ -186,14 +185,7 @@ static void testSingleVsMultiple(
 
     // Calculation of Micro Class
     res = microCalculator.calculateIntakePoints(
-            concentrations,
-            times,
-            intakeEvent,
-            _microParameters,
-            firstInResidual,
-            isAll,
-            outMicroMultiResiduals,
-            true);
+            concentrations, times, intakeEvent, _microParameters, firstInResidual, isAll, outMicroMultiResiduals, true);
 
 #if GTEST_VERBOSE
     std::cout << "[Micro Class Calculation]" << std::endl;
@@ -223,14 +215,7 @@ static void testSingleVsMultiple(
 
     // Calculation of Macro Class
     res = macroCalculator.calculateIntakePoints(
-            concentrations,
-            times,
-            intakeEvent,
-            _macroParameters,
-            firstInResidual,
-            isAll,
-            outMacroMultiResiduals,
-            true);
+            concentrations, times, intakeEvent, _macroParameters, firstInResidual, isAll, outMacroMultiResiduals, true);
 
 #if GTEST_VERBOSE
     std::cout << "\n[Macro Class Calculation]" << std::endl;
@@ -262,14 +247,10 @@ static void testSingleVsMultiple(
 
     if (res == Tucuxi::Core::ComputingStatus::Ok) {
         for (unsigned int i = 0; i < residualSize; i++) {
-            ASSERT_PRED4(
-                    double_eq_rel_abs, outMicroMultiResiduals[i], outMicroSingleResiduals[i], 0.0001, 0.0);
-            ASSERT_PRED4(
-                    double_eq_rel_abs, outMacroMultiResiduals[i], outMacroSingleResiduals[i], 0.0001, 0.0);
-            ASSERT_PRED4(
-                    double_eq_rel_abs, outMicroMultiResiduals[i], outMacroMultiResiduals[i], 0.001, 0.001);
-            ASSERT_PRED4(
-                    double_eq_rel_abs, outMicroSingleResiduals[i], outMacroSingleResiduals[i], 0.001, 0.001);
+            ASSERT_PRED4(double_eq_rel_abs, outMicroMultiResiduals[i], outMicroSingleResiduals[i], 0.0001, 0.0);
+            ASSERT_PRED4(double_eq_rel_abs, outMacroMultiResiduals[i], outMacroSingleResiduals[i], 0.0001, 0.0);
+            ASSERT_PRED4(double_eq_rel_abs, outMicroMultiResiduals[i], outMacroMultiResiduals[i], 0.001, 0.001);
+            ASSERT_PRED4(double_eq_rel_abs, outMicroSingleResiduals[i], outMacroSingleResiduals[i], 0.001, 0.001);
         }
     }
 
@@ -288,8 +269,7 @@ static void testSingleVsMultiple(
         ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::Ok);
 
         if (res == Tucuxi::Core::ComputingStatus::Ok) {
-            ASSERT_PRED4(
-                    double_eq_rel_abs, concentrations[0][t], concentrations3[0][0], 0.0001, 0.0);
+            ASSERT_PRED4(double_eq_rel_abs, concentrations[0][t], concentrations3[0][0], 0.0001, 0.0);
         }
     }
 
@@ -335,8 +315,7 @@ static void testSingleVsMultiple(
         ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::Ok);
 
         if (res == Tucuxi::Core::ComputingStatus::Ok) {
-            ASSERT_PRED4(
-                    double_eq_rel_abs, concentrationsInterval2[0][t], concentrations3[0][0], 0.0001, 0.0);
+            ASSERT_PRED4(double_eq_rel_abs, concentrationsInterval2[0][t], concentrations3[0][0], 0.0001, 0.0);
         }
     }
 }
@@ -404,13 +383,11 @@ static void testCompare(
     if (res == Tucuxi::Core::ComputingStatus::Ok) {
         for (unsigned int i = 0; i < static_cast<unsigned int>(_nbPoints); i++) {
             //                std::cout << i << " : " << concentrations0[0][i] << " , " << concentrations1[0][i] << std::endl;
-            ASSERT_PRED4(
-                    double_eq_rel_abs, concentrations0[0][i], concentrations1[0][i], 0.0001, 0.0);
+            ASSERT_PRED4(double_eq_rel_abs, concentrations0[0][i], concentrations1[0][i], 0.0001, 0.0);
         }
 
         for (unsigned int i = 0; i < residualSize; i++) {
-            ASSERT_PRED4(
-                    double_eq_rel_abs, outResiduals0[i], outResiduals1[i], 0.0001, 0.0);
+            ASSERT_PRED4(double_eq_rel_abs, outResiduals0[i], outResiduals1[i], 0.0001, 0.0);
         }
     }
 }
@@ -436,7 +413,8 @@ static void testCalculator(
 /// A calculator is instanciated, and residuals are computed with both
 ///     calculateIntakePoints and calculateIntakeSinglePoint.
 /// The residuals are then compared and shall be identical.
-TEST (Core_TestIntervalCalculator, oneCompBolusSingleVsMultiple){
+TEST(Core_TestIntervalCalculator, oneCompBolusSingleVsMultiple)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -453,20 +431,15 @@ TEST (Core_TestIntervalCalculator, oneCompBolusSingleVsMultiple){
             "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
     testCalculator<Tucuxi::Core::OneCompartmentBolusMicro, Tucuxi::Core::OneCompartmentBolusMacro>(
-            microParameters,
-            macroParameters,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Intravascular,
-            1h,
-            0s,
-            CYCLE_SIZE);
+            microParameters, macroParameters, 400.0, Tucuxi::Core::AbsorptionModel::Intravascular, 1h, 0s, CYCLE_SIZE);
 }
 
 /// \brief Test the residual calculation of extravascular. Compares single point vs multiple points
 /// A calculator is instanciated, and residuals are computed with both
 ///     calculateIntakePoints and calculateIntakeSinglePoint.
 /// The residuals are then compared and shall be identical.
-TEST (Core_TestIntervalCalculator, oneCompExtraSingleVsMultiple){
+TEST(Core_TestIntervalCalculator, oneCompExtraSingleVsMultiple)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -475,8 +448,8 @@ TEST (Core_TestIntervalCalculator, oneCompExtraSingleVsMultiple){
             "Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    microParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
     // parameter for macro class
@@ -487,21 +460,16 @@ TEST (Core_TestIntervalCalculator, oneCompExtraSingleVsMultiple){
             "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
     testCalculator<Tucuxi::Core::OneCompartmentExtraMicro, Tucuxi::Core::OneCompartmentExtraMacro>(
-            microParameters,
-            macroParameters,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Extravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+            microParameters, macroParameters, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestIntervalCalculator, oneCompExtraLagSingleVsMultiple){
+TEST(Core_TestIntervalCalculator, oneCompExtraLagSingleVsMultiple)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -510,8 +478,8 @@ TEST (Core_TestIntervalCalculator, oneCompExtraLagSingleVsMultiple){
             "Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    microParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
@@ -524,8 +492,8 @@ TEST (Core_TestIntervalCalculator, oneCompExtraLagSingleVsMultiple){
             "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
@@ -544,7 +512,8 @@ TEST (Core_TestIntervalCalculator, oneCompExtraLagSingleVsMultiple){
 /// A calculator is instanciated, and residuals are computed with both
 ///     calculateIntakePoints and calculateIntakeSinglePoint.
 /// The residuals are then compared and shall be identical.
-TEST (Core_TestIntervalCalculator, oneCompInfusionSingleVsMultiple){
+TEST(Core_TestIntervalCalculator, oneCompInfusionSingleVsMultiple)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -569,7 +538,8 @@ TEST (Core_TestIntervalCalculator, oneCompInfusionSingleVsMultiple){
 /// A calculator is instanciated, and residuals are computed with both
 ///     calculateIntakePoints and calculateIntakeSinglePoint.
 /// The residuals are then compared and shall be identical.
-TEST (Core_TestIntervalCalculator, RK41compExtraSingleVsMultiple){
+TEST(Core_TestIntervalCalculator, RK41compExtraSingleVsMultiple)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -578,8 +548,8 @@ TEST (Core_TestIntervalCalculator, RK41compExtraSingleVsMultiple){
             "Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    microParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
     // parameter for macro class
@@ -590,37 +560,32 @@ TEST (Core_TestIntervalCalculator, RK41compExtraSingleVsMultiple){
             "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
     testCalculator<Tucuxi::Core::RK4OneCompartmentExtraMicro, Tucuxi::Core::RK4OneCompartmentExtraMacro>(
-            microParameters,
-            macroParameters,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Extravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+            microParameters, macroParameters, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
 }
 
 /// \brief Test the residual calculation of extravascular. Compares single point vs multiple points
 /// A calculator is instanciated, and residuals are computed with both
 ///     calculateIntakePoints and calculateIntakeSinglePoint.
 /// The residuals are then compared and shall be identical.
-TEST (Core_TestIntervalCalculator, RK41compGammaExtraSingleVsMultiple){
+TEST(Core_TestIntervalCalculator, RK41compGammaExtraSingleVsMultiple)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V", 347, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
-    microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
-    microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "a", 6, Tucuxi::Core::ParameterVariabilityType::None));
-    microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "b", 10, Tucuxi::Core::ParameterVariabilityType::None));
+    microParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    microParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("a", 6, Tucuxi::Core::ParameterVariabilityType::None));
+    microParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("b", 10, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
     // parameter for macro class
@@ -629,28 +594,23 @@ TEST (Core_TestIntervalCalculator, RK41compGammaExtraSingleVsMultiple){
             "V", 347, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "a", 6, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "b", 10, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("a", 6, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("b", 10, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
     testCalculator<Tucuxi::Core::RK4OneCompartmentGammaExtraMicro, Tucuxi::Core::RK4OneCompartmentGammaExtraMacro>(
-            microParameters,
-            macroParameters,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Extravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+            microParameters, macroParameters, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
 }
 
 /// \brief Test the concentration calculation of extravascular. Compares analytical and Rk4 intake calculators
 /// Two calculators are instanciated, and concentrations are computed with both.
 /// The concentrations are then compared and shall be identical.
-TEST (Core_TestIntervalCalculator, oneCompExtraAnalyticalVsRk4){
+TEST(Core_TestIntervalCalculator, oneCompExtraAnalyticalVsRk4)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -659,8 +619,8 @@ TEST (Core_TestIntervalCalculator, oneCompExtraAnalyticalVsRk4){
             "Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    microParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
     testCompare<Tucuxi::Core::OneCompartmentExtraMicro, Tucuxi::Core::RK4OneCompartmentExtraMicro>(
@@ -668,7 +628,8 @@ TEST (Core_TestIntervalCalculator, oneCompExtraAnalyticalVsRk4){
 }
 
 /// \brief Test the concentration calculation of erlang transit compartments.
-TEST (Core_TestIntervalCalculator, twoCompErlang){
+TEST(Core_TestIntervalCalculator, twoCompErlang)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -681,8 +642,8 @@ TEST (Core_TestIntervalCalculator, twoCompErlang){
             "CL", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ktr", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    microParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
     Tucuxi::Core::ComputingStatus res;
@@ -727,7 +688,8 @@ TEST (Core_TestIntervalCalculator, twoCompErlang){
 /// A calculator is instanciated, and residuals are computed with both
 ///     calculateIntakePoints and calculateIntakeSinglePoint.
 /// The residuals are then compared and shall be identical.
-TEST (Core_TestIntervalCalculator, twoCompBolusSingleVsMultiple){
+TEST(Core_TestIntervalCalculator, twoCompBolusSingleVsMultiple)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -744,8 +706,8 @@ TEST (Core_TestIntervalCalculator, twoCompBolusSingleVsMultiple){
     Tucuxi::Core::ParameterDefinitions macroParameterDefs;
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "Q", 20, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("Q", 20, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -753,20 +715,15 @@ TEST (Core_TestIntervalCalculator, twoCompBolusSingleVsMultiple){
     Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
     testCalculator<Tucuxi::Core::TwoCompartmentBolusMicro, Tucuxi::Core::TwoCompartmentBolusMacro>(
-            microParameters,
-            macroParameters,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Intravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+            microParameters, macroParameters, 400.0, Tucuxi::Core::AbsorptionModel::Intravascular, 12h, 0s, CYCLE_SIZE);
 }
 
 /// \brief Test the residual calculation of extravascular. Compares single point vs multiple points
 /// A calculator is instanciated, and residuals are computed with both
 ///     calculateIntakePoints and calculateIntakeSinglePoint.
 /// The residuals are then compared and shall be identical.
-TEST (Core_TestIntervalCalculator, twoCompExtraSingleVsMultiple){
+TEST(Core_TestIntervalCalculator, twoCompExtraSingleVsMultiple)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -779,41 +736,36 @@ TEST (Core_TestIntervalCalculator, twoCompExtraSingleVsMultiple){
             "K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    microParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
     // parameter for macro class
     Tucuxi::Core::ParameterDefinitions macroParameterDefs;
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "Q", 20, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("Q", 20, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V2", 342, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
     testCalculator<Tucuxi::Core::TwoCompartmentExtraMicro, Tucuxi::Core::TwoCompartmentExtraMacro>(
-            microParameters,
-            macroParameters,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Extravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+            microParameters, macroParameters, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
 }
 
 /// \brief Test the residual calculation of infusion. Compares single point vs multiple points
 /// A calculator is instanciated, and residuals are computed with both
 ///     calculateIntakePoints and calculateIntakeSinglePoint.
 /// The residuals are then compared and shall be identical.
-TEST (Core_TestIntervalCalculator, twoCompInfusionSingleVsMultiple){
+TEST(Core_TestIntervalCalculator, twoCompInfusionSingleVsMultiple)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -830,8 +782,8 @@ TEST (Core_TestIntervalCalculator, twoCompInfusionSingleVsMultiple){
     Tucuxi::Core::ParameterDefinitions macroParameterDefs;
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "Q", 20, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("Q", 20, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -842,7 +794,8 @@ TEST (Core_TestIntervalCalculator, twoCompInfusionSingleVsMultiple){
             microParameters, macroParameters, 400.0, Tucuxi::Core::AbsorptionModel::Infusion, 12h, 1h, CYCLE_SIZE);
 }
 
-TEST (Core_TestIntervalCalculator, twoCompExtraLagSingleVsMultiple){
+TEST(Core_TestIntervalCalculator, twoCompExtraLagSingleVsMultiple)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -855,8 +808,8 @@ TEST (Core_TestIntervalCalculator, twoCompExtraLagSingleVsMultiple){
             "Ke", 0.075, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    microParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
@@ -873,8 +826,8 @@ TEST (Core_TestIntervalCalculator, twoCompExtraLagSingleVsMultiple){
             "CL", 4.35, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
@@ -892,7 +845,8 @@ TEST (Core_TestIntervalCalculator, twoCompExtraLagSingleVsMultiple){
 /// \brief Test the concentration calculation of extravascular lag for 2 compartments. Compares analytical and Rk4 intake calculators
 /// Two calculators are instanciated, and concentrations are computed with both.
 /// The concentrations are then compared and shall be identical.
-TEST (Core_TestIntervalCalculator, twoCompExtraLagAnalyticalVsRk4){
+TEST(Core_TestIntervalCalculator, twoCompExtraLagAnalyticalVsRk4)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -905,8 +859,8 @@ TEST (Core_TestIntervalCalculator, twoCompExtraLagAnalyticalVsRk4){
             "Ke", 0.075, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    microParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Tlag", 4.0, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
@@ -918,7 +872,7 @@ TEST (Core_TestIntervalCalculator, twoCompExtraLagAnalyticalVsRk4){
             12h,
             0s,
             241); // 241 allows to be aligned on the hours, else the test fails because of RK4 lag time
-            //            CYCLE_SIZE);
+                  //            CYCLE_SIZE);
 }
 
 // TODO Active following test after fixing input parameters
@@ -926,11 +880,12 @@ TEST (Core_TestIntervalCalculator, twoCompExtraLagAnalyticalVsRk4){
 /// A calculator is instanciated, and residuals are computed with both
 ///     calculateIntakePoints and calculateIntakeSinglePoint.
 /// The residuals are then compared and shall be identical.
-TEST (Core_TestIntervalCalculator, DISABLED_threeCompBolusSingleVsMultiple){
+TEST(Core_TestIntervalCalculator, DISABLED_threeCompBolusSingleVsMultiple)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
-    microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+    microParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -949,8 +904,8 @@ TEST (Core_TestIntervalCalculator, DISABLED_threeCompBolusSingleVsMultiple){
     Tucuxi::Core::ParameterDefinitions macroParameterDefs;
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Q1", 20, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -962,24 +917,19 @@ TEST (Core_TestIntervalCalculator, DISABLED_threeCompBolusSingleVsMultiple){
     Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
     testCalculator<Tucuxi::Core::ThreeCompartmentBolusMicro, Tucuxi::Core::ThreeCompartmentBolusMacro>(
-            microParameters,
-            macroParameters,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Intravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+            microParameters, macroParameters, 400.0, Tucuxi::Core::AbsorptionModel::Intravascular, 12h, 0s, CYCLE_SIZE);
 }
 
 /// \brief Test the residual calculation of Extra. Compares single point vs multiple points
 /// A calculator is instanciated, and residuals are computed with both
 ///     calculateIntakePoints and calculateIntakeSinglePoint.
 /// The residuals are then compared and shall be identical.
-TEST (Core_TestIntervalCalculator, DISABLED_threeCompExtraSingleVsMultiple){
+TEST(Core_TestIntervalCalculator, DISABLED_threeCompExtraSingleVsMultiple)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
-    microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+    microParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -1000,8 +950,8 @@ TEST (Core_TestIntervalCalculator, DISABLED_threeCompExtraSingleVsMultiple){
     Tucuxi::Core::ParameterDefinitions macroParameterDefs;
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Q1", 20, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -1015,24 +965,19 @@ TEST (Core_TestIntervalCalculator, DISABLED_threeCompExtraSingleVsMultiple){
     Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
     testCalculator<Tucuxi::Core::ThreeCompartmentExtraMicro, Tucuxi::Core::ThreeCompartmentExtraMacro>(
-            microParameters,
-            macroParameters,
-            400.0,
-            Tucuxi::Core::AbsorptionModel::Extravascular,
-            12h,
-            0s,
-            CYCLE_SIZE);
+            microParameters, macroParameters, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
 }
 
 /// \brief Test the residual calculation of Infusion. Compares single point vs multiple points
 /// A calculator is instanciated, and residuals are computed with both
 ///     calculateIntakePoints and calculateIntakeSinglePoint.
 /// The residuals are then compared and shall be identical.
-TEST (Core_TestIntervalCalculator, DISABLED_threeCompInfusionSingleVsMultiple){
+TEST(Core_TestIntervalCalculator, DISABLED_threeCompInfusionSingleVsMultiple)
+{
     // parameter for micro class
     Tucuxi::Core::ParameterDefinitions microParameterDefs;
-    microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+    microParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
     microParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -1051,8 +996,8 @@ TEST (Core_TestIntervalCalculator, DISABLED_threeCompInfusionSingleVsMultiple){
     Tucuxi::Core::ParameterDefinitions macroParameterDefs;
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Q1", 20, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(

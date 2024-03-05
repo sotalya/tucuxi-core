@@ -4,7 +4,7 @@
 
 #include "tucucommon/componentmanager.h"
 
-#define PRINT_MESSAGE(x)    (std::cout << "\033[1;36m" << x << "\033[0m" << std::endl)
+#define PRINT_MESSAGE(x) (std::cout << "\033[1;36m" << x << "\033[0m" << std::endl)
 
 
 class ITest1 : public Tucuxi::Common::Interface
@@ -52,7 +52,8 @@ private:
     }
 };
 
-TEST (Common_TestComponentManager, CreateComponent){
+TEST(Common_TestComponentManager, CreateComponent)
+{
 
     Tucuxi::Common::ComponentManager* cmpMgr = Tucuxi::Common::ComponentManager::getInstance();
     cmpMgr->registerComponentFactory("TestComponent", &TestComponent::createComponent);

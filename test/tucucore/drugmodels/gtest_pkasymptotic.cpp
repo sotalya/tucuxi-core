@@ -3,11 +3,9 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+
 #include <date/date.h>
-
 #include <gtest/gtest.h>
-
-#include "../gtest_core.h"
 
 #include "tucucore/computingcomponent.h"
 #include "tucucore/computingservice/computingrequest.h"
@@ -17,6 +15,7 @@
 #include "tucucore/drugtreatment/patientcovariate.h"
 #include "tucucore/pkmodel.h"
 
+#include "../gtest_core.h"
 #include "../pkmodels/pkasymptotic.h"
 #include "../testutils.h"
 #include "buildpkasymptotic.h"
@@ -26,7 +25,8 @@ using namespace date;
 
 using namespace Tucuxi::Core;
 
-TEST (Core_TestPkAsymptotic, test0){
+TEST(Core_TestPkAsymptotic, test0)
+{
     BuildPkAsymptotic builder;
     auto drugModel = builder.buildDrugModel();
 
@@ -108,8 +108,7 @@ TEST (Core_TestPkAsymptotic, test0){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         std::vector<CycleData> data = resp->getData();
         ASSERT_EQ(data.size(), static_cast<size_t>(16));
@@ -118,8 +117,7 @@ TEST (Core_TestPkAsymptotic, test0){
 
         ASSERT_DOUBLE_EQ(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
         ASSERT_DOUBLE_EQ(
-                data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0,
-                startSept2018.toSeconds() + 3600.0 * 6.0);
+                data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0, startSept2018.toSeconds() + 3600.0 * 6.0);
 
         DateTime statTime = DateTime::now();
         Value statValue = 0.0;
@@ -140,8 +138,7 @@ TEST (Core_TestPkAsymptotic, test0){
 
         data[1].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
         ASSERT_DOUBLE_EQ(
-                statValue,
-                (0.0 + 200000.0 * 0.5) / 2.0 * 6.0 + (100000.0 + ((200000.0 - 100000.0) * 0.5) / 2.0) * 6.0);
+                statValue, (0.0 + 200000.0 * 0.5) / 2.0 * 6.0 + (100000.0 + ((200000.0 - 100000.0) * 0.5) / 2.0) * 6.0);
 
         data[1].m_statistics.getStatistic(0, CycleStatisticType::Peak).getValue(statTime, statValue);
         ASSERT_DOUBLE_EQ(statValue, 150000.0);
@@ -171,7 +168,8 @@ TEST (Core_TestPkAsymptotic, test0){
     delete component;
 }
 
-TEST (Core_TestPkAsymptotic, Adjustments){
+TEST(Core_TestPkAsymptotic, Adjustments)
+{
     BuildPkAsymptotic builder;
     auto drugModel = builder.buildDrugModel();
 
@@ -311,7 +309,8 @@ TEST (Core_TestPkAsymptotic, Adjustments){
     delete component;
 }
 
-TEST (Core_TestPkAsymptotic, AdjustmentsSlowRate){
+TEST(Core_TestPkAsymptotic, AdjustmentsSlowRate)
+{
     BuildPkAsymptotic builder;
     auto drugModel = builder.buildDrugModel();
 
@@ -451,7 +450,8 @@ TEST (Core_TestPkAsymptotic, AdjustmentsSlowRate){
     delete component;
 }
 
-TEST (Core_TestPkAsymptotic, AdjustmentsLoadingDose){
+TEST(Core_TestPkAsymptotic, AdjustmentsLoadingDose)
+{
     BuildPkAsymptotic builder;
     auto drugModel = builder.buildDrugModel();
 
@@ -577,10 +577,14 @@ TEST (Core_TestPkAsymptotic, AdjustmentsLoadingDose){
             ASSERT_EQ(adjustment.m_history.getDosageTimeRanges().size(), static_cast<size_t>(2));
 
             //                    double r = adjustment.m_data[0].m_concentrations[0].back();
-            ASSERT_PRED4(double_le_rel_abs,
-                         std::abs(adjustment.getData()[0].m_concentrations[0].back()
-                                  - adjustment.getData().back().m_concentrations[0].back()),
-                         400.0, 0.01, 0.01);
+            ASSERT_PRED4(
+                    double_le_rel_abs,
+                    std::abs(
+                            adjustment.getData()[0].m_concentrations[0].back()
+                            - adjustment.getData().back().m_concentrations[0].back()),
+                    400.0,
+                    0.01,
+                    0.01);
 
             {
                 const auto& timeRange = adjustment.m_history.getDosageTimeRanges()[0];
@@ -609,7 +613,8 @@ TEST (Core_TestPkAsymptotic, AdjustmentsLoadingDose){
     delete component;
 }
 
-TEST (Core_TestPkAsymptotic, AdjustmentsFirstDose){
+TEST(Core_TestPkAsymptotic, AdjustmentsFirstDose)
+{
     BuildPkAsymptotic builder;
     auto drugModel = builder.buildDrugModel();
 
@@ -747,7 +752,8 @@ TEST (Core_TestPkAsymptotic, AdjustmentsFirstDose){
     delete component;
 }
 
-TEST (Core_TestPkAsymptotic, AdjustmentsLoadingDoseFirstDose){
+TEST(Core_TestPkAsymptotic, AdjustmentsLoadingDoseFirstDose)
+{
     BuildPkAsymptotic builder;
     auto drugModel = builder.buildDrugModel();
 
@@ -873,10 +879,14 @@ TEST (Core_TestPkAsymptotic, AdjustmentsLoadingDoseFirstDose){
             ASSERT_EQ(adjustment.m_history.getDosageTimeRanges().size(), static_cast<size_t>(2));
 
             //                    double r = adjustment.m_data[0].m_concentrations[0].back();
-            ASSERT_PRED4(double_le_rel_abs,
-                         std::abs(adjustment.getData()[0].m_concentrations[0].back()
-                                  - adjustment.getData().back().m_concentrations[0].back()),
-                         400.0, 0.01, 0.01);
+            ASSERT_PRED4(
+                    double_le_rel_abs,
+                    std::abs(
+                            adjustment.getData()[0].m_concentrations[0].back()
+                            - adjustment.getData().back().m_concentrations[0].back()),
+                    400.0,
+                    0.01,
+                    0.01);
 
             {
                 const auto& timeRange = adjustment.m_history.getDosageTimeRanges()[0];

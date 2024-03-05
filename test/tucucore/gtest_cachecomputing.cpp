@@ -4,8 +4,6 @@
 
 #include <gtest/gtest.h>
 
-#include "gtest_core.h"
-
 #include "tucucommon/datetime.h"
 
 #include "tucucore/cachecomputing.h"
@@ -18,6 +16,7 @@
 #include "tucucore/montecarlopercentilecalculator.h"
 
 #include "drugmodels/buildimatinib.h"
+#include "gtest_core.h"
 
 using namespace Tucuxi::Core;
 
@@ -66,7 +65,8 @@ static void compute(
 /// This test verifies that if the cache contains an interval surrounding the asked interval, then
 /// it will return the surrounding interval
 ///
-TEST (Core_TestCacheComputing, ImatinibSplitInterval){
+TEST(Core_TestCacheComputing, ImatinibSplitInterval)
+{
     // We reduce the number of patients to speed up the tests
     MonteCarloPercentileCalculatorBase::setStaticNumberPatients(10);
 
@@ -119,7 +119,8 @@ TEST (Core_TestCacheComputing, ImatinibSplitInterval){
     m_cache.reset();
 }
 
-TEST (Core_TestCacheComputing, ImatinibFullInterval){
+TEST(Core_TestCacheComputing, ImatinibFullInterval)
+{
     // We reduce the number of patients to speed up the tests
     MonteCarloPercentileCalculatorBase::setStaticNumberPatients(10);
 

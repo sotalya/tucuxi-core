@@ -1,8 +1,8 @@
 //@@license@@
 
 #include <memory>
-#include <date/date.h>
 
+#include <date/date.h>
 #include <gtest/gtest.h>
 
 #include "tucucore/targetextractor.h"
@@ -10,22 +10,27 @@
 using namespace Tucuxi::Common::Utils;
 using namespace Tucuxi::Core;
 
-class TestTargetExtractor{
+class TestTargetExtractor
+{
 public:
-    static Value get_m_valueMin(TargetEvent* targetResult){
+    static Value get_m_valueMin(TargetEvent* targetResult)
+    {
         return targetResult->m_valueMin;
     };
 
-    static Value get_m_valueMax(TargetEvent* targetResult){
+    static Value get_m_valueMax(TargetEvent* targetResult)
+    {
         return targetResult->m_valueMax;
     };
 
-    static Value get_m_valueBest(TargetEvent* targetResult){
+    static Value get_m_valueBest(TargetEvent* targetResult)
+    {
         return targetResult->m_valueBest;
     };
 };
 
-TEST (Core_TestTargetExtractor, AprioriValues){
+TEST(Core_TestTargetExtractor, AprioriValues)
+{
     TargetExtractor extractor;
 
 
@@ -58,7 +63,8 @@ TEST (Core_TestTargetExtractor, AprioriValues){
     }
 }
 
-TEST (Core_TestTargetExtractor, PopulationValues){
+TEST(Core_TestTargetExtractor, PopulationValues)
+{
     TargetExtractor extractor;
 
 
@@ -125,7 +131,8 @@ TEST (Core_TestTargetExtractor, PopulationValues){
     }
 }
 
-TEST (Core_TestTargetExtractor, IndividualTargets){
+TEST(Core_TestTargetExtractor, IndividualTargets)
+{
     TargetExtractor extractor;
 
 
@@ -199,7 +206,8 @@ TEST (Core_TestTargetExtractor, IndividualTargets){
     }
 }
 
-TEST (Core_TestTargetExtractor, IndividualTargetsNoDefinition){
+TEST(Core_TestTargetExtractor, IndividualTargetsNoDefinition)
+{
     TargetExtractor extractor;
 
 

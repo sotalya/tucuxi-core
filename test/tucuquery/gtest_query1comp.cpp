@@ -12,7 +12,8 @@
 
 #include "gtest_queryinputstrings.h"
 
-TEST (Query_TestQuery1Comp, Test1){
+TEST(Query_TestQuery1Comp, Test1)
+{
     Tucuxi::Common::ComponentManager* pCmpMgr = Tucuxi::Common::ComponentManager::getInstance();
 
     auto drugModelRepository =

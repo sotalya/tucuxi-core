@@ -4,8 +4,6 @@
 
 #include <gtest/gtest.h>
 
-#include "gtest_core.h"
-
 #include "tucucommon/datetime.h"
 
 #include "tucucore/computingcomponent.h"
@@ -16,13 +14,15 @@
 #include "tucucore/drugtreatment/drugtreatment.h"
 
 #include "drugmodels/buildimatinib.h"
+#include "gtest_core.h"
 
 using namespace Tucuxi::Core;
 
 using namespace std::chrono_literals;
 using namespace date;
 
-TEST (Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllDosages){
+TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllDosages)
+{
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
     ASSERT_TRUE(component != nullptr);
@@ -87,7 +87,8 @@ TEST (Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAll
     delete component;
 }
 
-TEST (Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRouteAllDosages){
+TEST(Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRouteAllDosages)
+{
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
     ASSERT_TRUE(component != nullptr);
@@ -154,7 +155,8 @@ TEST (Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRoute
     delete component;
 }
 
-TEST (Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndRouteAllDosages){
+TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndRouteAllDosages)
+{
     // TODO : Check this test. It does not work anymore because of multiple routes not supported by the PK model
 
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
@@ -165,7 +167,8 @@ TEST (Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAnd
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(
+            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -182,13 +185,19 @@ TEST (Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAnd
     ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
     Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
     BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
-    std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
-            std::make_unique<ComputingTraitAdjustment>(
-                requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
-                adjustmentOption, LoadingOption::NoLoadingDose, RestPeriodOption::NoRestPeriod,
-                SteadyStateTargetOption::WithinTreatmentTimeRange,
-                TargetExtractionOption::PopulationValues,
-                FormulationAndRouteSelectionOption::AllFormulationAndRoutes);
+    std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits = std::make_unique<ComputingTraitAdjustment>(
+            requestResponseId,
+            start,
+            end,
+            nbPointsPerHour,
+            computingOption,
+            adjustmentTime,
+            adjustmentOption,
+            LoadingOption::NoLoadingDose,
+            RestPeriodOption::NoRestPeriod,
+            SteadyStateTargetOption::WithinTreatmentTimeRange,
+            TargetExtractionOption::PopulationValues,
+            FormulationAndRouteSelectionOption::AllFormulationAndRoutes);
 
     ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
 
@@ -197,12 +206,12 @@ TEST (Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAnd
     ComputingStatus result;
     result = component->compute(request, response);
 
-    ASSERT_EQ( result, ComputingStatus::Ok);
+    ASSERT_EQ(result, ComputingStatus::Ok);
 
 
     const ComputedData* responseData = response->getData();
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
-    const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
+    const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
 
     // We expect 7 valid adjustment candidates
     ASSERT_NE(resp->getAdjustments().size(), static_cast<size_t>(7));
@@ -211,7 +220,8 @@ TEST (Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAnd
     delete component;
 }
 
-TEST (Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteBestDosage){
+TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteBestDosage)
+{
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
     ASSERT_TRUE(component != nullptr);
@@ -276,7 +286,8 @@ TEST (Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteBes
     delete component;
 }
 
-TEST (Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRouteBestDosage){
+TEST(Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRouteBestDosage)
+{
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
     ASSERT_TRUE(component != nullptr);
@@ -343,7 +354,8 @@ TEST (Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRoute
     delete component;
 }
 
-TEST (Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndRouteBestDosage){
+TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndRouteBestDosage)
+{
     // TODO : Check this test. It does not work anymore because of multiple routes not supported by the PK model
 
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
@@ -354,7 +366,8 @@ TEST (Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAnd
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(
+            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -370,13 +383,19 @@ TEST (Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAnd
     ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
     Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
     BestCandidatesOption adjustmentOption = BestCandidatesOption::BestDosage;
-    std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
-            std::make_unique<ComputingTraitAdjustment>(
-                requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
-                adjustmentOption, LoadingOption::NoLoadingDose, RestPeriodOption::NoRestPeriod,
-                SteadyStateTargetOption::WithinTreatmentTimeRange,
-                TargetExtractionOption::PopulationValues,
-                FormulationAndRouteSelectionOption::AllFormulationAndRoutes);
+    std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits = std::make_unique<ComputingTraitAdjustment>(
+            requestResponseId,
+            start,
+            end,
+            nbPointsPerHour,
+            computingOption,
+            adjustmentTime,
+            adjustmentOption,
+            LoadingOption::NoLoadingDose,
+            RestPeriodOption::NoRestPeriod,
+            SteadyStateTargetOption::WithinTreatmentTimeRange,
+            TargetExtractionOption::PopulationValues,
+            FormulationAndRouteSelectionOption::AllFormulationAndRoutes);
 
     ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
 
@@ -385,12 +404,12 @@ TEST (Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAnd
     ComputingStatus result;
     result = component->compute(request, response);
 
-    ASSERT_EQ( result, ComputingStatus::Ok);
+    ASSERT_EQ(result, ComputingStatus::Ok);
 
 
     const ComputedData* responseData = response->getData();
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
-    const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
+    const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
 
     // We expect 1 valid adjustment candidate
     ASSERT_EQ(resp->getAdjustments().size(), static_cast<size_t>(1));
@@ -399,7 +418,8 @@ TEST (Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAnd
     delete component;
 }
 
-TEST (Core_TestComputingComponentAdjusements, ImatinibEmptyTreatmentDefaultFormulationAndRouteAllDosages){
+TEST(Core_TestComputingComponentAdjusements, ImatinibEmptyTreatmentDefaultFormulationAndRouteAllDosages)
+{
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
     ASSERT_TRUE(component != nullptr);
@@ -457,7 +477,8 @@ TEST (Core_TestComputingComponentAdjusements, ImatinibEmptyTreatmentDefaultFormu
     delete component;
 }
 
-TEST (Core_TestComputingComponentAdjusements, ImatinibSteadyStateLastFormulationAndRouteAllDosages){
+TEST(Core_TestComputingComponentAdjusements, ImatinibSteadyStateLastFormulationAndRouteAllDosages)
+{
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
     ASSERT_TRUE(component != nullptr);
@@ -592,7 +613,8 @@ TEST (Core_TestComputingComponentAdjusements, ImatinibSteadyStateLastFormulation
     }
 }
 
-TEST (Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllDosagesAtSteadyState){
+TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllDosagesAtSteadyState)
+{
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
     ASSERT_TRUE(component != nullptr);
@@ -673,7 +695,8 @@ TEST (Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAll
     delete component;
 }
 
-TEST (Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndRouteBestDosageLoadingDose){
+TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndRouteBestDosageLoadingDose)
+{
     // TODO : Check this test. It does not work anymore because of multiple routes not supported by the PK model
 
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
@@ -684,7 +707,8 @@ TEST (Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAnd
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(
+            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -700,13 +724,19 @@ TEST (Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAnd
     ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
     Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
     BestCandidatesOption adjustmentOption = BestCandidatesOption::BestDosage;
-    std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits =
-            std::make_unique<ComputingTraitAdjustment>(
-                requestResponseId, start, end, nbPointsPerHour, computingOption, adjustmentTime,
-                adjustmentOption, LoadingOption::LoadingDoseAllowed, RestPeriodOption::NoRestPeriod,
-                SteadyStateTargetOption::WithinTreatmentTimeRange,
-                TargetExtractionOption::PopulationValues,
-                FormulationAndRouteSelectionOption::AllFormulationAndRoutes);
+    std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits = std::make_unique<ComputingTraitAdjustment>(
+            requestResponseId,
+            start,
+            end,
+            nbPointsPerHour,
+            computingOption,
+            adjustmentTime,
+            adjustmentOption,
+            LoadingOption::LoadingDoseAllowed,
+            RestPeriodOption::NoRestPeriod,
+            SteadyStateTargetOption::WithinTreatmentTimeRange,
+            TargetExtractionOption::PopulationValues,
+            FormulationAndRouteSelectionOption::AllFormulationAndRoutes);
 
     ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
 
@@ -715,12 +745,12 @@ TEST (Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAnd
     ComputingStatus result;
     result = component->compute(request, response);
 
-    ASSERT_EQ( result, ComputingStatus::Ok);
+    ASSERT_EQ(result, ComputingStatus::Ok);
 
 
     const ComputedData* responseData = response->getData();
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
-    const AdjustmentData *resp = dynamic_cast<const AdjustmentData*>(responseData);
+    const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
 
     // We expect 2 dosage time range (loading dose)
     ASSERT_EQ(resp->getAdjustments()[0].getDosageHistory().getDosageTimeRanges().size(), static_cast<size_t>(2));
@@ -729,7 +759,8 @@ TEST (Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAnd
     delete component;
 }
 
-TEST (Core_TestComputingComponentAdjusements, ImatinibAllFormulationAndRouteBestDosageRestPeriod){
+TEST(Core_TestComputingComponentAdjusements, ImatinibAllFormulationAndRouteBestDosageRestPeriod)
+{
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
     ASSERT_TRUE(component != nullptr);

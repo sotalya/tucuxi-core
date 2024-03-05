@@ -4,25 +4,25 @@
 
 #include <gtest/gtest.h>
 
-#include "gtest_core.h"
-
 #include "tucucore/dosage.h"
 #include "tucucore/intakeextractor.h"
 #include "tucucore/pkmodels/onecompartmentbolus.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
 #include "tucucore/pkmodels/onecompartmentinfusion.h"
-#include "tucucore/pkmodels/twocompartmentbolus.h"
-#include "tucucore/pkmodels/twocompartmentextra.h"
-#include "tucucore/pkmodels/twocompartmentinfusion.h"
 #include "tucucore/pkmodels/threecompartmentbolus.h"
 #include "tucucore/pkmodels/threecompartmentextra.h"
 #include "tucucore/pkmodels/threecompartmentinfusion.h"
+#include "tucucore/pkmodels/twocompartmentbolus.h"
+#include "tucucore/pkmodels/twocompartmentextra.h"
+#include "tucucore/pkmodels/twocompartmentinfusion.h"
 
+#include "gtest_core.h"
 #include "pkmodels/constanteliminationbolus.h"
 
 using namespace Tucuxi::Core;
 
-TEST (Core_TestConcentrationCalculator, ConstantEliminationBolus){
+TEST(Core_TestConcentrationCalculator, ConstantEliminationBolus)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "TestA", 0.0, Tucuxi::Core::ParameterVariabilityType::None));
@@ -40,7 +40,8 @@ TEST (Core_TestConcentrationCalculator, ConstantEliminationBolus){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestConcentrationCalculator, oneCompBolus){
+TEST(Core_TestConcentrationCalculator, oneCompBolus)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V", 347, Tucuxi::Core::ParameterVariabilityType::None));
@@ -54,7 +55,8 @@ TEST (Core_TestConcentrationCalculator, oneCompBolus){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Intravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestConcentrationCalculator, oneCompExtra){
+TEST(Core_TestConcentrationCalculator, oneCompExtra)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V", 347, Tucuxi::Core::ParameterVariabilityType::None));
@@ -62,8 +64,8 @@ TEST (Core_TestConcentrationCalculator, oneCompExtra){
             "Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
     Tucuxi::Core::ParameterSetSeries parametersSeries;
     parametersSeries.addParameterSetEvent(parameters);
@@ -72,7 +74,8 @@ TEST (Core_TestConcentrationCalculator, oneCompExtra){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestConcentrationCalculator, oneCompInfusion){
+TEST(Core_TestConcentrationCalculator, oneCompInfusion)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V", 347, Tucuxi::Core::ParameterVariabilityType::None));
@@ -86,7 +89,8 @@ TEST (Core_TestConcentrationCalculator, oneCompInfusion){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Infusion, 12h, 1h, CYCLE_SIZE);
 }
 
-TEST (Core_TestConcentrationCalculator, twoCompBolus){
+TEST(Core_TestConcentrationCalculator, twoCompBolus)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
@@ -104,7 +108,8 @@ TEST (Core_TestConcentrationCalculator, twoCompBolus){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Intravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestConcentrationCalculator, twoCompExtra){
+TEST(Core_TestConcentrationCalculator, twoCompExtra)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
@@ -116,8 +121,8 @@ TEST (Core_TestConcentrationCalculator, twoCompExtra){
             "K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
     Tucuxi::Core::ParameterSetSeries parametersSeries;
     parametersSeries.addParameterSetEvent(parameters);
@@ -126,7 +131,8 @@ TEST (Core_TestConcentrationCalculator, twoCompExtra){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestConcentrationCalculator, twoCompInfusion){
+TEST(Core_TestConcentrationCalculator, twoCompInfusion)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
@@ -145,10 +151,11 @@ TEST (Core_TestConcentrationCalculator, twoCompInfusion){
 }
 
 // TODO Active following test after fixing input parameters
-TEST (Core_TestConcentrationCalculator, DISABLED_threeCompBolus){
+TEST(Core_TestConcentrationCalculator, DISABLED_threeCompBolus)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -169,10 +176,11 @@ TEST (Core_TestConcentrationCalculator, DISABLED_threeCompBolus){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Intravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestConcentrationCalculator, DISABLED_threeCompExtra){
+TEST(Core_TestConcentrationCalculator, DISABLED_threeCompExtra)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -195,10 +203,11 @@ TEST (Core_TestConcentrationCalculator, DISABLED_threeCompExtra){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestConcentrationCalculator, DISABLED_threeCompInfusion){
+TEST(Core_TestConcentrationCalculator, DISABLED_threeCompInfusion)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(

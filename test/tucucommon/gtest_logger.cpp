@@ -1,7 +1,7 @@
 //@@license@@
 
-#include <regex>
 #include <fstream>
+#include <regex>
 #include <string>
 
 #include <gtest/gtest.h>
@@ -44,7 +44,8 @@ static void checkLogfileLine(std::ifstream& _file, const char* _level, const cha
     }
 }
 
-TEST (Common_TestLogger, Basic){
+TEST(Common_TestLogger, Basic)
+{
     reset("LogTest2.log", appFolder);
     Tucuxi::Common::LoggerHelper logger;
     logger.debug("Tcho les topiots");
@@ -64,7 +65,8 @@ TEST (Common_TestLogger, Basic){
     checkLogfileLine(infile, "critical", "Tcho les topiots");
 }
 
-TEST (Common_TestLogger, Crashes){
+TEST(Common_TestLogger, Crashes)
+{
     // Work with an uninitialized logger
     Tucuxi::Common::LoggerHelper logger;
     logger.info("asdfa");

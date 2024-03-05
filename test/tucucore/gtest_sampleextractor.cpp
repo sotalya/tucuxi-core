@@ -1,8 +1,8 @@
 //@@license@@
 
 #include <memory>
-#include <date/date.h>
 
+#include <date/date.h>
 #include <gtest/gtest.h>
 
 #include "tucucommon/loggerhelper.h"
@@ -14,7 +14,8 @@
 using namespace Tucuxi::Common::Utils;
 using namespace Tucuxi::Core;
 
-TEST (Core_TestSampleExtractor, Standard){
+TEST(Core_TestSampleExtractor, Standard)
+{
     {
         // Test with a single sample
         SampleExtractor extractor;
@@ -26,8 +27,8 @@ TEST (Core_TestSampleExtractor, Standard){
 
         AnalyteId analyteId("theAnalyte");
 
-        samples.push_back(std::make_unique<Sample>(
-                DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
+        samples.push_back(
+                std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
 
         ComputingStatus result = extractor.extract(samples, start, end, TucuUnit("ug/l"), series);
 
@@ -49,14 +50,14 @@ TEST (Core_TestSampleExtractor, Standard){
         AnalyteId analyteId("theAnalyte");
 
         // One sample is in mg/l. The result should be multiplied by 1000
-        samples.push_back(std::make_unique<Sample>(
-                DATE_TIME_NO_VAR(2017, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
-        samples.push_back(std::make_unique<Sample>(
-                DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 10.0, TucuUnit("ug/l")));
-        samples.push_back(std::make_unique<Sample>(
-                DATE_TIME_NO_VAR(2018, 01, 03, 8, 00, 00), analyteId, 14.0, TucuUnit("mg/l")));
-        samples.push_back(std::make_unique<Sample>(
-                DATE_TIME_NO_VAR(2018, 01, 12, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
+        samples.push_back(
+                std::make_unique<Sample>(DATE_TIME_NO_VAR(2017, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
+        samples.push_back(
+                std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 10.0, TucuUnit("ug/l")));
+        samples.push_back(
+                std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 03, 8, 00, 00), analyteId, 14.0, TucuUnit("mg/l")));
+        samples.push_back(
+                std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 12, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
 
         ComputingStatus result = extractor.extract(samples, start, end, TucuUnit("ug/l"), series);
 
@@ -96,8 +97,8 @@ TEST (Core_TestSampleExtractor, Standard){
         Tucuxi::Common::LoggerHelper logHelper;
         logHelper.disable();
 
-        samples.push_back(std::make_unique<Sample>(
-                DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("test")));
+        samples.push_back(
+                std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("test")));
 
         ComputingStatus result = extractor.extract(samples, start, end, TucuUnit("ug/l"), series);
 
@@ -106,8 +107,8 @@ TEST (Core_TestSampleExtractor, Standard){
 
         Samples samples2;
 
-        samples2.push_back(std::make_unique<Sample>(
-                DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 10.0, TucuUnit("km/l")));
+        samples2.push_back(
+                std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 10.0, TucuUnit("km/l")));
 
         result = extractor.extract(samples2, start, end, TucuUnit("ug/l"), series);
 
@@ -116,8 +117,8 @@ TEST (Core_TestSampleExtractor, Standard){
 
         Samples samples3;
 
-        samples3.push_back(std::make_unique<Sample>(
-                DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 14.0, TucuUnit("5")));
+        samples3.push_back(
+                std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 14.0, TucuUnit("5")));
 
         result = extractor.extract(samples3, start, end, TucuUnit("ug/l"), series);
 

@@ -9,7 +9,8 @@
 
 using namespace Tucuxi::Core;
 
-TEST (Core_TestDrugModelImport, DrugModelImportFake){
+TEST(Core_TestDrugModelImport, DrugModelImportFake)
+{
     std::unique_ptr<DrugModel> fake;
     auto importer = std::make_unique<DrugModelImport>();
 
@@ -22,7 +23,8 @@ TEST (Core_TestDrugModelImport, DrugModelImportFake){
     ASSERT_TRUE(fake != nullptr);
 }
 
-TEST (Core_TestDrugModelImport, DrugModelImportBusulfan1){
+TEST(Core_TestDrugModelImport, DrugModelImportBusulfan1)
+{
     std::unique_ptr<DrugModel> busulfan;
     auto importer = std::make_unique<DrugModelImport>();
 
@@ -33,7 +35,8 @@ TEST (Core_TestDrugModelImport, DrugModelImportBusulfan1){
     ASSERT_TRUE(busulfan != nullptr);
 }
 
-TEST (Core_TestDrugModelImport, DrugModelImportOperation){
+TEST(Core_TestDrugModelImport, DrugModelImportOperation)
+{
     std::unique_ptr<Operation> operation;
     auto importer = std::make_unique<DrugModelImport>();
 

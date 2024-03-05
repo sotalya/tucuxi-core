@@ -5,14 +5,14 @@
 
 #include <gtest/gtest.h>
 
-#include "gtest_core.h"
-
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/concentrationcalculator.h"
 #include "tucucore/dosage.h"
 #include "tucucore/intakeextractor.h"
 #include "tucucore/intakeintervalcalculator.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
+
+#include "gtest_core.h"
 
 template<class CalculatorClass>
 static void testNonmemCalculator(
@@ -96,7 +96,8 @@ static void testNonmemCalculator(
     }
 }
 
-TEST (Core_TestNonMemDrugs, Imatinib){
+TEST(Core_TestNonMemDrugs, Imatinib)
+{
     typedef Tucuxi::Core::OneCompartmentExtraMacro CalculatorClass;
 
     Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
@@ -400,8 +401,8 @@ TEST (Core_TestNonMemDrugs, Imatinib){
             "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
     Tucuxi::Core::ParameterSetSeries parametersSeries;
     parametersSeries.addParameterSetEvent(parameters);

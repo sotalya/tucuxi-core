@@ -55,14 +55,15 @@ using namespace Tucuxi::Common::Utils;
         DOMAIN->addConstraint(std::move(c));                                                                         \
     } while (0);
 
-#define ADD_OP1_CONSTRAINT(DOMAIN, OPERATION, OP1, TYPE)                                                                \
-    do {                                                                                                                \
-        auto op = std::make_unique<JSOperation>(OPERATION, OperationInputList{OperationInput(OP1, InputType::DOUBLE)}); \
-        auto c = std::make_unique<Constraint>();                                                                        \
-        c->addRequiredCovariateId(OP1);                                                                                 \
-        c->setType(TYPE);                                                                                               \
-        c->setCheckOperation(std::move(op));                                                                            \
-        DOMAIN->addConstraint(std::move(c));                                                                            \
+#define ADD_OP1_CONSTRAINT(DOMAIN, OPERATION, OP1, TYPE)                                                              \
+    do {                                                                                                              \
+        auto op =                                                                                                     \
+                std::make_unique<JSOperation>(OPERATION, OperationInputList{OperationInput(OP1, InputType::DOUBLE)}); \
+        auto c = std::make_unique<Constraint>();                                                                      \
+        c->addRequiredCovariateId(OP1);                                                                               \
+        c->setType(TYPE);                                                                                             \
+        c->setCheckOperation(std::move(op));                                                                          \
+        DOMAIN->addConstraint(std::move(c));                                                                          \
     } while (0);
 
 enum class DataIntegrity
@@ -468,11 +469,7 @@ static void imatinibTest()
     DrugTreatment drugTreatment;
 
     drugTreatment.addCovariate(std::make_unique<PatientCovariate>(
-            "Birthdate",
-            "1990-01-01T00:00:00",
-            DataType::Date,
-            TucuUnit("-"),
-            DATE_TIME_NO_VAR(2020, 5, 8, 8, 0, 0)));
+            "Birthdate", "1990-01-01T00:00:00", DataType::Date, TucuUnit("-"), DATE_TIME_NO_VAR(2020, 5, 8, 8, 0, 0)));
     drugTreatment.addCovariate(std::make_unique<PatientCovariate>(
             "bodyweight", "60", DataType::Double, TucuUnit("kg"), DATE_TIME_NO_VAR(2020, 5, 9, 8, 0, 0)));
 
@@ -494,7 +491,8 @@ static void imatinibTest()
     EXPECT_TRUE(rc == DrugDomainConstraintsEvaluator::Result::Compatible);
 }
 
-TEST (Core_TestDrugDomainConstraintsEvaluator, SimpleTest1){
+TEST(Core_TestDrugDomainConstraintsEvaluator, SimpleTest1)
+{
     CovariateDefinitions cDefinitions;
     // Covariates of interest.
     ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
@@ -509,8 +507,7 @@ TEST (Core_TestDrugDomainConstraintsEvaluator, SimpleTest1){
     cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
     cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
     cSeries.push_back(CovariateEvent(*(cDefinitions[3]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 10, 0), 51));
-    cSeries.push_back(
-            CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(false)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(false)));
     cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0), 123));
 
 
@@ -539,7 +536,8 @@ TEST (Core_TestDrugDomainConstraintsEvaluator, SimpleTest1){
     EXPECT_TRUE(rc == DrugDomainConstraintsEvaluator::Result::Incompatible);
 }
 
-TEST (Core_TestDrugDomainConstraintsEvaluator, SimpleTest2){
+TEST(Core_TestDrugDomainConstraintsEvaluator, SimpleTest2)
+{
     CovariateDefinitions cDefinitions;
     // Covariates of interest.
     ADD_CDEF_NO_R(Gist, true, Standard, Bool, Direct, cDefinitions);
@@ -586,7 +584,8 @@ TEST (Core_TestDrugDomainConstraintsEvaluator, SimpleTest2){
     ASSERT_EQ(rc, DrugDomainConstraintsEvaluator::Result::Compatible);
 }
 
-TEST (Core_TestDrugDomainConstraintsEvaluator, SimpleTest3){
+TEST(Core_TestDrugDomainConstraintsEvaluator, SimpleTest3)
+{
     CovariateDefinitions cDefinitions;
     // Covariates of interest.
     ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
@@ -596,8 +595,7 @@ TEST (Core_TestDrugDomainConstraintsEvaluator, SimpleTest3){
 
     // Set of covariate events.
     CovariateSeries cSeries;
-    cSeries.push_back(
-            CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
     cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
     cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
     cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
@@ -633,7 +631,8 @@ TEST (Core_TestDrugDomainConstraintsEvaluator, SimpleTest3){
     ASSERT_EQ(rc, DrugDomainConstraintsEvaluator::Result::PartiallyCompatible);
 }
 
-TEST (Core_TestDrugDomainConstraintsEvaluator, SimpleTest4){
+TEST(Core_TestDrugDomainConstraintsEvaluator, SimpleTest4)
+{
     imatinibTest();
 
 
@@ -658,7 +657,8 @@ TEST (Core_TestDrugDomainConstraintsEvaluator, SimpleTest4){
     partiallyCompatibleTests();
 }
 
-TEST (Core_TestDrugDomainConstraintsEvaluator, SimpleTest5){
+TEST(Core_TestDrugDomainConstraintsEvaluator, SimpleTest5)
+{
     std::unique_ptr<DrugModelDomain> domain = std::make_unique<DrugModelDomain>();
     // Computed parameters
     ADD_OP1_CONSTRAINT(
@@ -713,7 +713,8 @@ TEST (Core_TestDrugDomainConstraintsEvaluator, SimpleTest5){
     ASSERT_EQ(rc, DrugDomainConstraintsEvaluator::Result::Incompatible);
 }
 
-TEST (Core_TestDrugDomainConstraintsEvaluator, SimpleTest6){
+TEST(Core_TestDrugDomainConstraintsEvaluator, SimpleTest6)
+{
     std::unique_ptr<DrugModelDomain> domain = std::make_unique<DrugModelDomain>();
     // Computed parameters
     ADD_OP1_CONSTRAINT(

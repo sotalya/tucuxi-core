@@ -2,14 +2,15 @@
 
 #include <gtest/gtest.h>
 
-#include "gtest_core.h"
-
 #include "tucucore/cyclestatisticscalculator.h"
 #include "tucucore/definitions.h"
 
+#include "gtest_core.h"
+
 // TODO : Add a test for residual value CycleStatisticType::Residual
 
-TEST (Core_TestCycleStatistics, CycleStatistics){
+TEST(Core_TestCycleStatistics, CycleStatistics)
+{
     // set cycleData
     DateTime now = DateTime::now();
     size_t nbCompartments = 1;
@@ -36,8 +37,7 @@ TEST (Core_TestCycleStatistics, CycleStatistics){
 
         // allocate memory for local variable stats
         stats.push_back(std::vector<Tucuxi::Core::CycleStatistic>());
-        for (unsigned int type = 0; type < static_cast<int>(CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE);
-             type++) {
+        for (unsigned int type = 0; type < static_cast<int>(CycleStatisticType::CYCLE_STATISTIC_TYPE_SIZE); type++) {
             stats[compartment].push_back(CycleStatistic(cycleData.m_start, static_cast<CycleStatisticType>(type)));
         }
     }

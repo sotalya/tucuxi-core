@@ -4,14 +4,13 @@
 
 #include <gtest/gtest.h>
 
-#include "gtest_core.h"
-
 #include "tucucore/concentrationcalculator.h"
 #include "tucucore/drugmodel/formulationandroute.h"
 #include "tucucore/intakeevent.h"
 #include "tucucore/likelihood.h"
 #include "tucucore/residualerrormodel.h"
 
+#include "gtest_core.h"
 #include "pkmodels/constanteliminationbolus.h"
 
 using namespace Tucuxi::Core;
@@ -68,7 +67,8 @@ static IntakeSeries buildIntakeSeries()
 /// A Likelihood object computes a negativeLogLikelihood.
 /// This test uses wrong parameters, and as such the result should be the maximum value for double.
 ///
-TEST (Core_TestLikelihood, WrongParameters){
+TEST(Core_TestLikelihood, WrongParameters)
+{
     IntakeSeries intakes = buildIntakeSeries();
 
     // Only one sample at date 06/06/2017 at 12:30
@@ -121,7 +121,8 @@ TEST (Core_TestLikelihood, WrongParameters){
 /// A Likelihood object computes a negativeLogLikelihood.
 /// This test is done thanks to ConstantEliminationBolus, with one single sample.
 ///
-TEST (Core_TestLikelihood, oneSample){
+TEST(Core_TestLikelihood, oneSample)
+{
     IntakeSeries intakes = buildIntakeSeries();
 
     // Only one sample at date 06/06/2017 at 12:30
@@ -190,7 +191,8 @@ TEST (Core_TestLikelihood, oneSample){
 /// A Likelihood object computes a negativeLogLikelihood.
 /// This test is done thanks to ConstantEliminationBolus, with one single sample.
 ///
-TEST (Core_TestLikelihood, WeightSample){
+TEST(Core_TestLikelihood, WeightSample)
+{
     IntakeSeries intakes = buildIntakeSeries();
 
     // First sample at date 06/06/2017 at 12:30, with a weight of 0.3
@@ -274,7 +276,8 @@ TEST (Core_TestLikelihood, WeightSample){
 /// A Likelihood object computes a negativeLogLikelihood.
 /// This test is done thanks to ConstantEliminationBolus, with two samples at the same date.
 ///
-TEST (Core_TestLikelihood, twoSamplesSameDate){
+TEST(Core_TestLikelihood, twoSamplesSameDate)
+{
     IntakeSeries intakes = buildIntakeSeries();
 
     // Here we build parameters that correspond to the intake calculator (ConstantEliminationBolus)
@@ -351,7 +354,8 @@ TEST (Core_TestLikelihood, twoSamplesSameDate){
 /// A Likelihood object computes a negativeLogLikelihood.
 /// This test is done thanks to ConstantEliminationBolus, with two samples at different dates.
 ///
-TEST (Core_TestLikelihood, twoSamplesDifferentDates){
+TEST(Core_TestLikelihood, twoSamplesDifferentDates)
+{
     IntakeSeries intakes = buildIntakeSeries();
 
     // Here we build parameters that correspond to the intake calculator (ConstantEliminationBolus)
@@ -431,7 +435,8 @@ TEST (Core_TestLikelihood, twoSamplesDifferentDates){
 /// A Likelihood object computes a negativeLogLikelihood.
 /// This test is done thanks to ConstantEliminationBolus, with three samples at the different dates.
 ///
-TEST (Core_TestLikelihood, threeSamplesDifferentDates){
+TEST(Core_TestLikelihood, threeSamplesDifferentDates)
+{
     IntakeSeries intakes = buildIntakeSeries();
 
     // Here we build parameters that correspond to the intake calculator (ConstantEliminationBolus)
@@ -510,5 +515,3 @@ TEST (Core_TestLikelihood, threeSamplesDifferentDates){
                            - residualErrorModel.calculateSampleLikelihood(expectedSampleValue3, sample3.getValue());
     ASSERT_DOUBLE_EQ(res, expectedValue);
 }
-
-

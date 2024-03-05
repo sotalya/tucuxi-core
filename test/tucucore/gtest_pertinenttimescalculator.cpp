@@ -10,7 +10,8 @@
 using namespace Tucuxi::Core;
 using namespace Tucuxi::Common;
 
-TEST (Core_TestPertinentTimesCalculator, Standard){
+TEST(Core_TestPertinentTimesCalculator, Standard)
+{
     {
         PertinentTimesCalculatorStandard calculator;
 
@@ -37,7 +38,8 @@ TEST (Core_TestPertinentTimesCalculator, Standard){
     }
 }
 
-TEST (Core_TestPertinentTimesCalculator, Infusion){
+TEST(Core_TestPertinentTimesCalculator, Infusion)
+{
     PertinentTimesCalculatorInfusion calculator;
 
     {

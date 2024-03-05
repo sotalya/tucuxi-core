@@ -5,19 +5,20 @@
 #include "tucucommon/xmldocument.h"
 
 #include "tucuquery/computingqueryresponsexmlexport.h"
-#include "tucuquery/queryimport.h"
 #include "tucuquery/parametersdata.h"
+#include "tucuquery/queryimport.h"
 
 #include "gtest_queryinputstrings.h"
 
-#define PRINT_MESSAGE(x)    (std::cout << "\033[1;36m" << x << "\033[0m" << std::endl)
+#define PRINT_MESSAGE(x) (std::cout << "\033[1;36m" << x << "\033[0m" << std::endl)
 
 
 
 using namespace Tucuxi;
 using namespace Query;
 
-class GTestTucuQuery{
+class GTestTucuQuery
+{
 public:
     static std::unique_ptr<Tucuxi::Query::Treatment> importXml(std::string _xmlString)
     {
@@ -68,17 +69,17 @@ public:
         std::cout << "Exported String : " << std::endl << std::endl;
         std::cout << _exportString << std::endl << std::endl;
     }
-
 };
 
 
-TEST (Query_TestDosageImportExport, Test1){
+TEST(Query_TestDosageImportExport, Test1)
+{
     Tucuxi::Query::QueryImport queryImport;
     Tucuxi::Common::XmlDocument xmlDocument;
     GTestTucuQuery gTestTucuQuery;
 
     int iteration = 0;
-    for (std::string xmlInput : xmlInputTests){
+    for (std::string xmlInput : xmlInputTests) {
         PRINT_MESSAGE("Testing string: " << iteration);
 
         std::unique_ptr<Tucuxi::Query::Treatment> xmlTreatment = gTestTucuQuery.importXml(xmlInput);

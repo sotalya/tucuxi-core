@@ -376,7 +376,7 @@ static const std::string test_mm_1comp_extra_tdd = R"(<?xml version="1.0" encodi
                     </absorptionParameters>
                 </formulationAndRoute>
             </formulationAndRoutes>)"
-                                            R"(
+                                                   R"(
             <timeConsiderations>
                 <halfLife>
                     <unit>h</unit>
@@ -431,7 +431,8 @@ static std::unique_ptr<DrugTreatment> buildSimpleDrugTreatment(
     return drugTreatment;
 }
 
-TEST (Core_TestComputingComponentAtTimes, MeasureFar){
+TEST(Core_TestComputingComponentAtTimes, MeasureFar)
+{
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
     ASSERT_TRUE(component != nullptr);
@@ -518,7 +519,8 @@ TEST (Core_TestComputingComponentAtTimes, MeasureFar){
     delete component;
 }
 
-TEST (Core_TestComputingComponentAtTimes, MeasureFarTimes){
+TEST(Core_TestComputingComponentAtTimes, MeasureFarTimes)
+{
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
     ASSERT_TRUE(component != nullptr);
@@ -571,7 +573,7 @@ TEST (Core_TestComputingComponentAtTimes, MeasureFarTimes){
         ASSERT_EQ(result, ComputingStatus::Ok);
 
         std::vector<Tucuxi::Common::DateTime> times = {
-                                                       startTreatment + 1h, endTreatment - 24h + 1h, endTreatment - 24h + 2h};
+                startTreatment + 1h, endTreatment - 24h + 1h, endTreatment - 24h + 2h};
 
         std::unique_ptr<ComputingTraitSinglePoints> traits2 =
                 std::make_unique<ComputingTraitSinglePoints>(requestResponseId, times, computingOption);

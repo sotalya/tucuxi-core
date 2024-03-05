@@ -7,7 +7,8 @@
 
 #include "tucucrypto/cryptohelper.h"
 
-TEST (Crypto_TestCryptoHelper, Basic){
+TEST(Crypto_TestCryptoHelper, Basic)
+{
     bool res;
 
     std::string key;

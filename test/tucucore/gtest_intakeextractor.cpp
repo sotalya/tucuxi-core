@@ -4,11 +4,11 @@
 
 #include <gtest/gtest.h>
 
-#include "gtest_core.h"
-
 #include "tucucore/dosage.h"
 #include "tucucore/drugmodel/formulationandroute.h"
 #include "tucucore/intakeextractor.h"
+
+#include "gtest_core.h"
 
 
 using namespace Tucuxi::Core;
@@ -17,7 +17,8 @@ using namespace Tucuxi::Common;
 static constexpr double NB_POINTS_PER_HOUR = CYCLE_SIZE / 24.0;
 
 /// \brief Scenario where a treatment is given once per week.
-TEST (Core_TestIntakeExtractor, OncePerWeek){
+TEST(Core_TestIntakeExtractor, OncePerWeek)
+{
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
@@ -25,8 +26,7 @@ TEST (Core_TestIntakeExtractor, OncePerWeek){
     // first Saturday as a week)
     DateTime startJune2017(
             date::year_month_day(date::year(2017), date::month(6), date::day(1)), std::chrono::seconds(0));
-    DateTime endJune2017(
-            date::year_month_day(date::year(2017), date::month(7), date::day(1)), std::chrono::seconds(0));
+    DateTime endJune2017(date::year_month_day(date::year(2017), date::month(7), date::day(1)), std::chrono::seconds(0));
     DateTime startJuly2017(
             date::year_month_day(date::year(2017), date::month(7), date::day(1)), std::chrono::seconds(0));
     DateTime endJuly2017(
@@ -191,7 +191,8 @@ TEST (Core_TestIntakeExtractor, OncePerWeek){
 
 /// \brief Scenario where a treatment is given once every ten days in the first time range, once every 4 days in
 /// the second.
-TEST (Core_TestIntakeExtractor, OnceEveryTenDays){
+TEST(Core_TestIntakeExtractor, OnceEveryTenDays)
+{
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
@@ -335,7 +336,8 @@ TEST (Core_TestIntakeExtractor, OnceEveryTenDays){
 }
 
 /// \brief Scenario where a treatment is given once every 36 hours.
-TEST (Core_TestIntakeExtractor, OnceEvery36Hours){
+TEST(Core_TestIntakeExtractor, OnceEvery36Hours)
+{
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
@@ -447,7 +449,8 @@ TEST (Core_TestIntakeExtractor, OnceEvery36Hours){
 }
 
 /// \brief Scenario where a treatment is given 5 times at a 12 hours interval.
-TEST (Core_TestIntakeExtractor, FiveTimesEvery12Hours){
+TEST(Core_TestIntakeExtractor, FiveTimesEvery12Hours)
+{
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
@@ -552,7 +555,8 @@ TEST (Core_TestIntakeExtractor, FiveTimesEvery12Hours){
 }
 
 /// \brief Scenario where a treatment is given 5 times at a 12 hours interval, and we stop the extraction after 3.
-TEST (Core_TestIntakeExtractor, FiveTimesEvery12HoursEarlyStop){
+TEST(Core_TestIntakeExtractor, FiveTimesEvery12HoursEarlyStop)
+{
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
@@ -638,7 +642,8 @@ TEST (Core_TestIntakeExtractor, FiveTimesEvery12HoursEarlyStop){
 
 /// \brief Scenario where a treatment is given twice in the same day, once with 200mg and the other time with
 /// 300mg, with a ten hours delay, but only every ten days, and this 3 times in a row.
-TEST (Core_TestIntakeExtractor, TwiceEveryTenDays){
+TEST(Core_TestIntakeExtractor, TwiceEveryTenDays)
+{
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
@@ -762,7 +767,8 @@ TEST (Core_TestIntakeExtractor, TwiceEveryTenDays){
 }
 
 /// \brief Scenario where a treatment is given once every day for the first full week of june 2017.
-TEST (Core_TestIntakeExtractor, OnceEveryDay){
+TEST(Core_TestIntakeExtractor, OnceEveryDay)
+{
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
@@ -902,7 +908,8 @@ TEST (Core_TestIntakeExtractor, OnceEveryDay){
 }
 
 /// \brief Scenario where a treatment is given three times a day, every day of the first full week of June 2017.
-TEST (Core_TestIntakeExtractor, ThreeTimesEveryDay){
+TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
+{
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
@@ -1241,7 +1248,8 @@ TEST (Core_TestIntakeExtractor, ThreeTimesEveryDay){
 /// - 10x every 3 hours, with an initial offset of 2h30
 /// - 4x every 6 hours, with an initial offset of 6h30
 /// - the whole processus is repeated twice
-TEST (Core_TestIntakeExtractor, ComplexParallelSequence1){
+TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
+{
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
@@ -1281,11 +1289,9 @@ TEST (Core_TestIntakeExtractor, ComplexParallelSequence1){
     ParallelDosageSequence ds(firstDailyDose, Duration());
     ds.addDosage(secondDailyDose, Duration());
     DosageRepeat repeatEvery3Hours(doseEvery3Hours, 10);
-    ds.addDosage(
-            repeatEvery3Hours, Duration(std::chrono::hours(2), std::chrono::minutes(30), std::chrono::seconds(0)));
+    ds.addDosage(repeatEvery3Hours, Duration(std::chrono::hours(2), std::chrono::minutes(30), std::chrono::seconds(0)));
     DosageRepeat repeatEvery6Hours(doseEvery6Hours, 4);
-    ds.addDosage(
-            repeatEvery6Hours, Duration(std::chrono::hours(6), std::chrono::minutes(30), std::chrono::seconds(0)));
+    ds.addDosage(repeatEvery6Hours, Duration(std::chrono::hours(6), std::chrono::minutes(30), std::chrono::seconds(0)));
     DosageRepeat juneDoses(ds, 2);
     auto june2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJune2017, juneDoses);
 
@@ -1721,7 +1727,8 @@ TEST (Core_TestIntakeExtractor, ComplexParallelSequence1){
 /// - the whole processus should be repeated twice.
 /// However, the intake at 2h30 of the 03.06.2017 (300mg INTRAVASCULAR) has been replaced by an EXTRAVASCULAR
 /// intake of 350mg at 2h49 (the same day). Also, the INFUSION scheduled for 12h00 the 03.06 is cancelled.
-TEST (Core_TestIntakeExtractor, ComplexParallelSequence2){
+TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
+{
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
@@ -1761,11 +1768,9 @@ TEST (Core_TestIntakeExtractor, ComplexParallelSequence2){
     ParallelDosageSequence ds(firstDailyDose, Duration());
     ds.addDosage(secondDailyDose, Duration());
     DosageRepeat repeatEvery3Hours(doseEvery3Hours, 10);
-    ds.addDosage(
-            repeatEvery3Hours, Duration(std::chrono::hours(2), std::chrono::minutes(30), std::chrono::seconds(0)));
+    ds.addDosage(repeatEvery3Hours, Duration(std::chrono::hours(2), std::chrono::minutes(30), std::chrono::seconds(0)));
     DosageRepeat repeatEvery6Hours(doseEvery6Hours, 4);
-    ds.addDosage(
-            repeatEvery6Hours, Duration(std::chrono::hours(6), std::chrono::minutes(30), std::chrono::seconds(0)));
+    ds.addDosage(repeatEvery6Hours, Duration(std::chrono::hours(6), std::chrono::minutes(30), std::chrono::seconds(0)));
     DosageRepeat juneDoses(ds, 2);
     auto june2017 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJune2017, juneDoses);
 
@@ -2227,7 +2232,8 @@ TEST (Core_TestIntakeExtractor, ComplexParallelSequence2){
 
 /// \brief Scenario where a treatment is given every day but Monday. Validate on the first two full weeks of June
 /// 2017.
-TEST (Core_TestIntakeExtractor, FullWeekExceptMonday){
+TEST(Core_TestIntakeExtractor, FullWeekExceptMonday)
+{
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
@@ -2466,7 +2472,8 @@ TEST (Core_TestIntakeExtractor, FullWeekExceptMonday){
 }
 
 /// \brief Scenario where a treatment is given once every 36 hours.
-TEST (Core_TestIntakeExtractor, OnceEvery36HoursAtSteadyState){
+TEST(Core_TestIntakeExtractor, OnceEvery36HoursAtSteadyState)
+{
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 

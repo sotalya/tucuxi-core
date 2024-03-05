@@ -3,11 +3,9 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+
 #include <date/date.h>
-
 #include <gtest/gtest.h>
-
-#include "../gtest_core.h"
 
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/drugmodelchecker.h"
@@ -16,6 +14,7 @@
 #include "tucucore/multicomputingcomponent.h"
 #include "tucucore/pkmodel.h"
 
+#include "../gtest_core.h"
 #include "../pkmodels/multiconstanteliminationbolus.h"
 #include "../testutils.h"
 #include "buildmultianalytesmultiactivemoieties.h"
@@ -38,7 +37,8 @@ static std::vector<double> invCdf = {-1.6449, -1.2816, -0.67449, 0.0, 0.67449, 1
 
 static std::vector<Value> percentileRanks = {5, 10, 25, 50, 75, 90, 95};
 
-TEST (Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiveMoieties){
+TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiveMoieties)
+{
 #if GTEST_VERBOSE
     std::cout << __FUNCTION__ << std::endl;
 #endif
@@ -59,8 +59,7 @@ TEST (Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActi
     bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
             AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getCreator());
     ASSERT_TRUE(addResult);
-    sharedPkModel->addParameterList(
-            AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
+    sharedPkModel->addParameterList(AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
 
     std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
     defaultPopulate(*collection.get());
@@ -149,8 +148,7 @@ TEST (Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActi
 
             ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(5));
             ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "activeMoietyMulti");
-            ASSERT_EQ(
-                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoiety);
+            ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoiety);
             ASSERT_EQ(resp->getCompartmentInfos()[1].getId(), "analyte0");
             ASSERT_EQ(resp->getCompartmentInfos()[1].getType(), CompartmentInfo::CompartmentType::Analyte);
             ASSERT_EQ(resp->getCompartmentInfos()[2].getId(), "analyte1");
@@ -179,8 +177,7 @@ TEST (Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActi
                     date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-            ASSERT_DOUBLE_EQ(
-                    data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
+            ASSERT_DOUBLE_EQ(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
             ASSERT_DOUBLE_EQ(
                     data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0,
                     startSept2018.toSeconds() + 3600.0 * 6.0);
@@ -308,7 +305,8 @@ TEST (Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActi
     delete component;
 }
 
-TEST (Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiveMoietiesConversion){
+TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiveMoietiesConversion)
+{
     BuildMultiAnalytesMultiActiveMoieties builder;
     auto drugModel = builder.buildDrugModel(0.3, 0.5);
 
@@ -324,8 +322,7 @@ TEST (Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActi
     bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
             AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getCreator());
     ASSERT_TRUE(addResult);
-    sharedPkModel->addParameterList(
-            AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
+    sharedPkModel->addParameterList(AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
 
     std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
     collection->addPkModel(sharedPkModel);
@@ -411,8 +408,7 @@ TEST (Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActi
 
             ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(3));
             ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "activeMoietyMulti");
-            ASSERT_EQ(
-                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoiety);
+            ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoiety);
             ASSERT_EQ(resp->getCompartmentInfos()[1].getId(), "analyte0");
             ASSERT_EQ(resp->getCompartmentInfos()[1].getType(), CompartmentInfo::CompartmentType::Analyte);
             ASSERT_EQ(resp->getCompartmentInfos()[2].getId(), "analyte1");
@@ -432,8 +428,7 @@ TEST (Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActi
                     date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-            ASSERT_DOUBLE_EQ(
-                    data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
+            ASSERT_DOUBLE_EQ(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
             ASSERT_DOUBLE_EQ(
                     data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0,
                     startSept2018.toSeconds() + 3600.0 * 6.0);
@@ -496,7 +491,8 @@ TEST (Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActi
     delete component;
 }
 
-TEST (Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_Adjustments){
+TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_Adjustments)
+{
     BuildMultiAnalytesMultiActiveMoieties builder;
     auto drugModel = builder.buildDrugModel(0.3, 0.7);
 
@@ -530,8 +526,7 @@ TEST (Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_Adjustments){
     bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
             AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getCreator());
     ASSERT_TRUE(addResult);
-    sharedPkModel->addParameterList(
-            AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
+    sharedPkModel->addParameterList(AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
 
     std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
     collection->addPkModel(sharedPkModel);
@@ -658,4 +653,3 @@ TEST (Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_Adjustments){
     // Delete all dynamically allocated objects
     delete component;
 }
-

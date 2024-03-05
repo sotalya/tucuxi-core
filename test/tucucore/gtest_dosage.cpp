@@ -11,7 +11,8 @@ using namespace Tucuxi::Core;
 /// \brief Test the instantiation of a SingleDose-derived class, focusing on Single-Dose peculiarities.
 /// The SingleDose class cannot be instantiated since it is abstract -- we will rely on the test below for a
 /// LastingDose and focus on the capabilities of a pure SingleDose (i.e., the Dose, the Route, ...)
-TEST (Core_TestDosage, SingleDose){
+TEST(Core_TestDosage, SingleDose)
+{
     const DoseValue validDose = 100.0;
     const DoseValue invalidDose = -100.0;
     const FormulationAndRoute routePerfusion(
@@ -22,8 +23,7 @@ TEST (Core_TestDosage, SingleDose){
     const Duration validInterval(std::chrono::hours(10));
 
     ASSERT_THROW(
-            Tucuxi::Core::LastingDose(
-                    invalidDose, TucuUnit("mg"), routePerfusion, validInfusionTime, validInterval),
+            Tucuxi::Core::LastingDose(invalidDose, TucuUnit("mg"), routePerfusion, validInfusionTime, validInterval),
             std::invalid_argument);
 
     // An infusion absorption now supports 0 as infusion time
@@ -35,13 +35,13 @@ TEST (Core_TestDosage, SingleDose){
                                   std::invalid_argument);
         */
     ASSERT_THROW(
-            Tucuxi::Core::LastingDose(
-                    validDose, TucuUnit("mg"), routePerfusion, invalidInfusionTime, validInterval),
+            Tucuxi::Core::LastingDose(validDose, TucuUnit("mg"), routePerfusion, invalidInfusionTime, validInterval),
             std::invalid_argument);
 }
 
 /// \brief Test the instantiation of a LastingDose.
-TEST (Core_TestDosage, LastingDose){
+TEST(Core_TestDosage, LastingDose)
+{
     const DoseValue validDose = 100.0;
     const FormulationAndRoute routePerfusion(
             Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
@@ -54,8 +54,7 @@ TEST (Core_TestDosage, LastingDose){
             Tucuxi::Core::LastingDose(validDose, TucuUnit("mg"), routePerfusion, validInfusionTime, emptyInterval),
             std::invalid_argument);
     ASSERT_THROW(
-            Tucuxi::Core::LastingDose(
-                    validDose, TucuUnit("mg"), routePerfusion, validInfusionTime, invalidInterval),
+            Tucuxi::Core::LastingDose(validDose, TucuUnit("mg"), routePerfusion, validInfusionTime, invalidInterval),
             std::invalid_argument);
     ASSERT_NO_THROW(
             Tucuxi::Core::LastingDose(validDose, TucuUnit("mg"), routePerfusion, validInfusionTime, validInterval));
@@ -69,7 +68,8 @@ TEST (Core_TestDosage, LastingDose){
 }
 
 /// \brief Test the instantiation of a DailyDose.
-TEST (Core_TestDosage, DailyDose){
+TEST(Core_TestDosage, DailyDose)
+{
     const DoseValue validDose = 100.0;
     const FormulationAndRoute routePerfusion(
             Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
@@ -112,7 +112,8 @@ TEST (Core_TestDosage, DailyDose){
 }
 
 /// \brief Test the instantiation of a WeeklyDose.
-TEST (Core_TestDosage, WeeklyDose){
+TEST(Core_TestDosage, WeeklyDose)
+{
     const DoseValue validDose = 100.0;
     const FormulationAndRoute routePerfusion(
             Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
@@ -134,22 +135,22 @@ TEST (Core_TestDosage, WeeklyDose){
         const DayOfWeek validDayOfWeek6(unsigned{SUNDAY});
 
         std::vector<unsigned> c_encoding = {
-                                            validDayOfWeek0.c_encoding(),
-                                            validDayOfWeek1.c_encoding(),
-                                            validDayOfWeek2.c_encoding(),
-                                            validDayOfWeek3.c_encoding(),
-                                            validDayOfWeek4.c_encoding(),
-                                            validDayOfWeek5.c_encoding(),
-                                            validDayOfWeek6.c_encoding()};
+                validDayOfWeek0.c_encoding(),
+                validDayOfWeek1.c_encoding(),
+                validDayOfWeek2.c_encoding(),
+                validDayOfWeek3.c_encoding(),
+                validDayOfWeek4.c_encoding(),
+                validDayOfWeek5.c_encoding(),
+                validDayOfWeek6.c_encoding()};
 
         std::vector<unsigned> iso_encoding = {
-                                              validDayOfWeek0.iso_encoding(),
-                                              validDayOfWeek1.iso_encoding(),
-                                              validDayOfWeek2.iso_encoding(),
-                                              validDayOfWeek3.iso_encoding(),
-                                              validDayOfWeek4.iso_encoding(),
-                                              validDayOfWeek5.iso_encoding(),
-                                              validDayOfWeek6.iso_encoding()};
+                validDayOfWeek0.iso_encoding(),
+                validDayOfWeek1.iso_encoding(),
+                validDayOfWeek2.iso_encoding(),
+                validDayOfWeek3.iso_encoding(),
+                validDayOfWeek4.iso_encoding(),
+                validDayOfWeek5.iso_encoding(),
+                validDayOfWeek6.iso_encoding()};
 
         ASSERT_EQ(validDayOfWeek0.iso_encoding(), 1);
         ASSERT_EQ(validDayOfWeek1.iso_encoding(), 2);
@@ -255,7 +256,8 @@ TEST (Core_TestDosage, WeeklyDose){
 }
 
 /// \brief Test a time range, checking that overlaps are properly detected.
-TEST (Core_TestDosage, DosageTimeRange){
+TEST(Core_TestDosage, DosageTimeRange)
+{
     // Give an undefined start date, expect an exception
     DateTime emptyDate;
     emptyDate.reset();
@@ -275,8 +277,8 @@ TEST (Core_TestDosage, DosageTimeRange){
             date::year_month_day(date::year(2017), date::month(7), date::day(23)), std::chrono::seconds(12345));
 
     // Give a valid start date but no end date, expect no exception but the end date must be undefined
-    ASSERT_NO_THROW(
-            Tucuxi::Core::DosageTimeRange* d = new Tucuxi::Core::DosageTimeRange(startDate, fakeDose); delete d;);
+    ASSERT_NO_THROW(Tucuxi::Core::DosageTimeRange* d = new Tucuxi::Core::DosageTimeRange(startDate, fakeDose);
+                    delete d;);
     auto ptr1 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startDate, fakeDose);
     ASSERT_EQ(ptr1->getStartDate(), startDate);
     ASSERT_TRUE(ptr1->getEndDate().isUndefined());
@@ -284,8 +286,7 @@ TEST (Core_TestDosage, DosageTimeRange){
     // Same as above, but with start and end dates. Check also that the two dates are meaningful (start <= end).
     ASSERT_THROW(
             {
-                Tucuxi::Core::DosageTimeRange* d =
-                        new Tucuxi::Core::DosageTimeRange(emptyDate, emptyDate, fakeDose);
+                Tucuxi::Core::DosageTimeRange* d = new Tucuxi::Core::DosageTimeRange(emptyDate, emptyDate, fakeDose);
                 delete d;
             },
             std::invalid_argument);
@@ -370,8 +371,7 @@ TEST (Core_TestDosage, DosageTimeRange){
             date::year_month_day(date::year(2017), date::month(4), date::day(17)), std::chrono::seconds(12345));
     DateTime before5(
             date::year_month_day(date::year(2017), date::month(5), date::day(17)), std::chrono::seconds(12345));
-    DateTime before6(
-            date::year_month_day(date::year(2017), date::month(6), date::day(1)), std::chrono::seconds(12345));
+    DateTime before6(date::year_month_day(date::year(2017), date::month(6), date::day(1)), std::chrono::seconds(12345));
 
     DosageTimeRangeList trList;
     trList.emplace_back(new Tucuxi::Core::DosageTimeRange(before1, before2, fakeDose));

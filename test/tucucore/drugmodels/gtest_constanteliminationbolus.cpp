@@ -3,11 +3,9 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+
 #include <date/date.h>
-
 #include <gtest/gtest.h>
-
-#include "../gtest_core.h"
 
 #include "tucucore/computingcomponent.h"
 #include "tucucore/computingservice/computingrequest.h"
@@ -16,6 +14,7 @@
 #include "tucucore/drugtreatment/patientcovariate.h"
 #include "tucucore/pkmodel.h"
 
+#include "../gtest_core.h"
 #include "../pkmodels/constanteliminationbolus.h"
 #include "../testutils.h"
 #include "buildconstantelimination.h"
@@ -37,7 +36,8 @@ static std::vector<double> invCdf = {-1.6449, -1.2816, -0.67449, 0.0, 0.67449, 1
 
 static std::vector<Value> percentileRanks = {5, 10, 25, 50, 75, 90, 95};
 
-TEST (Core_TestConstantEliminationBolus, Test0){
+TEST(Core_TestConstantEliminationBolus, Test0)
+{
     BuildConstantElimination builder;
     auto drugModel = builder.buildDrugModel();
 
@@ -156,8 +156,7 @@ TEST (Core_TestConstantEliminationBolus, Test0){
             ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
             ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
             ASSERT_EQ(
-                    resp->getCompartmentInfos()[0].getType(),
-                    CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             std::vector<CycleData> data = resp->getData();
             ASSERT_EQ(data.size(), static_cast<size_t>(16));
@@ -167,8 +166,7 @@ TEST (Core_TestConstantEliminationBolus, Test0){
                     date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-            ASSERT_DOUBLE_EQ(
-                    data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
+            ASSERT_DOUBLE_EQ(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
             ASSERT_DOUBLE_EQ(
                     data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0,
                     startSept2018.toSeconds() + 3600.0 * 6.0);
@@ -205,7 +203,8 @@ TEST (Core_TestConstantEliminationBolus, Test0){
     delete component;
 }
 
-TEST (Core_TestConstantEliminationBolus, Test1){
+TEST(Core_TestConstantEliminationBolus, Test1)
+{
     BuildConstantElimination builder;
     auto drugModel = builder.buildDrugModel();
 
@@ -324,8 +323,7 @@ TEST (Core_TestConstantEliminationBolus, Test1){
             ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
             ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
             ASSERT_EQ(
-                    resp->getCompartmentInfos()[0].getType(),
-                    CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+                    resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
             std::vector<CycleData> data = resp->getData();
             ASSERT_EQ(data.size(), static_cast<size_t>(16));
@@ -335,8 +333,7 @@ TEST (Core_TestConstantEliminationBolus, Test1){
                     date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-            ASSERT_DOUBLE_EQ(
-                    data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
+            ASSERT_DOUBLE_EQ(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
             ASSERT_DOUBLE_EQ(
                     data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0,
                     startSept2018.toSeconds() + 3600.0 * 6.0);
@@ -373,7 +370,8 @@ TEST (Core_TestConstantEliminationBolus, Test1){
     delete component;
 }
 
-TEST (Core_TestConstantEliminationBolus, ResidualErrorModelAdditive){
+TEST(Core_TestConstantEliminationBolus, ResidualErrorModelAdditive)
+{
     BuildConstantElimination builder;
     auto drugModel = builder.buildDrugModel(ResidualErrorType::ADDITIVE, std::vector<Value>({10000.0}));
 
@@ -462,15 +460,12 @@ TEST (Core_TestConstantEliminationBolus, ResidualErrorModelAdditive){
         for (size_t p = 0; p < resp->getNbRanks(); p++) {
             DateTime statTime = DateTime::now();
             Value statValue = 0.0;
-            resp->getData(p, 0)
-                    .m_statistics.getStatistic(0, CycleStatisticType::Mean)
-                    .getValue(statTime, statValue);
+            resp->getData(p, 0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
             //ASSERT_DOUBLE_EQ(statValue, 200001.0);
 
             // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
             double expectedValue = invCdf[p] * 10.0 * 1000.0;
-            ASSERT_PRED4(double_eq_rel_abs,
-                    statValue - 200000.0, expectedValue, 0.02, 10.0 * 10.0 * 1000.0 * 0.06);
+            ASSERT_PRED4(double_eq_rel_abs, statValue - 200000.0, expectedValue, 0.02, 10.0 * 10.0 * 1000.0 * 0.06);
         }
     }
 
@@ -478,7 +473,8 @@ TEST (Core_TestConstantEliminationBolus, ResidualErrorModelAdditive){
     delete component;
 }
 
-TEST (Core_TestConstantEliminationBolus, ResidualErrorModelExponential){
+TEST(Core_TestConstantEliminationBolus, ResidualErrorModelExponential)
+{
     BuildConstantElimination builder;
     auto drugModel = builder.buildDrugModel(ResidualErrorType::EXPONENTIAL, std::vector<Value>({0.2}));
 
@@ -565,9 +561,7 @@ TEST (Core_TestConstantEliminationBolus, ResidualErrorModelExponential){
         for (size_t p = 0; p < resp->getNbRanks(); p++) {
             DateTime statTime = DateTime::now();
             Value statValue = 0.0;
-            resp->getData(p, 0)
-                    .m_statistics.getStatistic(0, CycleStatisticType::Mean)
-                    .getValue(statTime, statValue);
+            resp->getData(p, 0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
             //ASSERT_DOUBLE_EQ(statValue, 200001.0);
 
             // Multiply the Inv CDF by SD (0.2)
@@ -580,7 +574,8 @@ TEST (Core_TestConstantEliminationBolus, ResidualErrorModelExponential){
     delete component;
 }
 
-TEST (Core_TestConstantEliminationBolus, ResidualErrorModelProportional){
+TEST(Core_TestConstantEliminationBolus, ResidualErrorModelProportional)
+{
     BuildConstantElimination builder;
     auto drugModel = builder.buildDrugModel(ResidualErrorType::PROPORTIONAL, std::vector<Value>({0.2}));
 
@@ -666,9 +661,7 @@ TEST (Core_TestConstantEliminationBolus, ResidualErrorModelProportional){
         for (size_t p = 0; p < resp->getNbRanks(); p++) {
             DateTime statTime = DateTime::now();
             Value statValue = 0.0;
-            resp->getData(p, 0)
-                    .m_statistics.getStatistic(0, CycleStatisticType::Mean)
-                    .getValue(statTime, statValue);
+            resp->getData(p, 0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
             //ASSERT_DOUBLE_EQ(statValue, 200001.0);
 
             // Multiply the Inv CDF by SD (0.2)
@@ -681,7 +674,8 @@ TEST (Core_TestConstantEliminationBolus, ResidualErrorModelProportional){
     delete component;
 }
 
-TEST (Core_TestConstantEliminationBolus, ResidualErrorModelMixed){
+TEST(Core_TestConstantEliminationBolus, ResidualErrorModelMixed)
+{
     BuildConstantElimination builder;
     auto drugModel = builder.buildDrugModel(ResidualErrorType::MIXED, std::vector<Value>({10.0, 0.2}));
 
@@ -768,9 +762,7 @@ TEST (Core_TestConstantEliminationBolus, ResidualErrorModelMixed){
         for (size_t p = 0; p < resp->getNbRanks(); p++) {
             DateTime statTime = DateTime::now();
             Value statValue = 0.0;
-            resp->getData(p, 0)
-                    .m_statistics.getStatistic(0, CycleStatisticType::Mean)
-                    .getValue(statTime, statValue);
+            resp->getData(p, 0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
             //ASSERT_DOUBLE_EQ(statValue, 200001.0);
 
             // Multiply the Inv CDF by SD (0.2)
@@ -783,7 +775,8 @@ TEST (Core_TestConstantEliminationBolus, ResidualErrorModelMixed){
     delete component;
 }
 
-TEST (Core_TestConstantEliminationBolus, ParamAdditive){
+TEST(Core_TestConstantEliminationBolus, ParamAdditive)
+{
     BuildConstantElimination builder;
     auto drugModel = builder.buildDrugModel(
             ResidualErrorType::NONE,
@@ -880,9 +873,7 @@ TEST (Core_TestConstantEliminationBolus, ParamAdditive){
         for (size_t p = 0; p < resp->getNbRanks(); p++) {
             DateTime statTime = DateTime::now();
             Value statValue = 0.0;
-            resp->getData(p, 0)
-                    .m_statistics.getStatistic(0, CycleStatisticType::Mean)
-                    .getValue(statTime, statValue);
+            resp->getData(p, 0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
             //ASSERT_DOUBLE_EQ(statValue, 200001.0);
 
             // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
@@ -895,7 +886,8 @@ TEST (Core_TestConstantEliminationBolus, ParamAdditive){
     delete component;
 }
 
-TEST (Core_TestConstantEliminationBolus, ParamAdditiveResidualErrorModelAdditive){
+TEST(Core_TestConstantEliminationBolus, ParamAdditiveResidualErrorModelAdditive)
+{
     BuildConstantElimination builder;
     auto drugModel = builder.buildDrugModel(
             ResidualErrorType::ADDITIVE,
@@ -992,14 +984,11 @@ TEST (Core_TestConstantEliminationBolus, ParamAdditiveResidualErrorModelAdditive
         for (size_t p = 0; p < resp->getNbRanks(); p++) {
             DateTime statTime = DateTime::now();
             Value statValue = 0.0;
-            resp->getData(p, 0)
-                    .m_statistics.getStatistic(0, CycleStatisticType::Mean)
-                    .getValue(statTime, statValue);
+            resp->getData(p, 0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
             //ASSERT_DOUBLE_EQ(statValue, 200001.0);
 
             // Multiply the Inv CDF by SD (10), and by 1000.0 because of mg/l
-            double expectedValue =
-                    200000.0 + invCdf[p] * std::sqrt(std::pow(1000.0, 2) + std::pow(10.0 * 1000.0, 2));
+            double expectedValue = 200000.0 + invCdf[p] * std::sqrt(std::pow(1000.0, 2) + std::pow(10.0 * 1000.0, 2));
 
             ASSERT_PRED4(double_eq_rel_abs, statValue, expectedValue, .01, 0.01);
         }
@@ -1009,7 +998,8 @@ TEST (Core_TestConstantEliminationBolus, ParamAdditiveResidualErrorModelAdditive
     delete component;
 }
 
-TEST (Core_TestConstantEliminationBolus, ParamExponentialResidualErrorModelExponential){
+TEST(Core_TestConstantEliminationBolus, ParamExponentialResidualErrorModelExponential)
+{
     BuildConstantElimination builder;
     auto drugModel = builder.buildDrugModel(
             ResidualErrorType::EXPONENTIAL,
@@ -1106,9 +1096,7 @@ TEST (Core_TestConstantEliminationBolus, ParamExponentialResidualErrorModelExpon
         for (size_t p = 0; p < resp->getNbRanks(); p++) {
             DateTime statTime = DateTime::now();
             Value statValue = 0.0;
-            resp->getData(p, 0)
-                    .m_statistics.getStatistic(0, CycleStatisticType::Mean)
-                    .getValue(statTime, statValue);
+            resp->getData(p, 0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
 
             // Calculate the resulting standard deviation
             double newStd = std::sqrt(std::pow(0.2, 2) + std::pow(0.3, 2));
@@ -1123,7 +1111,8 @@ TEST (Core_TestConstantEliminationBolus, ParamExponentialResidualErrorModelExpon
     delete component;
 }
 
-TEST (Core_TestConstantEliminationBolus, DISABLED_ParamProportionalResidualErrorModelProportional){
+TEST(Core_TestConstantEliminationBolus, DISABLED_ParamProportionalResidualErrorModelProportional)
+{
     BuildConstantElimination builder;
     auto drugModel = builder.buildDrugModel(
             ResidualErrorType::PROPORTIONAL,
@@ -1220,9 +1209,7 @@ TEST (Core_TestConstantEliminationBolus, DISABLED_ParamProportionalResidualError
         for (size_t p = 0; p < resp->getNbRanks(); p++) {
             DateTime statTime = DateTime::now();
             Value statValue = 0.0;
-            resp->getData(p, 0)
-                    .m_statistics.getStatistic(0, CycleStatisticType::Mean)
-                    .getValue(statTime, statValue);
+            resp->getData(p, 0).m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
             //ASSERT_DOUBLE_EQ(statValue, 200001.0);
 
 
@@ -1246,7 +1233,8 @@ TEST (Core_TestConstantEliminationBolus, DISABLED_ParamProportionalResidualError
     delete component;
 }
 
-TEST (Core_TestConstantEliminationBolus, Adjustments){
+TEST(Core_TestConstantEliminationBolus, Adjustments)
+{
     BuildConstantElimination builder;
     auto drugModel = builder.buildDrugModel();
 
@@ -1388,7 +1376,8 @@ TEST (Core_TestConstantEliminationBolus, Adjustments){
     delete component;
 }
 
-TEST (Core_TestConstantEliminationBolus, Adjustments2){
+TEST(Core_TestConstantEliminationBolus, Adjustments2)
+{
     BuildConstantElimination builder;
     auto drugModel = builder.buildDrugModel();
 

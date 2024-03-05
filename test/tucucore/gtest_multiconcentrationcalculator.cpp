@@ -4,8 +4,6 @@
 
 #include <gtest/gtest.h>
 
-#include "gtest_core.h"
-
 #include "tucucore/dosage.h"
 #include "tucucore/intakeextractor.h"
 #include "tucucore/intakeintervalcalculator.h"
@@ -14,13 +12,14 @@
 #include "tucucore/pkmodels/onecompartmentbolus.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
 #include "tucucore/pkmodels/onecompartmentinfusion.h"
-#include "tucucore/pkmodels/twocompartmentbolus.h"
-#include "tucucore/pkmodels/twocompartmentextra.h"
-#include "tucucore/pkmodels/twocompartmentinfusion.h"
 #include "tucucore/pkmodels/threecompartmentbolus.h"
 #include "tucucore/pkmodels/threecompartmentextra.h"
 #include "tucucore/pkmodels/threecompartmentinfusion.h"
+#include "tucucore/pkmodels/twocompartmentbolus.h"
+#include "tucucore/pkmodels/twocompartmentextra.h"
+#include "tucucore/pkmodels/twocompartmentinfusion.h"
 
+#include "gtest_core.h"
 #include "pkmodels/constanteliminationbolus.h"
 #include "pkmodels/multiconstanteliminationbolus.h"
 
@@ -161,7 +160,7 @@ static void testMultiConcentrationCalculator(
                     concentrations, times, intakeEvent, event, inResiduals, isAll, outResiduals, true);
 
 #if GTEST_VERBOSE
-            for(int testPoint = 0; testPoint < (_nbPoints - 1 ) * nbCycles + 1; testPoint++) {
+            for (int testPoint = 0; testPoint < (_nbPoints - 1) * nbCycles + 1; testPoint++) {
                 std::cout << "concentration[" << testPoint << "]: " << concentrations[0][testPoint] << std::endl;
             }
 #endif
@@ -201,9 +200,11 @@ static void testMultiConcentrationCalculator(
             ASSERT_EQ(status, ComputingStatus::Ok);
 
 #if GTEST_VERBOSE
-            for(int testCycle = 0; testCycle < nbCycles; testCycle++) {
-                for(int testNbPoint = 0; testNbPoint < _nbPoints; testNbPoint++)  {
-                    std::cout << "concentration[" << testCycle << "]" << "[" << testNbPoint<< "]" << ": " << predictionPtr->getValues()[testCycle][testNbPoint] << std::endl;
+            for (int testCycle = 0; testCycle < nbCycles; testCycle++) {
+                for (int testNbPoint = 0; testNbPoint < _nbPoints; testNbPoint++) {
+                    std::cout << "concentration[" << testCycle << "]"
+                              << "[" << testNbPoint << "]"
+                              << ": " << predictionPtr->getValues()[testCycle][testNbPoint] << std::endl;
                 }
             }
 #endif
@@ -222,7 +223,11 @@ static void testMultiConcentrationCalculator(
                     }
                     // std::cout << cycle <<  " : " << i << " :: " << predictionPtr->getTimes()[cycle][i] << " . " << sumConcentration << " : " << concentration2[i] << std::endl;
                     ASSERT_PRED4(
-                            double_eq_rel_abs, sumConcentration, concentration2[0][i], DEFAULT_PRECISION, DEFAULT_PRECISION);
+                            double_eq_rel_abs,
+                            sumConcentration,
+                            concentration2[0][i],
+                            DEFAULT_PRECISION,
+                            DEFAULT_PRECISION);
                 }
             }
         }
@@ -275,7 +280,7 @@ static void testMultiConcentrationCalculator(
             ASSERT_EQ(status, ComputingStatus::Ok);
 
 #if GTEST_VERBOSE
-            for (int i = 0; i<nbPoints; i++) {
+            for (int i = 0; i < nbPoints; i++) {
                 std::cout << i << ":" << predictionPtr->getValues()[0][i] << std::endl;
             }
 #endif
@@ -328,7 +333,8 @@ static void testMultiConcentrationCalculator(
     // synchronized with the times at which the concentration points are expected
 }
 
-TEST (Core_TestMultiConcentrationCalculator, ConstantEliminationBolus){
+TEST(Core_TestMultiConcentrationCalculator, ConstantEliminationBolus)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "TestA", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
@@ -346,7 +352,8 @@ TEST (Core_TestMultiConcentrationCalculator, ConstantEliminationBolus){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestMultiConcentrationCalculator, oneCompBolus){
+TEST(Core_TestMultiConcentrationCalculator, oneCompBolus)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V", 347, Tucuxi::Core::ParameterVariabilityType::None));
@@ -360,7 +367,8 @@ TEST (Core_TestMultiConcentrationCalculator, oneCompBolus){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Intravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestMultiConcentrationCalculator, oneCompExtra){
+TEST(Core_TestMultiConcentrationCalculator, oneCompExtra)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V", 347, Tucuxi::Core::ParameterVariabilityType::None));
@@ -368,8 +376,8 @@ TEST (Core_TestMultiConcentrationCalculator, oneCompExtra){
             "Ke", 0.0435331, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
     Tucuxi::Core::ParameterSetSeries parametersSeries;
     parametersSeries.addParameterSetEvent(parameters);
@@ -378,7 +386,8 @@ TEST (Core_TestMultiConcentrationCalculator, oneCompExtra){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestMultiConcentrationCalculator, oneCompInfusion){
+TEST(Core_TestMultiConcentrationCalculator, oneCompInfusion)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V", 347, Tucuxi::Core::ParameterVariabilityType::None));
@@ -392,7 +401,8 @@ TEST (Core_TestMultiConcentrationCalculator, oneCompInfusion){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Infusion, 12h, 1h, CYCLE_SIZE);
 }
 
-TEST (Core_TestMultiConcentrationCalculator, twoCompBolus){
+TEST(Core_TestMultiConcentrationCalculator, twoCompBolus)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
@@ -410,7 +420,8 @@ TEST (Core_TestMultiConcentrationCalculator, twoCompBolus){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Intravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestMultiConcentrationCalculator, twoCompExtra){
+TEST(Core_TestMultiConcentrationCalculator, twoCompExtra)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
@@ -422,8 +433,8 @@ TEST (Core_TestMultiConcentrationCalculator, twoCompExtra){
             "K21", 0.0584795, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent parameters(DateTime::now(), parameterDefs);
     Tucuxi::Core::ParameterSetSeries parametersSeries;
     parametersSeries.addParameterSetEvent(parameters);
@@ -432,7 +443,8 @@ TEST (Core_TestMultiConcentrationCalculator, twoCompExtra){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestMultiConcentrationCalculator, twoCompInfusion){
+TEST(Core_TestMultiConcentrationCalculator, twoCompInfusion)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
@@ -450,7 +462,8 @@ TEST (Core_TestMultiConcentrationCalculator, twoCompInfusion){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Infusion, 12h, 1h, CYCLE_SIZE);
 }
 
-TEST (Core_TestMultiConcentrationCalculator, MultiConstantEliminationBolus){
+TEST(Core_TestMultiConcentrationCalculator, MultiConstantEliminationBolus)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "TestA0", 1.0, Tucuxi::Core::ParameterVariabilityType::None));
@@ -476,10 +489,11 @@ TEST (Core_TestMultiConcentrationCalculator, MultiConstantEliminationBolus){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestMultiConcentrationCalculator, DISABLED_threeCompBolus){
+TEST(Core_TestMultiConcentrationCalculator, DISABLED_threeCompBolus)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -500,10 +514,11 @@ TEST (Core_TestMultiConcentrationCalculator, DISABLED_threeCompBolus){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Intravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestMultiConcentrationCalculator, DISABLED_threeCompExtra){
+TEST(Core_TestMultiConcentrationCalculator, DISABLED_threeCompExtra)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -526,10 +541,11 @@ TEST (Core_TestMultiConcentrationCalculator, DISABLED_threeCompExtra){
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST (Core_TestMultiConcentrationCalculator, DISABLED_threeCompInfusion){
+TEST(Core_TestMultiConcentrationCalculator, DISABLED_threeCompInfusion)
+{
     Tucuxi::Core::ParameterDefinitions parameterDefs;
-    parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+    parameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(

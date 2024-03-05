@@ -2,11 +2,9 @@
 
 #include <chrono>
 #include <memory>
+
 #include <date/date.h>
-
 #include <gtest/gtest.h>
-
-#include "../gtest_core.h"
 
 #include "tucucommon/datetime.h"
 
@@ -16,6 +14,8 @@
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugmodelimport.h"
+
+#include "../gtest_core.h"
 
 using namespace std::chrono_literals;
 using namespace date;
@@ -791,7 +791,8 @@ return F <= 1.0 and F > 0.0;
     </drugModel>
 </model>)";
 
-TEST (Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten2compBolus){
+TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten2compBolus)
+{
     DrugModelImport importer;
 
     std::unique_ptr<DrugModel> drugModel;
@@ -843,8 +844,7 @@ TEST (Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten2compBolus){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "rifampicin");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         //std::cout << "Population parameters : " << std::endl;
         //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -877,8 +877,7 @@ TEST (Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten2compBolus){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "rifampicin");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         //std::cout << "A priori parameters : " << std::endl;
         //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -891,7 +890,8 @@ TEST (Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten2compBolus){
     }
 }
 
-TEST (Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtra){
+TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtra)
+{
     DrugModelImport importer;
 
     std::unique_ptr<DrugModel> drugModel;
@@ -943,8 +943,7 @@ TEST (Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtra){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "rifampicin");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         //std::cout << "Population parameters : " << std::endl;
         //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -977,8 +976,7 @@ TEST (Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtra){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "rifampicin");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
 
         //std::cout << "A priori parameters : " << std::endl;
@@ -992,7 +990,8 @@ TEST (Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtra){
     }
 }
 
-TEST (Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtraPercentilesApriori){
+TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtraPercentilesApriori)
+{
     DrugModelImport importer;
 
     std::unique_ptr<DrugModel> drugModel;

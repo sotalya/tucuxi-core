@@ -4,8 +4,6 @@
 
 #include <gtest/gtest.h>
 
-#include "gtest_core.h"
-
 #include "tucucommon/datetime.h"
 
 #include "tucucore/computingcomponent.h"
@@ -17,6 +15,7 @@
 
 #include "drugmodels/buildconstantelimination.h"
 #include "drugmodels/buildimatinib.h"
+#include "gtest_core.h"
 
 using namespace Tucuxi::Core;
 
@@ -47,7 +46,8 @@ static std::unique_ptr<DrugTreatment> buildSimpleDrugTreatment(
     return drugTreatment;
 }
 
-TEST (Core_TestComputingComponentPercentiles, Imatinib1){
+TEST(Core_TestComputingComponentPercentiles, Imatinib1)
+{
     // We reduce the number of patients to speed up the tests
     MonteCarloPercentileCalculatorBase::setStaticNumberPatients(1000);
 
@@ -147,7 +147,8 @@ TEST (Core_TestComputingComponentPercentiles, Imatinib1){
     delete component;
 }
 
-TEST (Core_TestComputingComponentPercentiles, ImatinibSteadyState){
+TEST(Core_TestComputingComponentPercentiles, ImatinibSteadyState)
+{
     // We reduce the number of patients to speed up the tests
     MonteCarloPercentileCalculatorBase::setStaticNumberPatients(1000);
 
@@ -247,7 +248,8 @@ TEST (Core_TestComputingComponentPercentiles, ImatinibSteadyState){
     delete component;
 }
 
-TEST (Core_TestComputingComponentPercentiles, AposterioriPercentiles){
+TEST(Core_TestComputingComponentPercentiles, AposterioriPercentiles)
+{
     // We reduce the number of patients to speed up the tests
     MonteCarloPercentileCalculatorBase::setStaticNumberPatients(1000);
 
@@ -450,5 +452,3 @@ TEST (Core_TestComputingComponentPercentiles, AposterioriPercentiles){
 
     delete component;
 }
-
-

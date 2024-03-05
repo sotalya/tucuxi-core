@@ -20,7 +20,8 @@ static int countNodes(Tucuxi::Common::XmlNodeIterator& iter)
     return n;
 }
 
-TEST (Common_TestXml, Read){
+TEST(Common_TestXml, Read)
+{
     Tucuxi::Common::XmlDocument xmlDoc;
     xmlDoc.fromString(
             "<ROOT><CHILD text='abc' id='1'>Salut</CHILD><CHILD text='def' id='2'>Tcho</CHILD><AAA>bbb</AAA></ROOT>");
@@ -51,7 +52,8 @@ TEST (Common_TestXml, Read){
     ASSERT_EQ(countNodes(iterNodes), 0);
 }
 
-TEST (Common_TestXml, Write){
+TEST(Common_TestXml, Write)
+{
     Tucuxi::Common::XmlDocument doc;
     Tucuxi::Common::XmlNode root = doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "ROOT");
     doc.setRoot(root);
@@ -67,11 +69,11 @@ TEST (Common_TestXml, Write){
     std::string strXml;
     doc.toString(strXml);
 
-    ASSERT_EQ(
-            strXml, "<ROOT><CHILD text='abc' id='1'>Salut</CHILD><CHILD text='def' id='2'>Tcho</CHILD></ROOT>");
+    ASSERT_EQ(strXml, "<ROOT><CHILD text='abc' id='1'>Salut</CHILD><CHILD text='def' id='2'>Tcho</CHILD></ROOT>");
 }
 
-TEST (Common_TestXml, Files){
+TEST(Common_TestXml, Files)
+{
     int nChildren = 5000;
     std::string fileName = Tucuxi::Common::Utils::strFormat("%s/test.xml", appFolder.c_str());
 
@@ -111,7 +113,8 @@ TEST (Common_TestXml, Files){
     }
 }
 
-TEST (Common_TestXml, Operators){
+TEST(Common_TestXml, Operators)
+{
     Tucuxi::Common::XmlDocument xmlDoc;
     xmlDoc.fromString("<ROOT><CHILD text='abc' id='1'>Salut</CHILD><CHILD text='def' id='2'>Tcho</CHILD></ROOT>");
 

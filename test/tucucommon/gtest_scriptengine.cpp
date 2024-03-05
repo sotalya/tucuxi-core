@@ -2,13 +2,13 @@
 
 #include <string>
 
-
 #include <gtest/gtest.h>
 
 #include "tucucommon/jsengine.h"
 
 
-TEST (Common_TestScriptEngine, Basic){
+TEST(Common_TestScriptEngine, Basic)
+{
     Tucuxi::Common::JSEngine engine;
     engine.evaluate("a = 34*2;");
     int value;

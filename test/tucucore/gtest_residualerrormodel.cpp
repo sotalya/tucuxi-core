@@ -2,9 +2,9 @@
 
 #include <gtest/gtest.h>
 
-#include "gtest_core.h"
-
 #include "tucucore/residualerrormodel.h"
+
+#include "gtest_core.h"
 
 using namespace Tucuxi::Core;
 
@@ -62,7 +62,8 @@ static Value applyEpsToValue2(
 }
 
 
-TEST (Core_TestResidualErrorModel, LogLikelihood){
+TEST(Core_TestResidualErrorModel, LogLikelihood)
+{
     Value logLikelihood0 = 0.0;
     Value logLikelihood1 = 0.0;
     Value logLikelihood2 = 0.0;
@@ -128,7 +129,8 @@ TEST (Core_TestResidualErrorModel, LogLikelihood){
     ASSERT_GT(logLikelihood1, logLikelihood2);
 }
 
-TEST (Core_TestResidualErrorModel, ApplyEpsToValue){
+TEST(Core_TestResidualErrorModel, ApplyEpsToValue)
+{
     Value calculated;
 
     // If epsilon is 0, then the value should not change

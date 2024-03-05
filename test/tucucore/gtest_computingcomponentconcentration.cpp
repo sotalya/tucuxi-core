@@ -4,8 +4,6 @@
 
 #include <gtest/gtest.h>
 
-#include "gtest_core.h"
-
 #include "tucucommon/datetime.h"
 
 #include "tucucore/computingcomponent.h"
@@ -16,6 +14,7 @@
 
 #include "drugmodels/buildconstantelimination.h"
 #include "drugmodels/buildimatinib.h"
+#include "gtest_core.h"
 
 using namespace Tucuxi::Core;
 
@@ -46,7 +45,8 @@ static std::unique_ptr<DrugTreatment> buildSimpleDrugTreatment(
     return drugTreatment;
 }
 
-TEST (Core_TestComputingComponentConcentration, Simple1){
+TEST(Core_TestComputingComponentConcentration, Simple1)
+{
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
     ASSERT_TRUE(component != nullptr);
@@ -94,8 +94,7 @@ TEST (Core_TestComputingComponentConcentration, Simple1){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
         std::vector<CycleData> data = resp->getData();
         ASSERT_EQ(data.size(), static_cast<size_t>(16));
         ASSERT_EQ(data[0].m_concentrations.size(), static_cast<size_t>(1));
@@ -104,11 +103,9 @@ TEST (Core_TestComputingComponentConcentration, Simple1){
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                 Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
+        ASSERT_DOUBLE_EQ(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
         ASSERT_DOUBLE_EQ(
-                data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
-        ASSERT_DOUBLE_EQ(
-                data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0,
-                startSept2018.toSeconds() + 3600.0 * 6.0);
+                data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0, startSept2018.toSeconds() + 3600.0 * 6.0);
     }
 
     {
@@ -136,8 +133,7 @@ TEST (Core_TestComputingComponentConcentration, Simple1){
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
-        ASSERT_EQ(
-                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         std::vector<CycleData> data = resp->getData();
         ASSERT_EQ(data.size(), static_cast<size_t>(15));
@@ -147,18 +143,17 @@ TEST (Core_TestComputingComponentConcentration, Simple1){
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
                 Duration(std::chrono::hours(14), std::chrono::minutes(0), std::chrono::seconds(0)));
 
+        ASSERT_DOUBLE_EQ(data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
         ASSERT_DOUBLE_EQ(
-                data[0].m_start.toSeconds() + data[0].m_times[0][0] * 3600.0, startSept2018.toSeconds());
-        ASSERT_DOUBLE_EQ(
-                data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0,
-                startSept2018.toSeconds() + 3600.0 * 6.0);
+                data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0, startSept2018.toSeconds() + 3600.0 * 6.0);
     }
 
     // Delete all dynamically allocated objects
     delete component;
 }
 
-TEST (Core_TestComputingComponentConcentration, ImatinibSteadyState){
+TEST(Core_TestComputingComponentConcentration, ImatinibSteadyState)
+{
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
     ASSERT_TRUE(component != nullptr);
@@ -219,8 +214,7 @@ TEST (Core_TestComputingComponentConcentration, ImatinibSteadyState){
 
     ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
     ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
-    ASSERT_EQ(
-            resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
     std::vector<CycleData> data = resp->getData();
 
@@ -232,29 +226,23 @@ TEST (Core_TestComputingComponentConcentration, ImatinibSteadyState){
 
     // Here we check that the relative difference of starting concentration for each cycle is small compared
     // to its residual (less than 0.0001)
-    ASSERT_PRED4(
-            double_eq_rel_abs, data[0].m_concentrations[0][0], data[0].m_concentrations[0].back(), 0.0001, 0.0001);
-    ASSERT_PRED4(
-            double_eq_rel_abs, data[1].m_concentrations[0][0], data[1].m_concentrations[0].back(), 0.0001, 0.0001);
-    ASSERT_PRED4(
-            double_eq_rel_abs, data[2].m_concentrations[0][0], data[2].m_concentrations[0].back(), 0.0001, 0.0001);
-    ASSERT_PRED4(
-            double_eq_rel_abs, data[3].m_concentrations[0][0], data[3].m_concentrations[0].back(), 0.0001, 0.0001);
+    ASSERT_PRED4(double_eq_rel_abs, data[0].m_concentrations[0][0], data[0].m_concentrations[0].back(), 0.0001, 0.0001);
+    ASSERT_PRED4(double_eq_rel_abs, data[1].m_concentrations[0][0], data[1].m_concentrations[0].back(), 0.0001, 0.0001);
+    ASSERT_PRED4(double_eq_rel_abs, data[2].m_concentrations[0][0], data[2].m_concentrations[0].back(), 0.0001, 0.0001);
+    ASSERT_PRED4(double_eq_rel_abs, data[3].m_concentrations[0][0], data[3].m_concentrations[0].back(), 0.0001, 0.0001);
 
     // Here we check that the relative difference of starting concentration for different cycles is small (less than 0.0001)
     // Actually if the residual are correctly implemented these assertions are equivalent to the four previous ones
-    ASSERT_PRED4(
-            double_eq_rel_abs, data[0].m_concentrations[0][0], data[1].m_concentrations[0][0], 0.0001, 0.0001);
-    ASSERT_PRED4(
-            double_eq_rel_abs, data[0].m_concentrations[0][0], data[2].m_concentrations[0][0], 0.0001, 0.0001);
-    ASSERT_PRED4(
-            double_eq_rel_abs, data[0].m_concentrations[0][0], data[3].m_concentrations[0][0], 0.0001, 0.0001);
+    ASSERT_PRED4(double_eq_rel_abs, data[0].m_concentrations[0][0], data[1].m_concentrations[0][0], 0.0001, 0.0001);
+    ASSERT_PRED4(double_eq_rel_abs, data[0].m_concentrations[0][0], data[2].m_concentrations[0][0], 0.0001, 0.0001);
+    ASSERT_PRED4(double_eq_rel_abs, data[0].m_concentrations[0][0], data[3].m_concentrations[0][0], 0.0001, 0.0001);
 
     // Delete all dynamically allocated objects
     delete component;
 }
 
-TEST (Core_TestComputingComponentConcentration, SampleBeforeTreatmentStart){
+TEST(Core_TestComputingComponentConcentration, SampleBeforeTreatmentStart)
+{
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
     BuildConstantElimination builder;

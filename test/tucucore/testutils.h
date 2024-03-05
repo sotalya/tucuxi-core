@@ -229,10 +229,9 @@
 /// \param NAME Name of the covariate to search.
 /// \param DATE Time instant when the covariate is supposed to show up.
 /// \param REFRESH_MAP Refresh map where the covariate has be to sought.
-#define CHECK_REFRESH(NAME, DATE, REFRESH_MAP)                                                                    \
-    do {                                                                                                          \
-        ASSERT_FALSE(                                                                                          \
-                std::find(REFRESH_MAP[DATE].begin(), REFRESH_MAP[DATE].end(), #NAME) == REFRESH_MAP[DATE].end()); \
+#define CHECK_REFRESH(NAME, DATE, REFRESH_MAP)                                                                         \
+    do {                                                                                                               \
+        ASSERT_FALSE(std::find(REFRESH_MAP[DATE].begin(), REFRESH_MAP[DATE].end(), #NAME) == REFRESH_MAP[DATE].end()); \
     } while (0);
 
 

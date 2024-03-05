@@ -1,8 +1,8 @@
 //@@license@@
 
 #include <memory>
-#include <date/date.h>
 
+#include <date/date.h>
 #include <gtest/gtest.h>
 
 #include "tucucore/drugmodel/drugmodel.h"
@@ -801,7 +801,8 @@ static const std::string tobramycin_tdd = R"(<?xml version="1.0" encoding="UTF-8
 
         )";
 
-TEST (Core_TestDrugTobramycin, Tobramycin){
+TEST(Core_TestDrugTobramycin, Tobramycin)
+{
     DrugModelImport importer;
 
     std::unique_ptr<DrugModel> drugModel;

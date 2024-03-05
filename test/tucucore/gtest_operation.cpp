@@ -54,7 +54,8 @@ protected:
     }
 };
 
-TEST (Core_TestOperation, OperationInput){
+TEST(Core_TestOperation, OperationInput)
+{
     bool rc;
 
     // Create an input without specifying the type -> expect type=DOUBLE, correct name, and undefined.
@@ -136,7 +137,8 @@ TEST (Core_TestOperation, OperationInput){
     ASSERT_EQ(value2, 433);
 }
 
-TEST (Core_TestOperation, HardcodedOperation){
+TEST(Core_TestOperation, HardcodedOperation)
+{
     // Perform the a - b operation and expect success.
     OperationInput a("a", 1.234);
     OperationInput b("b", 1);
@@ -157,12 +159,9 @@ TEST (Core_TestOperation, HardcodedOperation){
     // Ensure that the check() function behaves properly.
     ASSERT_TRUE(diff.check({b, a}));
     ASSERT_TRUE(diff.check({OperationInput("b", 1), OperationInput("a", 1.234)}));
-    ASSERT_TRUE(
-            diff.check({OperationInput("b", 1), OperationInput("a", 1.234), OperationInput("c", 1.234)}));
-    ASSERT_FALSE(
-            diff.check({OperationInput("b", 1), OperationInput("a", 1.234), OperationInput("a", 1.234)}));
-    ASSERT_FALSE(
-            diff.check({OperationInput("b", 1), OperationInput("a", 1.234), OperationInput("a", 2.34)}));
+    ASSERT_TRUE(diff.check({OperationInput("b", 1), OperationInput("a", 1.234), OperationInput("c", 1.234)}));
+    ASSERT_FALSE(diff.check({OperationInput("b", 1), OperationInput("a", 1.234), OperationInput("a", 1.234)}));
+    ASSERT_FALSE(diff.check({OperationInput("b", 1), OperationInput("a", 1.234), OperationInput("a", 2.34)}));
     ASSERT_FALSE(diff.check({OperationInput("a", 1), OperationInput("b", 1.234)}));
     ASSERT_FALSE(diff.check({OperationInput("a", 1.234), OperationInput("c", 1)}));
     ASSERT_FALSE(diff.check({OperationInput("a", 1.234)}));
@@ -181,7 +180,8 @@ TEST (Core_TestOperation, HardcodedOperation){
     ASSERT_EQ(original, retrieved);
 }
 
-TEST (Core_TestOperation, JSOperation){
+TEST(Core_TestOperation, JSOperation)
+{
     double res;
     bool rc;
 
@@ -217,9 +217,9 @@ TEST (Core_TestOperation, JSOperation){
     ASSERT_DOUBLE_EQ(-1.11, res);
 }
 
-TEST (Core_TestOperation, DynamicOperation){
-    JSExpression jsOp1(
-            "a*b+c", {OperationInput("a"), OperationInput("b", InputType::INTEGER), OperationInput("c")});
+TEST(Core_TestOperation, DynamicOperation)
+{
+    JSExpression jsOp1("a*b+c", {OperationInput("a"), OperationInput("b", InputType::INTEGER), OperationInput("c")});
     JSExpression jsOp2("c+d", {OperationInput("c"), OperationInput("d", InputType::INTEGER)});
     JSExpression jsOp3(
             "a*c-b*d",
@@ -285,10 +285,10 @@ TEST (Core_TestOperation, DynamicOperation){
 
     // Ensure that the getInputs() function retrieves the correct list of inputs.
     OperationInputList original = {
-                                   OperationInput("a"),
-                                   OperationInput("b", InputType::INTEGER),
-                                   OperationInput("c"),
-                                   OperationInput("d", InputType::INTEGER)};
+            OperationInput("a"),
+            OperationInput("b", InputType::INTEGER),
+            OperationInput("c"),
+            OperationInput("d", InputType::INTEGER)};
     std::sort(original.begin(), original.end(), [](const OperationInput& _a, const OperationInput& _b) {
         return _a.getName() < _b.getName();
     });
@@ -371,7 +371,8 @@ TEST (Core_TestOperation, DynamicOperation){
     ASSERT_DOUBLE_EQ(-0.544, res);
 }
 
-TEST (Core_TestOperation, CockcroftGaultGeneral){
+TEST(Core_TestOperation, CockcroftGaultGeneral)
+{
     bool rc;
     double eGFR;
 
@@ -432,7 +433,8 @@ TEST (Core_TestOperation, CockcroftGaultGeneral){
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 }
 
-TEST (Core_TestOperation, CockcroftGaultIBW){
+TEST(Core_TestOperation, CockcroftGaultIBW)
+{
     bool rc;
     double eGFR;
 
@@ -507,7 +509,8 @@ TEST (Core_TestOperation, CockcroftGaultIBW){
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 }
 
-TEST (Core_TestOperation, CockcroftGaultAdjIBW){
+TEST(Core_TestOperation, CockcroftGaultAdjIBW)
+{
     bool rc;
     double eGFR;
 
@@ -583,7 +586,8 @@ TEST (Core_TestOperation, CockcroftGaultAdjIBW){
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 }
 
-TEST (Core_TestOperation, MDRD){
+TEST(Core_TestOperation, MDRD)
+{
     bool rc;
     double eGFR_value;
     double GFR_value;
@@ -611,8 +615,7 @@ TEST (Core_TestOperation, MDRD){
             {OperationInput("height", InputType::INTEGER), OperationInput("bodyweight", InputType::DOUBLE)});
 
     JSExpression jsMDRD_GFR(
-            "eGFR * BSA / 1.73",
-            {OperationInput("eGFR", InputType::DOUBLE), OperationInput("BSA", InputType::DOUBLE)});
+            "eGFR * BSA / 1.73", {OperationInput("eGFR", InputType::DOUBLE), OperationInput("BSA", InputType::DOUBLE)});
 
     // Male, 49 years old, 71.4kg, creatinine 23.4umol/l, 165cm, Caucasian
     rc = isMale.setValue(true);
@@ -683,7 +686,8 @@ TEST (Core_TestOperation, MDRD){
     ASSERT_TRUE(fabs(GFR_value - hc_GFR) < 2e-4);
 }
 
-TEST (Core_TestOperation, CKD_EPI){
+TEST(Core_TestOperation, CKD_EPI)
+{
     bool rc;
     double eGFR_value;
     double GFR_value;
@@ -716,8 +720,7 @@ TEST (Core_TestOperation, CKD_EPI){
             {OperationInput("height", InputType::INTEGER), OperationInput("bodyweight", InputType::DOUBLE)});
 
     JSExpression jsCKD_EPI_GFR(
-            "eGFR * BSA / 1.73",
-            {OperationInput("eGFR", InputType::DOUBLE), OperationInput("BSA", InputType::DOUBLE)});
+            "eGFR * BSA / 1.73", {OperationInput("eGFR", InputType::DOUBLE), OperationInput("BSA", InputType::DOUBLE)});
 
     // Male, 49 years old, 71.4kg, creatinine 23.4umol/l, 165cm, Caucasian
     rc = isMale.setValue(true);
@@ -788,7 +791,8 @@ TEST (Core_TestOperation, CKD_EPI){
     ASSERT_TRUE(fabs(GFR_value - hc_GFR) < 2e-4);
 }
 
-TEST (Core_TestOperation, Schwartz){
+TEST(Core_TestOperation, Schwartz)
+{
     bool rc;
     double eGFR;
 
@@ -940,7 +944,8 @@ TEST (Core_TestOperation, Schwartz){
     //    ASSERT_TRUE (fabs(eGFR - hc_eGFR) < 1e-6);s
 }
 
-TEST (Core_TestOperation, Jelliffe){
+TEST(Core_TestOperation, Jelliffe)
+{
     bool rc;
     double eGFR_value;
     double GFR_value;
@@ -966,8 +971,7 @@ TEST (Core_TestOperation, Jelliffe){
             {OperationInput("height", InputType::INTEGER), OperationInput("bodyweight", InputType::DOUBLE)});
 
     JSExpression jsJelliffe_GFR(
-            "eGFR * BSA / 1.73",
-            {OperationInput("eGFR", InputType::DOUBLE), OperationInput("BSA", InputType::DOUBLE)});
+            "eGFR * BSA / 1.73", {OperationInput("eGFR", InputType::DOUBLE), OperationInput("BSA", InputType::DOUBLE)});
 
     // Male, 49 years old, 71.4kg, creatinine 123.4umol/l, 165cm
     rc = isMale.setValue(true);
@@ -1034,7 +1038,8 @@ TEST (Core_TestOperation, Jelliffe){
     ASSERT_TRUE(fabs(GFR_value - hc_GFR) < 2e-5);
 }
 
-TEST (Core_TestOperation, SalazarCorcoran){
+TEST(Core_TestOperation, SalazarCorcoran)
+{
     bool rc;
     double eGFR;
 
