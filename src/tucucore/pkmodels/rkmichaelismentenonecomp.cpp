@@ -55,12 +55,12 @@ RkMichaelisMentenOneCompBolus::RkMichaelisMentenOneCompBolus() : RkMichaelisMent
 
 std::vector<std::string> RkMichaelisMentenOneCompBolus::getParametersId()
 {
-    return {"V", "Km", "Vmax", "F"};
+    return {"V", "Km", "Vmax"};
 }
 
 bool RkMichaelisMentenOneCompBolus::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkCondition(_parameters.size() >= 3, "The number of parameters should be equal to 3.")) {
         return false;
     }
 
@@ -92,13 +92,13 @@ RkMichaelisMentenOneCompInfusion::RkMichaelisMentenOneCompInfusion() : RkMichael
 
 std::vector<std::string> RkMichaelisMentenOneCompInfusion::getParametersId()
 {
-    return {"V", "Km", "Vmax", "F"};
+    return {"V", "Km", "Vmax"};
 }
 
 bool RkMichaelisMentenOneCompInfusion::checkInputs(
         const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkCondition(_parameters.size() >= 3, "The number of parameters should be equal to 3.")) {
         return false;
     }
 

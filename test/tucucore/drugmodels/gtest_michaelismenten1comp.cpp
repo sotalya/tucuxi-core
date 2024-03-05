@@ -294,17 +294,102 @@ static const std::string test_mm_1comp_bolus_tdd = R"(<?xml version="1.0" encodi
                 </dosages>
 
 
+                <absorptionParameters/>
+            </formulationAndRoute>
+
+
+
+
+            <formulationAndRoute>
+                <formulationAndRouteId>id1</formulationAndRouteId>
+                <formulation>parenteral solution</formulation>
+                <administrationName>admname</administrationName>
+                <administrationRoute>oral</administrationRoute>
+                <absorptionModel>extra</absorptionModel>
+                <dosages>
+                    <analyteConversions>
+                        <analyteConversion>
+                            <analyteId>analyte</analyteId>
+                            <factor>1</factor>
+                        </analyteConversion>
+                    </analyteConversions>
+                    <availableDoses>
+                        <unit>mg</unit>
+                        <default>
+                            <standardValue>400</standardValue>
+                        </default>
+                        <rangeValues>
+                            <from>
+                                <standardValue>100</standardValue>
+                            </from>
+                            <to>
+                                <standardValue>400</standardValue>
+                            </to>
+                            <step>
+                                <standardValue>100</standardValue>
+                            </step>
+                        </rangeValues>
+                        <fixedValues>
+                            <value>600</value>
+                            <value>800</value>
+                        </fixedValues>
+                    </availableDoses>
+                    <availableIntervals>
+                        <unit>h</unit>
+                        <default>
+                            <standardValue>24</standardValue>
+                        </default>
+                        <fixedValues>
+                            <value>12</value>
+                            <value>24</value>
+                        </fixedValues>
+                    </availableIntervals>
+                    <comments/>
+                </dosages>
+
+
                 <absorptionParameters>
                     <parameterSetAnalyteGroup>
                     <analyteGroupId>group</analyteGroupId>
-                    <absorptionModel>bolus</absorptionModel>
+                    <absorptionModel>extra</absorptionModel>
                         <parameterSet>
                             <parameters>
                                 <parameter>
                                     <parameterId>F</parameterId>
                                     <unit>%</unit>
                                     <parameterValue>
-                                        <standardValue>1</standardValue>
+                                        <standardValue>0.8</standardValue>
+                                    </parameterValue>
+                                    <bsv>
+                                        <bsvType>none</bsvType>
+                                    </bsv>
+                                    <validation>
+                                        <errorMessage><text lang="fr"></text></errorMessage>
+                                        <operation>
+                                            <softFormula>
+                                                <inputs>
+                                                    <input>
+                                                        <id>F</id>
+                                                        <type>double</type>
+                                                    </input>
+                                                </inputs>
+                                                <code><![CDATA[
+                                                    return F <= 1.0 and F > 0.0;
+                                                    ]]>
+                                                </code>
+                                            </softFormula>
+                                            <comments/>
+                                        </operation>
+                                        <comments/>
+                                    </validation>
+                                    <comments>
+                                    </comments>
+                                </parameter>
+                                <parameter>
+                                    <parameterId>Ka</parameterId>
+                                    <unit>-</unit>
+                                    <parameterValue>
+                                        <standardValue>0.7</standardValue>
                                     </parameterValue>
                                     <bsv>
                                         <bsvType>none</bsvType>
@@ -376,7 +461,7 @@ TEST (Core_TestMichaelisMenten1comp, MichaelisMenten1comp){
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
     ASSERT_TRUE(component != nullptr);
 
@@ -403,14 +488,13 @@ TEST (Core_TestMichaelisMenten1comp, MichaelisMenten1comp){
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-        ComputingStatus result;
-        result = component->compute(request, response);
+        ComputingStatus result = component->compute(request, response);
 
         ASSERT_EQ(result, ComputingStatus::Ok);
 
         const ComputedData* responseData = response->getData();
         ASSERT_TRUE(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
-        const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
+        auto* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
         ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
@@ -437,8 +521,7 @@ TEST (Core_TestMichaelisMenten1comp, MichaelisMenten1comp){
 
         std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-        ComputingStatus result;
-        result = component->compute(request, response);
+        ComputingStatus result = component->compute(request, response);
 
         ASSERT_EQ(result, ComputingStatus::Ok);
 
@@ -452,6 +535,91 @@ TEST (Core_TestMichaelisMenten1comp, MichaelisMenten1comp){
                 resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         //std::cout << "A priori parameters : " << std::endl;
+        //for (auto parameter : resp->getData()[0].m_parameters) {
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //}
+    }
+
+    if (component != nullptr) {
+        delete component;
+    }
+}
+
+
+TEST (Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes){
+    DrugModelImport importer;
+
+    std::unique_ptr<DrugModel> drugModel;
+
+    auto importStatus = importer.importFromString(drugModel, test_mm_1comp_bolus_tdd);
+    ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
+
+    ASSERT_TRUE(drugModel != nullptr);
+
+
+    auto* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+    ASSERT_TRUE(component != nullptr);
+
+    const FormulationAndRoute route(
+            Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+
+    DateTime startSept2018(
+            date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+            Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+
+    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue(200), TucuUnit("mg"), 6, 16);
+
+    const FormulationAndRoute route2(
+            Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+
+    DateTime startSept2018_2(
+            date::year_month_day(date::year(2018), date::month(9), date::day(5)),
+            Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+
+    drugTreatment->addDosageTimeRange(buildDosageTimeRange(route2, startSept2018_2));
+    {
+
+        RequestResponseId requestResponseId = "1";
+        Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+        Tucuxi::Common::DateTime end(2018_y / sep / 9, 8h + 0min);
+        double nbPointsPerHour = 10.0;
+        ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment,RetrieveStatisticsOption::RetrieveStatistics,
+                                        RetrieveParametersOption::RetrieveParameters);
+        std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                requestResponseId, start, end, nbPointsPerHour, computingOption);
+
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+        std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+        ComputingStatus result = component->compute(request, response);
+
+        ASSERT_EQ(result, ComputingStatus::Ok);
+
+        const ComputedData* responseData = response->getData();
+        ASSERT_TRUE(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
+        auto* resp = dynamic_cast<const SinglePredictionData*>(responseData);
+
+        ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
+        ASSERT_EQ(
+                resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+
+        for (int i = 0; i < resp->getData().size(); i++) {
+            std::cout << "Cycle " << i << std::endl;
+            for (const auto& p: resp->getData()[i].m_parameters) {
+                std::cout << p.m_parameterId << " : " << p.m_value << std::endl;
+            }
+        }
+
+        // F
+        //ASSERT_EQ(resp->getData()[0].m_parameters[0].m_value, 1.0);
+
+        // F
+        //ASSERT_EQ(resp->getData()[16].m_parameters[0].m_value, 0.8);
+
+        //std::cout << "Population parameters : " << std::endl;
         //for (auto parameter : resp->getData()[0].m_parameters) {
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}

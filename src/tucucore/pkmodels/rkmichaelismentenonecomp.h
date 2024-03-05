@@ -100,7 +100,7 @@ protected:
 
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
-        _concentrations[0] = _inResiduals[0] + m_D / m_V * m_F;
+        _concentrations[0] = _inResiduals[0] + m_D / m_V;
         _concentrations[1] = _inResiduals[1];
     }
 };

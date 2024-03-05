@@ -407,4 +407,23 @@ static std::unique_ptr<DrugTreatment> buildDrugTreatment(const FormulationAndRou
     return drugTreatment;
 }
 
+
+static std::unique_ptr<DosageTimeRange> buildDosageTimeRange(const FormulationAndRoute& _route,
+                                                         const DateTime startDateTime,
+                                                         DoseValue _doseValue = DoseValue(200),
+                                                         TucuUnit _unit = TucuUnit("mg"),
+                                                         int interval = 6,
+                                                         int nbrDoses = 16)
+{
+    auto drugTreatment = std::make_unique<DrugTreatment>();
+
+    // List of time ranges that will be pushed into the history
+    DosageTimeRangeList timeRangeList;
+
+    LastingDose periodicDose(_doseValue, _unit, _route, Duration(), Duration(std::chrono::hours(interval)));
+    DosageRepeat repeatedDose(periodicDose, nbrDoses);
+    auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(startDateTime, repeatedDose);
+    return dosageTimeRange;
+}
+
 #endif // GTEST_CORE_H
