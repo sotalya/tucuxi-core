@@ -37,7 +37,7 @@ static std::unique_ptr<DrugTreatment> buildSimpleDrugTreatment(
     // Add a treatment intake every ten days in June
     // 200mg via a intravascular at 08h30, starting the 01.06
     LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), _route, Duration(), _interval);
-    DosageRepeat repeatedDose(periodicDose, static_cast<int>(_treatmentDuration / _interval));
+    DosageRepeat repeatedDose(periodicDose, static_cast<unsigned int>(_treatmentDuration / _interval));
     auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(_startTime, repeatedDose);
 
     drugTreatment->getModifiableDosageHistory().addTimeRange(*dosageTimeRange);
@@ -267,7 +267,7 @@ TEST(Core_TestComputingComponentConcentration, SampleBeforeTreatmentStart)
             Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
     Duration interval(std::chrono::hours(6));
     Duration treatmentDuration(std::chrono::hours(24 * 60));
-    DateTime endTreatment = startTreatment + treatmentDuration;
+    // DateTime endTreatment = startTreatment + treatmentDuration;
 
     // Test of a posteriori concentration prediction with one unvalid sample too early in time
     auto drugTreatment = buildSimpleDrugTreatment(route, startTreatment, interval, treatmentDuration);

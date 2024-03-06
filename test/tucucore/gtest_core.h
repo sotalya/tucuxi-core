@@ -20,77 +20,21 @@ static const double DEFAULT_PRECISION = 0.00001;
 
 using namespace Tucuxi::Core;
 
-static int bouble_fuzzy_compare(double a, double b, double relative_tolerance, double absolute_tolerance)
-{
-    if (a == b) {
-        return 0;
-    }
+int double_fuzzy_compare(double a, double b, double relative_tolerance, double absolute_tolerance);
 
-    if (a == -b) {
-        // Special case: Relative difference
-        if (std::fabs(a - b) <= absolute_tolerance) {
-            // is "infinite"
-            // Fuzzy equality (via abs. tol. only)
-            return 0;
-        }
-        else if (a > b) {
-            return 1; // Fuzzy greater than
-        }
-        else {
-            return -1; // Fuzzy less than
-        }
-    }
+bool double_eq_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance);
 
-    const double diff = std::fabs(a - b);
-    const double average = std::fabs((a + b) / 2.0);
+bool double_ge_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance);
 
-    if (diff <= absolute_tolerance || diff / average <= relative_tolerance) {
-        return 0; // Fuzzy equality.
-    }
-    else if (a > b) {
-        return 1; // Fuzzy greater than
-    }
-    else {
-        return -1; // Fuzzy less than
-    }
-}
+bool double_le_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance);
 
-static bool double_eq_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance)
-{
-    return bouble_fuzzy_compare(a, b, relative_tolerance, absolute_tolerance) == 0;
-}
+bool double_ne_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance);
 
-static bool double_ge_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance)
-{
-    return bouble_fuzzy_compare(a, b, relative_tolerance, absolute_tolerance) >= 0;
-}
+Tucuxi::Core::FormulationAndRoute getInfusionFormulationAndRoute();
 
-static bool double_le_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance)
-{
-    return bouble_fuzzy_compare(a, b, relative_tolerance, absolute_tolerance) <= 0;
-}
+Tucuxi::Core::FormulationAndRoute getBolusFormulationAndRoute();
 
-static bool double_ne_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance)
-{
-    return bouble_fuzzy_compare(a, b, relative_tolerance, absolute_tolerance) != 0;
-}
-
-static Tucuxi::Core::FormulationAndRoute getInfusionFormulationAndRoute()
-{
-    return Tucuxi::Core::FormulationAndRoute(
-            Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
-}
-
-static Tucuxi::Core::FormulationAndRoute getBolusFormulationAndRoute()
-{
-    return FormulationAndRoute(
-            Formulation::Test, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
-}
-
-static Tucuxi::Core::FormulationAndRoute getExtraFormulationAndRoute()
-{
-    return FormulationAndRoute(Formulation::Test, AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
-}
+Tucuxi::Core::FormulationAndRoute getExtraFormulationAndRoute();
 
 static const int CYCLE_SIZE = 251;
 
@@ -380,46 +324,19 @@ static void testCalculator(
     // synchronized with the times at which the concentration points are expected
 }
 
-static std::unique_ptr<DrugTreatment> buildDrugTreatment(
+std::unique_ptr<DrugTreatment> buildDrugTreatment(
         const FormulationAndRoute& _route,
         const DateTime startDateTime,
         DoseValue _doseValue = DoseValue(200),
         TucuUnit _unit = TucuUnit("mg"),
         int interval = 6,
-        int nbrDoses = 16)
-{
-    auto drugTreatment = std::make_unique<DrugTreatment>();
+        unsigned int nbrDoses = 16);
 
-    // List of time ranges that will be pushed into the history
-    DosageTimeRangeList timeRangeList;
-
-    LastingDose periodicDose(_doseValue, _unit, _route, Duration(), Duration(std::chrono::hours(interval)));
-    DosageRepeat repeatedDose(periodicDose, nbrDoses);
-    auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(startDateTime, repeatedDose);
-
-    drugTreatment->getModifiableDosageHistory().addTimeRange(*dosageTimeRange);
-
-    return drugTreatment;
-}
-
-
-static std::unique_ptr<DosageTimeRange> buildDosageTimeRange(
+std::unique_ptr<DosageTimeRange> buildDosageTimeRange(
         const FormulationAndRoute& _route,
         const DateTime startDateTime,
         DoseValue _doseValue = DoseValue(200),
         TucuUnit _unit = TucuUnit("mg"),
         int interval = 6,
-        int nbrDoses = 16)
-{
-    auto drugTreatment = std::make_unique<DrugTreatment>();
-
-    // List of time ranges that will be pushed into the history
-    DosageTimeRangeList timeRangeList;
-
-    LastingDose periodicDose(_doseValue, _unit, _route, Duration(), Duration(std::chrono::hours(interval)));
-    DosageRepeat repeatedDose(periodicDose, nbrDoses);
-    auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(startDateTime, repeatedDose);
-    return dosageTimeRange;
-}
-
+        unsigned int nbrDoses = 16);
 #endif // GTEST_CORE_H

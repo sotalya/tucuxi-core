@@ -608,7 +608,7 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        for (int i = 0; i < resp->getData().size(); i++) {
+        for (size_t i = 0; i < resp->getData().size(); i++) {
             std::cout << "Cycle " << i << std::endl;
             for (const auto& p : resp->getData()[i].m_parameters) {
                 std::cout << p.m_parameterId << " : " << p.m_value << std::endl;
@@ -616,10 +616,14 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes)
         }
 
         // F
-        //ASSERT_EQ(resp->getData()[0].m_parameters[0].m_value, 1.0);
+        ASSERT_EQ(resp->getData()[0].m_parameters[0].m_value, 0.8);
+        // Ka
+        ASSERT_EQ(resp->getData()[0].m_parameters[1].m_value, 0.7);
 
         // F
-        //ASSERT_EQ(resp->getData()[16].m_parameters[0].m_value, 0.8);
+        ASSERT_EQ(resp->getData()[16].m_parameters[0].m_value, 0.8);
+        // Ka
+        ASSERT_EQ(resp->getData()[0].m_parameters[1].m_value, 0.7);
 
         //std::cout << "Population parameters : " << std::endl;
         //for (auto parameter : resp->getData()[0].m_parameters) {
