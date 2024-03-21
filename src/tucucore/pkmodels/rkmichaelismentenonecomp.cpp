@@ -88,7 +88,10 @@ bool RkMichaelisMentenOneCompBolus::checkInputs(const IntakeEvent& _intakeEvent,
 }
 
 
-RkMichaelisMentenOneCompInfusion::RkMichaelisMentenOneCompInfusion() : RkMichaelisMentenOneComp() {}
+RkMichaelisMentenOneCompInfusion::RkMichaelisMentenOneCompInfusion() : RkMichaelisMentenOneComp()
+{
+    m_isInfusion = true;
+}
 
 std::vector<std::string> RkMichaelisMentenOneCompInfusion::getParametersId()
 {

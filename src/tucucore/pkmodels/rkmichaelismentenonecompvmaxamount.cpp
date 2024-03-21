@@ -100,6 +100,7 @@ bool RkMichaelisMentenOneCompVmaxAmountBolus::checkInputs(
 RkMichaelisMentenOneCompVmaxAmountInfusion::RkMichaelisMentenOneCompVmaxAmountInfusion()
     : RkMichaelisMentenOneCompVmaxAmount()
 {
+    m_isInfusion = true;
 }
 
 std::vector<std::string> RkMichaelisMentenOneCompVmaxAmountInfusion::getParametersId()
