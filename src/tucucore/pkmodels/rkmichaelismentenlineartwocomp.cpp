@@ -199,8 +199,8 @@ bool RkMichaelisMentenLinearTwoCompInfusionMicro::checkInputs(
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_Ke = _parameters.getValue(ParameterId::Ke);
-    m_F = _parameters.getValue(ParameterId::F);
-    m_Ka = _parameters.getValue(ParameterId::Ka);
+    m_F = _parameters.getOptionalValue(ParameterId::F);
+    m_Ka = _parameters.getOptionalValue(ParameterId::Ka);
     m_K12 = _parameters.getValue(ParameterId::K12);
     m_K21 = _parameters.getValue(ParameterId::K21);
     m_nbPoints = _intakeEvent.getNbPoints();
