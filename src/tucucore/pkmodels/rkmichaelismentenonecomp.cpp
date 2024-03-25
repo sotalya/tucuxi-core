@@ -105,6 +105,8 @@ bool RkMichaelisMentenOneCompInfusion::checkInputs(
         return false;
     }
 
+    m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
+
     m_D = _intakeEvent.getDose();
     m_V = _parameters.getValue(ParameterId::V);
     m_Km = _parameters.getValue(ParameterId::Km);
