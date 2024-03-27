@@ -63,13 +63,13 @@ RkMichaelisMentenOneCompVmaxAmountBolus::RkMichaelisMentenOneCompVmaxAmountBolus
 
 std::vector<std::string> RkMichaelisMentenOneCompVmaxAmountBolus::getParametersId()
 {
-    return {"V", "Km", "Vmax", "F"};
+    return {"V", "Km", "Vmax"};
 }
 
 bool RkMichaelisMentenOneCompVmaxAmountBolus::checkInputs(
         const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkCondition(_parameters.size() >= 3, "The number of parameters should be equal to 3.")) {
         return false;
     }
 
@@ -77,7 +77,7 @@ bool RkMichaelisMentenOneCompVmaxAmountBolus::checkInputs(
     m_V = _parameters.getValue(ParameterId::V);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
-    m_F = _parameters.getValue(ParameterId::F);
+    m_F = _parameters.getOptionalValue(ParameterId::F, 1.0);
     m_Ka = 0.0; // _parameters.getValue(ParameterId::Ka);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
@@ -105,21 +105,23 @@ RkMichaelisMentenOneCompVmaxAmountInfusion::RkMichaelisMentenOneCompVmaxAmountIn
 
 std::vector<std::string> RkMichaelisMentenOneCompVmaxAmountInfusion::getParametersId()
 {
-    return {"V", "Km", "Vmax", "F"};
+    return {"V", "Km", "Vmax"};
 }
 
 bool RkMichaelisMentenOneCompVmaxAmountInfusion::checkInputs(
         const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkCondition(_parameters.size() >= 3, "The number of parameters should be equal to 3.")) {
         return false;
     }
+
+    m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
 
     m_D = _intakeEvent.getDose();
     m_V = _parameters.getValue(ParameterId::V);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
-    m_F = _parameters.getValue(ParameterId::F);
+    m_F = _parameters.getOptionalValue(ParameterId::F, 1.0);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
