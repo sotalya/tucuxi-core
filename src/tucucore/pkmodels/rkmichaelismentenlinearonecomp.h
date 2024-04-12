@@ -48,7 +48,7 @@ public:
     {
         if (m_isWithLag) {
             if ((!m_delivered) && (_t >= m_Tlag)) {
-                _concentrations[2] += m_D / m_V * m_F;
+                _concentrations[1] += m_D / m_V * m_F;
                 m_delivered = true;
             }
         }
