@@ -50,7 +50,7 @@ public:
 
         const double eps = 0.001;
         if (m_isInfusion) {
-            if ((_t < m_Tinf - eps) || ((_t <= m_Tinf + eps) && lastDev)) {
+            if ((_t < m_Tinf - eps) || ((_t <= m_Tinf + eps))) {
                 _dcdt[0] += m_infusionRate;
             }
         }
