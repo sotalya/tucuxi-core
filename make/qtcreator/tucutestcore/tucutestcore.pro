@@ -30,9 +30,10 @@ HEADERS += \
     $$PWD/../../../test/tucucore/drugmodels/buildmultianalytessingleactivemoiety.h \
     $$PWD/../../../test/tucucore/drugmodels/buildconstantelimination.h \
     $$PWD/../../../test/tucucore/drugmodels/buildimatinib.h \
+    $$PWD/../../../test/tucucore/drugmodels/buildmod202.h \
     $$PWD/../../../test/tucucore/drugmodels/buildmultianalytesmultiactivemoieties.h \
     $$PWD/../../../test/tucucore/drugmodels/buildpkasymptotic.h \
-    $$PWD/../../../test/tucucore/drugmodels/drugmodelbuilder.h \\
+    $$PWD/../../../test/tucucore/drugmodels/drugmodelbuilder.h \
     $$PWD/../../../test/tucucore/gtest_core.h \
     $$PWD/../../../test/tucucore/gtest_drugmodelimport_xmlstrings.h \
     $$PWD/../../../test/tucucore/pkmodels/constanteliminationbolus.h \
@@ -84,7 +85,8 @@ SOURCES += \
     $$PWD/../../../test/tucucore/gtest_targetextractor.cpp \
     $$PWD/../../../test/tucucore/pkmodels/gtest_rkmichaelismentenenzyme.cpp \
     $$PWD/../../../test/tucucore/pkmodels/gtest_rkmichaelismententwocompvmaxamount.cpp \
-    $$PWD/../../../test/tucucore/pkmodels/gtest_twocompartmentextralag.cpp
+    $$PWD/../../../test/tucucore/pkmodels/gtest_twocompartmentextralag.cpp \
+    ../../../test/tucucore/drugmodels/gtest_mod202.cpp
 
 # We need the test PK models for successful tests
 DEFINES += DRUGMODELTESTS

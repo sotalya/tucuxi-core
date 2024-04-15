@@ -454,6 +454,9 @@ protected:
                 m_h = stdH;
             }
 
+
+            //m_h = stdH;
+
             // Let's add a fixed value, for instance for a Tlag
             static_cast<ImplementationClass*>(this)->addFixedValue(t, concentrations);
 
@@ -474,7 +477,10 @@ protected:
             // Set k3's
             ComputeK3<0, ResidualSize - 1>::apply(k3, m_h, dcdt, c, concentrations);
 
-            static_cast<ImplementationClass*>(this)->derive(t + m_h, c, dcdt);
+            if constexpr (requires { static_cast<ImplementationClass*>(this)->derive2(t + m_h, c, dcdt); })
+                static_cast<ImplementationClass*>(this)->derive2(t + m_h, c, dcdt);
+            else
+                static_cast<ImplementationClass*>(this)->derive(t + m_h, c, dcdt);
 
             // Set k4's
             ComputeK4<0, ResidualSize - 1>::apply(k1, k2, k3, k4, m_h, dcdt, concentrations);

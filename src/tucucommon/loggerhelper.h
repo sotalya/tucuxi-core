@@ -116,7 +116,7 @@ public:
     {
         try {
             auto out = fmt::memory_buffer();
-            fmt::format_to(std::back_inserter(out), _fmt, _args...);
+            //    fmt::format_to(std::back_inserter(out), _fmt, _args...);
             debug(fmt::to_string(out));
         }
         catch (const std::exception& ex) {
@@ -150,7 +150,7 @@ public:
     {
         try {
             auto out = fmt::memory_buffer();
-            fmt::format_to(std::back_inserter(out), _fmt, _args...);
+            fmt::format_to(std::back_inserter(out), fmt::runtime(_fmt), _args...);
             info(fmt::to_string(out));
         }
         catch (const std::exception&) {
@@ -184,7 +184,7 @@ public:
     {
         try {
             auto out = fmt::memory_buffer();
-            fmt::format_to(std::back_inserter(out), _fmt, _args...);
+            fmt::format_to(std::back_inserter(out), fmt::runtime(_fmt), _args...);
             warn(fmt::to_string(out));
         }
         catch (const std::exception&) {
@@ -218,7 +218,7 @@ public:
     {
         try {
             auto out = fmt::memory_buffer();
-            fmt::format_to(std::back_inserter(out), _fmt, _args...);
+            fmt::format_to(std::back_inserter(out), fmt::runtime(_fmt), _args...);
             error(fmt::to_string(out));
         }
         catch (const std::exception& /*ex*/) {
@@ -252,7 +252,7 @@ public:
     {
         try {
             auto out = fmt::memory_buffer();
-            fmt::format_to(std::back_inserter(out), _fmt, _args...);
+            fmt::format_to(std::back_inserter(out), fmt::runtime(_fmt), _args...);
             critical(fmt::to_string(out));
         }
         catch (const std::exception&) {

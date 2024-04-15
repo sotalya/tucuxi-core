@@ -27,7 +27,8 @@ HEADERS += \
 SOURCES += \
     ../../../test/tucuquery/gtest_dosageimportexport.cpp \
     ../../../test/tucuquery/gtest_query.cpp \
-    ../../../test/tucuquery/gtest_query1comp.cpp
+    ../../../test/tucuquery/gtest_query1comp.cpp \
+    ../../../test/tucuquery/gtest_mod202.cpp
 
 
 !win32 {

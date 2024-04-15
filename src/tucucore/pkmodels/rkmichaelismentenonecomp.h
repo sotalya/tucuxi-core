@@ -31,12 +31,26 @@ public:
 
     inline void derive(double _t, const Compartments_t& _c, Compartments_t& _dcdt)
     {
-        FINAL_UNUSED_PARAMETER(_t);
         _dcdt[0] = m_Ka * _c[1] - m_Vmax * _c[0] / (m_Km + _c[0]);
         _dcdt[1] = -m_Ka * _c[1];
 
+        const double eps = 0.001;
         if (m_isInfusion) {
-            if (_t <= m_Tinf) {
+            if (_t < m_Tinf - eps) {
+                _dcdt[0] += m_infusionRate;
+            }
+        }
+    }
+
+
+    inline void derive2(double _t, const Compartments_t& _c, Compartments_t& _dcdt)
+    {
+        _dcdt[0] = m_Ka * _c[1] - m_Vmax * _c[0] / (m_Km + _c[0]);
+        _dcdt[1] = -m_Ka * _c[1];
+
+        const double eps = 0.001;
+        if (m_isInfusion) {
+            if ((_t < m_Tinf - eps) || ((_t <= m_Tinf + eps) && lastDev)) {
                 _dcdt[0] += m_infusionRate;
             }
         }

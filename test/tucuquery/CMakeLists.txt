@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 project (tucutestquery LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../)
@@ -28,6 +28,7 @@ file(GLOB TUCUTESTQUERY_HEADER_FILES
 
 file(GLOB TUCUTESTQUERY_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/gtest_dosageimportexport.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/gtest_mod202.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_query.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_query1comp.cpp
 )
