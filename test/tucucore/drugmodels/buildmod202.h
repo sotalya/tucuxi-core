@@ -388,8 +388,466 @@ public:
 };
 
 
+// 52-minute infusion time
+const std::string tqf52 = R"(<?xml version="1.0" ?>
+<query version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xml_query.xsd">
+	<queryId>4_ch.tucuxi.virtualdrug.mod202</queryId>
+	<clientId>4</clientId>
+	<date>2024-04-09T10:12:43</date>
+	<!-- Date the xml has been sent -->
+	<language>en</language>
+	<drugTreatment>
+		<!-- All the information regarding the patient -->
+		<patient>
+			<covariates>
+				<covariate>
+					<covariateId>birthdate</covariateId>
+					<date>2023-01-01T00:00:00</date>
+					<value>2023-01-01T00:00:00</value>
+					<unit/>
+					<dataType>date</dataType>
+					<nature>discrete</nature>
+				</covariate>
+				<covariate>
+					<covariateId>sampling_group</covariateId>
+					<date>2023-01-01T00:00:00</date>
+					<value>1</value>
+					<unit/>
+					<dataType>int</dataType>
+					<nature>discrete</nature>
+				</covariate>
+			</covariates>
+		</patient>
+		<!-- List of the drugs informations we have concerning the patient -->
+		<drugs>
+			<!-- All the information regarding the drug -->
+			<drug>
+				<drugId>virtualdrug</drugId>
+				<activePrinciple>virtualdrug</activePrinciple>
+				<brandName/>
+				<atc/>
+				<!-- All the information regarding the treatment -->
+				<treatment>
+					<dosageHistory>
+						<dosageTimeRange>
+							<start>2023-01-01T08:00:00</start>
+							<end>2023-01-02T08:00:00</end>
+							<dosage>
+								<dosageLoop>
+									<lastingDosage>
+										<interval>24:0:0</interval>
+										<dose>
+											<value>120</value>
+											<unit>mg</unit>
+											<infusionTimeInMinutes>52.0</infusionTimeInMinutes>
+										</dose>
+										<formulationAndRoute>
+											<formulation>parenteralSolution</formulation>
+											<administrationName>foo bar</administrationName>
+											<administrationRoute>intravenousDrip</administrationRoute>
+											<absorptionModel>infusion</absorptionModel>
+										</formulationAndRoute>
+									</lastingDosage>
+								</dosageLoop>
+							</dosage>
+						</dosageTimeRange>
+					</dosageHistory>
+				</treatment>
+				<!-- Samples history -->
+				<samples>
+					<sample>
+						<sampleId>c0</sampleId>
+						<sampleDate>2023-01-01T08:10:30</sampleDate>
+						<concentrations>
+							<concentration>
+								<analyteId>virtualdrug</analyteId>
+								<value>272.0</value>
+								<unit>ug/l</unit>
+							</concentration>
+						</concentrations>
+					</sample>
+					<sample>
+						<sampleId>c1</sampleId>
+						<sampleDate>2023-01-01T09:10:12</sampleDate>
+						<concentrations>
+							<concentration>
+								<analyteId>virtualdrug</analyteId>
+								<value>1728.8</value>
+								<unit>ug/l</unit>
+							</concentration>
+						</concentrations>
+					</sample>
+					<sample>
+						<sampleId>c1</sampleId>
+						<sampleDate>2023-01-01T12:52:48</sampleDate>
+						<concentrations>
+							<concentration>
+								<analyteId>virtualdrug</analyteId>
+								<value>1718.3</value>
+								<unit>ug/l</unit>
+							</concentration>
+						</concentrations>
+					</sample>
+					<sample>
+						<sampleId>c1</sampleId>
+						<sampleDate>2023-01-01T16:02:24</sampleDate>
+						<concentrations>
+							<concentration>
+								<analyteId>virtualdrug</analyteId>
+								<value>1709.3</value>
+								<unit>ug/l</unit>
+							</concentration>
+						</concentrations>
+					</sample>
+					<sample>
+						<sampleId>c1</sampleId>
+						<sampleDate>2023-01-02T04:13:12</sampleDate>
+						<concentrations>
+							<concentration>
+								<analyteId>virtualdrug</analyteId>
+								<value>1675.3</value>
+								<unit>ug/l</unit>
+							</concentration>
+						</concentrations>
+					</sample>
+				</samples>
+			</drug>
+		</drugs>
+	</drugTreatment>
+	)"
+                          R"(
+	<!-- List of the requests we want the server to take care of -->
+	<requests>
+		<request>
+		    <requestId>aposteriori_2</requestId>
+		    <drugId>virtualdrug</drugId>
+		    <drugModelId>ch.tucuxi.virtualdrug.mod202</drugModelId>
+		    <predictionTraits>
+		      <computingOption>
+		        <parametersType>population</parametersType>
+		        <compartmentOption>allActiveMoieties</compartmentOption>
+		        <retrieveStatistics>true</retrieveStatistics>
+		        <retrieveParameters>true</retrieveParameters>
+		        <retrieveCovariates>true</retrieveCovariates>
+		      </computingOption>
+		      <nbPointsPerHour>100</nbPointsPerHour>
+		      <dateInterval>
+		          <start>2023-01-01T08:00:00</start>
+		          <end>2023-01-03T08:00:00</end>
+		      </dateInterval>
+		    </predictionTraits>
+		</request>
+		
+		<request>
+		    <requestId>aposteriori_20</requestId>
+		    <drugId>virtualdrug</drugId>
+		    <drugModelId>ch.tucuxi.virtualdrug.mod202</drugModelId>
+		    <predictionTraits>
+		      <computingOption>
+		        <parametersType>population</parametersType>
+		        <compartmentOption>allActiveMoieties</compartmentOption>
+		        <retrieveStatistics>true</retrieveStatistics>
+		        <retrieveParameters>true</retrieveParameters>
+		        <retrieveCovariates>true</retrieveCovariates>
+		      </computingOption>
+		      <nbPointsPerHour>10</nbPointsPerHour>
+		      <dateInterval>
+		          <start>2023-01-01T08:00:00</start>
+		          <end>2023-01-03T08:00:00</end>
+		      </dateInterval>
+		    </predictionTraits>
+		</request>
+		
+		<request>
+		    <requestId>aposteriori_1</requestId>
+		    <drugId>virtualdrug</drugId>
+		    <drugModelId>ch.tucuxi.virtualdrug.mod202</drugModelId>
+		    <predictionAtSampleTimesTraits>
+		      <computingOption>
+		        <parametersType>population</parametersType>
+		        <compartmentOption>allActiveMoieties</compartmentOption>
+		        <retrieveStatistics>true</retrieveStatistics>
+		        <retrieveParameters>true</retrieveParameters>
+		        <retrieveCovariates>true</retrieveCovariates>
+		      </computingOption>
+		    </predictionAtSampleTimesTraits>
+		</request>
 
-const std::string tqf = R"(<?xml version="1.0" ?>
+		<request>
+		    <requestId>apriori_1</requestId>
+		    <drugId>virtualdrug</drugId>
+		    <drugModelId>ch.tucuxi.virtualdrug.mod202</drugModelId>
+		    <predictionTraits>
+		      <computingOption>
+		        <parametersType>apriori</parametersType>
+		        <compartmentOption>allActiveMoieties</compartmentOption>
+		        <retrieveStatistics>true</retrieveStatistics>
+		        <retrieveParameters>true</retrieveParameters>
+		        <retrieveCovariates>true</retrieveCovariates>
+		      </computingOption>
+		      <nbPointsPerHour>20</nbPointsPerHour>
+		      <dateInterval>
+		          <start>2023-01-01T08:00:00</start>
+			  <end>2023-01-03T08:00:00</end>
+		      </dateInterval>
+		    </predictionTraits>
+		</request>
+
+		<request>
+		    <requestId>population_1</requestId>
+		    <drugId>virtualdrug</drugId>
+		    <drugModelId>ch.tucuxi.virtualdrug.mod202</drugModelId>
+		    <predictionTraits>
+		      <computingOption>
+		        <parametersType>population</parametersType>
+		        <compartmentOption>allActiveMoieties</compartmentOption>
+		        <retrieveStatistics>true</retrieveStatistics>
+		        <retrieveParameters>true</retrieveParameters>
+		        <retrieveCovariates>true</retrieveCovariates>
+		      </computingOption>
+		      <nbPointsPerHour>20</nbPointsPerHour>
+		      <dateInterval>
+		          <start>2023-01-01T08:00:00</start>
+			  <end>2023-01-03T08:00:00</end>
+		      </dateInterval>
+		    </predictionTraits>
+		</request>
+	</requests>
+</query>
+)";
+
+
+// 65-minute infusion time
+const std::string tqf65 = R"(<?xml version="1.0" ?>
+<query version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xml_query.xsd">
+	<queryId>4_ch.tucuxi.virtualdrug.mod202</queryId>
+	<clientId>4</clientId>
+	<date>2024-04-09T10:12:43</date>
+	<!-- Date the xml has been sent -->
+	<language>en</language>
+	<drugTreatment>
+		<!-- All the information regarding the patient -->
+		<patient>
+			<covariates>
+				<covariate>
+					<covariateId>birthdate</covariateId>
+					<date>2023-01-01T00:00:00</date>
+					<value>2023-01-01T00:00:00</value>
+					<unit/>
+					<dataType>date</dataType>
+					<nature>discrete</nature>
+				</covariate>
+				<covariate>
+					<covariateId>sampling_group</covariateId>
+					<date>2023-01-01T00:00:00</date>
+					<value>1</value>
+					<unit/>
+					<dataType>int</dataType>
+					<nature>discrete</nature>
+				</covariate>
+			</covariates>
+		</patient>
+		<!-- List of the drugs informations we have concerning the patient -->
+		<drugs>
+			<!-- All the information regarding the drug -->
+			<drug>
+				<drugId>virtualdrug</drugId>
+				<activePrinciple>virtualdrug</activePrinciple>
+				<brandName/>
+				<atc/>
+				<!-- All the information regarding the treatment -->
+				<treatment>
+					<dosageHistory>
+						<dosageTimeRange>
+							<start>2023-01-01T08:00:00</start>
+							<end>2023-01-02T08:00:00</end>
+							<dosage>
+								<dosageLoop>
+									<lastingDosage>
+										<interval>24:0:0</interval>
+										<dose>
+											<value>120</value>
+											<unit>mg</unit>
+											<infusionTimeInMinutes>65.0</infusionTimeInMinutes>
+										</dose>
+										<formulationAndRoute>
+											<formulation>parenteralSolution</formulation>
+											<administrationName>foo bar</administrationName>
+											<administrationRoute>intravenousDrip</administrationRoute>
+											<absorptionModel>infusion</absorptionModel>
+										</formulationAndRoute>
+									</lastingDosage>
+								</dosageLoop>
+							</dosage>
+						</dosageTimeRange>
+					</dosageHistory>
+				</treatment>
+				<!-- Samples history -->
+				<samples>
+					<sample>
+						<sampleId>c0</sampleId>
+						<sampleDate>2023-01-01T08:10:30</sampleDate>
+						<concentrations>
+							<concentration>
+								<analyteId>virtualdrug</analyteId>
+								<value>272.0</value>
+								<unit>ug/l</unit>
+							</concentration>
+						</concentrations>
+					</sample>
+					<sample>
+						<sampleId>c1</sampleId>
+						<sampleDate>2023-01-01T09:10:12</sampleDate>
+						<concentrations>
+							<concentration>
+								<analyteId>virtualdrug</analyteId>
+								<value>1728.8</value>
+								<unit>ug/l</unit>
+							</concentration>
+						</concentrations>
+					</sample>
+					<sample>
+						<sampleId>c1</sampleId>
+						<sampleDate>2023-01-01T12:52:48</sampleDate>
+						<concentrations>
+							<concentration>
+								<analyteId>virtualdrug</analyteId>
+								<value>1718.3</value>
+								<unit>ug/l</unit>
+							</concentration>
+						</concentrations>
+					</sample>
+					<sample>
+						<sampleId>c1</sampleId>
+						<sampleDate>2023-01-01T16:02:24</sampleDate>
+						<concentrations>
+							<concentration>
+								<analyteId>virtualdrug</analyteId>
+								<value>1709.3</value>
+								<unit>ug/l</unit>
+							</concentration>
+						</concentrations>
+					</sample>
+					<sample>
+						<sampleId>c1</sampleId>
+						<sampleDate>2023-01-02T04:13:12</sampleDate>
+						<concentrations>
+							<concentration>
+								<analyteId>virtualdrug</analyteId>
+								<value>1675.3</value>
+								<unit>ug/l</unit>
+							</concentration>
+						</concentrations>
+					</sample>
+				</samples>
+			</drug>
+		</drugs>
+	</drugTreatment>
+	)"
+                          R"(
+	<!-- List of the requests we want the server to take care of -->
+	<requests>
+		<request>
+		    <requestId>aposteriori_2</requestId>
+		    <drugId>virtualdrug</drugId>
+		    <drugModelId>ch.tucuxi.virtualdrug.mod202</drugModelId>
+		    <predictionTraits>
+		      <computingOption>
+		        <parametersType>population</parametersType>
+		        <compartmentOption>allActiveMoieties</compartmentOption>
+		        <retrieveStatistics>true</retrieveStatistics>
+		        <retrieveParameters>true</retrieveParameters>
+		        <retrieveCovariates>true</retrieveCovariates>
+		      </computingOption>
+		      <nbPointsPerHour>100</nbPointsPerHour>
+		      <dateInterval>
+		          <start>2023-01-01T08:00:00</start>
+		          <end>2023-01-03T08:00:00</end>
+		      </dateInterval>
+		    </predictionTraits>
+		</request>
+		
+		<request>
+		    <requestId>aposteriori_20</requestId>
+		    <drugId>virtualdrug</drugId>
+		    <drugModelId>ch.tucuxi.virtualdrug.mod202</drugModelId>
+		    <predictionTraits>
+		      <computingOption>
+		        <parametersType>population</parametersType>
+		        <compartmentOption>allActiveMoieties</compartmentOption>
+		        <retrieveStatistics>true</retrieveStatistics>
+		        <retrieveParameters>true</retrieveParameters>
+		        <retrieveCovariates>true</retrieveCovariates>
+		      </computingOption>
+		      <nbPointsPerHour>10</nbPointsPerHour>
+		      <dateInterval>
+		          <start>2023-01-01T08:00:00</start>
+		          <end>2023-01-03T08:00:00</end>
+		      </dateInterval>
+		    </predictionTraits>
+		</request>
+		
+		<request>
+		    <requestId>aposteriori_1</requestId>
+		    <drugId>virtualdrug</drugId>
+		    <drugModelId>ch.tucuxi.virtualdrug.mod202</drugModelId>
+		    <predictionAtSampleTimesTraits>
+		      <computingOption>
+		        <parametersType>population</parametersType>
+		        <compartmentOption>allActiveMoieties</compartmentOption>
+		        <retrieveStatistics>true</retrieveStatistics>
+		        <retrieveParameters>true</retrieveParameters>
+		        <retrieveCovariates>true</retrieveCovariates>
+		      </computingOption>
+		    </predictionAtSampleTimesTraits>
+		</request>
+
+		<request>
+		    <requestId>apriori_1</requestId>
+		    <drugId>virtualdrug</drugId>
+		    <drugModelId>ch.tucuxi.virtualdrug.mod202</drugModelId>
+		    <predictionTraits>
+		      <computingOption>
+		        <parametersType>apriori</parametersType>
+		        <compartmentOption>allActiveMoieties</compartmentOption>
+		        <retrieveStatistics>true</retrieveStatistics>
+		        <retrieveParameters>true</retrieveParameters>
+		        <retrieveCovariates>true</retrieveCovariates>
+		      </computingOption>
+		      <nbPointsPerHour>20</nbPointsPerHour>
+		      <dateInterval>
+		          <start>2023-01-01T08:00:00</start>
+			  <end>2023-01-03T08:00:00</end>
+		      </dateInterval>
+		    </predictionTraits>
+		</request>
+
+		<request>
+		    <requestId>population_1</requestId>
+		    <drugId>virtualdrug</drugId>
+		    <drugModelId>ch.tucuxi.virtualdrug.mod202</drugModelId>
+		    <predictionTraits>
+		      <computingOption>
+		        <parametersType>population</parametersType>
+		        <compartmentOption>allActiveMoieties</compartmentOption>
+		        <retrieveStatistics>true</retrieveStatistics>
+		        <retrieveParameters>true</retrieveParameters>
+		        <retrieveCovariates>true</retrieveCovariates>
+		      </computingOption>
+		      <nbPointsPerHour>20</nbPointsPerHour>
+		      <dateInterval>
+		          <start>2023-01-01T08:00:00</start>
+			  <end>2023-01-03T08:00:00</end>
+		      </dateInterval>
+		    </predictionTraits>
+		</request>
+	</requests>
+</query>
+)";
+
+
+// 60-minute infusion time
+const std::string tqf60 = R"(<?xml version="1.0" ?>
 <query version="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xml_query.xsd">
 	<queryId>4_ch.tucuxi.virtualdrug.mod202</queryId>
 	<clientId>4</clientId>
@@ -515,7 +973,7 @@ const std::string tqf = R"(<?xml version="1.0" ?>
 		</drugs>
 	</drugTreatment>
 	)"
-                        R"(
+                          R"(
 	<!-- List of the requests we want the server to take care of -->
 	<requests>
 		<request>
@@ -615,6 +1073,7 @@ const std::string tqf = R"(<?xml version="1.0" ?>
 	</requests>
 </query>
 )";
+
 
 
 #endif // BUILDMOD202_H

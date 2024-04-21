@@ -31,7 +31,6 @@ public:
 
     inline void derive(double _t, const Compartments_t& _c, Compartments_t& _dcdt)
     {
-        FINAL_UNUSED_PARAMETER(_t);
         // This function _dcdt[0] needs to be checked. I used the one of ADAPT5-User-Guide, but used
         // c[0] = x1/Vc, as Tucuxi does not allow to calculate an output easily (could be implemented in the future
         //
@@ -44,7 +43,21 @@ public:
         _dcdt[2] = -m_Ka * _c[2];
 
         if (m_isInfusion) {
-            if (_t <= m_Tinf) {
+            if (_t <= m_TinfLow) {
+                _dcdt[0] += m_infusionRate;
+            }
+        }
+    }
+
+    inline void deriveAtPotentialInfusionStop(double _t, const Compartments_t& _c, Compartments_t& _dcdt)
+    {
+        // This version considers VMax to be concentration/time
+        _dcdt[0] = m_Ka * _c[2] + m_K21 * _c[1] - m_K12 * _c[0] - m_Vmax * _c[0] / (m_Km + _c[0]);
+        _dcdt[1] = m_K12 * _c[0] - m_K21 * _c[1];
+        _dcdt[2] = -m_Ka * _c[2];
+
+        if (m_isInfusion) {
+            if (_t < m_TinfHigh) {
                 _dcdt[0] += m_infusionRate;
             }
         }
@@ -70,6 +83,8 @@ protected:
     Value m_K12{NAN};
     Value m_K21{NAN};
     Value m_Tinf{NAN};
+    Value m_TinfLow{NAN};
+    Value m_TinfHigh{NAN};
     Value m_Tlag{NAN};
     Value m_infusionRate{0};
     bool m_delivered{false};

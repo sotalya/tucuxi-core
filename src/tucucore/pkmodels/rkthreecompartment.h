@@ -32,8 +32,6 @@ public:
 
     inline void derive(double _t, const Compartments_t& _c, Compartments_t& _dcdt)
     {
-        FINAL_UNUSED_PARAMETER(_t);
-
         // This version considers VMax to be concentration/time
         _dcdt[0] = m_Ka * _c[3] + m_K21 * _c[1] - m_K12 * _c[0] + m_K31 * _c[2] - m_K13 * _c[0] - m_Ke * _c[0];
         _dcdt[1] = m_K12 * _c[0] - m_K21 * _c[1];
@@ -41,7 +39,22 @@ public:
         _dcdt[3] = -m_Ka * _c[3];
 
         if (m_isInfusion) {
-            if (_t <= m_Tinf) {
+            if (_t < m_TinfLow) {
+                _dcdt[0] += m_infusionRate;
+            }
+        }
+    }
+
+    inline void deriveAtPotentialInfusionStop(double _t, const Compartments_t& _c, Compartments_t& _dcdt)
+    {
+        // This version considers VMax to be concentration/time
+        _dcdt[0] = m_Ka * _c[3] + m_K21 * _c[1] - m_K12 * _c[0] + m_K31 * _c[2] - m_K13 * _c[0] - m_Ke * _c[0];
+        _dcdt[1] = m_K12 * _c[0] - m_K21 * _c[1];
+        _dcdt[2] = m_K13 * _c[0] - m_K31 * _c[2];
+        _dcdt[3] = -m_Ka * _c[3];
+
+        if (m_isInfusion) {
+            if (_t < m_TinfHigh) {
                 _dcdt[0] += m_infusionRate;
             }
         }
@@ -68,6 +81,8 @@ protected:
     Value m_K13{NAN};
     Value m_K31{NAN};
     Value m_Tinf{NAN};
+    Value m_TinfLow{NAN};
+    Value m_TinfHigh{NAN};
     Value m_Tlag{NAN};
     Value m_infusionRate{0};
     bool m_delivered{false};

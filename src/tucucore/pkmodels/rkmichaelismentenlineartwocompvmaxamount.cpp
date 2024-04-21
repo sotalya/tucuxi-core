@@ -21,7 +21,6 @@ RkMichaelisMentenLinearTwoCompVmaxAmountExtraMicro::RkMichaelisMentenLinearTwoCo
     : RkMichaelisMentenLinearTwoCompVmaxAmount()
 {
     m_delivered = true;
-    m_isInfusion = false;
     m_isWithLag = false;
 }
 
@@ -72,7 +71,6 @@ RkMichaelisMentenLinearTwoCompVmaxAmountExtraLagMicro::RkMichaelisMentenLinearTw
     : RkMichaelisMentenLinearTwoCompVmaxAmount()
 {
     m_delivered = false;
-    m_isInfusion = false;
     m_isWithLag = true;
 }
 
@@ -124,7 +122,6 @@ RkMichaelisMentenLinearTwoCompVmaxAmountBolusMicro::RkMichaelisMentenLinearTwoCo
     : RkMichaelisMentenLinearTwoCompVmaxAmount()
 {
     m_delivered = true;
-    m_isInfusion = false;
     m_isWithLag = false;
     m_Ka = 0.0;
     m_Tlag = 0.0;
@@ -195,6 +192,11 @@ bool RkMichaelisMentenLinearTwoCompVmaxAmountInfusionMicro::checkInputs(
     }
 
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
+    m_nonDifferentiableTime = m_Tinf;
+
+    const double eps = 0.001;
+    m_TinfLow = m_Tinf - eps;
+    m_TinfHigh = m_Tinf + eps;
 
     m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);

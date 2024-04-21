@@ -142,6 +142,8 @@ protected:
 
     double m_h{1.0 / 60.0}; /// Internal h value for advancing on RK4
 
+    Value m_nonDifferentiableTime{-1.0};
+
     bool computeConcentrations(
             Eigen::VectorXd& _times,
             const Residuals& _inResiduals,
@@ -447,15 +449,17 @@ protected:
             }
 
             // Adjust h if the next time is close, to reach the exact time point
-            if (nextTime - t < stdH) {
+
+            // By default advance with the standard delta
+            m_h = stdH;
+            // If the next time of interest is closer, then go to it
+            if (nextTime - t < m_h) {
                 m_h = nextTime - t;
             }
-            else {
-                m_h = stdH;
+            // If a non-derivative time (end of infusion) is closer, then go to it
+            if ((t < m_nonDifferentiableTime) && (t + m_h > m_nonDifferentiableTime)) {
+                m_h = m_nonDifferentiableTime - t;
             }
-
-
-            //m_h = stdH;
 
             // Let's add a fixed value, for instance for a Tlag
             static_cast<ImplementationClass*>(this)->addFixedValue(t, concentrations);
@@ -477,8 +481,16 @@ protected:
             // Set k3's
             ComputeK3<0, ResidualSize - 1>::apply(k3, m_h, dcdt, c, concentrations);
 
-            if constexpr (requires { static_cast<ImplementationClass*>(this)->derive2(t + m_h, c, dcdt); })
-                static_cast<ImplementationClass*>(this)->derive2(t + m_h, c, dcdt);
+            // This construction allow to avoid issues with the non-derivability of
+            // the curve at the end of an infusion period. If the method
+            // deriveAtPotentialInfusionStop() is defined in the IntakeIntervalCalculator,
+            // then it uses it.
+            // It is to be noted that every IntakeIntervalCalculator offering infusion
+            // Shall offer such method.
+            if constexpr (requires {
+                              static_cast<ImplementationClass*>(this)->deriveAtPotentialInfusionStop(t + m_h, c, dcdt);
+                          })
+                static_cast<ImplementationClass*>(this)->deriveAtPotentialInfusionStop(t + m_h, c, dcdt);
             else
                 static_cast<ImplementationClass*>(this)->derive(t + m_h, c, dcdt);
 

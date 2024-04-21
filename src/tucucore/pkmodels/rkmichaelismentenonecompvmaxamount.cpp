@@ -116,6 +116,11 @@ bool RkMichaelisMentenOneCompVmaxAmountInfusion::checkInputs(
     }
 
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
+    m_nonDifferentiableTime = m_Tinf;
+
+    const double eps = 0.001;
+    m_TinfLow = m_Tinf - eps;
+    m_TinfHigh = m_Tinf + eps;
 
     m_D = _intakeEvent.getDose();
     m_V = _parameters.getValue(ParameterId::V);

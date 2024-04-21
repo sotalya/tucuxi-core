@@ -20,7 +20,6 @@ RkMichaelisMentenLinearOneComp::RkMichaelisMentenLinearOneComp()
 RkMichaelisMentenLinearOneCompExtraMicro::RkMichaelisMentenLinearOneCompExtraMicro() : RkMichaelisMentenLinearOneComp()
 {
     m_delivered = true;
-    m_isInfusion = false;
     m_isWithLag = false;
 }
 
@@ -67,7 +66,6 @@ RkMichaelisMentenLinearOneCompExtraLagMicro::RkMichaelisMentenLinearOneCompExtra
     : RkMichaelisMentenLinearOneComp()
 {
     m_delivered = false;
-    m_isInfusion = false;
     m_isWithLag = true;
 }
 
@@ -114,7 +112,6 @@ bool RkMichaelisMentenLinearOneCompExtraLagMicro::checkInputs(
 RkMichaelisMentenLinearOneCompBolusMicro::RkMichaelisMentenLinearOneCompBolusMicro() : RkMichaelisMentenLinearOneComp()
 {
     m_delivered = true;
-    m_isInfusion = false;
     m_isWithLag = false;
     m_Ka = 0.0;
     m_Tlag = 0.0;
@@ -181,6 +178,11 @@ bool RkMichaelisMentenLinearOneCompInfusionMicro::checkInputs(
     }
 
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
+    m_nonDifferentiableTime = m_Tinf;
+
+    const double eps = 0.001;
+    m_TinfLow = m_Tinf - eps;
+    m_TinfHigh = m_Tinf + eps;
 
     m_D = _intakeEvent.getDose();
     m_V = _parameters.getValue(ParameterId::V);

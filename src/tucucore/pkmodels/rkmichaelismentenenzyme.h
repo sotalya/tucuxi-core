@@ -105,6 +105,8 @@ protected:
     Value m_Vmax{NAN};
     Value m_AllmCL{NAN}; /// Allometric clearance
     Value m_Tinf{NAN};
+    Value m_TinfLow{NAN};
+    Value m_TinfHigh{NAN};
 
     Value m_Kenz{NAN};
     Value m_Emax{NAN};
