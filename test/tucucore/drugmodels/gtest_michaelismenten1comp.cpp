@@ -292,14 +292,10 @@ static const std::string test_mm_1comp_bolus_tdd = R"(<?xml version="1.0" encodi
                     </availableIntervals>
                     <comments/>
                 </dosages>
-
-
-                <absorptionParameters/>
+              <absorptionParameters/>
             </formulationAndRoute>
-
-
-
-
+)"
+                                                   R"(
             <formulationAndRoute>
                 <formulationAndRouteId>id1</formulationAndRouteId>
                 <formulation>parenteral solution</formulation>
@@ -608,12 +604,12 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        for (size_t i = 0; i < resp->getData().size(); i++) {
-            std::cout << "Cycle " << i << std::endl;
-            for (const auto& p : resp->getData()[i].m_parameters) {
-                std::cout << p.m_parameterId << " : " << p.m_value << std::endl;
-            }
-        }
+        //for (size_t i = 0; i < resp->getData().size(); i++) {
+        //    std::cout << "Cycle " << i << std::endl;
+        //    for (const auto& p : resp->getData()[i].m_parameters) {
+        //        std::cout << p.m_parameterId << " : " << p.m_value << std::endl;
+        //    }
+        //}
 
         // F
         ASSERT_EQ(resp->getData()[0].m_parameters[0].m_value, 0.8);
