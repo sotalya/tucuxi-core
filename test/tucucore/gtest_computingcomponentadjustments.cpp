@@ -214,7 +214,7 @@ TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndR
     const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
 
     // We expect 7 valid adjustment candidates
-    ASSERT_NE(resp->getAdjustments().size(), static_cast<size_t>(7));
+    ASSERT_EQ(resp->getAdjustments().size(), static_cast<size_t>(7));
 
     // Delete all dynamically allocated objects
     delete component;

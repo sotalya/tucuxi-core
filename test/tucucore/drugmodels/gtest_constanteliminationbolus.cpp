@@ -1111,7 +1111,7 @@ TEST(Core_TestConstantEliminationBolus, ParamExponentialResidualErrorModelExpone
     delete component;
 }
 
-TEST(Core_TestConstantEliminationBolus, DISABLED_ParamProportionalResidualErrorModelProportional)
+TEST(Core_TestConstantEliminationBolus, ParamProportionalResidualErrorModelProportional)
 {
     BuildConstantElimination builder;
     auto drugModel = builder.buildDrugModel(

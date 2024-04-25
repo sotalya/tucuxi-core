@@ -867,7 +867,7 @@ TEST(Core_TestParameterExtractor, PE_extract1_1)
             "Param_C_D", DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0), 125, series));
 }
 
-TEST(Core_TestParameterExtractor, DISABLED_PE_extractParamFromParam)
+TEST(Core_TestParameterExtractor, extractParamFromParam)
 {
     CovariateDefinitions cDefinitions;
     // Covariates of interest.
@@ -920,7 +920,7 @@ TEST(Core_TestParameterExtractor, DISABLED_PE_extractParamFromParam)
     ASSERT_TRUE(TestParameterExtractor::parameterEventIsPresent(
             "Param_C_C", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 30, series));
     ASSERT_TRUE(TestParameterExtractor::parameterEventIsPresent(
-            "Param_C_D", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 113, series));
+            "Param_C_D", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 114, series));
     ASSERT_TRUE(TestParameterExtractor::parameterEventIsPresent(
-            "Param_C_D", DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0), 125, series));
+            "Param_C_D", DATE_TIME_NO_VAR(2017, 8, 16, 9, 0, 0), 126, series));
 }

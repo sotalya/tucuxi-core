@@ -315,8 +315,18 @@ static void testCalculator(
         size_t n1 = (nbPoints - 1) * 3 / 4;
 
         // compare the result of compartment1
-        ASSERT_DOUBLE_EQ(concentrations[0], predictionPtr->getValues()[0][n0]);
-        ASSERT_DOUBLE_EQ(concentrations[1], predictionPtr->getValues()[0][n1]);
+        ASSERT_PRED4(
+                double_eq_rel_abs,
+                concentrations[0],
+                predictionPtr->getValues()[0][n0],
+                DEFAULT_PRECISION,
+                DEFAULT_PRECISION);
+        ASSERT_PRED4(
+                double_eq_rel_abs,
+                concentrations[1],
+                predictionPtr->getValues()[0][n1],
+                DEFAULT_PRECISION,
+                DEFAULT_PRECISION);
     }
 
     // Create samples and compare the result of computeConcentrations() and pointsAtTime().

@@ -9,7 +9,8 @@
 #include "tucucore/pkmodels/onecompartmentbolus.h"
 #include "tucucore/pkmodels/onecompartmentextra.h"
 #include "tucucore/pkmodels/onecompartmentinfusion.h"
-#include "tucucore/pkmodels/threecompartmentbolus.h"
+// #include "tucucore/pkmodels/threecompartmentbolus.h"
+#include "tucucore/pkmodels/rkthreecompartment.h"
 #include "tucucore/pkmodels/threecompartmentextra.h"
 #include "tucucore/pkmodels/threecompartmentinfusion.h"
 #include "tucucore/pkmodels/twocompartmentbolus.h"
@@ -151,11 +152,11 @@ TEST(Core_TestConcentrationCalculator, twoCompInfusion)
 }
 
 // TODO Active following test after fixing input parameters
-TEST(Core_TestConcentrationCalculator, DISABLED_threeCompBolus)
+TEST(Core_TestConcentrationCalculator, threeCompBolus)
 {
     Tucuxi::Core::ParameterDefinitions parameterDefs;
-    parameterDefs.push_back(
-            std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
+    //parameterDefs.push_back(
+    //        std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 2, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
     parameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
@@ -172,11 +173,11 @@ TEST(Core_TestConcentrationCalculator, DISABLED_threeCompBolus)
     Tucuxi::Core::ParameterSetSeries parametersSeries;
     parametersSeries.addParameterSetEvent(parameters);
 
-    testCalculator<Tucuxi::Core::ThreeCompartmentBolusMicro>(
+    testCalculator<Tucuxi::Core::RkThreeCompartmentBolusMicro>(
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Intravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST(Core_TestConcentrationCalculator, DISABLED_threeCompExtra)
+TEST(Core_TestConcentrationCalculator, threeCompExtra)
 {
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(
@@ -199,11 +200,11 @@ TEST(Core_TestConcentrationCalculator, DISABLED_threeCompExtra)
     Tucuxi::Core::ParameterSetSeries parametersSeries;
     parametersSeries.addParameterSetEvent(parameters);
 
-    testCalculator<Tucuxi::Core::ThreeCompartmentExtraMicro>(
+    testCalculator<Tucuxi::Core::RkThreeCompartmentExtraMicro>(
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
 }
 
-TEST(Core_TestConcentrationCalculator, DISABLED_threeCompInfusion)
+TEST(Core_TestConcentrationCalculator, threeCompInfusion)
 {
     Tucuxi::Core::ParameterDefinitions parameterDefs;
     parameterDefs.push_back(
@@ -224,6 +225,6 @@ TEST(Core_TestConcentrationCalculator, DISABLED_threeCompInfusion)
     Tucuxi::Core::ParameterSetSeries parametersSeries;
     parametersSeries.addParameterSetEvent(parameters);
 
-    testCalculator<Tucuxi::Core::ThreeCompartmentInfusionMicro>(
+    testCalculator<Tucuxi::Core::RkThreeCompartmentInfusionMicro>(
             parametersSeries, 400.0, Tucuxi::Core::AbsorptionModel::Infusion, 12h, 1h, CYCLE_SIZE);
 }
