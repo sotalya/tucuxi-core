@@ -56,6 +56,7 @@ bool RkThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, 
     bOK &= checkPositiveValue(m_K21, "K21");
     bOK &= checkPositiveValue(m_K13, "K13");
     bOK &= checkPositiveValue(m_K31, "K31");
+    bOK &= checkPositiveValue(m_Ke, "Ke");
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
@@ -82,6 +83,7 @@ bool RkThreeCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEven
 
     m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);
+    m_Ke = _parameters.getValue(ParameterId::Ke);
     m_F = _parameters.getValue(ParameterId::F);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_K12 = _parameters.getValue(ParameterId::K12);
@@ -103,6 +105,7 @@ bool RkThreeCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEven
     bOK &= checkPositiveValue(m_K21, "K21");
     bOK &= checkPositiveValue(m_K13, "K13");
     bOK &= checkPositiveValue(m_K31, "K31");
+    bOK &= checkPositiveValue(m_Ke, "Ke");
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
@@ -132,6 +135,7 @@ bool RkThreeCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, 
 
     m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);
+    m_Ke = _parameters.getValue(ParameterId::Ke);
     m_F = _parameters.getOptionalValue(ParameterId::F);
     m_Ka = _parameters.getOptionalValue(ParameterId::Ka);
     m_K12 = _parameters.getValue(ParameterId::K12);
@@ -152,6 +156,7 @@ bool RkThreeCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, 
     bOK &= checkPositiveValue(m_K21, "K21");
     bOK &= checkPositiveValue(m_K13, "K13");
     bOK &= checkPositiveValue(m_K31, "K31");
+    bOK &= checkPositiveValue(m_Ke, "Ke");
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
@@ -186,6 +191,7 @@ bool RkThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEven
 
     m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);
+    m_Ke = _parameters.getValue(ParameterId::Ke);
     m_F = _parameters.getValue(ParameterId::F);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_K12 = _parameters.getValue(ParameterId::K12);
@@ -206,6 +212,7 @@ bool RkThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEven
     bOK &= checkPositiveValue(m_K21, "K21");
     bOK &= checkPositiveValue(m_K13, "K13");
     bOK &= checkPositiveValue(m_K31, "K31");
+    bOK &= checkPositiveValue(m_Ke, "Ke");
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
@@ -276,6 +283,7 @@ bool RkThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, 
     bOK &= checkPositiveValue(m_K21, "K21");
     bOK &= checkPositiveValue(m_K13, "K13");
     bOK &= checkPositiveValue(m_K31, "K31");
+    bOK &= checkPositiveValue(m_Ke, "Ke");
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
@@ -325,6 +333,7 @@ bool RkThreeCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEven
     bOK &= checkPositiveValue(m_K21, "K21");
     bOK &= checkPositiveValue(m_K13, "K13");
     bOK &= checkPositiveValue(m_K31, "K31");
+    bOK &= checkPositiveValue(m_Ke, "Ke");
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
@@ -372,6 +381,7 @@ bool RkThreeCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, 
     bOK &= checkPositiveValue(m_K21, "K21");
     bOK &= checkPositiveValue(m_K13, "K13");
     bOK &= checkPositiveValue(m_K31, "K31");
+    bOK &= checkPositiveValue(m_Ke, "Ke");
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
@@ -439,6 +449,7 @@ bool RkThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEven
     bOK &= checkPositiveValue(m_K21, "K21");
     bOK &= checkPositiveValue(m_K13, "K13");
     bOK &= checkPositiveValue(m_K31, "K31");
+    bOK &= checkPositiveValue(m_Ke, "Ke");
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
