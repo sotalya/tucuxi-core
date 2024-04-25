@@ -54,7 +54,16 @@ public:
         return m_s;
     }
 
-    auto operator<=>(const AnalyteId&) const = default;
+    //auto operator<=>(const AnalyteId&) const = default;
+
+    inline bool operator==(const AnalyteId&_other) const
+    {
+       return this->m_s == _other.m_s;
+    }
+    inline bool operator<(const AnalyteId&_other) const
+    {
+       return this->m_s<_other.m_s;
+    }
 
 protected:
     std::string m_s;
@@ -88,7 +97,15 @@ public:
         return m_s;
     }
 
-    auto operator<=>(const AnalyteGroupId&) const = default;
+    //auto operator<=>(const AnalyteGroupId&) const = default;
+    inline bool operator==(const AnalyteGroupId&_other) const
+    {
+       return this->m_s == _other.m_s;
+    }
+    inline bool operator<(const AnalyteGroupId&_other) const
+    {
+       return this->m_s<_other.m_s;
+    }
 
 protected:
     std::string m_s;
