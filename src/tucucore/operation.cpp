@@ -21,21 +21,21 @@ OperationInput::OperationInput(std::string _name, const InputType& _type)
 OperationInput::OperationInput(std::string _name, const bool& _value)
     : m_name{std::move(_name)}, m_type{InputType::BOOL}, m_isDefined{true}
 {
-    m_value.b = _value;
+    m_value = _value;
 }
 
 
 OperationInput::OperationInput(std::string _name, const int& _value)
     : m_name{std::move(_name)}, m_type{InputType::INTEGER}, m_isDefined{true}
 {
-    m_value.i = _value;
+    m_value = _value;
 }
 
 
 OperationInput::OperationInput(std::string _name, const double& _value)
     : m_name{std::move(_name)}, m_type{InputType::DOUBLE}, m_isDefined{true}
 {
-    m_value.d = _value;
+    m_value = _value;
 }
 
 
@@ -43,10 +43,12 @@ bool OperationInput::operator==(const OperationInput& _rhs) const
 {
     return (this->m_name == _rhs.m_name && this->m_isDefined == _rhs.m_isDefined
             && (!this->m_isDefined
-                || ((this->m_type == InputType::BOOL && this->m_value.b == _rhs.m_value.b)
-                    || (this->m_type == InputType::INTEGER && this->m_value.i == _rhs.m_value.i)
+                || ((this->m_type == InputType::BOOL && (std::get<bool>(this->m_value) == std::get<bool>(_rhs.m_value)))
+                    || (this->m_type == InputType::INTEGER
+                        && (std::get<int>(this->m_value) == std::get<int>(_rhs.m_value)))
                     || (this->m_type == InputType::DOUBLE
-                        && fabs(this->m_value.d - _rhs.m_value.d) < std::numeric_limits<double>::min())))
+                        && fabs(std::get<double>(this->m_value) - std::get<double>(_rhs.m_value))
+                                   < std::numeric_limits<double>::min())))
             && this->m_type == _rhs.m_type);
 }
 
@@ -78,7 +80,7 @@ InputType OperationInput::getType() const
 bool OperationInput::getValue(bool& _value) const
 {
     if (m_type == InputType::BOOL && m_isDefined) {
-        _value = m_value.b;
+        _value = std::get<bool>(m_value);
         return true;
     }
     return false;
@@ -88,7 +90,7 @@ bool OperationInput::getValue(bool& _value) const
 bool OperationInput::setValue(const bool& _value)
 {
     if (m_type == InputType::BOOL) {
-        m_value.b = _value;
+        m_value = _value;
         m_isDefined = true;
         return true;
     }
@@ -99,7 +101,7 @@ bool OperationInput::setValue(const bool& _value)
 bool OperationInput::getValue(int& _value) const
 {
     if (m_type == InputType::INTEGER && m_isDefined) {
-        _value = m_value.i;
+        _value = std::get<int>(m_value);
         return true;
     }
     return false;
@@ -109,12 +111,12 @@ bool OperationInput::getValue(int& _value) const
 bool OperationInput::setValue(const int& _value)
 {
     if (m_type == InputType::INTEGER) {
-        m_value.i = _value;
+        m_value = _value;
         m_isDefined = true;
         return true;
     }
     if (m_type == InputType::BOOL) {
-        m_value.b = _value != 0;
+        m_value = static_cast<bool>(_value != 0);
         m_isDefined = true;
         return true;
     }
@@ -125,7 +127,7 @@ bool OperationInput::setValue(const int& _value)
 bool OperationInput::getValue(double& _value) const
 {
     if (m_type == InputType::DOUBLE && m_isDefined) {
-        _value = m_value.d;
+        _value = std::get<double>(m_value);
         return true;
     }
     return false;
@@ -135,17 +137,17 @@ bool OperationInput::getValue(double& _value) const
 bool OperationInput::setValue(const double& _value)
 {
     if (m_type == InputType::DOUBLE) {
-        m_value.d = _value;
+        m_value = _value;
         m_isDefined = true;
         return true;
     }
     if (m_type == InputType::INTEGER) {
-        m_value.i = static_cast<int>(_value);
+        m_value = static_cast<int>(_value);
         m_isDefined = true;
         return true;
     }
     if (m_type == InputType::BOOL) {
-        m_value.b = static_cast<int>(_value) != 0;
+        m_value = static_cast<int>(_value) != 0;
         m_isDefined = true;
         return true;
     }

@@ -10,6 +10,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <variant>
 #include <vector>
 
 #include "tucucommon/jsengine.h"
@@ -125,12 +126,7 @@ private:
     /// \brief Mark the input as defined or undefined.
     bool m_isDefined;
     /// \brief Store the value in the most appropriate type.
-    union
-    {
-        double d; // NOLINT(readability-identifier-naming)
-        bool b;   // NOLINT(readability-identifier-naming)
-        int i;    // NOLINT(readability-identifier-naming)
-    } m_value{};
+    std::variant<double, bool, int> m_value;
 };
 
 
