@@ -90,7 +90,7 @@ CovariateEvent ComputingUtils::getCovariateAtTime(const DateTime& _date, const C
     }
 
     // Should not happen
-    std::cout << "Something bad is currently happening" << std::endl;
+    std::cout << "Something bad is currently happening" << '\n';
     return CovariateEvent(*it);
 }
 
@@ -102,9 +102,9 @@ ComputingStatus ComputingUtils::computeMultiActiveMoiety(
         MultiConcentrationPredictionPtr& _activeMoietyPredictions)
 {
     std::vector<Operation*> op(_activemoieties.size());
-    for (size_t i = 0; i < _activemoieties.size(); ++i)
+    for (size_t i = 0; i < _activemoieties.size(); ++i) {
         op[i] = _activemoieties[i]->getFormula();
-
+    }
 
     size_t fullSize = _analytesPredictions[0]->getValues().size();
 
@@ -115,8 +115,9 @@ ComputingStatus ComputingUtils::computeMultiActiveMoiety(
         TimeOffsets times = _analytesPredictions[0]->getTimes()[i];
         std::vector<Concentrations> analyteC(nbAnalytes);
         for (size_t an = 0; an < nbAnalytes; an++) {
-            for (size_t j = 0; j < 1; j++)
+            for (size_t j = 0; j < 1; j++) {
                 analyteC[an] = _analytesPredictions[an]->getValues()[i][j]; //done for 2 active moietys
+            }
         }
 
         size_t nbConcentrations = analyteC[0].size();

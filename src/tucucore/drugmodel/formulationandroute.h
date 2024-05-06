@@ -4,6 +4,7 @@
 #define TUCUXI_TUCUCORE_FORMULATIONANDROUTE_H
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "tucucommon/unit.h"
@@ -154,7 +155,7 @@ public:
     // Construction for testing purpose
     FormulationAndRoute(AbsorptionModel _absorptionModel)
         : m_formulation(Formulation::Undefined), m_route(AdministrationRoute::Undefined),
-          m_absorptionModel(_absorptionModel), m_administrationName("")
+          m_absorptionModel(_absorptionModel)
     {
     }
 
@@ -272,8 +273,9 @@ std::vector<FormulationAndRoute> mergeFormulationAndRouteList(
 class FullFormulationAndRoute
 {
 public:
-    FullFormulationAndRoute(const FormulationAndRoute& _specs, std::string _id)
-        : m_id(std::move(_id)), m_specs(_specs), m_loadingDoseRecommended(true), m_restPeriodRecommended(true)
+    FullFormulationAndRoute(FormulationAndRoute _specs, std::string _id)
+        : m_id(std::move(_id)), m_specs(std::move(_specs)), m_loadingDoseRecommended(true),
+          m_restPeriodRecommended(true)
     {
     }
 

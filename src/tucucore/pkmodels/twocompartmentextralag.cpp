@@ -188,8 +188,6 @@ inline bool TwoCompartmentExtraLagMicro::compute(
         if (abs(_concentrations1[0]) < 1e-10) {
             _concentrations1[0] = 0.0;
         }
-
-        return true;
     }
     else {
 
@@ -403,9 +401,8 @@ inline bool TwoCompartmentExtraLagMicro::compute(
         if (abs(_concentrations1[0]) < 1e-10) {
             _concentrations1[0] = 0.0;
         }
-
-        return true;
     }
+    return true;
 }
 
 void TwoCompartmentExtraLagMicro::computeExponentials(Eigen::VectorXd& _times)

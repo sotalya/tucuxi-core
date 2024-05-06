@@ -54,11 +54,11 @@ public:
         m_nbPoints = _nbPoints; // % 2 != 0 ? _nbPoints : _nbPoints + 1;  // Must use an odd number
 
         if (_interval.isNegative()) {
-            std::cout << "Negative interval" << std::endl;
+            std::cout << "Negative interval" << '\n';
         }
 
         if (_interval.isEmpty()) {
-            std::cout << "Zero interval" << std::endl;
+            std::cout << "Zero interval" << '\n';
         }
     }
 
@@ -88,7 +88,7 @@ public:
     void setInterval(Duration _interval)
     {
         if (_interval.isNegative()) {
-            std::cout << "Bad interval" << std::endl;
+            std::cout << "Bad interval" << '\n';
         }
         m_interval = _interval;
     }

@@ -1,5 +1,7 @@
 //@@license@@
 
+#include <utility>
+
 #include "tucucore/operation.h"
 
 #include "tucucommon/general.h"
@@ -10,28 +12,28 @@
 namespace Tucuxi {
 namespace Core {
 
-OperationInput::OperationInput(const std::string& _name, const InputType& _type)
-    : m_name{_name}, m_type{_type}, m_isDefined{false}
+OperationInput::OperationInput(std::string _name, const InputType& _type)
+    : m_name{std::move(_name)}, m_type{_type}, m_isDefined{false}
 {
 }
 
 
-OperationInput::OperationInput(const std::string& _name, const bool& _value)
-    : m_name{_name}, m_type{InputType::BOOL}, m_isDefined{true}
+OperationInput::OperationInput(std::string _name, const bool& _value)
+    : m_name{std::move(_name)}, m_type{InputType::BOOL}, m_isDefined{true}
 {
     m_value.b = _value;
 }
 
 
-OperationInput::OperationInput(const std::string& _name, const int& _value)
-    : m_name{_name}, m_type{InputType::INTEGER}, m_isDefined{true}
+OperationInput::OperationInput(std::string _name, const int& _value)
+    : m_name{std::move(_name)}, m_type{InputType::INTEGER}, m_isDefined{true}
 {
     m_value.i = _value;
 }
 
 
-OperationInput::OperationInput(const std::string& _name, const double& _value)
-    : m_name{_name}, m_type{InputType::DOUBLE}, m_isDefined{true}
+OperationInput::OperationInput(std::string _name, const double& _value)
+    : m_name{std::move(_name)}, m_type{InputType::DOUBLE}, m_isDefined{true}
 {
     m_value.d = _value;
 }
@@ -157,7 +159,7 @@ std::string Operation::getLastErrorMessage() const
     return sm_errorMessage;
 }
 
-Operation::Operation(const OperationInputList& _requiredInputs) : m_requiredInputs{_requiredInputs} {}
+Operation::Operation(OperationInputList _requiredInputs) : m_requiredInputs{std::move(_requiredInputs)} {}
 
 
 bool Operation::check(const OperationInputList& _inputs) const

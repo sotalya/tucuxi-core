@@ -489,10 +489,12 @@ protected:
             // Shall offer such method.
             if constexpr (requires {
                               static_cast<ImplementationClass*>(this)->deriveAtPotentialInfusionStop(t + m_h, c, dcdt);
-                          })
+                          }) {
                 static_cast<ImplementationClass*>(this)->deriveAtPotentialInfusionStop(t + m_h, c, dcdt);
-            else
+            }
+            else {
                 static_cast<ImplementationClass*>(this)->derive(t + m_h, c, dcdt);
+            }
 
             // Set k4's
             ComputeK4<0, ResidualSize - 1>::apply(k1, k2, k3, k4, m_h, dcdt, concentrations);

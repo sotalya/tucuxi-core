@@ -3,8 +3,6 @@
 #ifndef TUCUXI_COMMON_LOOGER
 #define TUCUXI_COMMON_LOOGER
 
-#include <iostream>
-
 #include "tucucommon/componentmanager.h"
 #include "tucucommon/ilogger.h"
 #include "tucucommon/logger.h"
@@ -116,7 +114,7 @@ public:
     {
         try {
             auto out = fmt::memory_buffer();
-            //    fmt::format_to(std::back_inserter(out), _fmt, _args...);
+            fmt::format_to(std::back_inserter(out), _fmt, _args...);
             debug(fmt::to_string(out));
         }
         catch (const std::exception& ex) {

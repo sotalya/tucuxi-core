@@ -49,7 +49,7 @@ public:
 
     void setTarget(TargetEvent _target)
     {
-        m_target = _target;
+        m_target = std::move(_target);
     }
 
     const TargetEvent& getTarget() const

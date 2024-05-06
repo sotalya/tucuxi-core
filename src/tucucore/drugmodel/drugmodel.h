@@ -3,6 +3,8 @@
 #ifndef TUCUXI_CORE_DRUGMODEL_H
 #define TUCUXI_CORE_DRUGMODEL_H
 
+#include <utility>
+
 #include "tucucommon/iterator.h"
 
 #include "tucucore/covariateevent.h"
@@ -50,19 +52,19 @@ class ParameterDefinitionIterator : public Tucuxi::Common::Iterator<const Parame
 public:
     ParameterDefinitionIterator(
             const DrugModel& _model,
-            const AnalyteGroupId& _analyteGroupId,
+            AnalyteGroupId _analyteGroupId,
             const Formulation& _formulation,
             const AdministrationRoute _route)
-        : m_model(_model), m_analyteGroupId(_analyteGroupId), m_formulation(_formulation), m_route(_route)
+        : m_model(_model), m_analyteGroupId(std::move(_analyteGroupId)), m_formulation(_formulation), m_route(_route)
     {
         build();
     }
 
     ParameterDefinitionIterator(
             const DrugModel& _model,
-            const AnalyteGroupId& _analyteGroupId,
+            AnalyteGroupId _analyteGroupId,
             const std::vector<const FullFormulationAndRoute*>& _formulation)
-        : m_model(_model), m_analyteGroupId(_analyteGroupId), m_formulation(Formulation::Undefined),
+        : m_model(_model), m_analyteGroupId(std::move(_analyteGroupId)), m_formulation(Formulation::Undefined),
           m_route(AdministrationRoute::Undefined), m_fullFormulationAndRoutes(_formulation)
     {
         build();
@@ -70,9 +72,9 @@ public:
 
     ParameterDefinitionIterator(
             const DrugModel& _model,
-            const AnalyteGroupId& _analyteGroupId,
+            AnalyteGroupId _analyteGroupId,
             const std::vector<FormulationAndRoute>& _formulation)
-        : m_model(_model), m_analyteGroupId(_analyteGroupId), m_formulation(Formulation::Undefined),
+        : m_model(_model), m_analyteGroupId(std::move(_analyteGroupId)), m_formulation(Formulation::Undefined),
           m_route(AdministrationRoute::Undefined), m_formulationAndRoutes(_formulation)
     {
         build();
@@ -324,7 +326,7 @@ public:
 
     const AnalyteSet* getAnalyteSet(const AnalyteGroupId& _analyteGroupId = "") const
     {
-        if ((_analyteGroupId == "") && (m_analyteSets.size() == 1)) {
+        if ((_analyteGroupId.empty()) && (m_analyteSets.size() == 1)) {
             return m_analyteSets[0].get();
         }
 

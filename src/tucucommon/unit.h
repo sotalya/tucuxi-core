@@ -6,6 +6,7 @@
 #include <map>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace Tucuxi {
@@ -39,7 +40,7 @@ public:
     /// can be performed later on depending on a specific type of unit required
     /// at a specific place in code.
     ///
-    TucuUnit(const std::string& _unitString) : m_unitString(_unitString) {}
+    TucuUnit(std::string _unitString) : m_unitString(std::move(_unitString)) {}
 
     ///
     /// \brief Compares two units for equality

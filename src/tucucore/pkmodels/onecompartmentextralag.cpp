@@ -141,7 +141,7 @@ bool OneCompartmentExtraLagMicro::computeConcentrations(
     // Return concentrations of first compartment
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
     // Return concentrations of other compartments
-    if (_isAll == true) {
+    if (_isAll) {
         _concentrations[secondCompartment].assign(
                 concentrations2.data(), concentrations2.data() + concentrations2.size());
     }
@@ -183,7 +183,7 @@ bool OneCompartmentExtraLagMicro::computeConcentration(
 
     // return concentraions (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
-    if (_isAll == true) {
+    if (_isAll) {
         _concentrations[secondCompartment].push_back(concentrations2[atTime]);
     }
 

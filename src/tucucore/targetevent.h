@@ -20,7 +20,6 @@ namespace Core {
 
 class TargetEvaluator;
 class Target;
-class XpertRequestResultXmlExport;
 
 class TargetEvent
 {

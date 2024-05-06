@@ -66,12 +66,14 @@ void ParameterDefinitionIterator::build()
     std::sort(
             m_parametersVector.begin(),
             m_parametersVector.end(),
-            [&](const ParameterInfo& v1, const ParameterInfo& v2) {
-                if (v1.isVariable && !v2.isVariable)
+            [&](const ParameterInfo& _v1, const ParameterInfo& _v2) {
+                if (_v1.isVariable && !_v2.isVariable) {
                     return true;
-                if (!v1.isVariable && v2.isVariable)
+                }
+                if (!_v1.isVariable && _v2.isVariable) {
                     return false;
-                return v1.id < v2.id;
+                }
+                return _v1.id < _v2.id;
             });
 }
 
@@ -89,8 +91,9 @@ const ParameterDefinition* ParameterDefinitionIterator::operator*()
     // Iterate over the absorption parameters to find the parameter Id
     for (const auto& parameterSet : m_absorptionParameters) {
         for (size_t i = 0; i < parameterSet->getNbParameters(); i++) {
-            if (parameterSet->getParameter(i)->getId() == curId)
+            if (parameterSet->getParameter(i)->getId() == curId) {
                 return parameterSet->getParameter(i);
+            }
         }
     }
 
@@ -98,8 +101,9 @@ const ParameterDefinition* ParameterDefinitionIterator::operator*()
     const ParameterSetDefinition* dispositionParameters = m_model.getDispositionParameters(m_analyteGroupId);
 
     for (size_t i = 0; i < dispositionParameters->getNbParameters(); i++) {
-        if (dispositionParameters->getParameter(i)->getId() == curId)
+        if (dispositionParameters->getParameter(i)->getId() == curId) {
             return dispositionParameters->getParameter(i);
+        }
     }
 
     // This really should never happen

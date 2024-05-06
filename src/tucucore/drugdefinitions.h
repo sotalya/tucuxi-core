@@ -3,6 +3,8 @@
 #ifndef DRUGDEFINITIONS_H
 #define DRUGDEFINITIONS_H
 
+#include <utility>
+
 #include "tucucommon/unit.h"
 
 #include "tucucore/definitions.h"
@@ -66,15 +68,15 @@ public:
     /// \param _value Default value.
     /// \param _operation Operation associated with the parameter.
     /// The operation has a default value of nullptr
-    PopulationValue(const std::string& _id, const Value _value, std::unique_ptr<Operation> _operation = nullptr)
-        : m_id(_id), m_value(_value), m_operation(std::move(_operation))
+    PopulationValue(std::string _id, const Value _value, std::unique_ptr<Operation> _operation = nullptr)
+        : m_id(std::move(_id)), m_value(_value), m_operation(std::move(_operation))
     {
     }
 
     /// \brief Create a population value with a fixed value.
     /// \param _value Default value.
     /// The value is not operable
-    PopulationValue(const Value _value) : m_id(""), m_value(_value), m_operation(nullptr) {}
+    PopulationValue(const Value _value) : m_value(_value), m_operation(nullptr) {}
 
     virtual ~PopulationValue() {}
 

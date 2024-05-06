@@ -32,7 +32,7 @@ public:
                 for (auto& value : m_values) {
                     ostrm << value[cycle][i] << " ";
                 }
-                ostrm << std::endl;
+                ostrm << '\n';
             }
             offset += times[nbPoints - 1];
         }

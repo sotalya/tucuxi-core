@@ -105,7 +105,7 @@ enum class Invariants
         bool result = expression;                                                                              \
         if (!result) {                                                                                         \
             std::cout << "Drug model invariant failure : " << static_cast<int>(invariant) << ". " << (message) \
-                      << std::endl;                                                                            \
+                      << '\n';                                                                                 \
         }                                                                                                      \
         ok &= result;                                                                                          \
         if (!ok) {                                                                                             \
@@ -119,7 +119,7 @@ enum class Invariants
     std::cout << "Invariant failure : " << \
     static_cast<int>(invariant) << \
     ". File " << __FILE__ << ", line " << __LINE__ << \
-    std::endl;} \
+    '\n';} \
     ok &= result; \
     if (!ok) {return false;} }
 */
@@ -156,7 +156,7 @@ public:                          \
             bool result = f();                                                                                     \
             if (!result) {                                                                                         \
                 std::cout << "Drug model invariant failure : " << static_cast<int>(invariant) << ". " << (message) \
-                          << std::endl;                                                                            \
+                          << '\n';                                                                                 \
             }                                                                                                      \
             ok &= result;                                                                                          \
             if (!ok)                                                                                               \
@@ -169,7 +169,7 @@ public:                          \
     std::cout << "Invariant failure : " << \
     static_cast<int>(invariant) << \
     ". File " << __FILE__ << ", line " << __LINE__ << \
-    std::endl;} \
+    '\n';} \
     ok &= result; if (!ok) return false;}}
 */
 } // namespace Core

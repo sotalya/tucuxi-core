@@ -56,13 +56,13 @@ public:
 
     //auto operator<=>(const AnalyteId&) const = default;
 
-    inline bool operator==(const AnalyteId&_other) const
+    inline bool operator==(const AnalyteId& _other) const
     {
-       return this->m_s == _other.m_s;
+        return this->m_s == _other.m_s;
     }
-    inline bool operator<(const AnalyteId&_other) const
+    inline bool operator<(const AnalyteId& _other) const
     {
-       return this->m_s<_other.m_s;
+        return this->m_s < _other.m_s;
     }
 
 protected:
@@ -98,13 +98,13 @@ public:
     }
 
     //auto operator<=>(const AnalyteGroupId&) const = default;
-    inline bool operator==(const AnalyteGroupId&_other) const
+    inline bool operator==(const AnalyteGroupId& _other) const
     {
-       return this->m_s == _other.m_s;
+        return this->m_s == _other.m_s;
     }
-    inline bool operator<(const AnalyteGroupId&_other) const
+    inline bool operator<(const AnalyteGroupId& _other) const
     {
-       return this->m_s<_other.m_s;
+        return this->m_s < _other.m_s;
     }
 
 protected:

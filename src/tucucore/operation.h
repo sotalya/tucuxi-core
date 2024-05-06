@@ -29,22 +29,22 @@ public:
     /// \brief Create an operand from its name and type.
     /// \param _name Name of the operand.
     /// \param _type Type of the operand.
-    OperationInput(const std::string& _name, const InputType& _type = InputType::DOUBLE);
+    OperationInput(std::string _name, const InputType& _type = InputType::DOUBLE);
 
     /// \brief Create an operand from its name and value.
     /// \param _name Name of the operand.
     /// \param _value Numerical value of the input.
-    OperationInput(const std::string& _name, const bool& _value);
+    OperationInput(std::string _name, const bool& _value);
 
     /// \brief Create an operand from its name and value.
     /// \param _name Name of the operand.
     /// \param _value Numerical value of the input.
-    OperationInput(const std::string& _name, const int& _value);
+    OperationInput(std::string _name, const int& _value);
 
     /// \brief Create an operand from its name and value.
     /// \param _name Name of the operand.
     /// \param _value Numerical value of the input.
-    OperationInput(const std::string& _name, const double& _value);
+    OperationInput(std::string _name, const double& _value);
 
     /// \brief Default copy-construct an operation input.
     /// \param _other OperationInput used for copy-construction.
@@ -206,7 +206,7 @@ public:
 
     /// \brief Create an operation already setting the list of required inputs.
     /// \param _requiredInputs List of required inputs.
-    Operation(const OperationInputList& _requiredInputs);
+    Operation(OperationInputList _requiredInputs);
 
     /// \brief Default destructor.
     virtual ~Operation() = default;

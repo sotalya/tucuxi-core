@@ -28,7 +28,7 @@ public:
             const Tucuxi::Core::TimeOffsets times = getTimes()[cycle];
             size_t nbPoints = concentrations.size();
             for (size_t i = 0; i < nbPoints - 1; i++) {
-                ostrm << (times[i]) + offset << " " << concentrations[i] << std::endl;
+                ostrm << (times[i]) + offset << " " << concentrations[i] << '\n';
             }
             offset += times[nbPoints - 1];
         }

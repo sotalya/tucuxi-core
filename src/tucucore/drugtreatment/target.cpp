@@ -71,15 +71,15 @@ Target::Target(
         ActiveMoietyId _activeMoietyId,
         TargetType _type,
         TucuUnit _unit,
-        Value _min,
-        Value _best,
-        Value _max,
+        Value _vmin,
+        Value _vbest,
+        Value _vmax,
         Value _inefficacyAlarm,
         Value _toxicityAlarm,
         Value _mic,
         TucuUnit _micUnit)
-    : m_activeMoietyId(std::move(_activeMoietyId)), m_targetType(_type), m_valueMin(_min), m_valueMax(_max),
-      m_valueBest(_best), m_mic(_mic), m_micUnit(std::move(_micUnit)), m_inefficacyAlarm(_inefficacyAlarm),
+    : m_activeMoietyId(std::move(_activeMoietyId)), m_targetType(_type), m_valueMin(_vmin), m_valueMax(_vmax),
+      m_valueBest(_vbest), m_mic(_mic), m_micUnit(std::move(_micUnit)), m_inefficacyAlarm(_inefficacyAlarm),
       m_toxicityAlarm(_toxicityAlarm), m_unit(std::move(_unit))
 {
 }
@@ -89,9 +89,9 @@ Target::Target(
         ActiveMoietyId _activeMoietyId,
         TargetType _type,
         TucuUnit _unit,
-        Value _min,
-        Value _best,
-        Value _max,
+        Value _vmin,
+        Value _vbest,
+        Value _vmax,
         Value _inefficacyAlarm,
         Value _toxicityAlarm,
         Value _mic,
@@ -99,8 +99,8 @@ Target::Target(
         Tucuxi::Common::Duration _tmin,
         Tucuxi::Common::Duration _tbest,
         Tucuxi::Common::Duration _tmax)
-    : m_activeMoietyId(std::move(_activeMoietyId)), m_targetType(_type), m_valueMin(_min), m_valueMax(_max),
-      m_valueBest(_best), m_mic(_mic), m_micUnit(std::move(_micUnit)), m_inefficacyAlarm(_inefficacyAlarm),
+    : m_activeMoietyId(std::move(_activeMoietyId)), m_targetType(_type), m_valueMin(_vmin), m_valueMax(_vmax),
+      m_valueBest(_vbest), m_mic(_mic), m_micUnit(std::move(_micUnit)), m_inefficacyAlarm(_inefficacyAlarm),
       m_toxicityAlarm(_toxicityAlarm), m_tMin(std::move(_tmin)), m_tMax(std::move(_tmax)), m_tBest(std::move(_tbest)),
       m_unit(std::move(_unit))
 {
