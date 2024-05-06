@@ -47,8 +47,8 @@ bool OperationInput::operator==(const OperationInput& _rhs) const
                     || (this->m_type == InputType::INTEGER
                         && (std::get<int>(this->m_value) == std::get<int>(_rhs.m_value)))
                     || (this->m_type == InputType::DOUBLE
-                        && fabs(std::get<double>(this->m_value) - std::get<double>(_rhs.m_value))
-                                   < std::numeric_limits<double>::min())))
+                        && (fabs(std::get<double>(this->m_value) - std::get<double>(_rhs.m_value))
+                            < std::numeric_limits<double>::min()))))
             && this->m_type == _rhs.m_type);
 }
 
@@ -147,7 +147,7 @@ bool OperationInput::setValue(const double& _value)
         return true;
     }
     if (m_type == InputType::BOOL) {
-        m_value = static_cast<int>(_value) != 0;
+        m_value = static_cast<bool>(static_cast<int>(_value) != 0);
         m_isDefined = true;
         return true;
     }
