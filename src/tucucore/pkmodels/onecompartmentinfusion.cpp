@@ -150,7 +150,7 @@ bool OneCompartmentInfusionMicro::computeConcentration(
     return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
 }
 
-OneCompartmentInfusionMacro::OneCompartmentInfusionMacro() : OneCompartmentInfusionMicro() {}
+OneCompartmentInfusionMacro::OneCompartmentInfusionMacro() {}
 
 std::vector<std::string> OneCompartmentInfusionMacro::getParametersId()
 {

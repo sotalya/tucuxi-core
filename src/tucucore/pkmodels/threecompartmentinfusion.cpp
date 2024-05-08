@@ -105,7 +105,8 @@ bool ThreeCompartmentInfusionMicro::computeConcentrations(
         const Residuals& _inResiduals, bool _isAll, MultiCompConcentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1(m_nbPoints);
-    Value concentrations2, concentrations3;
+    Value concentrations2;
+    Value concentrations3;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
     size_t thirdCompartment = static_cast<size_t>(Compartments::Third);
@@ -148,7 +149,8 @@ bool ThreeCompartmentInfusionMicro::computeConcentration(
         Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1(2);
-    Value concentrations2, concentrations3;
+    Value concentrations2;
+    Value concentrations3;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
     size_t thirdCompartment = static_cast<size_t>(Compartments::Third);

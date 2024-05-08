@@ -4,7 +4,6 @@
 
 #include "tucucore/parameter.h"
 
-#include "tucucommon/general.h"
 #include "tucucommon/loggerhelper.h"
 
 namespace Tucuxi {
@@ -121,7 +120,7 @@ void ParameterSetEvent::addParameterEvent(const ParameterDefinition& _definition
 
         // Update our mapping between id (string) to index
         ParameterId::Enum id = ParameterId::fromString(it->getParameterId());
-        m_IdToIndex[id] = index;
+        m_IdToIndex[static_cast<size_t>(id)] = index;
 
         index++;
     }

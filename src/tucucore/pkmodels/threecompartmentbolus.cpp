@@ -138,7 +138,8 @@ bool ThreeCompartmentBolusMicro::computeConcentration(
         Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
-    Value concentrations2, concentrations3;
+    Value concentrations2;
+    Value concentrations3;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
     size_t thirdCompartment = static_cast<size_t>(Compartments::Third);
@@ -174,7 +175,7 @@ bool ThreeCompartmentBolusMicro::computeConcentration(
     return bOK;
 }
 
-ThreeCompartmentBolusMacro::ThreeCompartmentBolusMacro() : ThreeCompartmentBolusMicro() {}
+ThreeCompartmentBolusMacro::ThreeCompartmentBolusMacro() {}
 
 std::vector<std::string> ThreeCompartmentBolusMacro::getParametersId()
 {

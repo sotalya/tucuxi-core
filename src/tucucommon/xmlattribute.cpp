@@ -1,5 +1,7 @@
 //@@license@@
 
+#include <iostream>
+
 #include "xmlattribute.h"
 
 #include "rapidxml.hpp"
@@ -78,6 +80,9 @@ bool XmlAttribute::isValid() const
 
 XmlAttribute& XmlAttribute::operator=(const XmlAttribute& _other)
 {
+    if (this == &_other) {
+        return *this;
+    }
     m_pAttribute = _other.m_pAttribute;
     return *this;
 }
@@ -111,7 +116,8 @@ char* XmlAttribute::allocateString(const std::string& _string)
         try {
             return m_pAttribute->document()->allocate_string(_string.c_str());
         }
-        catch (std::bad_alloc&) {
+        catch (std::bad_alloc& ex) {
+            std::cerr << "XmlAttribute allocation error: " << ex.what() << '\n';
         }
     }
     return nullptr;

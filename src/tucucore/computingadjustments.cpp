@@ -511,8 +511,8 @@ ComputingStatus ComputingAdjustments::compute(
 
 
         // TODO : To be checked. The adjustment engine should not depend on the user choice
-        double nbPointsPerHour = _traits->getNbPointsPerHour();
-        nbPointsPerHour = 20;
+        // double nbPointsPerHour = _traits->getNbPointsPerHour();
+        double nbPointsPerHour = 20;
 
         ComputingTraitConcentration traits(
                 "0", _traits->getAdjustmentTime(), newEndTime, nbPointsPerHour, _traits->getComputingOption());

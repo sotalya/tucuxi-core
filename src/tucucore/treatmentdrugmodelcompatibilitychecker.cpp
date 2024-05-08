@@ -49,7 +49,7 @@ bool TreatmentDrugModelCompatibilityChecker::checkPkModelCompatibility(
     std::vector<FormulationAndRoute> treatmentList = _dosageHistory->getFormulationAndRouteList();
 
     // Here we just check if the PK model allows for multiple routes and the treatment embeds multiple routes
-    return (!((treatmentList.size() > 1) && (_pkModel->allowMultipleRoutes() == PkModel::AllowMultipleRoutes::No)));
+    return ((treatmentList.size() <= 1) || (_pkModel->allowMultipleRoutes() != PkModel::AllowMultipleRoutes::No));
 }
 
 } // namespace Core

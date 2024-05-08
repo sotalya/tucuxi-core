@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 
-#include "tucucommon/general.h"
 #include "tucucommon/utils.h"
 
 #include "tucucore/definitions.h"
@@ -15,7 +14,6 @@
 #include "tucucore/invariants.h"
 #include "tucucore/operablegraphmanager.h"
 #include "tucucore/operation.h"
-#include "tucucore/timedevent.h"
 
 
 namespace Tucuxi {

@@ -120,7 +120,7 @@ DrugModel::DrugModel()
 
 void DrugModel::setTimeToSteadyState(Tucuxi::Common::Duration _time)
 {
-    m_timeToSteadyState = std::move(_time);
+    m_timeToSteadyState = _time;
 }
 
 

@@ -7,7 +7,6 @@
 #include <stdexcept>
 #include <string>
 #include <utility>
-#include <vector>
 
 namespace Tucuxi {
 namespace Common {

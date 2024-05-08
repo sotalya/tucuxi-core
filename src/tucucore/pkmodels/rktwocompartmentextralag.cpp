@@ -59,7 +59,7 @@ bool RK4TwoCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent
 }
 
 
-RK4TwoCompartmentExtraLagMacro::RK4TwoCompartmentExtraLagMacro() : RK4TwoCompartmentExtraLagMicro() {}
+RK4TwoCompartmentExtraLagMacro::RK4TwoCompartmentExtraLagMacro() {}
 
 
 std::vector<std::string> RK4TwoCompartmentExtraLagMacro::getParametersId()

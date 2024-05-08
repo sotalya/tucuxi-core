@@ -6,7 +6,6 @@
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/covariateevent.h"
-#include "tucucore/drugmodel/activemoiety.h"
 #include "tucucore/drugtreatment/target.h"
 #include "tucucore/targetevent.h"
 

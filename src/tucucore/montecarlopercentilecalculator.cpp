@@ -507,7 +507,7 @@ foundFalse:
                 }
             }
             if (realPatient != realPatientNumber) {
-                std::cout << "Error with real patients" << std::endl;
+                std::cout << "Error with real patients" << '\n';
             }
         }
     }
@@ -584,7 +584,7 @@ foundFalse:
                         conc = 0.0;
                     }
                     if (std::isnan(conc)) {
-                        std::cout << "Ouch, error with percentiles" << std::endl;
+                        std::cout << "Ouch, error with percentiles" << '\n';
                     }
                     _percentiles.appendPercentile(percRankIdx, cycle, point, conc);
                 }

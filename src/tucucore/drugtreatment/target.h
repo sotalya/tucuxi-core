@@ -10,7 +10,6 @@
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/drugmodel/activemoiety.h"
 #include "tucucore/drugmodel/targetdefinition.h"
-#include "tucucore/targetevent.h"
 #include "tucucore/timedevent.h"
 
 namespace Tucuxi {

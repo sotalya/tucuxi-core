@@ -10,6 +10,7 @@
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/covariateevent.h"
 #include "tucucore/definitions.h"
+#include "tucucore/drugtreatment/patientcovariate.h"
 #include "tucucore/intakeevent.h"
 
 class TestCovariateExtractor;

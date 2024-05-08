@@ -7,8 +7,8 @@
 
 #include "tucucommon/iterator.h"
 
-#include "tucucore/covariateevent.h"
 #include "tucucore/drugmodel/activemoiety.h"
+#include "tucucore/drugmodel/covariatedefinition.h"
 #include "tucucore/drugmodel/drugmodeldomain.h"
 #include "tucucore/drugmodel/drugmodelmetadata.h"
 #include "tucucore/drugmodel/formulationandroute.h"

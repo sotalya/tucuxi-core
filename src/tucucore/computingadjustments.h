@@ -46,12 +46,12 @@ protected:
 
 
     /// Structure representing dosing candidates in terms of dose, interval and infusion time
-    typedef struct
+    typedef struct SimpleDosageCandidateStruct
     {
         /// Formulation and route of the candidate
         FormulationAndRoute m_formulationAndRoute;
         /// The dose value
-        Value m_dose;
+        Value m_dose{};
         /// The dose unit
         TucuUnit m_doseUnit;
         /// The dosing interval

@@ -70,7 +70,8 @@ bool TwoCompartmentExtraMicro::computeConcentrations(
         const Residuals& _inResiduals, bool _isAll, MultiCompConcentrations& _concentrations, Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
-    Eigen::VectorXd concentrations2, concentrations3;
+    Eigen::VectorXd concentrations2;
+    Eigen::VectorXd concentrations3;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
     size_t thirdCompartment = static_cast<size_t>(Compartments::Third);
@@ -106,7 +107,8 @@ bool TwoCompartmentExtraMicro::computeConcentration(
         Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
-    Eigen::VectorXd concentrations2, concentrations3;
+    Eigen::VectorXd concentrations2;
+    Eigen::VectorXd concentrations3;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
     size_t thirdCompartment = static_cast<size_t>(Compartments::Third);
@@ -142,7 +144,7 @@ bool TwoCompartmentExtraMicro::computeConcentration(
     return bOK;
 }
 
-TwoCompartmentExtraMacro::TwoCompartmentExtraMacro() : TwoCompartmentExtraMicro() {}
+TwoCompartmentExtraMacro::TwoCompartmentExtraMacro() {}
 
 std::vector<std::string> TwoCompartmentExtraMacro::getParametersId()
 {

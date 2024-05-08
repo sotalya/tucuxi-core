@@ -65,7 +65,8 @@ void OneCompartmentExtraMicro::computeExponentials(Eigen::VectorXd& _times)
 bool OneCompartmentExtraMicro::computeConcentrations(
         const Residuals& _inResiduals, bool _isAll, MultiCompConcentrations& _concentrations, Residuals& _outResiduals)
 {
-    Eigen::VectorXd concentrations1, concentrations2;
+    Eigen::VectorXd concentrations1;
+    Eigen::VectorXd concentrations2;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
 
@@ -96,7 +97,8 @@ bool OneCompartmentExtraMicro::computeConcentration(
         Residuals& _outResiduals)
 {
     TMP_UNUSED_PARAMETER(_atTime);
-    Eigen::VectorXd concentrations1, concentrations2;
+    Eigen::VectorXd concentrations1;
+    Eigen::VectorXd concentrations2;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
     Eigen::Index atTime = static_cast<Eigen::Index>(SingleConcentrations::AtTime);
@@ -127,7 +129,7 @@ bool OneCompartmentExtraMicro::computeConcentration(
     return bOK;
 }
 
-OneCompartmentExtraMacro::OneCompartmentExtraMacro() : OneCompartmentExtraMicro() {}
+OneCompartmentExtraMacro::OneCompartmentExtraMacro() {}
 
 std::vector<std::string> OneCompartmentExtraMacro::getParametersId()
 {

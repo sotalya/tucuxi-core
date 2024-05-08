@@ -1,15 +1,12 @@
 //@@license@@
 
-#include <chrono>
 #include <utility>
 
 #include "tucucore/parametersextractor.h"
 
-#include "tucucommon/duration.h"
-#include "tucucommon/general.h"
 #include "tucucommon/loggerhelper.h"
 
-#include "tucucore/drugmodel/drugmodel.h"
+#include "tucucore/covariateevent.h"
 
 using namespace std::chrono_literals;
 
@@ -21,7 +18,7 @@ ParametersExtractor::ParametersExtractor(
         Tucuxi::Common::Iterator<const ParameterDefinition*>& _paramsIterator,
         DateTime _start,
         DateTime _end)
-    : m_paramsIterator{_paramsIterator}, m_start{std::move(_start)}, m_end{std::move(_end)}
+    : m_paramsIterator{_paramsIterator}, m_start{_start}, m_end{_end}
 {
     // Check that start time is past end time.
     if (m_start > m_end) {

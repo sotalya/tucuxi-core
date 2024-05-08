@@ -14,7 +14,7 @@ RkMichaelisMentenOneComp::RkMichaelisMentenOneComp()
 }
 
 
-RkMichaelisMentenOneCompExtra::RkMichaelisMentenOneCompExtra() : RkMichaelisMentenOneComp() {}
+RkMichaelisMentenOneCompExtra::RkMichaelisMentenOneCompExtra() {}
 
 std::vector<std::string> RkMichaelisMentenOneCompExtra::getParametersId()
 {
@@ -51,7 +51,7 @@ bool RkMichaelisMentenOneCompExtra::checkInputs(const IntakeEvent& _intakeEvent,
 }
 
 
-RkMichaelisMentenOneCompBolus::RkMichaelisMentenOneCompBolus() : RkMichaelisMentenOneComp() {}
+RkMichaelisMentenOneCompBolus::RkMichaelisMentenOneCompBolus() {}
 
 std::vector<std::string> RkMichaelisMentenOneCompBolus::getParametersId()
 {
@@ -88,7 +88,7 @@ bool RkMichaelisMentenOneCompBolus::checkInputs(const IntakeEvent& _intakeEvent,
 }
 
 
-RkMichaelisMentenOneCompInfusion::RkMichaelisMentenOneCompInfusion() : RkMichaelisMentenOneComp()
+RkMichaelisMentenOneCompInfusion::RkMichaelisMentenOneCompInfusion()
 {
     m_isInfusion = true;
 }

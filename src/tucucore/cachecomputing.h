@@ -117,12 +117,12 @@ protected:
     bool m_isLastCallaHit{false};
 
     /// This structure embeds information about a cycle data added in m_indexVector
-    typedef struct
+    typedef struct Indexstruct
     {
-        PercentilesData* m_set;   ///! The percentile data containing the cycle data
-        std::size_t m_cycleIndex; ///! Index of the cycle data
-        DateTime m_start;         ///! Start date of the cycle data
-        DateTime m_end;           ///! End date of the cycle data
+        PercentilesData* m_set{};   ///! The percentile data containing the cycle data
+        std::size_t m_cycleIndex{}; ///! Index of the cycle data
+        DateTime m_start;           ///! Start date of the cycle data
+        DateTime m_end;             ///! End date of the cycle data
     } index_t;
 
     /// A vector meant to embed information about the cycle datas that fill

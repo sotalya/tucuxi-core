@@ -1,8 +1,5 @@
 //@@license@@
 
-#include <iterator>
-#include <numeric>
-#include <utility>
 #include <vector>
 
 #include "tucucore/cyclestatisticscalculator.h"
@@ -15,7 +12,7 @@ namespace Core {
 
 
 CycleStatistic::CycleStatistic(DateTime _cycleStartDate, const CycleStatisticType /*_type*/)
-    : m_cycleStartDate(std::move(_cycleStartDate)) //,
+    : m_cycleStartDate(_cycleStartDate) //,
 // Currently unused
 //  m_type(_type)
 {

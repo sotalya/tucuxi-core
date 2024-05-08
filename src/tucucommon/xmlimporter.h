@@ -3,8 +3,7 @@
 #ifndef XMLIMPORTER_H
 #define XMLIMPORTER_H
 
-
-#include <regex>
+#include <vector>
 
 #include "tucucommon/datetime.h"
 #include "tucucommon/duration.h"
@@ -46,7 +45,7 @@ protected:
         Tucuxi::Common::XmlNode node = _nodeIterator->getParent();
         while (node.isValid()) {
             if (!node.getName().empty()) {
-                errorMessage = "<" + node.getName() + ">" + errorMessage;
+                errorMessage = std::string("<").append(node.getName()).append(">").append(errorMessage);
             }
             node = node.getParent();
         }
@@ -72,7 +71,7 @@ protected:
         Tucuxi::Common::XmlNode node = _nodeIterator->getParent();
         while (node.isValid()) {
             if (!node.getName().empty()) {
-                errorMessage = "<" + node.getName() + ">" + errorMessage;
+                errorMessage = std::string("<").append(node.getName()).append(">").append(errorMessage);
             }
             node = node.getParent();
         }

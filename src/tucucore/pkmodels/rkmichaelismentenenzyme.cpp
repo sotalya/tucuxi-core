@@ -14,7 +14,7 @@ RkMichaelisMentenEnzyme::RkMichaelisMentenEnzyme()
 }
 
 
-RkMichaelisMentenEnzymeExtra::RkMichaelisMentenEnzymeExtra() : RkMichaelisMentenEnzyme() {}
+RkMichaelisMentenEnzymeExtra::RkMichaelisMentenEnzymeExtra() {}
 
 std::vector<std::string> RkMichaelisMentenEnzymeExtra::getParametersId()
 {
@@ -109,7 +109,7 @@ bool RkMichaelisMentenEnzymeExtra::checkInputs(const IntakeEvent& _intakeEvent, 
 }
 
 
-RkMichaelisMentenEnzymeBolus::RkMichaelisMentenEnzymeBolus() : RkMichaelisMentenEnzyme() {}
+RkMichaelisMentenEnzymeBolus::RkMichaelisMentenEnzymeBolus() {}
 
 std::vector<std::string> RkMichaelisMentenEnzymeBolus::getParametersId()
 {

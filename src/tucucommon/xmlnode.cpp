@@ -1,6 +1,7 @@
 //@@license@@
 
 #include <cstring>
+#include <iostream>
 
 #include "xmlnode.h"
 
@@ -170,6 +171,9 @@ bool XmlNode::isValid() const
 
 XmlNode& XmlNode::operator=(const XmlNode& _other)
 {
+    if (this == &_other) {
+        return *this;
+    }
     m_pNode = _other.m_pNode;
     return *this;
 }
@@ -203,7 +207,8 @@ char* XmlNode::allocateString(const std::string& _string)
         try {
             return m_pNode->document()->allocate_string(_string.c_str());
         }
-        catch (std::bad_alloc&) {
+        catch (std::bad_alloc& ex) {
+            std::cerr << "XmlNore allocation error: " << ex.what() << '\n';
         }
     }
     return nullptr;

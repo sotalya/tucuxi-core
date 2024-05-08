@@ -15,7 +15,7 @@ public:
     static const int size = 46; // NOLINT(readability-identifier-naming)
     enum Enum
     {
-        V,
+        V = 0,
         V1,
         V2,
         V3,
@@ -65,7 +65,7 @@ public:
 
     static Enum fromString(const std::string& _id)
     {
-        static const std::map<std::string, Enum> sm_paramIds = {
+        static const std::map<std::string, Enum> PARAM_IDS = {
                 // NOLINT(readability-identifier-naming)
                 {"V", ParameterId::V},           {"V1", ParameterId::V1},         {"V2", ParameterId::V2},
                 {"V3", ParameterId::V3},         {"CL", ParameterId::CL},         {"Ka", ParameterId::Ka},
@@ -82,8 +82,8 @@ public:
                 {"ECmid", ParameterId::ECmid},   {"EDmid", ParameterId::EDmid},   {"DoseMid", ParameterId::DoseMid},
                 {"Fmax", ParameterId::Fmax},     {"NN", ParameterId::NN},         {"MTT", ParameterId::MTT},
                 {"AllmCL", ParameterId::AllmCL}, {"RQCL", ParameterId::RQCL},     {"RV2V1", ParameterId::RV2V1}};
-        std::map<std::string, Enum>::const_iterator it = sm_paramIds.find(_id);
-        if (it != sm_paramIds.end()) {
+        std::map<std::string, Enum>::const_iterator it = PARAM_IDS.find(_id);
+        if (it != PARAM_IDS.end()) {
             return it->second;
         }
         return ParameterId::Unknown;

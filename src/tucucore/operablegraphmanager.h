@@ -3,11 +3,9 @@
 #ifndef OPERABLEGRAPHMANAGER_H
 #define OPERABLEGRAPHMANAGER_H
 
-#include <deque>
 #include <iostream>
 #include <map>
 #include <memory>
-#include <stack>
 #include <string>
 #include <vector>
 

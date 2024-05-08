@@ -11,7 +11,7 @@
 namespace Tucuxi {
 namespace Core {
 
-// NOLINTNEXTLINE(cppcoreguidelines-macro-usage,bugprone-macro-parentheses)
+// NOLINTBEGIN(cppcoreguidelines-macro-usage,bugprone-macro-parentheses)
 #define HARDCODED_OPERATION(NAME)                                                       \
     class NAME : public HardcodedOperation                                              \
     {                                                                                   \
@@ -30,6 +30,7 @@ namespace Core {
         virtual bool compute(const OperationInputList& _inputs, double& _result) const; \
         virtual void fillRequiredInputs();                                              \
     };
+// NOLINTEND(cppcoreguidelines-macro-usage,bugprone-macro-parentheses)
 
 /// \ingroup TucuCore
 /// \brief Ideal Body Weight computation.

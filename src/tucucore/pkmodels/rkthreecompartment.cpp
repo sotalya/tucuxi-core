@@ -16,7 +16,7 @@ RkThreeCompartment::RkThreeCompartment()
 }
 
 
-RkThreeCompartmentExtraMicro::RkThreeCompartmentExtraMicro() : RkThreeCompartment()
+RkThreeCompartmentExtraMicro::RkThreeCompartmentExtraMicro()
 {
     m_delivered = true;
     m_isWithLag = false;
@@ -64,7 +64,7 @@ bool RkThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, 
 }
 
 
-RkThreeCompartmentExtraLagMicro::RkThreeCompartmentExtraLagMicro() : RkThreeCompartment()
+RkThreeCompartmentExtraLagMicro::RkThreeCompartmentExtraLagMicro()
 {
     m_delivered = false;
     m_isWithLag = true;
@@ -113,7 +113,7 @@ bool RkThreeCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEven
 }
 
 
-RkThreeCompartmentBolusMicro::RkThreeCompartmentBolusMicro() : RkThreeCompartment()
+RkThreeCompartmentBolusMicro::RkThreeCompartmentBolusMicro()
 {
     m_delivered = true;
     m_isWithLag = false;
@@ -164,7 +164,7 @@ bool RkThreeCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, 
 }
 
 
-RkThreeCompartmentInfusionMicro::RkThreeCompartmentInfusionMicro() : RkThreeCompartment()
+RkThreeCompartmentInfusionMicro::RkThreeCompartmentInfusionMicro()
 {
     m_delivered = true;
     m_isInfusion = true;

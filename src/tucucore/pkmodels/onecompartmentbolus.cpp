@@ -120,7 +120,7 @@ bool OneCompartmentBolusMicro::computeConcentration(
     return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
 }
 
-OneCompartmentBolusMacro::OneCompartmentBolusMacro() : OneCompartmentBolusMicro() {}
+OneCompartmentBolusMacro::OneCompartmentBolusMacro() {}
 
 
 std::vector<std::string> OneCompartmentBolusMacro::getParametersId()

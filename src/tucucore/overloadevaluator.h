@@ -3,8 +3,8 @@
 #ifndef TUCUXI_CORE_OVERLOADEVALUATOR_H
 #define TUCUXI_CORE_OVERLOADEVALUATOR_H
 
-#include "tucucore/computingservice/computingrequest.h"
-#include "tucucore/dosage.h"
+#include "tucucore/computingservice/computingtrait.h"
+#include "tucucore/intakeevent.h"
 
 namespace Tucuxi {
 namespace Core {

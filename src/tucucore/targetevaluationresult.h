@@ -20,10 +20,7 @@ class TargetEvaluationResult
 public:
     //TargetEvaluationResult(TargetEvaluationResult&) = default;
 
-    explicit TargetEvaluationResult()
-        : m_targetType(TargetType::UnknownTarget), m_score(0.0), m_value(0.0), m_unit(TucuUnit())
-    {
-    }
+    explicit TargetEvaluationResult() : m_targetType(TargetType::UnknownTarget) {}
     explicit TargetEvaluationResult(TargetType _targetType, double _score, Value _value, TucuUnit _unit);
 
 
@@ -62,13 +59,13 @@ protected:
     TargetType m_targetType;
 
     //! Score of the target, calculated by the TargetEvaluator
-    double m_score;
+    double m_score{0.0};
 
     //! Target value calculated by the TargetEvaluator
-    Value m_value;
+    Value m_value{0.0};
 
     //! Unit of the target
-    TucuUnit m_unit;
+    TucuUnit m_unit{};
 
     //! The target used for this evaluation
     TargetEvent m_target;

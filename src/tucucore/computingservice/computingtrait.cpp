@@ -47,8 +47,8 @@ ComputingTraitStandard::ComputingTraitStandard(
         Tucuxi::Common::DateTime _end,
         double _nbPointsPerHour,
         ComputingOption _computingOption)
-    : ComputingTrait(std::move(_id)), m_computingOption(_computingOption), m_start(std::move(_start)),
-      m_end(std::move(_end)), m_nbPointsPerHour(_nbPointsPerHour)
+    : ComputingTrait(std::move(_id)), m_computingOption(_computingOption), m_start(_start), m_end(_end),
+      m_nbPointsPerHour(_nbPointsPerHour)
 {
 }
 
@@ -116,10 +116,10 @@ ComputingTraitAdjustment::ComputingTraitAdjustment(
         SteadyStateTargetOption _steadyStateTargetOption,
         TargetExtractionOption _targetExtractionOption,
         FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption)
-    : ComputingTraitStandard(std::move(_id), std::move(_start), std::move(_end), _nbPointsPerHour, _computingOption),
-      m_adjustmentTime(std::move(_adjustmentTime)), m_bestCandidatesOption(_candidatesOption),
-      m_loadingOption(_loadingOption), m_restPeriodOption(_restPeriodOption),
-      m_steadyStateTargetOption(_steadyStateTargetOption), m_targetExtractionOption(_targetExtractionOption),
+    : ComputingTraitStandard(std::move(_id), _start, _end, _nbPointsPerHour, _computingOption),
+      m_adjustmentTime(_adjustmentTime), m_bestCandidatesOption(_candidatesOption), m_loadingOption(_loadingOption),
+      m_restPeriodOption(_restPeriodOption), m_steadyStateTargetOption(_steadyStateTargetOption),
+      m_targetExtractionOption(_targetExtractionOption),
       m_formulationAndRouteSelectionOption(_formulationAndRouteSelectionOption)
 {
 }
@@ -169,7 +169,7 @@ ComputingTraitConcentration::ComputingTraitConcentration(
         Tucuxi::Common::DateTime _end,
         double _nbPointsPerHour,
         ComputingOption _computingOption)
-    : ComputingTraitStandard(std::move(_id), std::move(_start), std::move(_end), _nbPointsPerHour, _computingOption)
+    : ComputingTraitStandard(std::move(_id), _start, _end, _nbPointsPerHour, _computingOption)
 {
 }
 
@@ -182,7 +182,7 @@ ComputingTraitPercentiles::ComputingTraitPercentiles(
         double _nbPointsPerHour,
         ComputingOption _computingOption,
         ComputingAborter* _aborter)
-    : ComputingTraitStandard(std::move(_id), std::move(_start), std::move(_end), _nbPointsPerHour, _computingOption),
+    : ComputingTraitStandard(std::move(_id), _start, _end, _nbPointsPerHour, _computingOption),
       m_ranks(std::move(_ranks)), m_aborter(_aborter)
 {
 }

@@ -123,7 +123,7 @@ Value Utils::stringToValue(const std::string& _str, const DataType& _dataType)
                 is0 = true;
             }
         }
-        catch (...) {
+        catch (...) { // NOLINT(bugprone-empty-catch)
         }
         if (str == "0" || str == "false" || is0) {
             v = 0.0;

@@ -3,8 +3,8 @@
 #ifndef TUCUXI_CORE_DRUGTREATMENT_H
 #define TUCUXI_CORE_DRUGTREATMENT_H
 
-#include "tucucore/covariateevent.h"
 #include "tucucore/dosage.h"
+#include "tucucore/drugtreatment/patientcovariate.h"
 #include "tucucore/drugtreatment/sample.h"
 #include "tucucore/drugtreatment/target.h"
 

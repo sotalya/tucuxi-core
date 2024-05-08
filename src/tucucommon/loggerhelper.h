@@ -3,6 +3,8 @@
 #ifndef TUCUXI_COMMON_LOOGER
 #define TUCUXI_COMMON_LOOGER
 
+#include <iostream>
+
 #include "tucucommon/componentmanager.h"
 #include "tucucommon/ilogger.h"
 #include "tucucommon/logger.h"
@@ -118,6 +120,7 @@ public:
             debug(fmt::to_string(out));
         }
         catch (const std::exception& ex) {
+            std::cerr << "LoggerHelper error: " << ex.what() << '\n';
         }
     }
 
@@ -151,7 +154,8 @@ public:
             fmt::format_to(std::back_inserter(out), fmt::runtime(_fmt), _args...);
             info(fmt::to_string(out));
         }
-        catch (const std::exception&) {
+        catch (const std::exception& ex) {
+            std::cerr << "LoggerHelper error: " << ex.what() << '\n';
         }
     }
 
@@ -185,7 +189,8 @@ public:
             fmt::format_to(std::back_inserter(out), fmt::runtime(_fmt), _args...);
             warn(fmt::to_string(out));
         }
-        catch (const std::exception&) {
+        catch (const std::exception& ex) {
+            std::cerr << "LoggerHelper error: " << ex.what() << '\n';
         }
     }
 
@@ -219,7 +224,8 @@ public:
             fmt::format_to(std::back_inserter(out), fmt::runtime(_fmt), _args...);
             error(fmt::to_string(out));
         }
-        catch (const std::exception& /*ex*/) {
+        catch (const std::exception& ex) {
+            std::cerr << "LoggerHelper error: " << ex.what() << '\n';
         }
     }
 
@@ -253,7 +259,8 @@ public:
             fmt::format_to(std::back_inserter(out), fmt::runtime(_fmt), _args...);
             critical(fmt::to_string(out));
         }
-        catch (const std::exception&) {
+        catch (const std::exception& ex) {
+            std::cerr << "LoggerHelper error: " << ex.what() << '\n';
         }
     }
 

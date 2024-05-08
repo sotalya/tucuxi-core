@@ -42,6 +42,7 @@ bool JSEngine::getVariable<int>(const std::string& _name, int& _value)
             return true;
         }
         catch (...) {
+            return false;
         }
     }
     return false;
@@ -57,6 +58,7 @@ bool JSEngine::getVariable<double>(const std::string& _name, double& _value)
             return true;
         }
         catch (...) {
+            return false;
         }
     }
     return false;

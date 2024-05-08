@@ -18,7 +18,6 @@ RkMichaelisMentenLinearOneCompVmaxAmount::RkMichaelisMentenLinearOneCompVmaxAmou
 
 
 RkMichaelisMentenLinearOneCompVmaxAmountExtraMicro::RkMichaelisMentenLinearOneCompVmaxAmountExtraMicro()
-    : RkMichaelisMentenLinearOneCompVmaxAmount()
 {
     m_delivered = true;
     m_isWithLag = false;
@@ -64,7 +63,6 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountExtraMicro::checkInputs(
 
 
 RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMicro::RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMicro()
-    : RkMichaelisMentenLinearOneCompVmaxAmount()
 {
     m_delivered = false;
     m_isWithLag = true;
@@ -111,7 +109,6 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountExtraLagMicro::checkInputs(
 
 
 RkMichaelisMentenLinearOneCompVmaxAmountBolusMicro::RkMichaelisMentenLinearOneCompVmaxAmountBolusMicro()
-    : RkMichaelisMentenLinearOneCompVmaxAmount()
 {
     m_delivered = true;
     m_isWithLag = false;
@@ -160,7 +157,6 @@ bool RkMichaelisMentenLinearOneCompVmaxAmountBolusMicro::checkInputs(
 
 
 RkMichaelisMentenLinearOneCompVmaxAmountInfusionMicro::RkMichaelisMentenLinearOneCompVmaxAmountInfusionMicro()
-    : RkMichaelisMentenLinearOneCompVmaxAmount()
 {
     m_delivered = true;
     m_isInfusion = true;

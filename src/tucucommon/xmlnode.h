@@ -5,7 +5,6 @@
 
 #include <string>
 
-#include "componentmanager.h"
 #include "xmltypes.h"
 
 

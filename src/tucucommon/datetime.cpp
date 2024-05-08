@@ -67,10 +67,12 @@ void errorUndefinedDateTime(const DateTime& /*_date*/)
     }
 
 #else // CHECK_DATETIME
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #define SETDEFINED(value)    \
     {                        \
         m_isDefined = value; \
-    } // NOLINT(cppcoreguidelines-macro-usage)
+    }
+// NOLINTEND(cppcoreguidelines-macro-usage)
 
 #define CHECKDEFINED
 
@@ -97,7 +99,7 @@ void DateTime::updateString()
 
 #endif
 
-DateTime::DateTime() : m_date(std::chrono::time_point<std::chrono::system_clock>())
+DateTime::DateTime()
 {
     m_isDefined = false;
     UPDATESTRING;

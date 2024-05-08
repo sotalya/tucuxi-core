@@ -15,10 +15,7 @@ RkMichaelisMentenOneCompVmaxAmount::RkMichaelisMentenOneCompVmaxAmount()
 }
 
 
-RkMichaelisMentenOneCompVmaxAmountExtra::RkMichaelisMentenOneCompVmaxAmountExtra()
-    : RkMichaelisMentenOneCompVmaxAmount()
-{
-}
+RkMichaelisMentenOneCompVmaxAmountExtra::RkMichaelisMentenOneCompVmaxAmountExtra() {}
 
 std::vector<std::string> RkMichaelisMentenOneCompVmaxAmountExtra::getParametersId()
 {
@@ -56,10 +53,7 @@ bool RkMichaelisMentenOneCompVmaxAmountExtra::checkInputs(
 }
 
 
-RkMichaelisMentenOneCompVmaxAmountBolus::RkMichaelisMentenOneCompVmaxAmountBolus()
-    : RkMichaelisMentenOneCompVmaxAmount()
-{
-}
+RkMichaelisMentenOneCompVmaxAmountBolus::RkMichaelisMentenOneCompVmaxAmountBolus() {}
 
 std::vector<std::string> RkMichaelisMentenOneCompVmaxAmountBolus::getParametersId()
 {
@@ -98,7 +92,6 @@ bool RkMichaelisMentenOneCompVmaxAmountBolus::checkInputs(
 
 
 RkMichaelisMentenOneCompVmaxAmountInfusion::RkMichaelisMentenOneCompVmaxAmountInfusion()
-    : RkMichaelisMentenOneCompVmaxAmount()
 {
     m_isInfusion = true;
 }

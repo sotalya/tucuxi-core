@@ -16,7 +16,7 @@ RkMichaelisMentenTwoComp::RkMichaelisMentenTwoComp()
 }
 
 
-RkMichaelisMentenTwoCompExtraMicro::RkMichaelisMentenTwoCompExtraMicro() : RkMichaelisMentenTwoComp()
+RkMichaelisMentenTwoCompExtraMicro::RkMichaelisMentenTwoCompExtraMicro()
 {
     m_delivered = true;
     m_isWithLag = false;
@@ -63,7 +63,7 @@ bool RkMichaelisMentenTwoCompExtraMicro::checkInputs(
 }
 
 
-RkMichaelisMentenTwoCompExtraLagMicro::RkMichaelisMentenTwoCompExtraLagMicro() : RkMichaelisMentenTwoComp()
+RkMichaelisMentenTwoCompExtraLagMicro::RkMichaelisMentenTwoCompExtraLagMicro()
 {
     m_delivered = false;
     m_isWithLag = true;
@@ -111,7 +111,7 @@ bool RkMichaelisMentenTwoCompExtraLagMicro::checkInputs(
 }
 
 
-RkMichaelisMentenTwoCompBolusMicro::RkMichaelisMentenTwoCompBolusMicro() : RkMichaelisMentenTwoComp()
+RkMichaelisMentenTwoCompBolusMicro::RkMichaelisMentenTwoCompBolusMicro()
 {
     m_delivered = true;
     m_isWithLag = false;
@@ -161,7 +161,7 @@ bool RkMichaelisMentenTwoCompBolusMicro::checkInputs(
 }
 
 
-RkMichaelisMentenTwoCompInfusionMicro::RkMichaelisMentenTwoCompInfusionMicro() : RkMichaelisMentenTwoComp()
+RkMichaelisMentenTwoCompInfusionMicro::RkMichaelisMentenTwoCompInfusionMicro()
 {
     m_delivered = true;
     m_isInfusion = true;
