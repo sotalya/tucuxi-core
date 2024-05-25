@@ -34,7 +34,7 @@ RkMichaelisMentenOneComp::RkMichaelisMentenOneComp()
 }
 
 
-RkMichaelisMentenOneCompExtra::RkMichaelisMentenOneCompExtra() : RkMichaelisMentenOneComp() {}
+RkMichaelisMentenOneCompExtra::RkMichaelisMentenOneCompExtra() {}
 
 std::vector<std::string> RkMichaelisMentenOneCompExtra::getParametersId()
 {
@@ -71,16 +71,16 @@ bool RkMichaelisMentenOneCompExtra::checkInputs(const IntakeEvent& _intakeEvent,
 }
 
 
-RkMichaelisMentenOneCompBolus::RkMichaelisMentenOneCompBolus() : RkMichaelisMentenOneComp() {}
+RkMichaelisMentenOneCompBolus::RkMichaelisMentenOneCompBolus() {}
 
 std::vector<std::string> RkMichaelisMentenOneCompBolus::getParametersId()
 {
-    return {"V", "Km", "Vmax", "F"};
+    return {"V", "Km", "Vmax"};
 }
 
 bool RkMichaelisMentenOneCompBolus::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkCondition(_parameters.size() >= 3, "The number of parameters should be equal to 3.")) {
         return false;
     }
 
@@ -88,7 +88,7 @@ bool RkMichaelisMentenOneCompBolus::checkInputs(const IntakeEvent& _intakeEvent,
     m_V = _parameters.getValue(ParameterId::V);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
-    m_F = _parameters.getValue(ParameterId::F);
+    m_F = _parameters.getOptionalValue(ParameterId::F, 1.0);
     m_Ka = 0.0; // _parameters.getValue(ParameterId::Ka);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
@@ -108,26 +108,36 @@ bool RkMichaelisMentenOneCompBolus::checkInputs(const IntakeEvent& _intakeEvent,
 }
 
 
-RkMichaelisMentenOneCompInfusion::RkMichaelisMentenOneCompInfusion() : RkMichaelisMentenOneComp() {}
+RkMichaelisMentenOneCompInfusion::RkMichaelisMentenOneCompInfusion()
+{
+    m_isInfusion = true;
+}
 
 std::vector<std::string> RkMichaelisMentenOneCompInfusion::getParametersId()
 {
-    return {"V", "Km", "Vmax", "F"};
+    return {"V", "Km", "Vmax"};
 }
 
 bool RkMichaelisMentenOneCompInfusion::checkInputs(
         const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {
+    if (!checkCondition(_parameters.size() >= 3, "The number of parameters should be equal to 3.")) {
         return false;
     }
+
+    m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
+    m_nonDifferentiableTime = m_Tinf;
+
+    const double eps = 0.001;
+    m_TinfLow = m_Tinf - eps;
+    m_TinfHigh = m_Tinf + eps;
 
     m_D = _intakeEvent.getDose();
     m_V = _parameters.getValue(ParameterId::V);
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
-    m_F = _parameters.getValue(ParameterId::F);
-    m_Ka = _parameters.getValue(ParameterId::Ka);
+    m_F = _parameters.getOptionalValue(ParameterId::F, 1.0);
+    m_Ka = _parameters.getOptionalValue(ParameterId::Ka, 0.0);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -138,7 +148,7 @@ bool RkMichaelisMentenOneCompInfusion::checkInputs(
     bOK &= checkStrictlyPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
-    bOK &= checkStrictlyPositiveValue(m_Ka, "The absorption rate");
+    bOK &= checkPositiveValue(m_Ka, "The absorption rate");
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 

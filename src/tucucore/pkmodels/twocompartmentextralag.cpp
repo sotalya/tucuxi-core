@@ -208,8 +208,6 @@ inline bool TwoCompartmentExtraLagMicro::compute(
         if (abs(_concentrations1[0]) < 1e-10) {
             _concentrations1[0] = 0.0;
         }
-
-        return true;
     }
     else {
 
@@ -423,9 +421,8 @@ inline bool TwoCompartmentExtraLagMicro::compute(
         if (abs(_concentrations1[0]) < 1e-10) {
             _concentrations1[0] = 0.0;
         }
-
-        return true;
     }
+    return true;
 }
 
 void TwoCompartmentExtraLagMicro::computeExponentials(Eigen::VectorXd& _times)
@@ -482,7 +479,8 @@ bool TwoCompartmentExtraLagMicro::computeConcentration(
         Residuals& _outResiduals)
 {
     Eigen::VectorXd concentrations1;
-    Eigen::VectorXd concentrations2, concentrations3;
+    Eigen::VectorXd concentrations2;
+    Eigen::VectorXd concentrations3;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
     size_t thirdCompartment = static_cast<size_t>(Compartments::Third);
@@ -529,7 +527,7 @@ bool TwoCompartmentExtraLagMicro::computeConcentration(
     return bOK;
 }
 
-TwoCompartmentExtraLagMacro::TwoCompartmentExtraLagMacro() : TwoCompartmentExtraLagMicro() {}
+TwoCompartmentExtraLagMacro::TwoCompartmentExtraLagMacro() {}
 
 std::vector<std::string> TwoCompartmentExtraLagMacro::getParametersId()
 {

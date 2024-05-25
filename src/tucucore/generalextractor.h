@@ -32,6 +32,7 @@
 #include "tucucore/definitions.h"
 #include "tucucore/dosage.h"
 #include "tucucore/drugmodel/drugmodel.h"
+#include "tucucore/drugtreatment/patientcovariate.h"
 #include "tucucore/drugtreatment/sample.h"
 
 namespace Tucuxi {

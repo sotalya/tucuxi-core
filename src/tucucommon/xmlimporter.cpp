@@ -20,7 +20,11 @@
  */
 
 
+#include <regex>
+
 #include "xmlimporter.h"
+
+#include "loggerhelper.h"
 
 using namespace std;
 
@@ -29,9 +33,9 @@ namespace Common {
 
 
 static const int MINUTE = 60;
-static const int SECONDE = MINUTE;
-static const char* DATE_FORMAT = "%Y-%m-%dT%H:%M:%S";  // NOLINT(readability-identifier-naming)
-static const char* DATE_FORMAT2 = "%Y-%m-%d %H:%M:%S"; // NOLINT(readability-identifier-naming)
+static const int SECOND = MINUTE;
+static const char* const DATE_FORMAT = "%Y-%m-%dT%H:%M:%S";  // NOLINT(readability-identifier-naming)
+static const char* const DATE_FORMAT2 = "%Y-%m-%d %H:%M:%S"; // NOLINT(readability-identifier-naming)
 
 
 void XMLImporter::unexpectedTag(const std::string& _tagName)
@@ -177,7 +181,7 @@ Duration XMLImporter::extractDuration(Common::XmlNodeIterator _rootIterator)
         }
         values.push_back(std::stoi(s));
 
-        if (!(values[1] < MINUTE && values[2] < SECONDE)) {
+        if ((values[1] >= MINUTE) || (values[2] >= SECOND)) {
             setNodeError(_rootIterator);
             return Common::Duration();
         }

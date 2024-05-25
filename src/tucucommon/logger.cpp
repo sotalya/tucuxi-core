@@ -141,7 +141,7 @@ Logger::Logger(const std::string& _filename) : m_logger(nullptr)
         spdlog::register_logger(m_logger);
     }
     catch (const spdlog::spdlog_ex& ex) {
-        std::cout << "Log initialization failed: " << ex.what() << std::endl;
+        std::cout << "Log initialization failed: " << ex.what() << '\n';
     }
 }
 

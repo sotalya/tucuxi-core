@@ -149,7 +149,8 @@ void OneCompartmentExtraLagMicro::computeExponentials(Eigen::VectorXd& _times)
 bool OneCompartmentExtraLagMicro::computeConcentrations(
         const Residuals& _inResiduals, bool _isAll, MultiCompConcentrations& _concentrations, Residuals& _outResiduals)
 {
-    Eigen::VectorXd concentrations1, concentrations2;
+    Eigen::VectorXd concentrations1;
+    Eigen::VectorXd concentrations2;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
 
@@ -161,7 +162,7 @@ bool OneCompartmentExtraLagMicro::computeConcentrations(
     // Return concentrations of first compartment
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
     // Return concentrations of other compartments
-    if (_isAll == true) {
+    if (_isAll) {
         _concentrations[secondCompartment].assign(
                 concentrations2.data(), concentrations2.data() + concentrations2.size());
     }
@@ -180,7 +181,8 @@ bool OneCompartmentExtraLagMicro::computeConcentration(
         Residuals& _outResiduals)
 {
     TMP_UNUSED_PARAMETER(_atTime);
-    Eigen::VectorXd concentrations1, concentrations2;
+    Eigen::VectorXd concentrations1;
+    Eigen::VectorXd concentrations2;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
     int atTime = static_cast<int>(SingleConcentrations::AtTime);
@@ -203,7 +205,7 @@ bool OneCompartmentExtraLagMicro::computeConcentration(
 
     // return concentraions (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
-    if (_isAll == true) {
+    if (_isAll) {
         _concentrations[secondCompartment].push_back(concentrations2[atTime]);
     }
 
@@ -223,7 +225,7 @@ bool OneCompartmentExtraLagMicro::computeConcentration(
     return bOK;
 }
 
-OneCompartmentExtraLagMacro::OneCompartmentExtraLagMacro() : OneCompartmentExtraLagMicro() {}
+OneCompartmentExtraLagMacro::OneCompartmentExtraLagMacro() {}
 
 std::vector<std::string> OneCompartmentExtraLagMacro::getParametersId()
 {

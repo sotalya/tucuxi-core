@@ -63,9 +63,6 @@ bool RK4OneCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     return bOK;
 }
 
-
-RK4OneCompartmentExtraMacro::RK4OneCompartmentExtraMacro() : RK4OneCompartmentExtraMicro() {}
-
 bool RK4OneCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 4, "The number of parameters should be equal to 4.")) {

@@ -28,7 +28,6 @@
 #include <sstream>
 #include <string>
 
-#include "tucucommon/basetypes.h"
 
 namespace date {
 class year_month_day; // NOLINT(readability-identifier-naming)
@@ -248,17 +247,17 @@ public:
 
     std::string str()
     {
-        DateTime _dt = *this;
+        DateTime dt = *this;
 
         // clang-format off
         std::ostringstream result;
         
-        result << _dt.day() << "."
-                << _dt.month() << "."
-                << _dt.year() << " "
-                << _dt.hour() << "h"
-                << _dt.minute() << "m"
-                << _dt.second() << "s";
+        result << dt.day() << "."
+                << dt.month() << "."
+                << dt.year() << " "
+                << dt.hour() << "h"
+                << dt.minute() << "m"
+                << dt.second() << "s";
 
         // clang-format on
         return result.str();

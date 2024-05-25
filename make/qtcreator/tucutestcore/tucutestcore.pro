@@ -24,63 +24,69 @@ config_coverage {
 include(../general.pri)
 include(../tucucommon.pri)
 include(../tucucore.pri)
+include(../gtest.pri)
 
 HEADERS += \
-    ../../../test/tucucore/drugmodels/buildmultianalytessingleactivemoiety.h \
-    ../../../test/tucucore/drugmodels/buildpkasymptotic.h \
-    ../../../test/tucucore/drugmodels/test_michaelismenten1comp.h \
-    ../../../test/tucucore/drugmodels/test_michaelismenten2comp.h \
-    ../../../test/tucucore/drugmodels/test_multianalytessingleactivemoiety.h \
-    ../../../test/tucucore/drugmodels/test_pkasymptotic.h \
-    ../../../test/tucucore/pkmodels/multiconstanteliminationbolus.h \
-    ../../../test/tucucore/pkmodels/pkasymptotic.h \
-    ../../../test/tucucore/pkmodels/test_rkmichaelismentenenzyme.h \
-    ../../../test/tucucore/pkmodels/test_rkmichaelismententwocompvmaxamount.h \
-    ../../../test/tucucore/pkmodels/test_twocompartmentextralag.h \
-    ../../../test/tucucore/test_cachecomputing.h \
-    ../../../test/tucucore/test_computingcomponentadjustments.h \
-    ../../../test/tucucore/test_computingcomponentattimes.h \
-    ../../../test/tucucore/test_concentrationcalculator.h \ \
-    ../../../test/tucucore/test_dosage.h \
-    ../../../test/tucucore/test_drugmodels.h \
-    ../../../test/tucucore/test_intakeextractor.h \
-    ../../../test/tucucore/test_intakeintervalcalculator.h \
-    ../../../test/tucucore/test_likelihood.h \
-    ../../../test/tucucore/test_multiconstanteliminationbolus.h \
-    ../../../test/tucucore/test_multiconcentrationcalculator.h \
-    ../../../test/tucucore/test_multilikelihood.h \
-    ../../../test/tucucore/test_parameter.h \
-    ../../../test/tucucore/test_pkmodel.h \
-    ../../../test/tucucore/test_operablegraphmanager.h \
-    ../../../test/tucucore/test_operation.h \
-    ../../../test/tucucore/test_nonmemdrugs.h \
-    ../../../test/tucucore/drugmodels/buildimatinib.h \
-    ../../../test/tucucore/drugmodels/drugmodelbuilder.h \
-    ../../../test/tucucore/test_percentilecalculator.h \
-    ../../../test/tucucore/test_covariateextractor.h \
-    ../../../test/tucucore/test_parameterextractor.h \
-    ../../../test/tucucore/test_targetevaluator.h \
-    ../../../test/tucucore/testutils.h \
-    ../../../test/tucucore/test_drugmodelimport.h \
-    ../../../test/tucucore/test_drugdomainconstraintsevaluator.h \
-    ../../../test/tucucore/test_computingcomponentconcentration.h \
-    ../../../test/tucucore/test_computingcomponentpercentiles.h \
-    ../../../test/tucucore/test_operationcollection.h \
-    ../../../test/tucucore/drugmodels/test_drug_tobramycin.h \
-    ../../../test/tucucore/drugmodels/test_drug_vancomycin.h \
-    ../../../test/tucucore/test_targetextractor.h \
-    ../../../test/tucucore/test_pertinenttimescalculator.h \
-    ../../../test/tucucore/test_residualerrormodel.h \
-    ../../../test/tucucore/test_sampleextractor.h \
-    ../../../test/tucucore/test_cyclestatistics.h \
-    ../../../test/tucucore/pkmodels/constanteliminationbolus.h \
-    ../../../test/tucucore/drugmodels/buildconstantelimination.h \
-    ../../../test/tucucore/drugmodels/test_constanteliminationbolus.h \
-    ../../../test/tucucore/drugmodels/buildmultianalytesmultiactivemoieties.h \
-    ../../../test/tucucore/drugmodels/test_multianalytesmultiactivemoieties.h
+    $$PWD/../../../test/tucucore/drugmodels/buildmultianalytessingleactivemoiety.h \
+    $$PWD/../../../test/tucucore/drugmodels/buildconstantelimination.h \
+    $$PWD/../../../test/tucucore/drugmodels/buildimatinib.h \
+    $$PWD/../../../test/tucucore/drugmodels/buildmod202.h \
+    $$PWD/../../../test/tucucore/drugmodels/buildmultianalytesmultiactivemoieties.h \
+    $$PWD/../../../test/tucucore/drugmodels/buildpkasymptotic.h \
+    $$PWD/../../../test/tucucore/drugmodels/drugmodelbuilder.h \
+    $$PWD/../../../test/tucucore/gtest_core.h \
+    $$PWD/../../../test/tucucore/gtest_drugmodelimport_xmlstrings.h \
+    $$PWD/../../../test/tucucore/pkmodels/constanteliminationbolus.h \
+    $$PWD/../../../test/tucucore/pkmodels/multiconstanteliminationbolus.h \
+    $$PWD/../../../test/tucucore/pkmodels/pkasymptotic.h \
+    $$PWD/../../../test/tucucore/testutils.h
+
 
 SOURCES += \
-    ../../../test/tucucore/tests.cpp
+    $$PWD/../../../test/tucucore/drugmodels/gtest_constanteliminationbolus.cpp \
+    $$PWD/../../../test/tucucore/drugmodels/gtest_drug_tobramycin.cpp \
+    $$PWD/../../../test/tucucore/drugmodels/gtest_drug_vancomycin.cpp \
+    $$PWD/../../../test/tucucore/drugmodels/gtest_michaelismenten1comp.cpp \
+    $$PWD/../../../test/tucucore/drugmodels/gtest_michaelismenten2comp.cpp \
+    $$PWD/../../../test/tucucore/drugmodels/gtest_multianalytesmultiactivemoieties.cpp \
+    $$PWD/../../../test/tucucore/drugmodels/gtest_multianalytessingleactivemoiety.cpp \
+    $$PWD/../../../test/tucucore/drugmodels/gtest_pkasymptotic.cpp \
+    $$PWD/../../../test/tucucore/gtest_core.cpp \
+    $$PWD/../../../test/tucucore/gtest_cachecomputing.cpp \
+    $$PWD/../../../test/tucucore/gtest_computingcomponentadjustments.cpp \
+    $$PWD/../../../test/tucucore/gtest_computingcomponentattimes.cpp \
+    $$PWD/../../../test/tucucore/gtest_computingcomponentconcentration.cpp \
+    $$PWD/../../../test/tucucore/gtest_computingcomponentpercentiles.cpp \
+    $$PWD/../../../test/tucucore/gtest_concentrationcalculator.cpp \
+    $$PWD/../../../test/tucucore/gtest_covariateextractor.cpp \
+    $$PWD/../../../test/tucucore/gtest_cyclestatistics.cpp \
+    $$PWD/../../../test/tucucore/gtest_dosage.cpp \
+    $$PWD/../../../test/tucucore/gtest_drugdomainconstraintsevaluator.cpp \
+    $$PWD/../../../test/tucucore/gtest_drugmodelimport.cpp \
+    $$PWD/../../../test/tucucore/gtest_drugmodels.cpp \
+    $$PWD/../../../test/tucucore/gtest_intakeextractor.cpp \
+    $$PWD/../../../test/tucucore/gtest_intakeintervalcalculator.cpp \
+    $$PWD/../../../test/tucucore/gtest_likelihood.cpp \
+    $$PWD/../../../test/tucucore/gtest_multiconcentrationcalculator.cpp \
+    $$PWD/../../../test/tucucore/gtest_multiconstanteliminationbolus.cpp \
+    $$PWD/../../../test/tucucore/gtest_multilikelihood.cpp \
+    $$PWD/../../../test/tucucore/gtest_nonmemdrugs.cpp \
+    $$PWD/../../../test/tucucore/gtest_operablegraphmanager.cpp \
+    $$PWD/../../../test/tucucore/gtest_operation.cpp \
+    $$PWD/../../../test/tucucore/gtest_operationcollection.cpp \
+    $$PWD/../../../test/tucucore/gtest_parameter.cpp \
+    $$PWD/../../../test/tucucore/gtest_parameterextractor.cpp \
+    $$PWD/../../../test/tucucore/gtest_percentilecalculator.cpp \
+    $$PWD/../../../test/tucucore/gtest_pertinenttimescalculator.cpp \
+    $$PWD/../../../test/tucucore/gtest_pkmodel.cpp \
+    $$PWD/../../../test/tucucore/gtest_residualerrormodel.cpp \
+    $$PWD/../../../test/tucucore/gtest_sampleextractor.cpp \
+    $$PWD/../../../test/tucucore/gtest_targetevaluator.cpp \
+    $$PWD/../../../test/tucucore/gtest_targetextractor.cpp \
+    $$PWD/../../../test/tucucore/pkmodels/gtest_rkmichaelismentenenzyme.cpp \
+    $$PWD/../../../test/tucucore/pkmodels/gtest_rkmichaelismententwocompvmaxamount.cpp \
+    $$PWD/../../../test/tucucore/pkmodels/gtest_twocompartmentextralag.cpp \
+    ../../../test/tucucore/drugmodels/gtest_mod202.cpp
 
 # We need the test PK models for successful tests
 DEFINES += DRUGMODELTESTS

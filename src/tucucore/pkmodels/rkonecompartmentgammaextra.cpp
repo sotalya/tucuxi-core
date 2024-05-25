@@ -65,7 +65,7 @@ bool RK4OneCompartmentGammaExtraMicro::checkInputs(
 }
 
 
-RK4OneCompartmentGammaExtraMacro::RK4OneCompartmentGammaExtraMacro() : RK4OneCompartmentGammaExtraMicro() {}
+RK4OneCompartmentGammaExtraMacro::RK4OneCompartmentGammaExtraMacro() {}
 
 bool RK4OneCompartmentGammaExtraMacro::checkInputs(
         const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)

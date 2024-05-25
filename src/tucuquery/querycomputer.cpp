@@ -122,8 +122,10 @@ void QueryComputer::compute(
     Tucuxi::Common::ComponentManager* pCmpMgr = Tucuxi::Common::ComponentManager::getInstance();
     if (pCmpMgr != nullptr) {
         auto queryLogger = pCmpMgr->getComponent<Tucuxi::Query::IQueryLogger>("QueryLogger");
-        if (!queryLogger->getFolderPath().empty()) {
-            queryLogger->saveQuery(_queryString, query->getQueryID());
+        if (queryLogger != nullptr) {
+            if (!queryLogger->getFolderPath().empty()) {
+                queryLogger->saveQuery(_queryString, query->getQueryID());
+            }
         }
     }
 

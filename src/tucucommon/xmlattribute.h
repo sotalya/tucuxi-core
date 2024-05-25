@@ -25,8 +25,6 @@
 
 #include <string>
 
-#include "xmltypes.h"
-
 namespace rapidxml {
 template<class Ch>
 class xml_attribute; // NOLINT(readability-identifier-naming)

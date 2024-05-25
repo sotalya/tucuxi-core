@@ -25,14 +25,10 @@
 
 #include <vector>
 
-#include "tucucommon/duration.h"
 #include "tucucommon/unit.h"
 #include "tucucommon/utils.h"
 
 #include "tucucore/definitions.h"
-#include "tucucore/drugdefinitions.h"
-#include "tucucore/operablegraphmanager.h"
-#include "tucucore/operation.h"
 #include "tucucore/timedevent.h"
 
 namespace Tucuxi {

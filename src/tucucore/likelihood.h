@@ -107,53 +107,13 @@ public:
                _x,
                _deriv,
                static_cast<Value>(_x.size()));
-        bool outOfBounds = false;
-        for (unsigned int i = 0; i < _x.size(); i++) {
-            if ((_deriv[i] < m_omin[i]) || (_deriv[i] > m_omax[i])) {
-                outOfBounds = true;
-                break;
-            }
-        }
 
-        if (!outOfBounds) {
-            return;
-        }
-
-        double factor = 0.0;
-        for (unsigned int i = 0; i < _x.size(); i++) {
-            factor = std::max(factor, _deriv[i] / m_omax[i]);
-            factor = std::max(factor, _deriv[i] / m_omin[i]);
-        }
-        for (unsigned int i = 0; i < _x.size(); i++) {
-            _deriv[i] /= factor;
-        }
-
-        /*
-        if (maxb) {
-            double m = _deriv[0];
-            int maxindex = 0;
-            for (unsigned int i = 1; i < _x.size(); i++) {
-                if (_deriv[i] > m) {
-                    m = _deriv[i];
-                    maxindex = i;
-                }
-            }
-            double factor = m_omax[maxindex] / _deriv[maxindex];
-            for (unsigned int i = 0; i < _x.size(); i++) {
-                _deriv[i] *= factor;
-            }
-
-        }
-*/
-
-        /*
         // This way of doing causes troubles in a specific example with a very small
         // additive residual error model
         for (unsigned int i = 0; i < _x.size(); i++) {
             // bounds the value:
             _deriv[i] = std::max(m_omin[i], std::min(_deriv[i], m_omax[i]));
         }
-*/
     }
 
     /// \brief calculateSampleNegativeLogLikelihood

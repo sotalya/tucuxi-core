@@ -22,10 +22,7 @@
 
 #include "tucucore/residualerrormodel.h"
 
-#include "tucucommon/general.h"
-
 #include "tucucore/definitions.h"
-#include "tucucore/sampleevent.h"
 
 namespace Tucuxi {
 namespace Core {

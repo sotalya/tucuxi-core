@@ -23,19 +23,16 @@
 #ifndef TUCUXI_CORE_PARAMETERSEXTRACTOR_H
 #define TUCUXI_CORE_PARAMETERSEXTRACTOR_H
 
-#include <algorithm>
-#include <iostream>
 #include <map>
 #include <vector>
 
 #include "tucucommon/iterator.h"
-#include "tucucommon/utils.h"
 
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/covariateevent.h"
 #include "tucucore/parameter.h"
 
-struct TestParameterExtractor;
+class TestParameterExtractor;
 
 namespace Tucuxi {
 namespace Core {

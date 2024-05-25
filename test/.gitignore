@@ -1,0 +1,5 @@
+#Cmake build files
+*/build*
+
+#Qt build files
+build*

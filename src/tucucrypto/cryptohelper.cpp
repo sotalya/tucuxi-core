@@ -23,8 +23,7 @@
 #include <iostream>
 
 #include <botan/auto_rng.h>
-#include <botan/b64_filt.h>
-#include <botan/cipher_filter.h>
+#include <botan/filters.h>
 
 #include "tucucrypto/cryptohelper.h"
 #ifdef _WIN32
@@ -46,7 +45,7 @@ bool CryptoHelper::generateKey(std::string& _key)
         // Create a new random key
         Botan::AutoSeeded_RNG rng;
         Botan::SymmetricKey botanKey = rng.random_vec(32);
-        _key = botanKey.as_string();
+        _key = botanKey.to_string();
         return true;
     }
     catch (const std::exception& e) {
@@ -91,7 +90,7 @@ bool CryptoHelper::encrypt(const std::string& _key, const std::string& _plaintex
         encryptor.process_msg(_plaintext);
         std::string ciphertext = encryptor.read_all_as_string(0);
 
-        _result = iv.as_string();
+        _result = iv.to_string();
         _result += ciphertext;
 
         return true;

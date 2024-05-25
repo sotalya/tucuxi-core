@@ -3,7 +3,6 @@ INCLUDEPATH += $$PWD/../../src \
     $$PWD/../../libs/spdlog/include/ \
     $$PWD/../../libs/boost \
     $$PWD/../../libs/eigen/ \
-    $$PWD/../../libs/fructose/include \
     $$PWD/../../libs/date/include \
     $$PWD/../../libs/tiny-js \
     $$PWD/../../libs/rapidxml \
@@ -18,7 +17,6 @@ INCLUDEPATH += $$PWD/../../src \
         -isystem $$PWD/../../libs/spdlog/include/ \
         -isystem $$PWD/../../libs/boost \
         -isystem $$PWD/../../libs/eigen/ \
-        -isystem $$PWD/../../libs/fructose/include \
         -isystem $$PWD/../../libs/date/include \
         -isystem $$PWD/../../libs/tiny-js \
         -isystem $$PWD/../../libs/rapidxml \

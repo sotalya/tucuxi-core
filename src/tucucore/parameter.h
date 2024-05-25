@@ -27,18 +27,16 @@
 #include <string>
 #include <vector>
 
-#include "tucucommon/general.h"
 #include "tucucommon/loggerhelper.h"
 
 #include "tucucore/definitions.h"
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/drugmodel/analyte.h"
 #include "tucucore/drugmodel/parameterdefinition.h"
-#include "tucucore/operation.h"
 #include "tucucore/parameterids.h"
 #include "tucucore/timedevent.h"
 
-struct TestParameterExtractor;
+class TestParameterExtractor;
 
 namespace Tucuxi {
 namespace Core {
@@ -250,7 +248,7 @@ private:
 
     // It is OK, as we fill it with -1s in the constructor. No way to do it differently in C++
     // NOLINT(cppcoreguidelines-pro-type-member-init)
-    std::array<int, ParameterId::size> m_IdToIndex;
+    std::array<int, ParameterId::size> m_IdToIndex{-1};
 };
 typedef std::unique_ptr<const ParameterSetEvent> ParameterSetEventPtr;
 

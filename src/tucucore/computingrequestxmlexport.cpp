@@ -507,7 +507,7 @@ void ComputingRequestXmlExport::exportDose(const Tucuxi::Core::SingleDose& _dosa
     Tucuxi::Common::XmlNode dose = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dose");
     _rootNode.addChild(dose);
 
-    addNode(dose, "value", double(_dosage.getDose()));
+    addNode(dose, "value", static_cast<double>(_dosage.getDose()));
     addNode(dose, "unit", std::string("mg"));
     addNode(dose, "infusionTimeInMinutes", _dosage.getInfusionTime().toMinutes());
 }
@@ -586,30 +586,26 @@ std::string ComputingRequestXmlExport::toString(const Tucuxi::Core::AbsorptionMo
 
 std::string ComputingRequestXmlExport::toString(DataType _nodeValue)
 {
-    static const std::map<DataType, std::string> m = {
+    static const std::map<DataType, std::string> M = {
             {DataType::Bool, "bool"}, {DataType::Date, "date"}, {DataType::Double, "double"}, {DataType::Int, "int"}};
-    auto it = m.find(_nodeValue);
-    if (it != m.end()) {
+    auto it = M.find(_nodeValue);
+    if (it != M.end()) {
         return it->second;
     }
-    else {
-        return "Undefined";
-    }
+    return "Undefined";
 }
 
 std::string ComputingRequestXmlExport::toString(PredictionParameterType _nodeValue)
 {
-    static const std::map<PredictionParameterType, std::string> m = {
+    static const std::map<PredictionParameterType, std::string> M = {
             {PredictionParameterType::Population, "population"},
             {PredictionParameterType::Apriori, "apriori"},
             {PredictionParameterType::Aposteriori, "aposteriori"}};
-    auto it = m.find(_nodeValue);
-    if (it != m.end()) {
+    auto it = M.find(_nodeValue);
+    if (it != M.end()) {
         return it->second;
     }
-    else {
-        return "Undefined";
-    }
+    return "Undefined";
 }
 
 std::string ComputingRequestXmlExport::toString(TargetType _nodeValue)
@@ -635,91 +631,79 @@ std::string ComputingRequestXmlExport::toString(TargetType _nodeValue)
     if (it != m.end()) {
         return it->second;
     }
-    else {
-        return "Undefined";
-    }
+    return "Undefined";
 }
 
 std::string ComputingRequestXmlExport::toString(CompartmentsOption _nodeValue)
 {
-    static const std::map<CompartmentsOption, std::string> m = {
+    static const std::map<CompartmentsOption, std::string> M = {
             {CompartmentsOption::AllActiveMoieties, "allActiveMoieties"},
             {CompartmentsOption::AllAnalytes, "allAnalytes"},
             {CompartmentsOption::AllCompartments, "allComparements"},
             {CompartmentsOption::MainCompartment, "mainCompartment"},
             {CompartmentsOption::Specific, "specific"}};
-    auto it = m.find(_nodeValue);
-    if (it != m.end()) {
+    auto it = M.find(_nodeValue);
+    if (it != M.end()) {
         return it->second;
     }
-    else {
-        return "Undefined";
-    }
+    return "Undefined";
 }
 
 std::string ComputingRequestXmlExport::toString(BestCandidatesOption _nodeValue)
 {
-    static const std::map<BestCandidatesOption, std::string> m = {
+    static const std::map<BestCandidatesOption, std::string> M = {
             {BestCandidatesOption::AllDosages, "allDosages"},
             {BestCandidatesOption::BestDosage, "bestDosage"},
             {BestCandidatesOption::BestDosagePerInterval, "bestDosagePerInterval"}};
     std::string str;
-    auto it = m.find(_nodeValue);
-    if (it != m.end()) {
+    auto it = M.find(_nodeValue);
+    if (it != M.end()) {
         return it->second;
     }
-    else {
-        return "Undefined";
-    }
+    return "Undefined";
 }
 
 std::string ComputingRequestXmlExport::toString(LoadingOption _nodeValue)
 {
-    static const std::map<LoadingOption, std::string> m = {
+    static const std::map<LoadingOption, std::string> M = {
             {LoadingOption::LoadingDoseAllowed, "loadingDoseAllowed"}, {LoadingOption::NoLoadingDose, "noLoadingDose"}};
     std::string str;
-    auto it = m.find(_nodeValue);
-    if (it != m.end()) {
+    auto it = M.find(_nodeValue);
+    if (it != M.end()) {
         return it->second;
     }
-    else {
-        return "Undefined";
-    }
+    return "Undefined";
 }
 
 std::string ComputingRequestXmlExport::toString(RestPeriodOption _nodeValue)
 {
-    static const std::map<RestPeriodOption, std::string> m = {
+    static const std::map<RestPeriodOption, std::string> M = {
             {RestPeriodOption::NoRestPeriod, "noRestPeriod"},
             {RestPeriodOption::RestPeriodAllowed, "restPeriodAllowed"}};
     std::string str;
-    auto it = m.find(_nodeValue);
-    if (it != m.end()) {
+    auto it = M.find(_nodeValue);
+    if (it != M.end()) {
         return it->second;
     }
-    else {
-        return "Undefined";
-    }
+    return "Undefined";
 }
 
 std::string ComputingRequestXmlExport::toString(SteadyStateTargetOption _nodeValue)
 {
-    static const std::map<SteadyStateTargetOption, std::string> m = {
+    static const std::map<SteadyStateTargetOption, std::string> M = {
             {SteadyStateTargetOption::AtSteadyState, "atSteadyState"},
             {SteadyStateTargetOption::WithinTreatmentTimeRange, "withinTreatmentTimeRange"}};
     std::string str;
-    auto it = m.find(_nodeValue);
-    if (it != m.end()) {
+    auto it = M.find(_nodeValue);
+    if (it != M.end()) {
         return it->second;
     }
-    else {
-        return "Undefined";
-    }
+    return "Undefined";
 }
 
 std::string ComputingRequestXmlExport::toString(TargetExtractionOption _nodeValue)
 {
-    static const std::map<TargetExtractionOption, std::string> m = {
+    static const std::map<TargetExtractionOption, std::string> M = {
             {TargetExtractionOption::PopulationValues, "populationValues"},
             {TargetExtractionOption::AprioriValues, "aprioriValues"},
             {TargetExtractionOption::IndividualTargets, "individualTargets"},
@@ -728,29 +712,25 @@ std::string ComputingRequestXmlExport::toString(TargetExtractionOption _nodeValu
             {TargetExtractionOption::IndividualTargetsIfDefinitionExistsAndDefinitionIfNoIndividualTarget,
              "individualTargetsIfDefinitionExistsAndDefinitionIfNoIndividualTarget"}};
     std::string str;
-    auto it = m.find(_nodeValue);
-    if (it != m.end()) {
+    auto it = M.find(_nodeValue);
+    if (it != M.end()) {
         return it->second;
     }
-    else {
-        return "Undefined";
-    }
+    return "Undefined";
 }
 
 std::string ComputingRequestXmlExport::toString(FormulationAndRouteSelectionOption _nodeValue)
 {
-    static const std::map<FormulationAndRouteSelectionOption, std::string> m = {
+    static const std::map<FormulationAndRouteSelectionOption, std::string> M = {
             {FormulationAndRouteSelectionOption::AllFormulationAndRoutes, "allFormulationAndRoutes"},
             {FormulationAndRouteSelectionOption::LastFormulationAndRoute, "lastFormulationAndRoute"},
             {FormulationAndRouteSelectionOption::DefaultFormulationAndRoute, "defaultFormulationAndRoute"}};
     std::string str;
-    auto it = m.find(_nodeValue);
-    if (it != m.end()) {
+    auto it = M.find(_nodeValue);
+    if (it != M.end()) {
         return it->second;
     }
-    else {
-        return "Undefined";
-    }
+    return "Undefined";
 }
 
 std::string ComputingRequestXmlExport::toString(RetrieveStatisticsOption _nodeValue)
@@ -778,9 +758,7 @@ std::string ComputingRequestXmlExport::toString(bool _nodeValue)
     if (_nodeValue) {
         return "true";
     }
-    else {
-        return "false";
-    }
+    return "false";
 }
 
 

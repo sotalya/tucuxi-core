@@ -106,7 +106,8 @@ void TwoCompartmentBolusMicro::computeExponentials(Eigen::VectorXd& _times)
 bool TwoCompartmentBolusMicro::computeConcentrations(
         const Residuals& _inResiduals, bool _isAll, MultiCompConcentrations& _concentrations, Residuals& _outResiduals)
 {
-    Eigen::VectorXd concentrations1, concentrations2;
+    Eigen::VectorXd concentrations1;
+    Eigen::VectorXd concentrations2;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
 
@@ -120,7 +121,7 @@ bool TwoCompartmentBolusMicro::computeConcentrations(
     // return concentration of comp1
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
     // Return concentrations of other compartments
-    if (_isAll == true) {
+    if (_isAll) {
         _concentrations[secondCompartment].assign(
                 concentrations2.data(), concentrations2.data() + concentrations2.size());
     }
@@ -141,7 +142,8 @@ bool TwoCompartmentBolusMicro::computeConcentration(
         Residuals& _outResiduals)
 {
     TMP_UNUSED_PARAMETER(_atTime);
-    Eigen::VectorXd concentrations1, concentrations2;
+    Eigen::VectorXd concentrations1;
+    Eigen::VectorXd concentrations2;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
     Eigen::Index atTime = static_cast<Eigen::Index>(SingleConcentrations::AtTime);
@@ -152,7 +154,7 @@ bool TwoCompartmentBolusMicro::computeConcentration(
 
     // return concentraions (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
-    if (_isAll == true) {
+    if (_isAll) {
         _concentrations[secondCompartment].push_back(concentrations2[atTime]);
     }
 
@@ -172,7 +174,7 @@ bool TwoCompartmentBolusMicro::computeConcentration(
     return bOK;
 }
 
-TwoCompartmentBolusMacro::TwoCompartmentBolusMacro() : TwoCompartmentBolusMicro() {}
+TwoCompartmentBolusMacro::TwoCompartmentBolusMacro() {}
 
 
 std::vector<std::string> TwoCompartmentBolusMacro::getParametersId()

@@ -38,10 +38,8 @@ RkMichaelisMentenTwoCompVmaxAmount::RkMichaelisMentenTwoCompVmaxAmount()
 
 
 RkMichaelisMentenTwoCompVmaxAmountExtraMicro::RkMichaelisMentenTwoCompVmaxAmountExtraMicro()
-    : RkMichaelisMentenTwoCompVmaxAmount()
 {
     m_delivered = true;
-    m_isInfusion = false;
     m_isWithLag = false;
 }
 
@@ -88,10 +86,8 @@ bool RkMichaelisMentenTwoCompVmaxAmountExtraMicro::checkInputs(
 
 
 RkMichaelisMentenTwoCompVmaxAmountExtraLagMicro::RkMichaelisMentenTwoCompVmaxAmountExtraLagMicro()
-    : RkMichaelisMentenTwoCompVmaxAmount()
 {
     m_delivered = false;
-    m_isInfusion = false;
     m_isWithLag = true;
 }
 
@@ -138,10 +134,8 @@ bool RkMichaelisMentenTwoCompVmaxAmountExtraLagMicro::checkInputs(
 
 
 RkMichaelisMentenTwoCompVmaxAmountBolusMicro::RkMichaelisMentenTwoCompVmaxAmountBolusMicro()
-    : RkMichaelisMentenTwoCompVmaxAmount()
 {
     m_delivered = true;
-    m_isInfusion = false;
     m_isWithLag = false;
     m_Ka = 0.0;
     m_Tlag = 0.0;
@@ -191,7 +185,6 @@ bool RkMichaelisMentenTwoCompVmaxAmountBolusMicro::checkInputs(
 
 
 RkMichaelisMentenTwoCompVmaxAmountInfusionMicro::RkMichaelisMentenTwoCompVmaxAmountInfusionMicro()
-    : RkMichaelisMentenTwoCompVmaxAmount()
 {
     m_delivered = true;
     m_isInfusion = true;
@@ -211,6 +204,11 @@ bool RkMichaelisMentenTwoCompVmaxAmountInfusionMicro::checkInputs(
     }
 
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
+    m_nonDifferentiableTime = m_Tinf;
+
+    const double eps = 0.001;
+    m_TinfLow = m_Tinf - eps;
+    m_TinfHigh = m_Tinf + eps;
 
     m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);
@@ -399,6 +397,11 @@ bool RkMichaelisMentenTwoCompVmaxAmountInfusionMacro::checkInputs(
     }
 
     m_Tinf = (_intakeEvent.getInfusionTime()).toHours();
+    m_nonDifferentiableTime = m_Tinf;
+
+    const double eps = 0.001;
+    m_TinfLow = m_Tinf - eps;
+    m_TinfHigh = m_Tinf + eps;
 
     m_D = _intakeEvent.getDose();
     m_V1 = _parameters.getValue(ParameterId::V1);

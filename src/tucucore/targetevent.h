@@ -25,27 +25,23 @@
 
 #include <vector>
 
-#include "tucucommon/duration.h"
-
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/drugmodel/targetdefinition.h"
 #include "tucucore/drugtreatment/target.h"
-#include "tucucore/timedevent.h"
 
 
-struct TestTargetExtractor;
+class TestTargetExtractor;
 
 namespace Tucuxi {
 namespace Core {
 
 class TargetEvaluator;
 class Target;
-class XpertRequestResultXmlExport;
 
 class TargetEvent
 {
 public:
-    TargetEvent() : m_activeMoietyId("") {}
+    TargetEvent() = default;
     //TargetEvent() = delete;
     //TargetEvent(TargetEvent&) = default;
     //TargetEvent(TargetEvent&&) = default;
@@ -145,25 +141,25 @@ private:
 
 
     /// Id of the active moiety on which applying the target
-    ActiveMoietyId m_activeMoietyId;
+    ActiveMoietyId m_activeMoietyId{""};
 
     /// Type of target
-    TargetType m_targetType;
+    TargetType m_targetType{TargetType::UnknownTarget};
 
     /// Target minimum acceptable value
-    Value m_valueMin;
+    Value m_valueMin{0.0};
 
     /// Target maximum acceptable value
-    Value m_valueMax;
+    Value m_valueMax{0.0};
 
     /// Target best value
-    Value m_valueBest;
+    Value m_valueBest{0.0};
 
     /// Minimum inhibitory concentration (for antibiotics)
-    Value m_mic;
+    Value m_mic{0.0};
 
     /// Unit of the MIC
-    TucuUnit m_micUnit;
+    TucuUnit m_micUnit{};
 
     /// Value under which the drug is inefficient
     Value m_inefficacyAlarm{0.0};

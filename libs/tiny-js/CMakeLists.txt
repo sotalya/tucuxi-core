@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 3.20)
+project (tiny-js LANGUAGES CXX)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+file(GLOB TINY_JS_HEADER_FILES
+    ${CMAKE_CURRENT_LIST_DIR}/TinyJS.h
+    ${CMAKE_CURRENT_LIST_DIR}/TinyJS_Functions.h
+    ${CMAKE_CURRENT_LIST_DIR}/TinyJS_MathFunctions.h)
+
+file(GLOB TINY_JS_SOURCE_FILES
+    ${CMAKE_CURRENT_LIST_DIR}/TinyJS.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/TinyJS_Functions.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/TinyJS_MathFunctions.cpp)
+
+add_library(tiny-js STATIC ${TINY_JS_SOURCE_FILES} ${TINY_JS_HEADER_FILES})

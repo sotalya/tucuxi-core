@@ -25,9 +25,6 @@
 
 #include <iostream>
 #include <string>
-#include <vector>
-
-#include "tucucommon/loggerhelper.h"
 
 namespace Tucuxi {
 namespace Common {

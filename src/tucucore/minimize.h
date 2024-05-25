@@ -30,6 +30,8 @@
 namespace Tucuxi {
 namespace Core {
 
+// NOLINTBEGIN(readability-identifier-naming)
+
 /// See Numerical Recipes https://www.uam.es/personal_pdi/ciencias/ppou/CNC/TEMA6/f10.pdf
 /// This is implemented in boost: #include <boost/math/tools/minima.hpp> where they also
 /// cute Numerical Recipes
@@ -37,12 +39,13 @@ namespace Core {
 /// For documentation just check out the link here: http://www.boost.org/doc/libs/1_60_0/libs/math/doc/html/math_toolkit/roots/brent_minima.html
 struct Bracketmethod
 {
-    double ax, bx, cx, fa, fb, fc; // NOLINT(readability-identifier-naming, readability-isolate-declaration)
+    double ax, bx, cx, fa, fb, fc; // NOLINT(readability-isolate-declaration)
     template<class T>
     void bracket(const double a, const double b, T& func)
-    { // NOLINT(readability-identifier-naming)
-        const double GOLD = 1.618034, GLIMIT = 100.0,
-                     TINY = 1.0e-20; // NOLINT(readability-identifier-naming, readability-isolate-declaration)
+    {
+        const double GOLD = 1.618034;
+        const double GLIMIT = 100.0;
+        const double TINY = 1.0e-20;
         ax = a;
         bx = b;
         double fu;
@@ -98,18 +101,18 @@ struct Bracketmethod
     }
 
     inline void shft2(double& a, double& b, const double c)
-    { // NOLINT(readability-identifier-naming)
+    {
         a = b;
         b = c;
     }
     inline void shft3(double& a, double& b, double& c, const double d)
-    { // NOLINT(readability-identifier-naming)
+    {
         a = b;
         b = c;
         c = d;
     }
     inline void mov3(double& a, double& b, double& c, const double d, const double e, const double f)
-    { // NOLINT(readability-identifier-naming)
+    {
         a = d;
         b = e;
         c = f;
@@ -118,18 +121,17 @@ struct Bracketmethod
 
 struct Dbrent : Bracketmethod
 {
-    double xmin, fmin; // NOLINT(readability-identifier-naming)
-    const double tol;  // NOLINT(readability-identifier-naming)
-    Dbrent(const double toll = 3.0e-8)
-        : tol(toll) {} // NOLINT(readability-identifier-naming, cppcoreguidelines-pro-type-member-init)
+    double xmin, fmin;
+    const double tol;
+    Dbrent(const double toll = 3.0e-8) : tol(toll) {} // NOLINT(cppcoreguidelines-pro-type-member-init)
     template<class T>
     double minimize(T& funcd)
-    {                                                                        // NOLINT(readability-identifier-naming)
-        const int ITMAX = 100;                                               // NOLINT(readability-identifier-naming)
-        const double ZEPS = std::numeric_limits<double>::epsilon() * 1.0e-3; // NOLINT(readability-identifier-naming)
-        bool ok1, ok2;                                                       // NOLINT(readability-isolate-declaration)
-        double a, b, d = 0.0, d1, d2, du, dv, dw, dx, e = 0.0;               // NOLINT(readability-isolate-declaration)
-        double fu, fv, fw, fx, olde, tol1, tol2, u, u1, u2, v, w, x, xm;     // NOLINT(readability-isolate-declaration)
+    {
+        const int ITMAX = 100;
+        const double ZEPS = std::numeric_limits<double>::epsilon() * 1.0e-3;
+        bool ok1, ok2;                                                   // NOLINT(readability-isolate-declaration)
+        double a, b, d = 0.0, d1, d2, du, dv, dw, dx, e = 0.0;           // NOLINT(readability-isolate-declaration)
+        double fu, fv, fw, fx, olde, tol1, tol2, u, u1, u2, v, w, x, xm; // NOLINT(readability-isolate-declaration)
         a = (ax < cx ? ax : cx);
         b = (ax > cx ? ax : cx);
         x = w = v = bx;
@@ -233,26 +235,22 @@ struct Dbrent : Bracketmethod
 template<typename T>
 struct Df1dim
 {
-    const ValueVector& p;  // NOLINT(readability-identifier-naming)
-    const ValueVector& xi; // NOLINT(readability-identifier-naming)
-    size_t n;              // NOLINT(readability-identifier-naming)
-    T& funcd;              // NOLINT(readability-identifier-naming)
-    ValueVector xt;        // NOLINT(readability-identifier-naming)
-    ValueVector dft;       // NOLINT(readability-identifier-naming)
-    Df1dim(ValueVector& pp, ValueVector& xii, T& funcdd)
-        : p(pp), // NOLINT(readability-identifier-naming)
-          xi(xii), n(pp.size()), funcd(funcdd), xt(n), dft(n)
-    {
-    } // NOLINT(readability-identifier-naming)
+    const ValueVector& p;
+    const ValueVector& xi;
+    size_t n;
+    T& funcd;
+    ValueVector xt;
+    ValueVector dft;
+    Df1dim(ValueVector& pp, ValueVector& xii, T& funcdd) : p(pp), xi(xii), n(pp.size()), funcd(funcdd), xt(n), dft(n) {}
     double operator()(const Value x)
-    { // NOLINT(readability-identifier-naming)
+    {
         for (size_t j = 0; j < n; j++) {
             xt[j] = p[j] + x * xi[j];
         }
         return funcd(xt);
     }
     double df(const Value x)
-    { // NOLINT(readability-identifier-naming)
+    {
         TMP_UNUSED_PARAMETER(x);
         double df1 = 0.0;
         funcd.df(xt, dft);
@@ -266,12 +264,11 @@ struct Df1dim
 template<typename T>
 struct Dlinemethod
 {
-    ValueVector p;  // NOLINT(readability-identifier-naming)
-    ValueVector xi; // NOLINT(readability-identifier-naming)
-    T& func;        // NOLINT(readability-identifier-naming)
-    size_t n;       // NOLINT(readability-identifier-naming)
-    Dlinemethod(T& funcc)
-        : func(funcc) {} // NOLINT(readability-identifier-naming, cppcoreguidelines-pro-type-member-init)
+    ValueVector p;
+    ValueVector xi;
+    T& func;
+    size_t n;
+    Dlinemethod(T& funcc) : func(funcc) {} // NOLINT(cppcoreguidelines-pro-type-member-init)
     double linmin()
     {
         double ax, xx, xmin; // NOLINT(readability-isolate-declaration)
@@ -294,24 +291,24 @@ template<typename T>
 struct Frprmn : Dlinemethod<T>
 {
     //int iter;
-    double fret; // NOLINT(readability-identifier-naming)
+    double fret;
     using Dlinemethod<T>::func;
     using Dlinemethod<T>::linmin;
     using Dlinemethod<T>::p;
     using Dlinemethod<T>::xi;
-    const double ftol; // NOLINT(readability-identifier-naming)
+    const double ftol;
     Frprmn(T& funcd, const double ftoll = 3.0e-8)
-        : Dlinemethod<T>(funcd), // NOLINT(readability-identifier-naming, cppcoreguidelines-pro-type-member-init)
+        : Dlinemethod<T>(funcd), // NOLINT(cppcoreguidelines-pro-type-member-init)
           ftol(ftoll)
     {
     }
 
     ValueVector minimize(const ValueVector& pp)
-    {                               // NOLINT(readability-identifier-naming)
-        const int ITMAX = 200;      // NOLINT(readability-identifier-naming)
-        const double EPS = 1.0e-18; // NOLINT(readability-identifier-naming)
-        const double GTOL = 1.0e-8; // NOLINT(readability-identifier-naming)
-        double gg, dgg;             // NOLINT(readability-isolate-declaration)
+    {
+        const int ITMAX = 200;
+        const double EPS = 1.0e-18;
+        const double GTOL = 1.0e-8;
+        double gg, dgg; // NOLINT(readability-isolate-declaration)
         size_t n = pp.size();
         p = pp;
         ValueVector g(n), h(n); // NOLINT(readability-isolate-declaration)
@@ -324,11 +321,21 @@ struct Frprmn : Dlinemethod<T>
             xi[j] = h[j] = g[j];
         }
 
+        bool equal = false;
         for (int its = 0; its < ITMAX; its++) {
             fret = linmin();
 
-            if (2.0 * std::abs(fret - fp) <= ftol * (std::abs(fret) + std::abs(fp) + EPS)) {
-                return p;
+            // The following lines are here to detect if we are at the end of the minimization
+            if (equal) {
+                if (2.0 * std::abs(fret - fp) <= ftol * (std::abs(fret) + std::abs(fp) + EPS)) {
+                    return p;
+                }
+            }
+            if (fret == fp) {
+                equal = true;
+            }
+            else {
+                equal = false;
             }
 
             fp = fret;
@@ -370,6 +377,8 @@ struct Frprmn : Dlinemethod<T>
         //        throw("Too many iterations in frprmn");
     }
 };
+
+// NOLINTEND(readability-identifier-naming)
 
 } // namespace Core
 } // namespace Tucuxi

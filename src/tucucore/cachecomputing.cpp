@@ -201,7 +201,7 @@ void CacheComputing::insertCycle(const DateTime& _start, DateTime _end, Percenti
         }
         it++;
     }
-    m_indexVector.insert(it.base(), index_t{_data, _cycleIndex, _start, std::move(_end)});
+    m_indexVector.insert(it.base(), index_t{_data, _cycleIndex, _start, _end});
     /*
     size_t insertIndex = m_indexVector.size();
     for(size_t i = m_indexVector.size() - 1; i >= 0; i--) {

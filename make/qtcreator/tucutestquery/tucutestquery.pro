@@ -9,6 +9,7 @@ include(../tucucommon.pri)
 include(../tucucore.pri)
 include(../tucuquery.pri)
 include(../tinyjs.pri)
+include(../gtest.pri)
 
 config_coverage {
     QMAKE_CXXFLAGS += --coverage
@@ -21,11 +22,13 @@ config_coverage {
 
 
 HEADERS += \
-    ../../../test/tucuquery/test_dosageimportexport.h \
-    ../../../test/tucuquery/test_query1comp.h
+    ../../../test/tucuquery/gtest_queryinputstrings.h
 
 SOURCES += \
-    ../../../test/tucuquery/tests.cpp
+    ../../../test/tucuquery/gtest_dosageimportexport.cpp \
+    ../../../test/tucuquery/gtest_query.cpp \
+    ../../../test/tucuquery/gtest_query1comp.cpp \
+    ../../../test/tucuquery/gtest_mod202.cpp
 
 
 !win32 {

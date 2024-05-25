@@ -27,7 +27,6 @@
 #include <memory>
 
 #include "tucucommon/component.h"
-#include "tucucommon/general.h"
 #include "tucucommon/loggerhelper.h"
 
 #include "tucucore/computingservice/computingresponse.h"

@@ -21,6 +21,7 @@
 
 
 #include <cstring>
+#include <iostream>
 
 #include "xmlnode.h"
 
@@ -190,6 +191,9 @@ bool XmlNode::isValid() const
 
 XmlNode& XmlNode::operator=(const XmlNode& _other)
 {
+    if (this == &_other) {
+        return *this;
+    }
     m_pNode = _other.m_pNode;
     return *this;
 }
@@ -223,7 +227,8 @@ char* XmlNode::allocateString(const std::string& _string)
         try {
             return m_pNode->document()->allocate_string(_string.c_str());
         }
-        catch (std::bad_alloc&) {
+        catch (std::bad_alloc& ex) {
+            std::cerr << "XmlNore allocation error: " << ex.what() << '\n';
         }
     }
     return nullptr;
@@ -237,7 +242,7 @@ void XmlNode::removeNode(const XmlNode& _node) const
 void XmlNode::removeNodes(const std::string& _nodeName)
 {
     XmlNode parent = m_pNode;
-    for (rapidxml::xml_node<>* child = m_pNode->first_node(); child; child = child->next_sibling()) {
+    for (rapidxml::xml_node<>* child = m_pNode->first_node(); child != nullptr; child = child->next_sibling()) {
         if (std::strcmp(child->name(), _nodeName.c_str()) == 0) {
             parent.m_pNode->remove_node(child);
             break;

@@ -126,7 +126,8 @@ void TwoCompartmentInfusionMicro::computeExponentials(Eigen::VectorXd& _times)
 bool TwoCompartmentInfusionMicro::computeConcentrations(
         const Residuals& _inResiduals, bool _isAll, MultiCompConcentrations& _concentrations, Residuals& _outResiduals)
 {
-    Eigen::VectorXd concentrations1, concentrations2;
+    Eigen::VectorXd concentrations1;
+    Eigen::VectorXd concentrations2;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
     int forcesize;
@@ -149,7 +150,7 @@ bool TwoCompartmentInfusionMicro::computeConcentrations(
 
     // Return concentrations of comp1
     _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
-    if (_isAll == true) {
+    if (_isAll) {
         _concentrations[secondCompartment].assign(
                 concentrations2.data(), concentrations2.data() + concentrations2.size());
     }
@@ -178,7 +179,8 @@ bool TwoCompartmentInfusionMicro::computeConcentration(
         MultiCompConcentrations& _concentrations,
         Residuals& _outResiduals)
 {
-    Eigen::VectorXd concentrations1, concentrations2;
+    Eigen::VectorXd concentrations1;
+    Eigen::VectorXd concentrations2;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
     Eigen::Index atTime = static_cast<Eigen::Index>(SingleConcentrations::AtTime);
@@ -296,7 +298,7 @@ bool TwoCompartmentInfusionMicro::computeConcentration(
 
     // Return concentraions (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
-    if (_isAll == true) {
+    if (_isAll) {
         _concentrations[secondCompartment].push_back(concentrations2[atTime]);
     }
 
@@ -305,10 +307,10 @@ bool TwoCompartmentInfusionMicro::computeConcentration(
         // This check is here because for some medical drugs the variability on V1 is
         // too big (typically 0.5 proportional), and ends up with infinite values
         if (std::isnan(val)) {
-            std::cout << "isNan" << std::endl;
+            std::cout << "isNan" << '\n';
         }
         if (val < 0.0) {
-            std::cout << "less than 0" << std::endl;
+            std::cout << "less than 0" << '\n';
         }
     }
 

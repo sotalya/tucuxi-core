@@ -244,8 +244,8 @@ inline x deriv1(func fxn, x& loc, const Value tol = DEFAULT_DERIV_TOL) // NOLINT
 /// \param answer where to put the results
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
 template<typename func, typename x, typename y>
-void deriv2_impl(func fxn, x& loc, y& answer, /*const*/ Value tol)
-{ // NOLINT(readability-identifier-naming)
+void deriv2_impl(func fxn, x& loc, y& answer, /*const*/ Value tol) // NOLINT(readability-identifier-naming)
+{
     int size = loc.size();
 
     // Diagonal elements
@@ -292,8 +292,12 @@ void deriv2_impl(func fxn, x& loc, y& answer, /*const*/ Value tol)
 /// \param answer where to put the results
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
 template<typename func>
-void deriv2_impl(func fxn, Eigen::VectorXd& loc, Eigen::MatrixXd& answer, const Value tol)
-{ // NOLINT(readability-identifier-naming)
+void deriv2_impl(
+        func fxn,                // NOLINT(readability-identifier-naming)
+        Eigen::VectorXd& loc,    // NOLINT(readability-identifier-naming)
+        Eigen::MatrixXd& answer, // NOLINT(readability-identifier-naming)
+        const Value tol)         // NOLINT(readability-identifier-naming)
+{
     long size = loc.size();
 
     // Diagonal elements
@@ -365,9 +369,9 @@ inline void deriv2(
 /// \param tol value of derivative calculation step (as h in f(x+h)...)
 template<typename func>
 inline void deriv2(
-        func fxn,
-        Eigen::VectorXd& loc,
-        Eigen::MatrixXd& ret,
+        func fxn,                            // NOLINT(readability-identifier-naming)
+        Eigen::VectorXd& loc,                // NOLINT(readability-identifier-naming)
+        Eigen::MatrixXd& ret,                // NOLINT(readability-identifier-naming)
         const Value tol = DEFAULT_DERIV_TOL) // NOLINT(readability-identifier-naming)
 {
     deriv2_impl(fxn, loc, ret, tol);

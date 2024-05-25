@@ -340,7 +340,10 @@ std::string SystemInfo::retrieveName()
     GetComputerName(computerName, &size);
 
     for (size_t i = 0; i < size; i++) {
-        ss_name << computerName[i];
+        std::wstring s = &computerName[i];
+        std::string stds(s.begin(), s.end());
+        ss_name << stds;
+        //    ss_name << computerName[i];
     }
 
     return ss_name.str();

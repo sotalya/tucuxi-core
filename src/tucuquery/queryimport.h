@@ -45,7 +45,7 @@
 
 #include "querydata.h"
 
-struct TestDosageImportExport;
+class GTestTucuQuery;
 
 namespace Tucuxi {
 namespace Query {
@@ -150,7 +150,7 @@ protected:
             Common::XmlNodeIterator _rootIterator, const std::string& _childName);
 
 private:
-    friend TestDosageImportExport;
+    friend GTestTucuQuery;
 };
 
 

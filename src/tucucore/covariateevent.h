@@ -25,8 +25,6 @@
 
 #include <vector>
 
-#include "tucucommon/duration.h"
-
 #include "tucucore/definitions.h"
 #include "tucucore/drugdefinitions.h"
 #include "tucucore/operablegraphmanager.h"
@@ -34,7 +32,6 @@
 #include "tucucore/timedevent.h"
 
 #include "drugmodel/covariatedefinition.h"
-#include "drugtreatment/patientcovariate.h"
 
 namespace Tucuxi {
 namespace Core {

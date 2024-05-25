@@ -30,9 +30,7 @@
 
 #include <map>
 #include <string>
-#include <typeinfo>
 
-#include "tucucommon/component.h"
 #include "tucucommon/interface.h"
 
 namespace Tucuxi {

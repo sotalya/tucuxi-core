@@ -160,7 +160,8 @@ bool ThreeCompartmentExtraMicro::computeConcentration(
 {
     TMP_UNUSED_PARAMETER(_atTime);
     Eigen::VectorXd concentrations1;
-    Value concentrations2, concentrations3;
+    Value concentrations2;
+    Value concentrations3;
     size_t firstCompartment = static_cast<size_t>(Compartments::First);
     size_t secondCompartment = static_cast<size_t>(Compartments::Second);
     size_t thirdCompartment = static_cast<size_t>(Compartments::Third);
@@ -210,16 +211,17 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     m_D = _intakeEvent.getDose();
     Value cl = _parameters.getValue(ParameterId::CL);
     m_F = _parameters.getValue(ParameterId::F);
-    Value q1 = _parameters.getValue(ParameterId::Q1);
+    Value q3 = _parameters.getValue(ParameterId::Q3);
     Value q2 = _parameters.getValue(ParameterId::Q2);
     m_V1 = _parameters.getValue(ParameterId::V1);
     Value v2 = _parameters.getValue(ParameterId::V2);
+    Value v3 = _parameters.getValue(ParameterId::V3);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_Ke = cl / m_V1;
-    m_K12 = q1 / m_V1;
-    m_K21 = q1 / v2;
-    m_K13 = q2 / m_V1;
-    m_K31 = q2 / v2;
+    m_K12 = q2 / m_V1;
+    m_K21 = q2 / v2;
+    m_K13 = q3 / m_V1;
+    m_K31 = q3 / v3;
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -263,7 +265,7 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     bOK &= checkStrictlyPositiveValue(m_Ka, "Ka");
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkStrictlyPositiveValue(q, "Q");
-    bOK &= checkStrictlyPositiveValue(q1, "Q1");
+    bOK &= checkStrictlyPositiveValue(q3, "Q3");
     bOK &= checkStrictlyPositiveValue(q2, "Q2");
     bOK &= checkStrictlyPositiveValue(m_V1, "V1");
     bOK &= checkStrictlyPositiveValue(v2, "V2");

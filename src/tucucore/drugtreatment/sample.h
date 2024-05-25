@@ -28,7 +28,6 @@
 #include "tucucommon/datetime.h"
 
 #include "tucucore/definitions.h"
-#include "tucucore/drugdefinitions.h"
 #include "tucucore/drugmodel/analyte.h"
 
 using Tucuxi::Common::DateTime; // NOLINT(google-global-names-in-headers)

@@ -29,7 +29,6 @@
 
 #include "tucucore/drugmodel/errormodel.h"
 #include "tucucore/drugmodel/parameterdefinition.h"
-#include "tucucore/drugmodel/targetdefinition.h"
 #include "tucucore/invariants.h"
 
 namespace Tucuxi {
@@ -75,7 +74,9 @@ public:
         return m_s;
     }
 
-    inline bool operator==(const AnalyteId& _other)
+    //auto operator<=>(const AnalyteId&) const = default;
+
+    inline bool operator==(const AnalyteId& _other) const
     {
         return this->m_s == _other.m_s;
     }
@@ -88,15 +89,6 @@ protected:
     std::string m_s;
 };
 
-inline bool operator==(const AnalyteId& _lhs, const AnalyteId& _rhs)
-{
-    return _lhs.toString() == _rhs.toString();
-}
-
-inline bool operator!=(const AnalyteId& _lhs, const AnalyteId& _rhs)
-{
-    return _lhs.toString() != _rhs.toString();
-}
 
 ///
 /// \brief The AnalyteGroupId class
@@ -125,29 +117,19 @@ public:
         return m_s;
     }
 
-    inline bool operator==(const AnalyteGroupId& _other)
+    //auto operator<=>(const AnalyteGroupId&) const = default;
+    inline bool operator==(const AnalyteGroupId& _other) const
     {
         return this->m_s == _other.m_s;
     }
-    inline bool operator<(const AnalyteGroupId& _other)
+    inline bool operator<(const AnalyteGroupId& _other) const
     {
         return this->m_s < _other.m_s;
     }
 
-
 protected:
     std::string m_s;
 };
-
-inline bool operator==(const AnalyteGroupId& _lhs, const AnalyteGroupId& _rhs)
-{
-    return _lhs.toString() == _rhs.toString();
-}
-
-inline bool operator<(const AnalyteGroupId& _lhs, const AnalyteGroupId& _rhs)
-{
-    return _lhs.toString() < _rhs.toString();
-}
 
 
 class Analyte

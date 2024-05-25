@@ -88,8 +88,8 @@ public:
 protected:
     /// \brief Constuctor used by XmlNode to build new iterators
     /// \param The first item of the collection.
-    XmlIterator(T _first, const std::string& _name = "")
-        : m_current(_first), m_name(_name), m_type(EXmlNodeType::Undefined)
+    XmlIterator(T _first, std::string _name = "")
+        : m_current(_first), m_name(std::move(_name)), m_type(EXmlNodeType::Undefined)
     {
         // Look for the next valid item in the specified sub group
         if (m_current.isValid() && !isInSubgroup()) {
@@ -97,7 +97,7 @@ protected:
         }
     }
 
-    XmlIterator(T _first, EXmlNodeType _type) : m_current(_first), m_name(""), m_type(_type)
+    XmlIterator(T _first, EXmlNodeType _type) : m_current(_first), m_type(_type)
     {
         // Look for the next valid item in the specified sub group
         if (m_current.isValid() && !isInSubgroup()) {

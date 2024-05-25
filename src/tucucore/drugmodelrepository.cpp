@@ -32,9 +32,11 @@
 
 #ifdef _WIN32
 static const char PATH_SEPARATOR = '\\';
+static const std::string PATH_SEPARATOR_STRING = "\\";
 #include <windows.h>
 #else
 static const char PATH_SEPARATOR = '/';
+static const std::string PATH_SEPARATOR_STRING = "/";
 #include <dirent.h>
 
 #include <sys/types.h>
@@ -139,7 +141,7 @@ void read_directory(const std::string& _name, std::vector<std::string>& _v)
     }
     struct dirent* dp;
     while ((dp = readdir(dirp)) != nullptr) {
-        _v.push_back(dp->d_name);
+        _v.push_back(std::string(dp->d_name));
     }
     closedir(dirp);
 }
@@ -155,7 +157,7 @@ void DrugModelRepository::loadFolder(const std::string& _folder)
 
     for (const auto& filename : list) {
         if (filename.substr((filename.size() > 4) ? (filename.size() - 4) : 0, filename.size() - 1) == ".tdd") {
-            loadFile(_folder + "/" + filename);
+            loadFile(std::string(_folder).append("/").append(filename));
         }
     }
 }
@@ -175,7 +177,8 @@ DrugModel* DrugModelRepository::getDrugModelById(std::string _drugModelId)
     }
 
     for (const auto& drugpath : m_drugPaths) {
-        DrugModel* drugModel = loadFile(drugpath + PATH_SEPARATOR + _drugModelId + ".tdd");
+        DrugModel* drugModel =
+                loadFile(std::string(drugpath).append(PATH_SEPARATOR_STRING).append(_drugModelId).append(".tdd"));
         if (drugModel != nullptr) {
             return drugModel;
         }
@@ -217,7 +220,7 @@ std::vector<DrugModel*> DrugModelRepository::getDrugModelsByDrugId(std::string _
             if (filename.substr((filename.size() > 4) ? (filename.size() - 4) : 0, filename.size() - 1) == ".tdd") {
 
                 if (filename.substr(INDEX_POSITION, _drugId.length()) == _drugId) {
-                    drugModels.push_back(loadFile(drugpath + "/" + filename));
+                    drugModels.push_back(loadFile(std::string(drugpath).append("/").append(filename)));
                 }
             }
         }
