@@ -1,3 +1,5 @@
+//@@license@@
+
 #ifndef GTEST_CORE_H
 #define GTEST_CORE_H
 

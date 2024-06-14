@@ -120,6 +120,10 @@ bool TwoCompartmentExtraMicro::computeConcentration(
     // Compute concentrations
     bool bOK = compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
+    if (!bOK) {
+        return false;
+    }
+
     // return concentraions (computation with atTime (current time))
     _concentrations[firstCompartment].push_back(concentrations1[atTime]);
     // TODO: add calcuation concentrations of second and third compartment and condtions
