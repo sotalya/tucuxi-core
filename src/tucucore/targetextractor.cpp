@@ -288,8 +288,8 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(
 
     switch (_target->m_targetType) {
 
-    case TargetType::Peak:
     case TargetType::Residual:
+    case TargetType::Mean:
 
         //TODO : VERIFY VALUE
 
@@ -305,9 +305,9 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(
                 UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(
                         _target->getCMax().getValue(), _target->getUnit(), _concentrationUnit));
 
-    case TargetType::Mean:
+    case TargetType::Peak:
 
-
+        //TODO : VERIFY VALUE
 
         return TargetEvent::createTargetEventWithTime(
                 _target->getActiveMoietyId(),
