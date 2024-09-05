@@ -167,7 +167,7 @@ static const std::string gentamicinFuchs2014_tdd = R"(<?xml version="1.0" encodi
                     </constraint>
                 </constraints>
             </domain>)"
-            R"(
+                                                   R"(
             <covariates>
                         <covariate>
                             <covariateId>age</covariateId>
@@ -352,7 +352,7 @@ static const std::string gentamicinFuchs2014_tdd = R"(<?xml version="1.0" encodi
                         </comments>
                     </covariate>
                 </covariates>)"
-                R"(
+                                                   R"(
                 <activeMoieties>
                     <activeMoiety>
                         <activeMoietyId>gentamicin</activeMoietyId>
@@ -656,7 +656,7 @@ static const std::string gentamicinFuchs2014_tdd = R"(<?xml version="1.0" encodi
                         </dispositionParameters>
                     </analyteGroup>
                 </analyteGroups>)"
-                R"(
+                                                   R"(
                 <formulationAndRoutes default='id0'>
                     <formulationAndRoute>
                         <formulationAndRouteId>id0</formulationAndRouteId>

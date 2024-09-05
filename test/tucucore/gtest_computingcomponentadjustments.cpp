@@ -13,9 +13,8 @@
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
 
-#include "drugmodels/buildimatinib.h"
 #include "drugmodels/buildgentamicinfuchs2014.h"
-
+#include "drugmodels/buildimatinib.h"
 #include "gtest_core.h"
 
 using namespace Tucuxi::Core;

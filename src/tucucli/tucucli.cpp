@@ -1,19 +1,14 @@
 //@@license@@
-#include <fstream>
+
+
 #include <iostream>
 
-#include "tucucommon/general.h"
 #include "tucucommon/loggerhelper.h"
 #include "tucucommon/utils.h"
 
-#include "tucucore/definitions.h"
 #include "tucucore/drugmodelrepository.h"
-#include "tucucore/intakeevent.h"
-#include "tucucore/parameter.h"
-#include "tucucore/pkmodels/onecompartmentextra.h"
 
 #include "tucuquery/querylogger.h"
-#include "tucuquery/querystatus.h"
 
 #include "clicomputer.h"
 #include "cxxopts.hpp"
