@@ -24,6 +24,7 @@ add_definitions(-D_UNICODE)
 file(GLOB TUCUTESTCORE_HEADER_FILES
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/buildmultianalytessingleactivemoiety.h
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/buildconstantelimination.h
+    ${CMAKE_CURRENT_LIST_DIR}/drugmodels/buildgentamicinfuchs2014.h
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/buildimatinib.h
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/buildmultianalytesmultiactivemoieties.h
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/buildpkasymptotic.h

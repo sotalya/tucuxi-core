@@ -14,6 +14,8 @@
 #include "tucucore/drugtreatment/drugtreatment.h"
 
 #include "drugmodels/buildimatinib.h"
+#include "drugmodels/buildgentamicinfuchs2014.h"
+
 #include "gtest_core.h"
 
 using namespace Tucuxi::Core;
@@ -820,6 +822,60 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibAllFormulationAndRouteBestD
         // We expect 2 dosage time range (rest period)
         ASSERT_EQ(resp->getAdjustments()[0].getDosageHistory().getDosageTimeRanges().size(), static_cast<size_t>(2));
     }
+
+    // Delete all dynamically allocated objects
+    delete component;
+}
+
+
+TEST(Core_TestComputingComponentAdjusements, GentamicinTwoTargets)
+{
+    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+    ASSERT_TRUE(component != nullptr);
+
+    BuildGentamicinFuchs2014 builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_TRUE(drugModel != nullptr);
+
+    // We start with an empty treatment
+    auto drugTreatment = std::make_unique<DrugTreatment>();
+
+    // Construct the adjustment traits object
+    RequestResponseId requestResponseId = "1";
+    Tucuxi::Common::DateTime start(2018_y / sep / 4, 8h + 0min);
+    Tucuxi::Common::DateTime end(2018_y / sep / 10, 8h + 0min);
+    double nbPointsPerHour = 10.0;
+    ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+    Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
+    BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
+    std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits = std::make_unique<ComputingTraitAdjustment>(
+            requestResponseId,
+            start,
+            end,
+            nbPointsPerHour,
+            computingOption,
+            adjustmentTime,
+            adjustmentOption,
+            LoadingOption::NoLoadingDose,
+            RestPeriodOption::NoRestPeriod,
+            SteadyStateTargetOption::WithinTreatmentTimeRange,
+            TargetExtractionOption::PopulationValues,
+            FormulationAndRouteSelectionOption::DefaultFormulationAndRoute);
+
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
+
+    std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ComputingStatus result;
+    result = component->compute(request, response);
+
+    ASSERT_EQ(result, ComputingStatus::Ok);
+
+    const ComputedData* responseData = response->getData();
+    ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+    const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
+    ASSERT_GT(resp->getAdjustments().size(), 0);
 
     // Delete all dynamically allocated objects
     delete component;
