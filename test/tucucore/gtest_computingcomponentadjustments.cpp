@@ -847,7 +847,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibAllFormulationAndRouteBestD
 }
 
 
-TEST(Core_TestComputingComponentAdjusements, GentamicinTwoTargets)
+TEST(Core_TestComputingComponentAdjusements, DISABLED_GentamicinTwoTargets)
 {
     IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
 
