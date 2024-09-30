@@ -1345,18 +1345,9 @@ std::unique_ptr<TargetDefinition> DrugModelImport::extractTarget(Tucuxi::Common:
             std::make_unique<SubTargetDefinition>("cMax", maxValue->getValue(), maxValue->getOperation()),
             std::make_unique<SubTargetDefinition>("cBest", bestValue->getValue(), bestValue->getOperation()),
             std::make_unique<SubTargetDefinition>("mic", mic->getValue(), mic->getOperation()),
-            std::make_unique<SubTargetDefinition>(
-                    "tMin",
-                    UnitManager::convertToUnit<UnitManager::UnitType::Time>(tMin->getValue(), tUnit, TucuUnit("min")),
-                    tMin->getOperation()),
-            std::make_unique<SubTargetDefinition>(
-                    "tMax",
-                    UnitManager::convertToUnit<UnitManager::UnitType::Time>(tMax->getValue(), tUnit, TucuUnit("min")),
-                    tMax->getOperation()),
-            std::make_unique<SubTargetDefinition>(
-                    "tBest",
-                    UnitManager::convertToUnit<UnitManager::UnitType::Time>(tBest->getValue(), tUnit, TucuUnit("min")),
-                    tBest->getOperation()),
+            std::make_unique<SubTargetDefinition>("tMin", tMin->getValue(), tMin->getOperation()),
+            std::make_unique<SubTargetDefinition>("tMax", tMax->getValue(), tMax->getOperation()),
+            std::make_unique<SubTargetDefinition>("tBest", tBest->getValue(), tBest->getOperation()),
             std::make_unique<SubTargetDefinition>("toxicity", toxicityAlarm->getValue(), toxicityAlarm->getOperation()),
             std::make_unique<SubTargetDefinition>(
                     "inefficacy", inefficacyAlarm->getValue(), inefficacyAlarm->getOperation()),
