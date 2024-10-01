@@ -340,9 +340,15 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(
                         _target->getCBest().getValue(), _target->getUnit(), _concentrationUnit),
                 UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(
                         _target->getCMax().getValue(), _target->getUnit(), _concentrationUnit),
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTMin().getValue(), _target->getTimeUnit(), TucuUnit("min"))))),
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTBest().getValue(), _target->getTimeUnit(), TucuUnit("min"))))),
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTMax().getValue(), _target->getTimeUnit(), TucuUnit("min"))))));
 
     case TargetType::Auc:
     case TargetType::Auc24:
@@ -367,9 +373,15 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(
                         _target->getCMax().getValue(),
                         _target->getUnit(),
                         getConcentrationTimeUnit(_concentrationUnit)),
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTMin().getValue(), _target->getTimeUnit(), TucuUnit("min"))))),
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTBest().getValue(), _target->getTimeUnit(), TucuUnit("min"))))),
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTMax().getValue(), _target->getTimeUnit(), TucuUnit("min"))))));
 
 
 
@@ -398,9 +410,15 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(
                 UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(
                         _target->getMic().getValue(), _target->getMicUnit(), _concentrationUnit),
                 _concentrationUnit,
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTMin().getValue(), _target->getTimeUnit(), TucuUnit("min"))))),
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTBest().getValue(), _target->getTimeUnit(), TucuUnit("min"))))),
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTMax().getValue(), _target->getTimeUnit(), TucuUnit("min"))))));
 
 
 
@@ -423,9 +441,15 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(
                 UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(
                         _target->getMic().getValue(), _target->getMicUnit(), _concentrationUnit),
                 _concentrationUnit,
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTMin().getValue(), _target->getTimeUnit(), TucuUnit("min"))))),
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTBest().getValue(), _target->getTimeUnit(), TucuUnit("min"))))),
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTMax().getValue(), _target->getTimeUnit(), TucuUnit("min"))))));
 
 
     case TargetType::PeakDividedByMic:
@@ -447,9 +471,15 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(
                 UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(
                         _target->getMic().getValue(), _target->getMicUnit(), _concentrationUnit),
                 _concentrationUnit,
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTMin().getValue(), _target->getTimeUnit(), TucuUnit("min"))))),
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTBest().getValue(), _target->getTimeUnit(), TucuUnit("min"))))),
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTMax().getValue(), _target->getTimeUnit(), TucuUnit("min"))))));
 
     case TargetType::UnknownTarget:
     default:
@@ -465,9 +495,15 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(
                 _target->getCMin().getValue(),
                 _target->getCBest().getValue(),
                 _target->getCMax().getValue(),
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTMin().getValue()))),
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTBest().getValue()))),
-                Tucuxi::Common::Duration(std::chrono::minutes(static_cast<int>(_target->getTMax().getValue()))));
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTMin().getValue(), _target->getTimeUnit(), TucuUnit("min"))))),
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTBest().getValue(), _target->getTimeUnit(), TucuUnit("min"))))),
+                Tucuxi::Common::Duration(
+                        std::chrono::minutes(static_cast<int>(UnitManager::convertToUnit<UnitManager::UnitType::Time>(
+                                _target->getTMax().getValue(), _target->getTimeUnit(), TucuUnit("min"))))));
     }
 }
 
