@@ -129,7 +129,9 @@ CovariateExtractor::CovariateExtractor(
     for (auto it = m_patientCovariates.begin(); it != m_patientCovariates.end(); ++it) {
         // If we cannot find a corresponding covariate definition or if it is a non-standard type, we can safely drop a
         // patient variate.
+        // We also drop it if it is empty. It won't generate an error though.
         if (m_cdValued.find((*it)->getId()) != m_cdValued.end()
+            && (!(*it)->getValue().empty())
             && ((*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Standard
                 || (*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Sex
                 || (*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Dose)) {
