@@ -29,6 +29,7 @@ include(../gtest.pri)
 HEADERS += \
     $$PWD/../../../test/tucucore/drugmodels/buildmultianalytessingleactivemoiety.h \
     $$PWD/../../../test/tucucore/drugmodels/buildconstantelimination.h \
+    $$PWD/../../../test/tucucore/drugmodels/drugmodels/buildgentamicinfuchs2014.h \
     $$PWD/../../../test/tucucore/drugmodels/buildimatinib.h \
     $$PWD/../../../test/tucucore/drugmodels/buildmod202.h \
     $$PWD/../../../test/tucucore/drugmodels/buildmultianalytesmultiactivemoieties.h \

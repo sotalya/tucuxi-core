@@ -1,4 +1,24 @@
-//@@license@@
+/* 
+ * Tucuxi - Tucuxi-core library and command line tool. 
+ * This code allows to perform prediction of drug concentration in blood 
+ * and to propose dosage adaptations.
+ * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
+ * 
+ * This program is free software: you can redistribute it and/or modify 
+ * it under the terms of the GNU Affero General Public License as 
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or any later version. 
+ * 
+ * This program is distributed in the hope that it will be useful, 
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * GNU Affero General Public License for more details. 
+ * 
+ * You should have received a copy of the GNU Affero General Public License 
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 
 #include <memory>
 
@@ -13,6 +33,7 @@
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
 
+#include "drugmodels/buildgentamicinfuchs2014.h"
 #include "drugmodels/buildimatinib.h"
 #include "gtest_core.h"
 
@@ -820,6 +841,60 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibAllFormulationAndRouteBestD
         // We expect 2 dosage time range (rest period)
         ASSERT_EQ(resp->getAdjustments()[0].getDosageHistory().getDosageTimeRanges().size(), static_cast<size_t>(2));
     }
+
+    // Delete all dynamically allocated objects
+    delete component;
+}
+
+
+TEST(Core_TestComputingComponentAdjusements, GentamicinTwoTargets)
+{
+    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+    ASSERT_TRUE(component != nullptr);
+
+    BuildGentamicinFuchs2014 builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_TRUE(drugModel != nullptr);
+
+    // We start with an empty treatment
+    auto drugTreatment = std::make_unique<DrugTreatment>();
+
+    // Construct the adjustment traits object
+    RequestResponseId requestResponseId = "1";
+    Tucuxi::Common::DateTime start(2018_y / sep / 4, 8h + 0min);
+    Tucuxi::Common::DateTime end(2018_y / sep / 10, 8h + 0min);
+    double nbPointsPerHour = 10.0;
+    ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+    Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
+    BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
+    std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits = std::make_unique<ComputingTraitAdjustment>(
+            requestResponseId,
+            start,
+            end,
+            nbPointsPerHour,
+            computingOption,
+            adjustmentTime,
+            adjustmentOption,
+            LoadingOption::NoLoadingDose,
+            RestPeriodOption::NoRestPeriod,
+            SteadyStateTargetOption::WithinTreatmentTimeRange,
+            TargetExtractionOption::PopulationValues,
+            FormulationAndRouteSelectionOption::DefaultFormulationAndRoute);
+
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
+
+    std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ComputingStatus result;
+    result = component->compute(request, response);
+
+    ASSERT_EQ(result, ComputingStatus::Ok);
+
+    const ComputedData* responseData = response->getData();
+    ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+    const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
+    ASSERT_GT(resp->getAdjustments().size(), 0);
 
     // Delete all dynamically allocated objects
     delete component;
