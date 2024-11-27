@@ -26,3 +26,10 @@ test/build*
 *.txt.user*
 src/*/build
 
+build-*
+
+#botan-related files/folders
+libs/botan/Makefile
+libs/botan/botan
+libs/botan/botan-test
+libs/botan/libbotan-2.*
