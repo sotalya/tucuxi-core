@@ -177,7 +177,6 @@ protected:
             std::vector<AnalyteGroupId>& allGroupIds,
             std::map<AnalyteGroupId, Etas> etas,
             std::vector<DosageAdjustment>& allAdjustments,
-            std::vector<std::vector<TargetEvaluationResult> > evaluationResults,
             DateTime& calculationStartTime,
             bool& isValidCandidate,
             std::vector<Tucuxi::Core::ConcentrationPredictionPtr>& analytesPredictions,

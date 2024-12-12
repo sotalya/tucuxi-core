@@ -376,7 +376,6 @@ ComputingStatus ComputingAdjustments::computeCandidate(
         std::vector<AnalyteGroupId>& allGroupIds,
         std::map<AnalyteGroupId, Etas> etas,
         std::vector<DosageAdjustment>& allAdjustments,
-        std::vector<std::vector<TargetEvaluationResult> > evaluationResults,
         DateTime& calculationStartTime,
         bool& isValidCandidate,
         std::vector<ConcentrationPredictionPtr>& analytesPredictions,
@@ -664,7 +663,7 @@ ComputingStatus ComputingAdjustments::compute(
     std::vector<DosageAdjustment> dosageCandidates;
 
     // A vector of vector because each adjustment candidate can have various targets
-    std::vector<std::vector<TargetEvaluationResult> > evaluationResults;
+    // std::vector<std::vector<TargetEvaluationResult> > evaluationResults;
 
 
     // Iterate over pre-selected candidates
@@ -684,7 +683,6 @@ ComputingStatus ComputingAdjustments::compute(
                 allGroupIds,
                 etas,
                 dosageCandidates,
-                evaluationResults,
                 calculationStartTime,
                 isValidCandidate,
                 analytesPredictions,
@@ -806,7 +804,7 @@ ComputingStatus ComputingAdjustments::compute(
             dosageCandidates.push_back(dosage);
         }
 
-        evaluationResults.push_back(candidateResults);
+        // evaluationResults.push_back(candidateResults);
     }
 
 #if 0
