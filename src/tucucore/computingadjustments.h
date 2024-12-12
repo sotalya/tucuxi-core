@@ -28,6 +28,7 @@
 #include "tucucore/computingservice/computingresponse.h"
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/computingservice/computingtrait.h"
+#include "tucucore/concentrationprediction.h"
 #include "tucucore/parameter.h"
 
 namespace Tucuxi {
@@ -168,6 +169,22 @@ protected:
             std::vector<SimpleDosageCandidate>& _candidates,
             bool& _multipleFormulationAndRoutes);
 
+    ComputingStatus computeCandidate(
+            const SimpleDosageCandidate& candidate,
+            const ComputingTraitAdjustment* _traits,
+            const ComputingRequest& _request,
+            std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& pkModel,
+            std::vector<AnalyteGroupId>& allGroupIds,
+            std::map<AnalyteGroupId, Etas> etas,
+            std::vector<DosageAdjustment>& allAdjustments,
+            std::vector<std::vector<TargetEvaluationResult> > evaluationResults,
+            DateTime& calculationStartTime,
+            bool& isValidCandidate,
+            std::vector<Tucuxi::Core::ConcentrationPredictionPtr>& analytesPredictions,
+            std::unique_ptr<DosageTimeRange>& newDosage,
+            GroupsIntakeSeries& intakeSeriesPerGroup);
+
+    TucuUnit getFinalUnit(const ComputingTraitAdjustment* _traits, ActiveMoiety* _activeMoiety);
 
     Tucuxi::Common::LoggerHelper m_logger;
     ComputingUtils* m_utils;
