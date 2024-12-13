@@ -22,6 +22,7 @@
 
 #include "queryimport.h"
 
+#include "tucucommon/loggerhelper.h"
 #include "tucucommon/utils.h"
 #include "tucucommon/xmlattribute.h"
 #include "tucucommon/xmldocument.h"
@@ -890,10 +891,19 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
 Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(
         Common::XmlNodeIterator _rootIterator, const string& _childName)
 {
+    Common::LoggerHelper logger;
     Common::XmlNodeIterator it = _rootIterator->getChildren(_childName);
     Tucuxi::Core::PercentileRanks ranks;
     while (it != Common::XmlNodeIterator::none()) {
         Tucuxi::Core::PercentileRank rank = extractDouble(it);
+        if (rank > Core::PERCENTILE_RANK_MAX) {
+            logger.warn("Percentile Rank is too big ({}). Using {} instead", rank, Core::PERCENTILE_RANK_MAX);
+            rank = Core::PERCENTILE_RANK_MAX;
+        }
+        else if (rank < Core::PERCENTILE_RANK_MIN) {
+            logger.warn("Percentile Rank is too small ({}). Using {} instead", rank, Core::PERCENTILE_RANK_MIN);
+            rank = Core::PERCENTILE_RANK_MIN;
+        }
         ranks.push_back(rank);
         it++;
     }

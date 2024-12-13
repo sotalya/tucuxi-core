@@ -247,6 +247,9 @@ typedef std::vector<Concentrations> MultiCycleConcentrations;
 /// Percentile rank, between 0.0 and 100.0
 typedef double PercentileRank;
 
+constexpr double PERCENTILE_RANK_MAX = 100.;
+constexpr double PERCENTILE_RANK_MIN = 0.;
+
 /// \ingroup TucuCore
 /// Vector of percentile ranks, each one being between 0.0 and 100.0
 typedef std::vector<PercentileRank> PercentileRanks;
