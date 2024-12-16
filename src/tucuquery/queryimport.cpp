@@ -891,7 +891,6 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
 Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(
         Common::XmlNodeIterator _rootIterator, const string& _childName)
 {
-    Common::LoggerHelper logger;
     Common::XmlNodeIterator it = _rootIterator->getChildren(_childName);
     Tucuxi::Core::PercentileRanks ranks;
     while (it != Common::XmlNodeIterator::none()) {
