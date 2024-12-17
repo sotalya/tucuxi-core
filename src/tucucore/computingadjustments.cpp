@@ -1550,8 +1550,10 @@ ComputingStatus ComputingAdjustments::evaluateCurrentDosageHistory(
             const DosageTimeRangeList& timeRanges =
                     _request.getDrugTreatment().getDosageHistory().getDosageTimeRanges();
             size_t nbRanges = timeRanges.size();
-            for (size_t i = 0; i < nbRanges - 2; i++) {
-                newHistory->addTimeRange(*timeRanges[i].get());
+            if (nbRanges > 1) {
+                for (size_t i = 0; i < nbRanges - 2; i++) {
+                    newHistory->addTimeRange(*timeRanges[i].get());
+                }
             }
             auto last = timeRanges[nbRanges - 1].get();
             newHistory->addTimeRange(Tucuxi::Core::DosageTimeRange(
