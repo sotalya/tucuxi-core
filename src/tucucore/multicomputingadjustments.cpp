@@ -1411,6 +1411,7 @@ ComputingStatus MultiComputingAdjustments::generatePrediction(
 }
 
 */
+    return ComputingStatus::MultiComputingComponentExceptionError;
 }
 } // namespace Core
 } // namespace Tucuxi
