@@ -183,6 +183,26 @@ protected:
             std::unique_ptr<DosageTimeRange>& newDosage,
             GroupsIntakeSeries& intakeSeriesPerGroup);
 
+
+    ///
+    /// \brief Evaluate the current dosage history with respect to the targets
+    /// \param _traits The computing traits to use
+    /// \param _request The request from which all the informations are extracted
+    /// \param _evaluationResults The evaluation results, one per target
+    /// \param _isInRange true if the current dosage is in the target range, false else
+    /// \return ComputingStatus::Ok if everything went well
+    ///
+    ComputingStatus evaluateCurrentDosageHistory(
+            const ComputingTraitAdjustment* _traits,
+            const ComputingRequest& _request,
+            AdjustmentData& _adjustmentData,
+            std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& pkModel,
+            std::vector<AnalyteGroupId>& allGroupIds,
+            std::map<AnalyteGroupId, Etas> etas,
+            std::map<ActiveMoietyId, TargetSeries> targetSeries,
+            DateTime calculationStartTime);
+
+
     TucuUnit getFinalUnit(const ComputingTraitAdjustment* _traits, ActiveMoiety* _activeMoiety);
 
     Tucuxi::Common::LoggerHelper m_logger;
