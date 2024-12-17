@@ -307,7 +307,7 @@ public:
         m_isCurrentInRange = _isInRange;
     }
 
-    bool isCurrentIngRange() const
+    bool isCurrentInRange() const
     {
         return m_isCurrentInRange;
     }
