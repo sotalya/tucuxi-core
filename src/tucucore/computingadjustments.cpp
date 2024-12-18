@@ -1492,6 +1492,17 @@ ComputingStatus ComputingAdjustments::evaluateCurrentDosageHistory(
         std::map<ActiveMoietyId, TargetSeries> targetSeries,
         DateTime calculationStartTime)
 {
+    // As an intermediate step for the development of tucuxi-cdss-core, we create a fake evaluation.
+    // It will be removed later on
+    {
+        bool isValidCandidate = true;
+        DosageAdjustment currentDosageAdjustment;
+        TargetEvaluationResult result = TargetEvaluationResult(TargetType::Residual, 0.5, 200, TucuUnit("ug/l"));
+        currentDosageAdjustment.m_targetsEvaluation.push_back(result);
+        _adjustmentData.setIsCurrentInRange(isValidCandidate);
+        _adjustmentData.setCurrentDosageWithScore(currentDosageAdjustment);
+        return ComputingStatus::Ok;
+    }
 
     bool isValidCandidate = true;
 
@@ -1545,6 +1556,11 @@ ComputingStatus ComputingAdjustments::evaluateCurrentDosageHistory(
             // We only need to start at the time of adjustments
             calculationStartTime = _traits->getAdjustmentTime();
 
+            Duration roundedNewDuration; // = candidate.m_interval * nbIntervals;
+            roundedNewDuration = Tucuxi::Common::Duration(std::chrono::hours(24));
+
+            newEndTime = _traits->getAdjustmentTime() + roundedNewDuration;
+
             newHistory = std::make_unique<DosageHistory>();
             // We clone the history except the last time range
             const DosageTimeRangeList& timeRanges =
@@ -1558,7 +1574,7 @@ ComputingStatus ComputingAdjustments::evaluateCurrentDosageHistory(
             auto last = timeRanges[nbRanges - 1].get();
             newHistory->addTimeRange(Tucuxi::Core::DosageTimeRange(
                     last->getStartDate(),
-                    last->getEndDate() + Tucuxi::Common::Duration(std::chrono::hours(24 * 365)),
+                    last->getEndDate() + Tucuxi::Common::Duration(std::chrono::hours(24)),
                     *last->getDosage()));
         }
         else {
