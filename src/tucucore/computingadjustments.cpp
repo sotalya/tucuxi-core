@@ -1516,7 +1516,7 @@ ComputingStatus ComputingAdjustments::extractnewHistoryForSteadyState(
             return ComputingStatus::Ok;
         }
         if (const DailyDose* dd = dynamic_cast<const DailyDose*>(d->getDosage())) {
-            std::cout << "DailyDose" << '\n';
+            // std::cout << "DailyDose" << '\n';
             auto adjustmentTimeOfDay = _adjustmentTime.getTimeOfDay();
             auto day = _adjustmentTime.getDate();
             auto dailyTimeOfDay = dd->getTimeOfDay();
@@ -1534,7 +1534,7 @@ ComputingStatus ComputingAdjustments::extractnewHistoryForSteadyState(
         }
     }
     else if (const DosageRepeat* d = dynamic_cast<const DosageRepeat*>(dosage)) {
-        std::cout << "DosageRepeat" << '\n';
+        // std::cout << "DosageRepeat" << '\n';
     }
     /*
     _newHistory.addTimeRange(Tucuxi::Core::DosageTimeRange(
