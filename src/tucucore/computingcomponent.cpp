@@ -50,6 +50,8 @@
 #include "tucucore/residualerrormodelextractor.h"
 #include "tucucore/treatmentdrugmodelcompatibilitychecker.h"
 
+#include "definitions.h"
+
 namespace Tucuxi {
 namespace Core {
 
@@ -427,6 +429,12 @@ ComputingStatus ComputingComponent::compute(
 #ifdef NO_PERCENTILES
     return ComputingStatus::NoPercentilesCalculation;
 #endif
+
+    for (const auto& rank : _traits->getRanks()) {
+        if (rank > PERCENTILE_RANK_MAX || rank < PERCENTILE_RANK_MIN) {
+            return ComputingStatus::OutOfBoundsPercentileRank;
+        }
+    }
     if (_request.getDrugModel().getAnalyteSets().size() > 1) {
         return computePercentilesMulti(_traits, _request, _response);
     }

@@ -134,7 +134,10 @@ enum class [[nodiscard]] ComputingStatus{
         /// The dosage history is empty, but should not be
         NoDosageHistory,
         /// There is at least one sample before the treatment start
-        SampleBeforeTreatmentStart};
+        SampleBeforeTreatmentStart,
+        /// At least one percentile rank is out of bounds
+        OutOfBoundsPercentileRank,
+};
 
 std::ostream& operator<<(std::ostream& _stream, const ComputingStatus& _e);
 
