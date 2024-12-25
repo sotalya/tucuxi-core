@@ -44,6 +44,7 @@ public:
     ComputingAdjustments(ComputingUtils* _computingUtils);
 
 
+    [[nodiscard]]
     ComputingStatus compute(
             const ComputingTraitAdjustment* _traits,
             const ComputingRequest& _request,
@@ -82,9 +83,11 @@ protected:
     } SimpleDosageCandidate;
 
 
+    [[nodiscard]]
     ComputingStatus buildCandidates(
             const FullFormulationAndRoute* _formulationAndRoute, std::vector<SimpleDosageCandidate>& _candidates);
 
+    [[nodiscard]]
     ComputingStatus buildCandidatesForInterval(
             const FullFormulationAndRoute* _formulationAndRoute,
             const Common::Duration& _interval,
@@ -100,6 +103,7 @@ protected:
     std::unique_ptr<DosageTimeRange> createSteadyStateDosage(
             const SimpleDosageCandidate& _candidate, const DateTime& _startTime);
 
+    [[nodiscard]]
     ComputingStatus addLoadOrRest(
             std::vector<DosageAdjustment>& _dosages,
             const ComputingTraitAdjustment* _traits,
@@ -110,6 +114,7 @@ protected:
             GroupsParameterSetSeries& _parameterSeries,
             std::map<AnalyteGroupId, Etas>& _etas);
 
+    [[nodiscard]]
     ComputingStatus addLoadOrRest(
             DosageAdjustment& _dosage,
             const ComputingTraitAdjustment* _traits,
@@ -120,6 +125,7 @@ protected:
             GroupsParameterSetSeries& _parameterSeries,
             std::map<AnalyteGroupId, Etas>& _etas);
 
+    [[nodiscard]]
     ComputingStatus addLoad(
             DosageAdjustment& _dosage,
             const ComputingTraitAdjustment* _traits,
@@ -131,6 +137,7 @@ protected:
             std::map<AnalyteGroupId, Etas>& _etas,
             bool& _modified);
 
+    [[nodiscard]]
     ComputingStatus addRest(
             DosageAdjustment& _dosage,
             const ComputingTraitAdjustment* _traits,
@@ -142,6 +149,7 @@ protected:
             std::map<AnalyteGroupId, Etas>& _etas,
             bool& _modified);
 
+    [[nodiscard]]
     ComputingStatus generatePredictions(
             std::vector<DosageAdjustment>& _dosages,
             const ComputingTraitAdjustment* _traits,
@@ -153,6 +161,7 @@ protected:
             std::map<AnalyteGroupId, Etas>& _etas);
 
 
+    [[nodiscard]]
     ComputingStatus generatePrediction(
             DosageAdjustment& _dosage,
             const ComputingTraitAdjustment* _traits,
@@ -163,12 +172,14 @@ protected:
             GroupsParameterSetSeries& _parameterSeries,
             std::map<AnalyteGroupId, Etas>& _etas);
 
+    [[nodiscard]]
     ComputingStatus extractCandidates(
             const ComputingTraitAdjustment* _traits,
             const ComputingRequest& _request,
             std::vector<SimpleDosageCandidate>& _candidates,
             bool& _multipleFormulationAndRoutes);
 
+    [[nodiscard]]
     ComputingStatus computeCandidate(
             const SimpleDosageCandidate& candidate,
             const ComputingTraitAdjustment* _traits,
@@ -192,6 +203,7 @@ protected:
     /// \param _isInRange true if the current dosage is in the target range, false else
     /// \return ComputingStatus::Ok if everything went well
     ///
+    [[nodiscard]]
     ComputingStatus evaluateCurrentDosageHistory(
             const ComputingTraitAdjustment* _traits,
             const ComputingRequest& _request,
@@ -202,8 +214,15 @@ protected:
             std::map<ActiveMoietyId, TargetSeries> targetSeries,
             DateTime calculationStartTime);
 
+    [[nodiscard]]
+    ComputingStatus extractnewHistoryForSteadyState(const DosageHistory& _oldHistory,
+            DosageHistory& _newHistory,
+            DateTime _adjustmentTime,
+            DateTime& _newStartTime,
+            DateTime& _newEndTime);
 
-    TucuUnit getFinalUnit(const ComputingTraitAdjustment* _traits, ActiveMoiety* _activeMoiety);
+    [[nodiscard]]
+    TucuUnit getFinalUnit(const ComputingTraitAdjustment* _traits, ActiveMoiety* _activeMoiety) const;
 
     Tucuxi::Common::LoggerHelper m_logger;
     ComputingUtils* m_utils;
