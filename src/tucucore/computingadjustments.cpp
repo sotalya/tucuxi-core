@@ -1508,7 +1508,7 @@ ComputingStatus ComputingAdjustments::extractnewHistoryForSteadyState(
     if (const DosageLoop* d = dynamic_cast<const DosageLoop*>(dosage)) {
         std::cout << "DosageLoop" << '\n';
         if (const LastingDose* ld = dynamic_cast<const LastingDose*>(d->getDosage())) {
-            std::cout << "LastingDose" << std::endl;
+            // std::cout << "LastingDose" << '\n';
             _newHistory.addTimeRange(DosageTimeRange(
                     _adjustmentTime,
                     _adjustmentTime + ld->getTimeStep(),
