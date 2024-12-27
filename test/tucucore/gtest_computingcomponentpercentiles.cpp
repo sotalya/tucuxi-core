@@ -30,6 +30,7 @@
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/computingservice/computingresponse.h"
 #include "tucucore/computingservice/computingtrait.h"
+#include "tucucore/definitions.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/montecarlopercentilecalculator.h"
 
@@ -471,4 +472,66 @@ TEST(Core_TestComputingComponentPercentiles, AposterioriPercentiles)
     }
 
     delete component;
+}
+TEST(Core_TestComputingComponentPercentiles, InvalidRanks)
+{
+    // We reduce the number of patients to speed up the tests
+    MonteCarloPercentileCalculatorBase::setStaticNumberPatients(1000);
+
+    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+    ASSERT_TRUE(component != nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_TRUE(drugModel != nullptr);
+
+    const FormulationAndRoute route(
+            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+
+    DateTime startSept2018(
+            date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+            Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+
+    auto drugTreatment = buildDrugTreatment(route, startSept2018);
+
+    RequestResponseId requestResponseId = "1";
+    Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+    Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+    double nbPointsPerHour = 10.0;
+    ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+
+    {
+        PercentileRanks percentileRanks({PERCENTILE_RANK_MAX, PERCENTILE_RANK_MIN});
+        std::unique_ptr<ComputingTraitPercentiles> traits = std::make_unique<ComputingTraitPercentiles>(
+                requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+        std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+        ComputingStatus result = component->compute(request, response);
+
+        ASSERT_NE(result, ComputingStatus::OutOfBoundsPercentileRank);
+    }
+    {
+        PercentileRanks percentileRanks({PERCENTILE_RANK_MAX, PERCENTILE_RANK_MIN - 1});
+        std::unique_ptr<ComputingTraitPercentiles> traits = std::make_unique<ComputingTraitPercentiles>(
+                requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+        std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+        ComputingStatus result = component->compute(request, response);
+        ASSERT_EQ(result, ComputingStatus::OutOfBoundsPercentileRank);
+    }
+    {
+        PercentileRanks percentileRanks({PERCENTILE_RANK_MAX + 1, PERCENTILE_RANK_MIN});
+        std::unique_ptr<ComputingTraitPercentiles> traits = std::make_unique<ComputingTraitPercentiles>(
+                requestResponseId, start, end, percentileRanks, nbPointsPerHour, computingOption);
+
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+        std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+        ComputingStatus result = component->compute(request, response);
+        ASSERT_EQ(result, ComputingStatus::OutOfBoundsPercentileRank);
+    }
 }

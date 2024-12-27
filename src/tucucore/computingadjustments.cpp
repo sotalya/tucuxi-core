@@ -214,7 +214,7 @@ ComputingStatus ComputingAdjustments::buildCandidatesForInterval(
 
 
 
-TucuUnit ComputingAdjustments::getFinalUnit(const ComputingTraitAdjustment* _traits, ActiveMoiety* _activeMoiety)
+TucuUnit ComputingAdjustments::getFinalUnit(const ComputingTraitAdjustment* _traits, ActiveMoiety* _activeMoiety) const
 {
     // The final unit depends on the computing options
     if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
@@ -1482,6 +1482,71 @@ ComputingStatus ComputingAdjustments::generatePrediction(
 }
 
 
+ComputingStatus ComputingAdjustments::extractnewHistoryForSteadyState(
+        const DosageHistory& _oldHistory,
+        DosageHistory& _newHistory,
+        DateTime _adjustmentTime,
+        DateTime& _newStartTime,
+        DateTime& _newEndTime)
+{
+    // Rounding the new duration to be a multiple of the new interval
+    int nbIntervals = 1;
+
+
+    // We only need to start at the time of adjustments
+    _newStartTime = _adjustmentTime;
+
+    Duration roundedNewDuration; // = candidate.m_interval * nbIntervals;
+    roundedNewDuration = Tucuxi::Common::Duration(std::chrono::hours(24));
+
+    // We just keep the last dosage time range of history
+    const DosageTimeRangeList& timeRanges =
+            _oldHistory.getDosageTimeRanges();
+    size_t nbRanges = timeRanges.size();
+    auto lastTimeRange = timeRanges[nbRanges - 1].get();
+    auto dosage = lastTimeRange->getDosage();
+    if (const DosageLoop* d = dynamic_cast<const DosageLoop*>(dosage)) {
+        std::cout << "DosageLoop" << '\n';
+        if (const LastingDose* ld = dynamic_cast<const LastingDose*>(d->getDosage())) {
+            // std::cout << "LastingDose" << '\n';
+            _newHistory.addTimeRange(DosageTimeRange(
+                    _adjustmentTime,
+                    _adjustmentTime + ld->getTimeStep(),
+                    DosageLoop(*ld)));
+            return ComputingStatus::Ok;
+        }
+        if (const DailyDose* dd = dynamic_cast<const DailyDose*>(d->getDosage())) {
+            // std::cout << "DailyDose" << '\n';
+            auto adjustmentTimeOfDay = _adjustmentTime.getTimeOfDay();
+            auto day = _adjustmentTime.getDate();
+            auto dailyTimeOfDay = dd->getTimeOfDay();
+            auto theDate = DateTime(day, dailyTimeOfDay);
+            if (dailyTimeOfDay < adjustmentTimeOfDay) {
+                theDate += Duration(24h);
+            }
+            _newHistory.addTimeRange(DosageTimeRange(
+                    theDate,
+                    theDate + Duration(24h),
+                    DosageLoop(*dd)));
+            _newStartTime = theDate;
+            _newEndTime = theDate + Duration(24h);
+            return ComputingStatus::Ok;
+        }
+    }
+    else if (const DosageRepeat* d = dynamic_cast<const DosageRepeat*>(dosage)) {
+        // std::cout << "DosageRepeat" << '\n';
+    }
+    /*
+    _newHistory.addTimeRange(Tucuxi::Core::DosageTimeRange(
+            lastTimeRange->getStartDate(),
+            lastTimeRange->getEndDate(),// + Tucuxi::Common::Duration(std::chrono::hours(24)),
+            *lastTimeRange->getDosage()));
+    // newEndTime = _traits->getAdjustmentTime() + roundedNewDuration;
+    _newEndTime = last->getEndDate();
+*/
+    return ComputingStatus::NoSteadyState;
+}
+
 ComputingStatus ComputingAdjustments::evaluateCurrentDosageHistory(
         const ComputingTraitAdjustment* _traits,
         const ComputingRequest& _request,
@@ -1494,7 +1559,7 @@ ComputingStatus ComputingAdjustments::evaluateCurrentDosageHistory(
 {
     // As an intermediate step for the development of tucuxi-cdss-core, we create a fake evaluation.
     // It will be removed later on
-    {
+    if (false){
         bool isValidCandidate = true;
         DosageAdjustment currentDosageAdjustment;
         TargetEvaluationResult result = TargetEvaluationResult(TargetType::Residual, 0.5, 200, TucuUnit("ug/l"));
@@ -1544,42 +1609,22 @@ ComputingStatus ComputingAdjustments::evaluateCurrentDosageHistory(
 
         DateTime newEndTime;
 
-        std::unique_ptr<DosageHistory> newHistory;
+        auto newHistory = std::make_unique<DosageHistory>();
 
         // If in steady state mode, then calculate the real end time
         if (_traits->getSteadyStateTargetOption() == SteadyStateTargetOption::AtSteadyState) {
 
-            // Rounding the new duration to be a multiple of the new interval
-            int nbIntervals = 1;
-
-
-            // We only need to start at the time of adjustments
-            calculationStartTime = _traits->getAdjustmentTime();
-
-            Duration roundedNewDuration; // = candidate.m_interval * nbIntervals;
-            roundedNewDuration = Tucuxi::Common::Duration(std::chrono::hours(24));
-
-            newEndTime = _traits->getAdjustmentTime() + roundedNewDuration;
-
-            newHistory = std::make_unique<DosageHistory>();
-            // We clone the history except the last time range
-            const DosageTimeRangeList& timeRanges =
-                    _request.getDrugTreatment().getDosageHistory().getDosageTimeRanges();
-            size_t nbRanges = timeRanges.size();
-            if (nbRanges > 1) {
-                for (size_t i = 0; i < nbRanges - 2; i++) {
-                    newHistory->addTimeRange(*timeRanges[i].get());
-                }
+            auto status = extractnewHistoryForSteadyState(_request.getDrugTreatment().getDosageHistory(),
+                                            *newHistory,
+                                            _traits->getAdjustmentTime(),
+                                            calculationStartTime,
+                                            newEndTime);
+            if (status != ComputingStatus::Ok){
+                return status;
             }
-            auto last = timeRanges[nbRanges - 1].get();
-            newHistory->addTimeRange(Tucuxi::Core::DosageTimeRange(
-                    last->getStartDate(),
-                    last->getEndDate() + Tucuxi::Common::Duration(std::chrono::hours(24)),
-                    *last->getDosage()));
         }
         else {
             newEndTime = _traits->getEnd();
-            newHistory = std::make_unique<DosageHistory>();
             // We clone the history except the last time range
             const DosageTimeRangeList& timeRanges =
                     _request.getDrugTreatment().getDosageHistory().getDosageTimeRanges();
@@ -1696,6 +1741,7 @@ ComputingStatus ComputingAdjustments::evaluateCurrentDosageHistory(
 
             if (predictionComputingResult == ComputingStatus::NoSteadyState) {
                 isValidCandidate = false;
+                //return ComputingStatus::NoSteadyState;
             }
             else {
                 if (predictionComputingResult != ComputingStatus::Ok) {
