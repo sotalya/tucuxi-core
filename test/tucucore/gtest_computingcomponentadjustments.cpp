@@ -104,6 +104,12 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllD
         ASSERT_TRUE(adj.m_history.getLastFormulationAndRoute().isCompatible(route));
     }
 
+    ASSERT_TRUE(resp->isCurrentInRange());
+    ASSERT_LT(resp->getCurrentDosageWithScore().getGlobalScore(), 1.0);
+    ASSERT_GT(resp->getCurrentDosageWithScore().getGlobalScore(), 0.0);
+    ASSERT_EQ(resp->getCurrentDosageWithScore().m_targetsEvaluation.size(), 1);
+    ASSERT_LT(resp->getCurrentDosageWithScore().m_targetsEvaluation[0].getValue(), 1000);
+
     // Delete all dynamically allocated objects
     delete component;
 }
