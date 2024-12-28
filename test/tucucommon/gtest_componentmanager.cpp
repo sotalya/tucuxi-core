@@ -55,17 +55,17 @@ public:
         TestComponent* cmp = new TestComponent();
         return dynamic_cast<ITest1*>(cmp);
     }
-    virtual void Test1()
+    void Test1() override
     {
         PRINT_MESSAGE("Hello from Test1");
     }
-    virtual void Test2()
+    void Test2() override
     {
         PRINT_MESSAGE("Hello from Test2");
     }
 
 protected:
-    virtual Tucuxi::Common::Interface* getInterface(const std::string& _name)
+    Tucuxi::Common::Interface* getInterface(const std::string& _name) override
     {
         return Tucuxi::Common::Component::getInterfaceImpl(_name);
     }
