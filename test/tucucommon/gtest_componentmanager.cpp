@@ -25,7 +25,12 @@
 #include "tucucommon/component.h"
 #include "tucucommon/componentmanager.h"
 
-#define PRINT_MESSAGE(x) (std::cout << "\033[1;36m" << x << "\033[0m" << std::endl)
+template<typename T>
+constexpr void PRINT_MESSAGE(T _mess)
+{
+    std::cout << "\033[1;36m" << _mess << "\033[0m" << std::endl;
+}
+// #define PRINT_MESSAGE(x) (std::cout << "\033[1;36m" << x << "\033[0m" << std::endl)
 
 
 class ITest1 : public Tucuxi::Common::Interface
