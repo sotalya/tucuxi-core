@@ -475,6 +475,10 @@ DateTime DateTime::maximumDateTime()
 {
     DateTime result;
     result.m_date = std::chrono::time_point<std::chrono::system_clock>::max();
+    result.m_isDefined = true;
+#ifdef EASY_DEBUG
+    result.updateString();
+#endif // EASY_DEBUG
     return result;
 }
 
@@ -482,6 +486,10 @@ DateTime DateTime::minimumDateTime()
 {
     DateTime result;
     result.m_date = std::chrono::time_point<std::chrono::system_clock>::min();
+    result.m_isDefined = true;
+#ifdef EASY_DEBUG
+    result.updateString();
+#endif // EASY_DEBUG
     return result;
 }
 
