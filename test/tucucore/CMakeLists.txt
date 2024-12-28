@@ -5,6 +5,23 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+option(EASY_DEBUG "Builds the dates and times with a string representation for easy debug")
+if (EASY_DEBUG)
+    add_compile_definitions(EASY_DEBUG)
+endif()
+
+option(CHECK_DATETIME "Checks that each DateTime object is used initialized to a valid value. To be only used in DEBUG mode, for performance reason")
+if (CHECK_DATETIME)
+    add_compile_definitions(CHECK_DATETIME)
+endif()
+
+option(CHECK_TYPES "Compiles with home-made classes for different classes, in order to check that there usage is correct. Compilers would allow a vector of same types to be compatible, but it would be nice to sometimes know what vectors are really used. Therefore we define Concentrations, MultiCompConcentration, MultiCompConcentrations and MultiCycleConcentrations without compatibility support. To be used to test if the code does not embed a code smell, but not in release mode. It could be implemented for AnalyteId and ActiveMoietyId as well")
+if (CHECK_TYPES)
+    add_compile_definitions(CHECK_TYPES)
+endif()
+
+
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../)
 # Include src directory
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../../src)
