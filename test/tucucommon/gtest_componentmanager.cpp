@@ -22,6 +22,7 @@
 
 #include <gtest/gtest.h>
 
+#include "tucucommon/component.h"
 #include "tucucommon/componentmanager.h"
 
 #define PRINT_MESSAGE(x) (std::cout << "\033[1;36m" << x << "\033[0m" << std::endl)
