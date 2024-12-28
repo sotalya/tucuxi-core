@@ -44,8 +44,7 @@ public:
     ComputingAdjustments(ComputingUtils* _computingUtils);
 
 
-    [[nodiscard]]
-    ComputingStatus compute(
+    [[nodiscard]] ComputingStatus compute(
             const ComputingTraitAdjustment* _traits,
             const ComputingRequest& _request,
             std::unique_ptr<ComputingResponse>& _response);
@@ -83,28 +82,25 @@ protected:
     } SimpleDosageCandidate;
 
 
-    [[nodiscard]]
-    ComputingStatus buildCandidates(
+    [[nodiscard]] ComputingStatus buildCandidates(
             const FullFormulationAndRoute* _formulationAndRoute, std::vector<SimpleDosageCandidate>& _candidates);
 
-    [[nodiscard]]
-    ComputingStatus buildCandidatesForInterval(
+    [[nodiscard]] ComputingStatus buildCandidatesForInterval(
             const FullFormulationAndRoute* _formulationAndRoute,
             const Common::Duration& _interval,
             std::vector<ComputingAdjustments::SimpleDosageCandidate>& _candidates);
 
-    std::unique_ptr<DosageTimeRange> createDosage(
+    [[nodiscard]] std::unique_ptr<DosageTimeRange> createDosage(
             const SimpleDosageCandidate& _candidate, const DateTime& _startTime, const DateTime& _endTime);
 
 
-    std::unique_ptr<DosageTimeRange> createLoadingDosageOrRestPeriod(
+    [[nodiscard]] std::unique_ptr<DosageTimeRange> createLoadingDosageOrRestPeriod(
             const SimpleDosageCandidate& _candidate, const DateTime& _startTime);
 
-    std::unique_ptr<DosageTimeRange> createSteadyStateDosage(
+    [[nodiscard]] std::unique_ptr<DosageTimeRange> createSteadyStateDosage(
             const SimpleDosageCandidate& _candidate, const DateTime& _startTime);
 
-    [[nodiscard]]
-    ComputingStatus addLoadOrRest(
+    [[nodiscard]] ComputingStatus addLoadOrRest(
             std::vector<DosageAdjustment>& _dosages,
             const ComputingTraitAdjustment* _traits,
             const ComputingRequest& _request,
@@ -114,8 +110,7 @@ protected:
             GroupsParameterSetSeries& _parameterSeries,
             std::map<AnalyteGroupId, Etas>& _etas);
 
-    [[nodiscard]]
-    ComputingStatus addLoadOrRest(
+    [[nodiscard]] ComputingStatus addLoadOrRest(
             DosageAdjustment& _dosage,
             const ComputingTraitAdjustment* _traits,
             const ComputingRequest& _request,
@@ -125,8 +120,7 @@ protected:
             GroupsParameterSetSeries& _parameterSeries,
             std::map<AnalyteGroupId, Etas>& _etas);
 
-    [[nodiscard]]
-    ComputingStatus addLoad(
+    [[nodiscard]] ComputingStatus addLoad(
             DosageAdjustment& _dosage,
             const ComputingTraitAdjustment* _traits,
             const ComputingRequest& _request,
@@ -137,8 +131,7 @@ protected:
             std::map<AnalyteGroupId, Etas>& _etas,
             bool& _modified);
 
-    [[nodiscard]]
-    ComputingStatus addRest(
+    [[nodiscard]] ComputingStatus addRest(
             DosageAdjustment& _dosage,
             const ComputingTraitAdjustment* _traits,
             const ComputingRequest& _request,
@@ -149,8 +142,7 @@ protected:
             std::map<AnalyteGroupId, Etas>& _etas,
             bool& _modified);
 
-    [[nodiscard]]
-    ComputingStatus generatePredictions(
+    [[nodiscard]] ComputingStatus generatePredictions(
             std::vector<DosageAdjustment>& _dosages,
             const ComputingTraitAdjustment* _traits,
             const ComputingRequest& _request,
@@ -160,9 +152,7 @@ protected:
             GroupsParameterSetSeries& _parameterSeries,
             std::map<AnalyteGroupId, Etas>& _etas);
 
-
-    [[nodiscard]]
-    ComputingStatus generatePrediction(
+    [[nodiscard]] ComputingStatus generatePrediction(
             DosageAdjustment& _dosage,
             const ComputingTraitAdjustment* _traits,
             const ComputingRequest& _request,
@@ -172,15 +162,13 @@ protected:
             GroupsParameterSetSeries& _parameterSeries,
             std::map<AnalyteGroupId, Etas>& _etas);
 
-    [[nodiscard]]
-    ComputingStatus extractCandidates(
+    [[nodiscard]] ComputingStatus extractCandidates(
             const ComputingTraitAdjustment* _traits,
             const ComputingRequest& _request,
             std::vector<SimpleDosageCandidate>& _candidates,
             bool& _multipleFormulationAndRoutes);
 
-    [[nodiscard]]
-    ComputingStatus computeCandidate(
+    [[nodiscard]] ComputingStatus computeCandidate(
             const SimpleDosageCandidate& candidate,
             const ComputingTraitAdjustment* _traits,
             const ComputingRequest& _request,
@@ -203,8 +191,7 @@ protected:
     /// \param _isInRange true if the current dosage is in the target range, false else
     /// \return ComputingStatus::Ok if everything went well
     ///
-    [[nodiscard]]
-    ComputingStatus evaluateCurrentDosageHistory(
+    [[nodiscard]] ComputingStatus evaluateCurrentDosageHistory(
             const ComputingTraitAdjustment* _traits,
             const ComputingRequest& _request,
             AdjustmentData& _adjustmentData,
@@ -214,15 +201,28 @@ protected:
             std::map<ActiveMoietyId, TargetSeries> targetSeries,
             DateTime calculationStartTime);
 
-    [[nodiscard]]
-    ComputingStatus extractnewHistoryForSteadyState(const DosageHistory& _oldHistory,
+    ///
+    /// \brief Extract a DosageHistory for steady state computation
+    /// \param _oldHistory The existing history
+    /// \param _newHistory The new extracted history
+    /// \param _adjustmentTime The time at which the steady state history should start
+    /// \param _newStartTime The time the new history actually starts
+    /// \param _newEndTime The end of the new history
+    /// \return ComputingStatus::Ok if there is a potential steady state, ComputingStatus::NoSteadyState else
+    ///
+    /// This function tries to extract the last DosageTimeRange of the history and build
+    /// a new history for steady state computation. The result is meant to be used for statistics computations.
+    /// The _adjustmentTime is the time at this the adjustment starts and should be the beginning of the
+    /// new history. There could be some differences for instance if the old history is a daily dose.
+    ///
+    [[nodiscard]] ComputingStatus extractnewHistoryForSteadyState(
+            const DosageHistory& _oldHistory,
             DosageHistory& _newHistory,
-            DateTime _adjustmentTime,
+            const DateTime& _adjustmentTime,
             DateTime& _newStartTime,
             DateTime& _newEndTime);
 
-    [[nodiscard]]
-    TucuUnit getFinalUnit(const ComputingTraitAdjustment* _traits, ActiveMoiety* _activeMoiety) const;
+    [[nodiscard]] TucuUnit getFinalUnit(const ComputingTraitAdjustment* _traits, ActiveMoiety* _activeMoiety) const;
 
     Tucuxi::Common::LoggerHelper m_logger;
     ComputingUtils* m_utils;

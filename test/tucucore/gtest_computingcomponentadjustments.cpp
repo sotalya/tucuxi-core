@@ -104,11 +104,11 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllD
         ASSERT_TRUE(adj.m_history.getLastFormulationAndRoute().isCompatible(route));
     }
 
-    ASSERT_TRUE(resp->isCurrentInRange());
-    ASSERT_LT(resp->getCurrentDosageWithScore().getGlobalScore(), 1.0);
-    ASSERT_GT(resp->getCurrentDosageWithScore().getGlobalScore(), 0.0);
+    ASSERT_FALSE(resp->isCurrentInRange());
+    ASSERT_EQ(resp->getCurrentDosageWithScore().getGlobalScore(), 0.0);
     ASSERT_EQ(resp->getCurrentDosageWithScore().m_targetsEvaluation.size(), 1);
-    ASSERT_LT(resp->getCurrentDosageWithScore().m_targetsEvaluation[0].getValue(), 1000);
+    ASSERT_LT(resp->getCurrentDosageWithScore().m_targetsEvaluation[0].getValue(), 2064);
+    ASSERT_GT(resp->getCurrentDosageWithScore().m_targetsEvaluation[0].getValue(), 2000);
 
     // Delete all dynamically allocated objects
     delete component;
@@ -566,6 +566,13 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibSteadyStateLastFormulationA
     for (auto const& adj : resp->getAdjustments()) {
         ASSERT_TRUE(adj.m_history.getLastFormulationAndRoute().isCompatible(route));
     }
+
+    ASSERT_FALSE(resp->isCurrentInRange());
+    ASSERT_EQ(resp->getCurrentDosageWithScore().getGlobalScore(), 0.0);
+    ASSERT_EQ(resp->getCurrentDosageWithScore().m_targetsEvaluation.size(), 1);
+    ASSERT_LT(resp->getCurrentDosageWithScore().m_targetsEvaluation[0].getValue(), 2064);
+    ASSERT_GT(resp->getCurrentDosageWithScore().m_targetsEvaluation[0].getValue(), 2063);
+
 
     // Delete all dynamically allocated objects
     delete component;
