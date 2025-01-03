@@ -1,21 +1,21 @@
-/* 
- * Tucuxi - Tucuxi-core library and command line tool. 
- * This code allows to perform prediction of drug concentration in blood 
+/*
+ * Tucuxi - Tucuxi-core library and command line tool.
+ * This code allows to perform prediction of drug concentration in blood
  * and to propose dosage adaptations.
- * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * It has been developed by HEIG-VD, in close collaboration with CHUV.
  * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Affero General Public License for more details. 
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -79,6 +79,31 @@ public:
     static DateTime get_m_birthDate(CovariateExtractor* extractor)
     {
         return extractor->m_birthDate;
+    };
+
+    static double get_m_initTimeFromStartInHours(CovariateExtractor* extractor)
+    {
+        return extractor->m_initTimeFromStartInHours;
+    };
+
+    static double get_m_initTimeFromStartInDays(CovariateExtractor* extractor)
+    {
+        return extractor->m_initTimeFromStartInDays;
+    };
+
+    static double get_m_initTimeFromStartInWeeks(CovariateExtractor* extractor)
+    {
+        return extractor->m_initTimeFromStartInWeeks;
+    };
+
+    static double get_m_initTimeFromStartInMonths(CovariateExtractor* extractor)
+    {
+        return extractor->m_initTimeFromStartInMonths;
+    };
+
+    static double get_m_initTimeFromStartInYears(CovariateExtractor* extractor)
+    {
+        return extractor->m_initTimeFromStartInYears;
     };
 
     static double get_m_initAgeInDays(CovariateExtractor* extractor)
@@ -418,6 +443,521 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
         ADD_CDEF_NO_R(AgeYears, 20, AgeInYears, Double, Direct, cDefinitions);
         ADD_CDEF_NO_R(AgeYears2, 20, AgeInYears, Double, Direct, cDefinitions);
+
+        ASSERT_THROW(
+                CovariateExtractor(
+                        cDefinitions,
+                        PatientVariates(),
+                        DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                        DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
+                std::runtime_error);
+    }
+
+    // Check that the definition of the time from the start of the treatment
+    // (expressed in hours) is consistent (1).
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear,
+                          Tucuxi::Common::days(1), "kg", cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInHours, 18, TimeFromStartInHours, Double,
+                      Direct, cDefinitions);
+
+        ASSERT_NO_THROW(CovariateExtractor(
+                cDefinitions,
+                PatientVariates(),
+                DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)));
+
+        CovariateExtractor extractor(
+                cDefinitions,
+                pVariates,
+                DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0));
+
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInHours"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInDays"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInWeeks"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInMonths"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInYears"),
+                  static_cast<size_t>(0));
+
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInHours"),
+                  static_cast<size_t>(1));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInDays"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInWeeks"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInMonths"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInYears"),
+                  static_cast<size_t>(0));
+
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInHours(&extractor), 18);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInDays(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInWeeks(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInMonths(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInYears(&extractor), -1);
+    }
+
+    // Check that the definition of the time from the start of the treatment
+    // (expressed in hours) is consistent (2).
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear,
+                          Tucuxi::Common::days(1), "kg", cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInHours, -18, TimeFromStartInHours, Double,
+                      Direct, cDefinitions);
+
+        ASSERT_THROW(
+                CovariateExtractor(
+                        cDefinitions,
+                        PatientVariates(),
+                        DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                        DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
+                std::runtime_error);
+    }
+
+    // Check that the definition of the time from the start of the treatment
+    // (expressed in hours) is consistent (3).
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear,
+                          Tucuxi::Common::days(1), "kg", cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInHours, 18, TimeFromStartInHours, Double,
+                      Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInHours2, 18, TimeFromStartInHours, Double,
+                      Direct, cDefinitions);
+
+        ASSERT_THROW(
+                CovariateExtractor(
+                        cDefinitions,
+                        PatientVariates(),
+                        DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                        DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
+                std::runtime_error);
+    }
+
+    // Check that the definition of the time from the start of the treatment
+    // (expressed in days) is consistent (1).
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear,
+                          Tucuxi::Common::days(1), "kg", cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInDays, 18, TimeFromStartInDays, Double,
+                      Direct, cDefinitions);
+
+        ASSERT_NO_THROW(CovariateExtractor(
+                cDefinitions,
+                PatientVariates(),
+                DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)));
+
+        CovariateExtractor extractor(
+                cDefinitions,
+                pVariates,
+                DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0));
+
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInHours"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInDays"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInWeeks"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInMonths"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInYears"),
+                  static_cast<size_t>(0));
+
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInHours"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInDays"),
+                  static_cast<size_t>(1));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInWeeks"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInMonths"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInYears"),
+                  static_cast<size_t>(0));
+
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInHours(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInDays(&extractor), 18);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInWeeks(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInMonths(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInYears(&extractor), -1);
+    }
+
+    // Check that the definition of the time from the start of the treatment
+    // (expressed in days) is consistent (2).
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear,
+                          Tucuxi::Common::days(1), "kg", cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInDays, -18, TimeFromStartInDays, Double,
+                      Direct, cDefinitions);
+
+        ASSERT_THROW(
+                CovariateExtractor(
+                        cDefinitions,
+                        PatientVariates(),
+                        DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                        DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
+                std::runtime_error);
+    }
+
+    // Check that the definition of the time from the start of the treatment
+    // (expressed in days) is consistent (3).
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear,
+                          Tucuxi::Common::days(1), "kg", cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInDays, 18, TimeFromStartInDays, Double,
+                      Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInDays2, 18, TimeFromStartInDays, Double,
+                      Direct, cDefinitions);
+
+        ASSERT_THROW(
+                CovariateExtractor(
+                        cDefinitions,
+                        PatientVariates(),
+                        DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                        DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
+                std::runtime_error);
+    }
+
+    // Check that the definition of the time from the start of the treatment
+    // (expressed in weeks) is consistent (1).
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear,
+                          Tucuxi::Common::days(1), "kg", cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInWeeks, 18, TimeFromStartInWeeks, Double,
+                      Direct, cDefinitions);
+
+        ASSERT_NO_THROW(CovariateExtractor(
+                cDefinitions,
+                PatientVariates(),
+                DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)));
+
+        CovariateExtractor extractor(
+                cDefinitions,
+                pVariates,
+                DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0));
+
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInHours"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInDays"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInWeeks"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInMonths"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInYears"),
+                  static_cast<size_t>(0));
+
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInHours"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInDays"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInWeeks"),
+                  static_cast<size_t>(1));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInMonths"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInYears"),
+                  static_cast<size_t>(0));
+
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInHours(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInDays(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInWeeks(&extractor), 18);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInMonths(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInYears(&extractor), -1);
+    }
+
+    // Check that the definition of the time from the start of the treatment
+    // (expressed in weeks) is consistent (2).
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear,
+                          Tucuxi::Common::days(1), "kg", cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInWeeks, -18, TimeFromStartInWeeks, Double,
+                      Direct, cDefinitions);
+
+        ASSERT_THROW(
+                CovariateExtractor(
+                        cDefinitions,
+                        PatientVariates(),
+                        DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                        DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
+                std::runtime_error);
+    }
+
+    // Check that the definition of the time from the start of the treatment
+    // (expressed in weeks) is consistent (3).
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear,
+                          Tucuxi::Common::days(1), "kg", cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInWeeks, 18, TimeFromStartInWeeks, Double,
+                      Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInWeeks2, 18, TimeFromStartInWeeks, Double,
+                      Direct, cDefinitions);
+
+        ASSERT_THROW(
+                CovariateExtractor(
+                        cDefinitions,
+                        PatientVariates(),
+                        DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                        DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
+                std::runtime_error);
+    }
+
+    // Check that the definition of the time from the start of the treatment
+    // (expressed in months) is consistent (1).
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear,
+                          Tucuxi::Common::days(1), "kg", cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInMonths, 18, TimeFromStartInMonths, Double,
+                      Direct, cDefinitions);
+
+        ASSERT_NO_THROW(CovariateExtractor(
+                cDefinitions,
+                PatientVariates(),
+                DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)));
+
+        CovariateExtractor extractor(
+                cDefinitions,
+                pVariates,
+                DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0));
+
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInHours"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInDays"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInWeeks"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInMonths"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInYears"),
+                  static_cast<size_t>(0));
+
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInHours"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInDays"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInWeeks"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInMonths"),
+                  static_cast<size_t>(1));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInYears"),
+                  static_cast<size_t>(0));
+
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInHours(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInDays(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInWeeks(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInMonths(&extractor), 18);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInYears(&extractor), -1);
+    }
+
+    // Check that the definition of the time from the start of the treatment
+    // (expressed in months) is consistent (2).
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear,
+                          Tucuxi::Common::days(1), "kg", cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInMonths, -18, TimeFromStartInMonths, Double,
+                      Direct, cDefinitions);
+
+        ASSERT_THROW(
+                CovariateExtractor(
+                        cDefinitions,
+                        PatientVariates(),
+                        DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                        DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
+                std::runtime_error);
+    }
+
+    // Check that the definition of the time from the start of the treatment
+    // (expressed in months) is consistent (3).
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear,
+                          Tucuxi::Common::days(1), "kg", cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInMonths, 18, TimeFromStartInMonths, Double,
+                      Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInMonths2, 18, TimeFromStartInMonths, Double,
+                      Direct, cDefinitions);
+
+        ASSERT_THROW(
+                CovariateExtractor(
+                        cDefinitions,
+                        PatientVariates(),
+                        DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                        DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
+                std::runtime_error);
+    }
+
+    // Check that the definition of the time from the start of the treatment
+    // (expressed in years) is consistent (1).
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear,
+                          Tucuxi::Common::days(1), "kg", cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInYears, 18, TimeFromStartInYears, Double,
+                      Direct, cDefinitions);
+
+        ASSERT_NO_THROW(CovariateExtractor(
+                cDefinitions,
+                PatientVariates(),
+                DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)));
+
+        CovariateExtractor extractor(
+                cDefinitions,
+                pVariates,
+                DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0));
+
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInHours"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInDays"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInWeeks"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInMonths"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_pvValued(&extractor).count("TimeFromStartInYears"),
+                  static_cast<size_t>(0));
+
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInHours"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInDays"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInWeeks"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInMonths"),
+                  static_cast<size_t>(0));
+        ASSERT_EQ(TestCovariateExtractor::get_m_cdValued(&extractor).count("TimeFromStartInYears"),
+                  static_cast<size_t>(1));
+
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInHours(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInDays(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInWeeks(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInMonths(&extractor), -1);
+        ASSERT_DOUBLE_EQ(TestCovariateExtractor::get_m_initTimeFromStartInYears(&extractor), 18);
+    }
+
+    // Check that the definition of the time from the start of the treatment
+    // (expressed in years) is consistent (2).
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear,
+                          Tucuxi::Common::days(1), "kg", cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInYears, -18, TimeFromStartInYears, Double,
+                      Direct, cDefinitions);
+
+        ASSERT_THROW(
+                CovariateExtractor(
+                        cDefinitions,
+                        PatientVariates(),
+                        DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+                        DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0)),
+                std::runtime_error);
+    }
+
+    // Check that the definition of the time from the start of the treatment
+    // (expressed in years) is consistent (3).
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear,
+                          Tucuxi::Common::days(1), "kg", cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInYears, 18, TimeFromStartInYears, Double,
+                      Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInYears2, 18, TimeFromStartInYears, Double,
+                      Direct, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -916,6 +1456,238 @@ TEST(Core_TestCovariateExtractor, CE_collectRefreshIntervals)
         CHECK_REFRESH(AgeDays, DATE_TIME_NO_VAR(2017, 12, 13, 14, 15, 0), refreshMap);
         CHECK_REFRESH(AgeMonths, DATE_TIME_NO_VAR(2017, 12, 13, 14, 15, 0), refreshMap);
         CHECK_REFRESH(AgeYears, DATE_TIME_NO_VAR(2017, 12, 13, 14, 15, 0), refreshMap);
+    }
+
+    // Check the refresh times for the time from the start of treatment when no
+    // treatmentStartDate is specified.
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(TimeFromStartHours, 10, TimeFromStartInHours, Double,
+                      Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartDays, 15, TimeFromStartInDays, Double,
+                      Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartWeeks, 20, TimeFromStartInWeeks, Double,
+                      Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartMonths, 4, TimeFromStartInMonths, Double,
+                      Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartYears, 1, TimeFromStartInYears, Double,
+                      Direct, cDefinitions);
+
+        CovariateExtractor extractor(
+                cDefinitions,
+                pVariates,
+                DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                DATE_TIME_NO_VAR(2018, 9, 23, 14, 0, 0));
+        TestCovariateExtractor::test_sortPatientVariates(&extractor);
+
+        std::map<DateTime, std::vector<std::string>> refreshMap;
+        TestCovariateExtractor::test_collectRefreshIntervals(refreshMap,
+                                                             &extractor);
+
+        ASSERT_EQ(refreshMap.size(), static_cast<size_t>(403));
+
+        // 17.08.2017 @ 14h00 (start)
+        ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0)].size(),
+                  static_cast<size_t>(5));
+        CHECK_REFRESH(TimeFromStartHours,
+                      DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartDays,
+                      DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartWeeks,
+                      DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartMonths,
+                      DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartYears,
+                      DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
+
+        // 17.08.2017 15h00 - 18.08.2017 13h00
+        for (unsigned int i = 15; i <= 23; ++i) {
+            ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 8, 17, i, 0, 0)].size(),
+                      static_cast<size_t>(1));
+            CHECK_REFRESH(TimeFromStartHours,
+                          DATE_TIME_NO_VAR(2017, 8, 17, i, 0, 0), refreshMap);
+        }
+        for (unsigned int i = 0; i <= 13; ++i) {
+            ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 8, 18, i, 0, 0)].size(),
+                      static_cast<size_t>(1));
+            CHECK_REFRESH(TimeFromStartHours,
+                          DATE_TIME_NO_VAR(2017, 8, 18, i, 0, 0), refreshMap);
+        }
+
+        // 18.08-23.08.2017
+        for (unsigned int i = 18; i <= 23; ++i) {
+            ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 8, i, 14, 0, 0)].size(),
+                      static_cast<size_t>(2));
+            CHECK_REFRESH(TimeFromStartHours,
+                          DATE_TIME_NO_VAR(2017, 8, i, 14, 0, 0), refreshMap);
+            CHECK_REFRESH(TimeFromStartDays,
+                          DATE_TIME_NO_VAR(2017, 8, i, 14, 0, 0), refreshMap);
+        }
+
+        // 24.08.2017 14h00
+        ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 8, 24, 14, 0, 0)].size(),
+                  static_cast<size_t>(3));
+        CHECK_REFRESH(TimeFromStartHours,
+                      DATE_TIME_NO_VAR(2017, 8, 24, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartDays,
+                      DATE_TIME_NO_VAR(2017, 8, 24, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartWeeks,
+                      DATE_TIME_NO_VAR(2017, 8, 24, 14, 0, 0), refreshMap);
+
+        // 24.08.2017 15h00 - 24.08.2017 13h00
+        for (unsigned int i = 15; i <= 23; ++i) {
+            ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 8, 24, i, 0, 0)].size(),
+                      static_cast<size_t>(1));
+            CHECK_REFRESH(TimeFromStartHours,
+                          DATE_TIME_NO_VAR(2017, 8, 24, i, 0, 0), refreshMap);
+        }
+
+        // 17.09.2017 14h00
+        ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 9, 17, 14, 0, 0)].size(),
+                  static_cast<size_t>(4));
+        CHECK_REFRESH(TimeFromStartHours,
+                      DATE_TIME_NO_VAR(2017, 9, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartDays,
+                      DATE_TIME_NO_VAR(2017, 9, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartWeeks,
+                      DATE_TIME_NO_VAR(2017, 9, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartMonths,
+                      DATE_TIME_NO_VAR(2017, 9, 17, 14, 0, 0), refreshMap);
+
+        // 17.08.2018 14h00
+        ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2018, 8, 17, 14, 0, 0)].size(),
+                  static_cast<size_t>(5));
+        CHECK_REFRESH(TimeFromStartHours,
+                      DATE_TIME_NO_VAR(2018, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartDays,
+                      DATE_TIME_NO_VAR(2018, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartWeeks,
+                      DATE_TIME_NO_VAR(2018, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartMonths,
+                      DATE_TIME_NO_VAR(2018, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartYears,
+                      DATE_TIME_NO_VAR(2018, 8, 17, 14, 0, 0), refreshMap);
+    }
+
+    // Check the refresh times for the time from the start of treatment when a
+    // treatmentStartDate is specified.
+    {
+        CovariateDefinitions cDefinitions;
+        PatientVariates pVariates;
+
+        ADD_CDEF_NO_R(TimeFromStartHours, 10, TimeFromStartInHours, Double,
+                      Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartDays, 15, TimeFromStartInDays, Double,
+                      Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartWeeks, 20, TimeFromStartInWeeks, Double,
+                      Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartMonths, 4, TimeFromStartInMonths, Double,
+                      Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartYears, 1, TimeFromStartInYears, Double,
+                      Direct, cDefinitions);
+
+        ADD_PV_NO_UNIT(
+                birthdate,
+                DATE_TIME_NO_VAR(2017, 8, 16, 14, 0, 0),
+                Date,
+                DATE_TIME_NO_VAR(2017, 8, 16, 14, 0, 0),
+                pVariates);
+
+        CovariateExtractor extractor(
+                cDefinitions,
+                pVariates,
+                DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
+                DATE_TIME_NO_VAR(2018, 9, 23, 14, 0, 0));
+        TestCovariateExtractor::test_sortPatientVariates(&extractor);
+
+        std::map<DateTime, std::vector<std::string>> refreshMap;
+        TestCovariateExtractor::test_collectRefreshIntervals(refreshMap,
+                                                             &extractor);
+
+        ASSERT_EQ(refreshMap.size(), static_cast<size_t>(403));
+        // 17.08.2017 @ 14h00 (start)
+        ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0)].size(),
+                  static_cast<size_t>(5));
+        CHECK_REFRESH(TimeFromStartHours,
+                      DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartDays,
+                      DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartWeeks,
+                      DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartMonths,
+                      DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartYears,
+                      DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), refreshMap);
+
+        // 17.08.2017 15h00 - 18.08.2017 13h00
+        for (unsigned int i = 15; i <= 23; ++i) {
+            ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 8, 17, i, 0, 0)].size(),
+                      static_cast<size_t>(1));
+            CHECK_REFRESH(TimeFromStartHours,
+                          DATE_TIME_NO_VAR(2017, 8, 17, i, 0, 0), refreshMap);
+        }
+        for (unsigned int i = 0; i <= 13; ++i) {
+            ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 8, 18, i, 0, 0)].size(),
+                      static_cast<size_t>(1));
+            CHECK_REFRESH(TimeFromStartHours,
+                          DATE_TIME_NO_VAR(2017, 8, 18, i, 0, 0), refreshMap);
+        }
+
+        // 18.08-23.08.2017
+        for (unsigned int i = 18; i <= 23; ++i) {
+            ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 8, i, 14, 0, 0)].size(),
+                      static_cast<size_t>(2));
+            CHECK_REFRESH(TimeFromStartHours,
+                          DATE_TIME_NO_VAR(2017, 8, i, 14, 0, 0), refreshMap);
+            CHECK_REFRESH(TimeFromStartDays,
+                          DATE_TIME_NO_VAR(2017, 8, i, 14, 0, 0), refreshMap);
+        }
+
+        // 24.08.2017 14h00
+        ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 8, 24, 14, 0, 0)].size(),
+                  static_cast<size_t>(3));
+        CHECK_REFRESH(TimeFromStartHours,
+                      DATE_TIME_NO_VAR(2017, 8, 24, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartDays,
+                      DATE_TIME_NO_VAR(2017, 8, 24, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartWeeks,
+                      DATE_TIME_NO_VAR(2017, 8, 24, 14, 0, 0), refreshMap);
+
+        // 24.08.2017 15h00 - 24.08.2017 13h00
+        for (unsigned int i = 15; i <= 23; ++i) {
+            ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 8, 24, i, 0, 0)].size(),
+                      static_cast<size_t>(1));
+            CHECK_REFRESH(TimeFromStartHours,
+                          DATE_TIME_NO_VAR(2017, 8, 24, i, 0, 0), refreshMap);
+        }
+
+        // 17.09.2017 14h00
+        ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 9, 17, 14, 0, 0)].size(),
+                  static_cast<size_t>(4));
+        CHECK_REFRESH(TimeFromStartHours,
+                      DATE_TIME_NO_VAR(2017, 9, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartDays,
+                      DATE_TIME_NO_VAR(2017, 9, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartWeeks,
+                      DATE_TIME_NO_VAR(2017, 9, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartMonths,
+                      DATE_TIME_NO_VAR(2017, 9, 17, 14, 0, 0), refreshMap);
+
+        // 17.08.2018 14h00
+        ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2018, 8, 17, 14, 0, 0)].size(),
+                  static_cast<size_t>(5));
+        CHECK_REFRESH(TimeFromStartHours,
+                      DATE_TIME_NO_VAR(2018, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartDays,
+                      DATE_TIME_NO_VAR(2018, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartWeeks,
+                      DATE_TIME_NO_VAR(2018, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartMonths,
+                      DATE_TIME_NO_VAR(2018, 8, 17, 14, 0, 0), refreshMap);
+        CHECK_REFRESH(TimeFromStartYears,
+                      DATE_TIME_NO_VAR(2018, 8, 17, 14, 0, 0), refreshMap);
     }
 }
 
