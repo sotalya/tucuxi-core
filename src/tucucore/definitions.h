@@ -1,21 +1,21 @@
-/* 
- * Tucuxi - Tucuxi-core library and command line tool. 
- * This code allows to perform prediction of drug concentration in blood 
+/*
+ * Tucuxi - Tucuxi-core library and command line tool.
+ * This code allows to perform prediction of drug concentration in blood
  * and to propose dosage adaptations.
- * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * It has been developed by HEIG-VD, in close collaboration with CHUV.
  * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Affero General Public License for more details. 
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -336,7 +336,6 @@ typedef Eigen::Map<const EigenVector> map2EigenVectorType;
 /// \brief Define the covariate types.
 enum class CovariateType
 {
-
     /// \brief Standard, no particular treatment of the value
     /// - if no patient variate exist -> use operation in drug model to generate a new value each time one or more
     ///                                  inputs of the operation are modified
@@ -367,13 +366,37 @@ enum class CovariateType
 
     /// \brief Automatic calculation of the dose, based on the intakes.
     /// The unit of the covariate will be used to convert the actual dose to the covariate.
-    Dose
+    Dose,
+
+    /// \brief Time from the start of the treatment, in hours.
+    /// Automatic calculation based on the treatment start date, use default
+    /// from drug model if not available.
+    TimeFromStartInHours,
+
+    /// \brief Time from the start of the treatment, in days.
+    /// Automatic calculation based on the treatment start date, use default
+    /// from drug model if not available.
+    TimeFromStartInDays,
+
+    /// \brief Time from the start of the treatment, in weeks.
+    /// Automatic calculation based on the treatment start date, use default
+    /// from drug model if not available.
+    TimeFromStartInWeeks,
+
+    /// \brief Time from the start of the treatment, in months.
+    /// Automatic calculation based on the treatment start date, use default
+    /// from drug model if not available.
+    TimeFromStartInMonths,
+
+    /// \brief Time from the start of the treatment, in years.
+    /// Automatic calculation based on the treatment start date, use default
+    /// from drug model if not available.
+    TimeFromStartInYears,
 };
 
 /// \brief Allowed data types.
 enum class DataType
 {
-
     /// An integer
     Int = 0,
 
