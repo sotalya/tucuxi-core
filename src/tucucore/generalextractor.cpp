@@ -568,8 +568,10 @@ ComputingStatus GeneralExtractor::generalExtractions(
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Population) {
 #ifdef TUCU_POPPARAMETERSFROMDEFAULTVALUES
             parametersExtractionResult = parameterExtractor.extractPopulation(_parameterSeries);
-#else // TUCU_POPPARAMETERSFROMDEFAULTVALUES \
-        //parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
+
+#else // TUCU_POPPARAMETERSFROMDEFAULTVALUES
+
+            //parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
 
             ParameterSetSeries intermediateParameterSeries;
 
