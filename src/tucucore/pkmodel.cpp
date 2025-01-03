@@ -50,11 +50,11 @@
 
 #include "intakeintervalcalculator.h"
 
-#ifdef DRUGMODELTESTS
+#ifdef TUCU_DRUGMODELTESTS
 #include "tucucore/../../test/tucucore/pkmodels/constanteliminationbolus.h"
 #include "tucucore/../../test/tucucore/pkmodels/multiconstanteliminationbolus.h"
 #include "tucucore/../../test/tucucore/pkmodels/pkasymptotic.h"
-#endif // DRUGMODELTESTS
+#endif // TUCU_DRUGMODELTESTS
 
 namespace Tucuxi {
 namespace Core {
@@ -887,7 +887,7 @@ bool defaultPopulate(PkModelCollection& _collection)
     }
 
 
-#ifdef DRUGMODELTESTS
+#ifdef TUCU_DRUGMODELTESTS
     {
         std::shared_ptr<PkModel> sharedPkModel;
         sharedPkModel = std::make_shared<PkModel>("test.constantelimination");
@@ -921,7 +921,7 @@ bool defaultPopulate(PkModelCollection& _collection)
 
         _collection.addPkModel(sharedPkModel);
     }
-#endif // DRUGMODELTESTS
+#endif // TUCU_DRUGMODELTESTS
 
     return rc;
 }

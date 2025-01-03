@@ -53,7 +53,7 @@ void XMLImporter::unexpectedTag(const std::string& _tagName)
 
 void XMLImporter::setStatus(Status _status, const string& _errorMessage)
 {
-#ifdef EASY_DEBUG
+#ifdef TUCU_EASY_DEBUG
     // Totally unuseful test, but good to add a breakpoint in the else during debugging
     if (_status == Status::Ok) { // NOLINT(bugprone-branch-clone)
         m_status = _status;
@@ -63,7 +63,7 @@ void XMLImporter::setStatus(Status _status, const string& _errorMessage)
     }
 #else
     m_status = _status;
-#endif // EASY_DEBUG
+#endif // TUCU_EASY_DEBUG
     m_errorMessage += _errorMessage + "\n";
 }
 

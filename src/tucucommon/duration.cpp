@@ -30,7 +30,7 @@ namespace Tucuxi {
 namespace Common {
 
 
-#ifdef EASY_DEBUG
+#ifdef TUCU_TIME_DEBUG
 void Duration::updateDurationString()
 {
     std::stringstream str;
@@ -45,7 +45,7 @@ void Duration::updateDurationString()
 
 #else
 #define UPDATESTRING
-#endif // EASY_DEBUG
+#endif // TUCU_TIME_DEBUG
 
 
 Duration::Duration() : m_duration(std::chrono::duration<ChronoBaseType>::zero())

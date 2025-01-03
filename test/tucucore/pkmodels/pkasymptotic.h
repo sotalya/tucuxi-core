@@ -178,7 +178,7 @@ protected:
         m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
         m_Int = static_cast<int>((_intakeEvent.getInterval()).toHours());
 
-#ifdef DEBUG
+#ifdef TUCU_INTAKECALCULATOR_VERBOSE
         Tucuxi::Common::LoggerHelper logHelper;
 
         logHelper.debug("<<Input Values>>");
@@ -186,7 +186,7 @@ protected:
         logHelper.debug("m_T: {}", m_TPeak);
         logHelper.debug("m_nbPoints: {}", m_nbPoints);
         logHelper.debug("m_Int: {}", m_Int);
-#endif
+#endif // TUCU_INTAKECALCULATOR_VERBOSE
 
         // check the inputs
         bool bOK = true;

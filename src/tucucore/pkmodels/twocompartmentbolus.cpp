@@ -31,10 +31,6 @@
 namespace Tucuxi {
 namespace Core {
 
-#if 0
-#define DEBUG
-#endif
-
 TwoCompartmentBolusMicro::TwoCompartmentBolusMicro()
     : IntakeIntervalCalculatorBase<2, TwoCompartmentBolusExponentials>(
             std::make_unique<PertinentTimesCalculatorStandard>())
@@ -77,7 +73,7 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
 
-#ifdef DEBUG
+#ifdef TUCU_INTAKECALCULATOR_VERBOSE
     Tucuxi::Common::LoggerHelper logHelper;
 
     logHelper.debug("<<Input Values>>");
@@ -90,7 +86,7 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     logHelper.debug("m_Int: {}", m_Int);
     logHelper.debug("m_Alpha: {}", m_Alpha);
     logHelper.debug("m_Beta: {}", m_Beta);
-#endif
+#endif // TUCU_INTAKECALCULATOR_VERBOSE
 
     return bOK;
 }
@@ -204,7 +200,7 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_Alpha = (sumK + m_RootK) / 2;
     m_Beta = (sumK - m_RootK) / 2;
 
-#ifdef DEBUG
+#ifdef TUCU_INTAKECALCULATOR_VERBOSE
     Tucuxi::Common::LoggerHelper logHelper;
 
     logHelper.debug("<<Input Values>>");
@@ -218,7 +214,7 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     logHelper.debug("m_K21: {}", m_K21);
     logHelper.debug("m_nbPoints: {}", m_nbPoints);
     logHelper.debug("m_Int: {}", m_Int);
-#endif
+#endif // TUCU_INTAKECALCULATOR_VERBOSE
 
     // check the inputs
     bool bOK = checkPositiveValue(m_D, "The dose");
@@ -264,7 +260,7 @@ bool TwoCompartmentBolusMacroRatios::checkInputs(const IntakeEvent& _intakeEvent
     m_Alpha = (sumK + m_RootK) / 2;
     m_Beta = (sumK - m_RootK) / 2;
 
-#ifdef DEBUG
+#ifdef TUCU_INTAKECALCULATOR_VERBOSE
     Tucuxi::Common::LoggerHelper logHelper;
 
     logHelper.debug("<<Input Values>>");
@@ -278,7 +274,7 @@ bool TwoCompartmentBolusMacroRatios::checkInputs(const IntakeEvent& _intakeEvent
     logHelper.debug("m_K21: {}", m_K21);
     logHelper.debug("m_nbPoints: {}", m_nbPoints);
     logHelper.debug("m_Int: {}", m_Int);
-#endif
+#endif // TUCU_INTAKECALCULATOR_VERBOSE
 
     // check the inputs
     bool bOK = checkPositiveValue(m_D, "The dose");
