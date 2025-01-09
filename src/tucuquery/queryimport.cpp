@@ -22,6 +22,7 @@
 
 #include "queryimport.h"
 
+#include "tucucommon/loggerhelper.h"
 #include "tucucommon/utils.h"
 #include "tucucommon/xmlattribute.h"
 #include "tucucommon/xmldocument.h"
@@ -894,6 +895,10 @@ Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(
     Tucuxi::Core::PercentileRanks ranks;
     while (it != Common::XmlNodeIterator::none()) {
         Tucuxi::Core::PercentileRank rank = extractDouble(it);
+        if (rank > Core::PERCENTILE_RANK_MAX || rank < Core::PERCENTILE_RANK_MIN) {
+            setNodeError(it);
+            break;
+        }
         ranks.push_back(rank);
         it++;
     }

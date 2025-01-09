@@ -31,6 +31,7 @@ file(GLOB TUCUTESTQUERY_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/gtest_mod202.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_query.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_query1comp.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/gtest_queryimport.cpp
 )
 
 add_executable(tucutestquery ${TUCUTESTQUERY_HEADER_FILES} ${TUCUTESTQUERY_SOURCE_FILES})

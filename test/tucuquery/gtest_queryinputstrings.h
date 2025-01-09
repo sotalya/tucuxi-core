@@ -745,5 +745,151 @@ static const std::string tqf = R"(<?xml version='1.0' ?>
 </query>)";
 
 
+static const std::string tqf_invalid_rank = R"(<?xml version='1.0' ?>
+<query version='1.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='xml_query.xsd'>
+	<queryId>2_ch.tucuxi.virtualdrug.mod1</queryId>
+	<clientId>2</clientId>
+	<date>2023-09-13T10:53:20</date>
+	<!-- Date the xml has been sent -->
+	<language>en</language>
+	<drugTreatment>
+		<!-- All the information regarding the patient -->
+		<patient>
+			<covariates>
+				<covariate>
+					<covariateId>birthdate</covariateId>
+					<date>2023-01-01T00:00:00</date>
+					<value>2023-01-01T00:00:00</value>
+					<unit/>
+					<dataType>date</dataType>
+					<nature>discrete</nature>
+				</covariate>
+				<covariate>
+					<covariateId>sampling_group</covariateId>
+					<date>2023-01-01T00:00:00</date>
+					<value>1</value>
+					<unit/>
+					<dataType>int</dataType>
+					<nature>discrete</nature>
+				</covariate>
+			</covariates>
+		</patient>
+		<!-- List of the drugs informations we have concerning the patient -->
+		<drugs>
+			<!-- All the information regarding the drug -->
+			<drug>
+				<drugId>virtualdrug</drugId>
+				<activePrinciple>virtualdrug</activePrinciple>
+				<brandName/>
+				<atc/>
+				<!-- All the information regarding the treatment -->
+				<treatment>
+					<dosageHistory>
+						<dosageTimeRange>
+							<start>2023-01-01T08:00:00</start>
+							<end>2023-01-02T08:00:00</end>
+							<dosage>
+								<dosageLoop>
+									<lastingDosage>
+										<interval>24:0:0</interval>
+										<dose>
+											<value>120</value>
+											<unit>mg</unit>
+											<infusionTimeInMinutes>60.0</infusionTimeInMinutes>
+										</dose>
+										<formulationAndRoute>
+											<formulation>oralSolution</formulation>
+											<administrationName>foo bar</administrationName>
+											<administrationRoute>oral</administrationRoute>
+											<absorptionModel>extra</absorptionModel>
+										</formulationAndRoute>
+									</lastingDosage>
+								</dosageLoop>
+							</dosage>
+						</dosageTimeRange>
+					</dosageHistory>
+				</treatment>"
+                    R"(
+				<!-- Samples history -->
+				<samples>
+					<sample>
+						<sampleId>c1</sampleId>
+						<sampleDate>2023-01-01T09:00:00</sampleDate>
+						<concentrations>
+							<concentration>
+								<analyteId>virtualdrug</analyteId>
+								<value>2415.5</value>
+								<unit>ug/l</unit>
+							</concentration>
+						</concentrations>
+					</sample>
+					<sample>
+						<sampleId>c1</sampleId>
+						<sampleDate>2023-01-01T12:00:00</sampleDate>
+						<concentrations>
+							<concentration>
+								<analyteId>virtualdrug</analyteId>
+								<value>2288.7</value>
+								<unit>ug/l</unit>
+							</concentration>
+						</concentrations>
+					</sample>
+					<sample>
+						<sampleId>c1</sampleId>
+						<sampleDate>2023-01-01T16:00:00</sampleDate>
+						<concentrations>
+							<concentration>
+								<analyteId>virtualdrug</analyteId>
+								<value>1157.0</value>
+								<unit>ug/l</unit>
+							</concentration>
+						</concentrations>
+					</sample>
+					<sample>
+						<sampleId>c1</sampleId>
+            <sampleDate>2023-01-02T08:00:00</sampleDate>
+						<concentrations>
+							<concentration>
+								<analyteId>virtualdrug</analyteId>
+								<value>68.782</value>
+								<unit>ug/l</unit>
+							</concentration>
+						</concentrations>
+					</sample>
+				</samples>
+			</drug>
+		</drugs>
+	</drugTreatment>"
+                  R"(
+	<!-- List of the requests we want the server to take care of -->
+	<requests>
+		<request>
+		    <requestId>ch.tucuxi.virtualdrug.mod1.stats</requestId>
+		    <drugId>virtualdrug</drugId>
+		    <drugModelId>ch.tucuxi.virtualdrug.mod1</drugModelId>
+                    <percentilesTraits>
+                      <computingOption>
+                        <parametersType>apriori</parametersType>
+                        <compartmentOption>allActiveMoieties</compartmentOption>
+                        <retrieveStatistics>true</retrieveStatistics>
+                        <retrieveParameters>true</retrieveParameters>
+                        <retrieveCovariates>true</retrieveCovariates>
+                      </computingOption>
+                      <nbPointsPerHour>20</nbPointsPerHour>
+                      <dateInterval>
+                          <start>2018-07-06T08:00:00</start>
+                          <end>2018-07-08T08:00:00</end>
+                      </dateInterval>
+                      <ranks>
+                          <rank>-10</rank>
+                          <rank>-1</rank>
+                          <rank>101</rank>
+                          <rank>5000</rank>
+                      </ranks>
+                    </percentilesTraits>
+		</request>
+	</requests>
+</query>)";
+
 
 #endif // GTEST_QUERYINPUTSTRINGS_H
