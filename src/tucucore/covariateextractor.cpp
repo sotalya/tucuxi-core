@@ -1,21 +1,21 @@
-/* 
- * Tucuxi - Tucuxi-core library and command line tool. 
- * This code allows to perform prediction of drug concentration in blood 
+/*
+ * Tucuxi - Tucuxi-core library and command line tool.
+ * This code allows to perform prediction of drug concentration in blood
  * and to propose dosage adaptations.
- * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * It has been developed by HEIG-VD, in close collaboration with CHUV.
  * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Affero General Public License for more details. 
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -50,10 +50,22 @@ CovariateExtractor::CovariateExtractor(
         const CovariateDefinitions& _defaults,
         const PatientVariates& _patientCovariates,
         const DateTime& _start,
-        const DateTime& _end)
-    : ICovariateExtractor(_defaults, _patientCovariates, _start, _end), m_hasBirthDate{false},
-      m_birthDate(DateTime::undefinedDateTime()), m_initAgeInDays{-1.0}, m_initAgeInWeeks{-1.0},
-      m_initAgeInMonths{-1.0}, m_initAgeInYears{-1.0}
+        const DateTime& _end,
+        const DosageHistory& _dosageHistory)
+    : ICovariateExtractor(_defaults, _patientCovariates, _start, _end),
+      m_hasBirthDate{false},
+      m_birthDate(DateTime::undefinedDateTime()),
+      m_initAgeInDays{-1.0},
+      m_initAgeInWeeks{-1.0},
+      m_initAgeInMonths{-1.0},
+      m_initAgeInYears{-1.0},
+      m_hasStartOfTreatmentDate{false},
+      m_startOfTreatmentDate(DateTime::undefinedDateTime()),
+      m_initTimeFromStartInHours{-1.0},
+      m_initTimeFromStartInDays{-1.0},
+      m_initTimeFromStartInWeeks{-1.0},
+      m_initTimeFromStartInMonths{-1.0},
+      m_initTimeFromStartInYears{-1.0}
 {
     // *** Verify preconditions ***
     // Invalid ptrs in covariate definitions.
@@ -131,6 +143,61 @@ CovariateExtractor::CovariateExtractor(
                 }
                 m_initAgeInYears = (*it)->getValue();
                 break;
+            case CovariateType::TimeFromStartInHours:
+                if (m_initTimeFromStartInHours >= 0) {
+                    throw std::runtime_error("[CovariateExtractor] Too many TimeFromStartInHours-type covariates");
+                }
+                if ((*it)->getValue() < 0) {
+                    throw std::runtime_error(
+                            "[CovariateExtractor] Invalid default value (" + std::to_string((*it)->getValue())
+                            + ") for the time from the start of treatment in hours.");
+                }
+                m_initTimeFromStartInHours = (*it)->getValue();
+                break;
+            case CovariateType::TimeFromStartInDays:
+                if (m_initTimeFromStartInDays >= 0) {
+                    throw std::runtime_error("[CovariateExtractor] Too many TimeFromStartInDays-type covariates");
+                }
+                if ((*it)->getValue() < 0) {
+                    throw std::runtime_error(
+                            "[CovariateExtractor] Invalid default value (" + std::to_string((*it)->getValue())
+                            + ") for the time from the start of treatment in days.");
+                }
+                m_initTimeFromStartInDays = (*it)->getValue();
+                break;
+            case CovariateType::TimeFromStartInWeeks:
+                if (m_initTimeFromStartInWeeks >= 0) {
+                    throw std::runtime_error("[CovariateExtractor] Too many TimeFromStartInWeeks-type covariates");
+                }
+                if ((*it)->getValue() < 0) {
+                    throw std::runtime_error(
+                            "[CovariateExtractor] Invalid default value (" + std::to_string((*it)->getValue())
+                            + ") for the time from the start of treatment in weeks.");
+                }
+                m_initTimeFromStartInWeeks = (*it)->getValue();
+                break;
+            case CovariateType::TimeFromStartInMonths:
+                if (m_initTimeFromStartInMonths >= 0) {
+                    throw std::runtime_error("[CovariateExtractor] Too many TimeFromStartInMonths-type covariates");
+                }
+                if ((*it)->getValue() < 0) {
+                    throw std::runtime_error(
+                            "[CovariateExtractor] Invalid default value (" + std::to_string((*it)->getValue())
+                            + ") for the time from the start of treatment in Months.");
+                }
+                m_initTimeFromStartInMonths = (*it)->getValue();
+                break;
+            case CovariateType::TimeFromStartInYears:
+                if (m_initTimeFromStartInYears >= 0) {
+                    throw std::runtime_error("[CovariateExtractor] Too many TimeFromStartInYears-type covariates");
+                }
+                if ((*it)->getValue() < 0) {
+                    throw std::runtime_error(
+                            "[CovariateExtractor] Invalid default value (" + std::to_string((*it)->getValue())
+                            + ") for the time from the start of treatment in years.");
+                }
+                m_initTimeFromStartInYears = (*it)->getValue();
+                break;
             default:
                 throw std::runtime_error(
                         "[CovariateExtractor] Invalid covariate type ("
@@ -150,8 +217,7 @@ CovariateExtractor::CovariateExtractor(
         // If we cannot find a corresponding covariate definition or if it is a non-standard type, we can safely drop a
         // patient variate.
         // We also drop it if it is empty. It won't generate an error though.
-        if (m_cdValued.find((*it)->getId()) != m_cdValued.end()
-            && (!(*it)->getValue().empty())
+        if (m_cdValued.find((*it)->getId()) != m_cdValued.end() && (!(*it)->getValue().empty())
             && ((*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Standard
                 || (*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Sex
                 || (*m_cdValued.at((*it)->getId()))->getType() == CovariateType::Dose)) {
@@ -171,6 +237,12 @@ CovariateExtractor::CovariateExtractor(
             }
         }
     }
+
+    // If there was a dosage administered, then get the start of treatment date.
+    m_hasStartOfTreatmentDate =
+        _dosageHistory.getStartOfTreatment(m_startOfTreatmentDate);
+
+
     /*
     // If a birth date is present, then set it.
     if (m_cdValued.find(sm_birthDateCName) != m_cdValued.end()) {
@@ -409,11 +481,14 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
     for (const auto& cdv : m_cdValued) {
         Duration refreshInterval;
         refreshInterval = (*(cdv.second))->getRefreshPeriod();
-        if (((*(cdv.second))->getInterpolationType() != InterpolationType::Direct) && (!refreshInterval.isEmpty())) {
+        if (((*(cdv.second))->getInterpolationType() != InterpolationType::Direct) &&
+            (!refreshInterval.isEmpty())) {
             // When we have a refresh interval set, use it and ignore the patient variates.
             for (DateTime t = m_start; t <= m_end; t += refreshInterval) {
                 if (_refreshMap.find(t) == _refreshMap.end()) {
-                    _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));
+                    _refreshMap.insert(std::pair<DateTime,
+                                       std::vector<std::string>>(t,
+                                                                 std::vector<std::string>()));
                 }
                 _refreshMap.at(t).push_back(cdv.first);
             }
@@ -425,8 +500,13 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
             // - if only a single value, then move it to the start.
             // - if more values, then add start (if not already there) and those in the (start, end] interval.
             // # ages #
-            // - if a covariate named m_birthDateCName is present, then use it to set the refresh dates.
+            // - if a covariate named m_birthDate is present, then use it to set
+            //   the refresh dates.
             // - else use the start interval and the type to set them.
+            // # treatment start date #
+            // - use the start of treatment date (from the dosage history) to set
+            //   the refresh dates if such a date is present
+            // - otherwise, use the default value from the drug file.
             if (((*(cdv.second))->getType() == CovariateType::Standard)
                 || ((*(cdv.second))->getType() == CovariateType::Sex)
                 || ((*(cdv.second))->getType() == CovariateType::Dose)) {
@@ -452,46 +532,108 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
                 }
             }
             else {
-                DateTime startDate = m_start;
-                if (m_hasBirthDate) {
-                    startDate = m_birthDate;
-                }
+                if (((*(cdv.second))->getType() == CovariateType::AgeInDays)
+                    || ((*(cdv.second))->getType() == CovariateType::AgeInWeeks)
+                    || ((*(cdv.second))->getType() == CovariateType::AgeInMonths)
+                    || ((*(cdv.second))->getType() == CovariateType::AgeInYears)) {
 
-                DateTime t = startDate;
-                while (t <= m_end) {
-                    if (t >= m_start) {
-                        if (_refreshMap.find(t) == _refreshMap.end()) {
-                            _refreshMap.insert(
-                                    std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));
+                    DateTime startDate = m_start;
+                    if (m_hasBirthDate) {
+                        startDate = m_birthDate;
+                    }
+
+                    DateTime t = startDate;
+                    while (t <= m_end) {
+                        if (t >= m_start) {
+                            if (_refreshMap.find(t) == _refreshMap.end()) {
+                                _refreshMap.insert(
+                                                   std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));
+                            }
+                            _refreshMap.at(t).push_back(cdv.first);
                         }
-                        _refreshMap.at(t).push_back(cdv.first);
+                        switch ((*(cdv.second))->getType()) {
+                        case CovariateType::AgeInDays:
+                            t.addDays(1);
+                            break;
+                        case CovariateType::AgeInWeeks:
+                            t.addDays(7);
+                            break;
+                        case CovariateType::AgeInMonths:
+                            t.addMonths(1);
+                            break;
+                        case CovariateType::AgeInYears:
+                            t.addYears(1);
+                            break;
+                        default:
+                            break;
+                        }
                     }
-                    switch ((*(cdv.second))->getType()) {
-                    case CovariateType::AgeInDays:
-                        t.addDays(1);
-                        break;
-                    case CovariateType::AgeInWeeks:
-                        t.addDays(7);
-                        break;
-                    case CovariateType::AgeInMonths:
-                        t.addMonths(1);
-                        break;
-                    case CovariateType::AgeInYears:
-                        t.addYears(1);
-                        break;
-                    default:
-                        break;
-                    }
-                }
 
-                // The age has still to be computed at the start time, so we add it there if this is not the case.
-                if (_refreshMap.find(m_start) == _refreshMap.end()) {
-                    _refreshMap.insert(
-                            std::pair<DateTime, std::vector<std::string>>(m_start, std::vector<std::string>()));
-                }
-                if (std::find(_refreshMap.at(m_start).begin(), _refreshMap.at(m_start).end(), cdv.first)
-                    == _refreshMap.at(m_start).end()) {
-                    _refreshMap.at(m_start).push_back(cdv.first);
+                    // The age has still to be computed at the start time, so we
+                    // add it there if this is not the case.
+                    if (_refreshMap.find(m_start) == _refreshMap.end()) {
+                        _refreshMap.insert(std::pair<DateTime,
+                                           std::vector<std::string>>(m_start,
+                                                                     std::vector<std::string>()));
+                    }
+                    if (std::find(_refreshMap.at(m_start).begin(),
+                                  _refreshMap.at(m_start).end(), cdv.first)
+                        == _refreshMap.at(m_start).end()) {
+                        _refreshMap.at(m_start).push_back(cdv.first);
+                    }
+                } else {
+                    if (((*(cdv.second))->getType() == CovariateType::TimeFromStartInHours)
+                        || ((*(cdv.second))->getType() == CovariateType::TimeFromStartInDays)
+                        || ((*(cdv.second))->getType() == CovariateType::TimeFromStartInWeeks)
+                        || ((*(cdv.second))->getType() == CovariateType::TimeFromStartInMonths)
+                        || ((*(cdv.second))->getType() == CovariateType::TimeFromStartInYears)) {
+
+                        DateTime t = m_startOfTreatmentDate;
+                        while (t <= m_end) {
+                            if (t >= m_start) {
+                                if (_refreshMap.find(t) == _refreshMap.end()) {
+                                    _refreshMap.insert(std::pair<DateTime,
+                                                       std::vector<std::string>>(t,
+                                                                                 std::vector<std::string>()));
+                                }
+                                _refreshMap.at(t).push_back(cdv.first);
+                            }
+                            switch ((*(cdv.second))->getType()) {
+                            case CovariateType::TimeFromStartInHours:
+                                t.addHours(1);
+                                break;
+                            case CovariateType::TimeFromStartInDays:
+                                t.addDays(1);
+                                break;
+                            case CovariateType::TimeFromStartInWeeks:
+                                t.addDays(7);
+                                break;
+                            case CovariateType::TimeFromStartInMonths:
+                                t.addMonths(1);
+                                break;
+                            case CovariateType::TimeFromStartInYears:
+                                t.addYears(1);
+                                break;
+                            default:
+                                break;
+                            }
+                        }
+
+                        // The time from the treatment start has still to be
+                        // computed at the start time, so we add it there if this
+                        // is not the case.
+                        if (_refreshMap.find(m_start) == _refreshMap.end()) {
+                            _refreshMap.insert(
+                                               std::pair<DateTime,
+                                               std::vector<std::string>>(m_start,
+                                                                         std::vector<std::string>()));
+                        }
+                        if (std::find(_refreshMap.at(m_start).begin(),
+                                      _refreshMap.at(m_start).end(), cdv.first)
+                            == _refreshMap.at(m_start).end()) {
+                            _refreshMap.at(m_start).push_back(cdv.first);
+                        }
+                    }
                 }
             }
         }

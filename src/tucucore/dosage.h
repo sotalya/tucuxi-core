@@ -1115,9 +1115,25 @@ public:
         return m_history[_index].get();
     }
 
-    size_t getNumberOfTimeRanges()
+    size_t getNumberOfTimeRanges() const
     {
         return m_history.size();
+    }
+
+    /// \brief Getter for the first date in the dosage history.
+    /// \param _startOfTreatment Output variable holding the date of the start of
+    ///                          treatment (if at least a dosage is present)
+    /// \return True if at least a dosage is present (and, therefore, the start
+    ///         of treatment date is a valid one), false otherwise.
+    [[nodiscard]]
+    bool getStartOfTreatment(DateTime &_startOfTreatment) const
+    {
+        if (getNumberOfTimeRanges() == 0) {
+            return false;
+        }
+
+        _startOfTreatment = m_history[0].get()->getStartDate();
+        return true;
     }
 
 private:

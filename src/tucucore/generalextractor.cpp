@@ -335,13 +335,8 @@ ComputingStatus GeneralExtractor::generalExtractions(
 
     size_t nIntakes = intakeSeries.size();
 
-    std::cout << "nIntakes: " << nIntakes << "\n";
 
     if (nIntakes > 0) {
-
-        std::cout << "First event time: "
-                  << intakeSeries[0].getEventTime() << "\n";
-
         // Check the fantom start. Set the calculation start time
         // to the first intake of the dosage history at earliest
         if (fantomStart < _dosageHistory.getDosageTimeRanges()[0]->getStartDate()) {
@@ -492,7 +487,10 @@ ComputingStatus GeneralExtractor::generalExtractions(
                 }
             }
             CovariateExtractor covariateExtractor(
-                    _drugModel.getCovariates(), emptyPatientVariates, fantomStart, _traits->getEnd());
+                    _drugModel.getCovariates(),
+                    emptyPatientVariates,
+                    fantomStart, _traits->getEnd(),
+                    _dosageHistory);
             ComputingStatus covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
 
             if (covariateExtractionResult != ComputingStatus::Ok) {
@@ -522,7 +520,10 @@ ComputingStatus GeneralExtractor::generalExtractions(
                 endDate = _covariateEndTime;
             }
             CovariateExtractor covariateExtractor(
-                    _drugModel.getCovariates(), patientVariatesList, fantomStart, _traits->getEnd());
+                    _drugModel.getCovariates(),
+                    patientVariatesList,
+                    fantomStart, _traits->getEnd(),
+                    _dosageHistory);
             ComputingStatus covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
 
             if (covariateExtractionResult != ComputingStatus::Ok) {
