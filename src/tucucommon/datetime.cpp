@@ -493,6 +493,11 @@ double DateTime::toDays() const
     return std::floor(static_cast<double>(get<std::chrono::hours>().count()) / 24);
 }
 
+double DateTime::toHours() const
+{
+    CHECKDEFINED;
+    return std::floor(static_cast<double>(get<std::chrono::hours>().count()));
+}
 
 DateTime DateTime::maximumDateTime()
 {

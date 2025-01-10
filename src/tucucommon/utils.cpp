@@ -28,6 +28,7 @@ namespace Common {
 using namespace Tucuxi::Core;
 using Tucuxi::Core::Value;
 
+
 std::string Utils::getAppFolder(char** _argv)
 {
     std::string::size_type found = std::string(_argv[0]).find_last_of("/\\");
@@ -36,6 +37,24 @@ std::string Utils::getAppFolder(char** _argv)
     }
     std::string appFolder = std::string(_argv[0]).substr(0, found);
     return appFolder;
+}
+
+
+int Utils::dateDiffInHours(const DateTime& _t1, const DateTime& _t2)
+{
+    DateTime t1;
+    DateTime t2;
+
+    if (_t1 > _t2) {
+        t1 = _t1;
+        t2 = _t2;
+    }
+    else {
+        t1 = _t2;
+        t2 = _t1;
+    }
+    // return static_cast<int>((t1 - t2).toHours());
+    return static_cast<int>(ValueToDate(varToValue(t1) - varToValue(t2)).toHours());
 }
 
 
@@ -52,9 +71,10 @@ int Utils::dateDiffInDays(const DateTime& _t1, const DateTime& _t2)
         t1 = _t2;
         t2 = _t1;
     }
-    return static_cast<int>((t1 - t2).toDays());
+    // return static_cast<int>((t1 - t2).toDays());
     return static_cast<int>(ValueToDate(varToValue(t1) - varToValue(t2)).toDays());
 }
+
 
 int Utils::dateDiffInWeeks(const DateTime& _t1, const DateTime& _t2)
 {
@@ -69,7 +89,7 @@ int Utils::dateDiffInWeeks(const DateTime& _t1, const DateTime& _t2)
         t1 = _t2;
         t2 = _t1;
     }
-    return static_cast<int>((t1 - t2).toDays() / 7.0);
+    // return static_cast<int>((t1 - t2).toDays() / 7.0);
     return static_cast<int>(ValueToDate(varToValue(t1) - varToValue(t2)).toDays() / 7.0);
 }
 

@@ -99,7 +99,7 @@ public:
             const PatientVariates& _patientCovariates,
             const DateTime& _start,
             const DateTime& _end,
-            const DosageHistory& _dosageHistory);
+            const DosageHistory& _dosageHistory = DosageHistory());
 
     /// \brief Default destructor for the Covariate Extractor.
     ~CovariateExtractor() override = default;

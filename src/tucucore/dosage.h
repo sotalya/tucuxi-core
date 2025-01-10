@@ -1057,7 +1057,6 @@ public:
     }
 
 
-
     /// \brief Add a time range to the history. This method
     ///        guarantees that the time ranges are sorted by
     ///        start date.

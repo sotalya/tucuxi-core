@@ -232,6 +232,10 @@ public:
     /// \return The number of seconds representing the duration.
     double toSeconds() const;
 
+    /// \brief Convert a date in hours.
+    /// \return Number of hours representing the duration.
+    double toHours() const;
+
     /// \brief Convert a date in days.
     /// \return Number of days representing the duration.
     double toDays() const;
