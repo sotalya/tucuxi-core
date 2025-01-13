@@ -128,9 +128,17 @@ public:
     /// \param _nMonths The number of months to be added
     void addMonths(int _nMonths);
 
+    /// \brief Subtract the specified number of months to the date.
+    /// \param _nMonths The number of months to be subtracted
+    void subMonths(int _nMonths);
+
     /// \brief Add the specified number of days to the date.
     /// \param _nDays The number of days to be added
     void addDays(int _nDays);
+
+    /// \brief Add the specified number of hours to the date.
+    /// \param _nHours The number of hours to be added
+    void addHours(int _nHours);
 
     /// \brief Return a new DateTime object with the addition of the date and the specified duration.
     /// \param _duration The duration to be added.
@@ -223,6 +231,10 @@ public:
     /// \brief Retrieve the duration as a number of seconds.
     /// \return The number of seconds representing the duration.
     double toSeconds() const;
+
+    /// \brief Convert a date in hours.
+    /// \return Number of hours representing the duration.
+    double toHours() const;
 
     /// \brief Convert a date in days.
     /// \return Number of days representing the duration.

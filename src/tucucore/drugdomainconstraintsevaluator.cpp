@@ -24,6 +24,7 @@
 
 #include "tucucore/covariateevent.h"
 #include "tucucore/covariateextractor.h"
+#include "tucucore/dosage.h"
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugmodel/drugmodeldomain.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
@@ -49,7 +50,10 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
     CovariateSeries covariateSeries;
 
 
-    CovariateExtractor extractor(_drugModel.getCovariates(), _drugTreatment.getCovariates(), _start, _end);
+    CovariateExtractor extractor(_drugModel.getCovariates(),
+                                 _drugTreatment.getCovariates(),
+                                 _start, _end,
+                                 DosageHistory());
 
     auto status = extractor.extract(covariateSeries);
     if (status != ComputingStatus::Ok) {

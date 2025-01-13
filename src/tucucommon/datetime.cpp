@@ -276,10 +276,33 @@ void DateTime::addMonths(int _nMonths)
 }
 
 
+void DateTime::subMonths(int _nMonths)
+{
+    CHECKDEFINED;
+    date::year_month_day curDate = DateTime::getDate();
+    TimeOfDay t = getTimeOfDay();
+    int nMonths = year() * 12 + month() + _nMonths;
+    int nYears = nMonths / 12;
+    nMonths = nMonths % 12;
+    m_date = date::sys_days(
+            date::year_month_day(date::year(nYears), date::month(static_cast<unsigned int>(nMonths)), curDate.day()));
+    m_date -= std::chrono::milliseconds(t.getDuration());
+    UPDATESTRING;
+}
+
+
 void DateTime::addDays(int _nDays)
 {
     CHECKDEFINED;
     m_date += std::chrono::hours(_nDays * 24);
+    UPDATESTRING;
+}
+
+
+void DateTime::addHours(int _nHours)
+{
+    CHECKDEFINED;
+    m_date += std::chrono::hours(_nHours);
     UPDATESTRING;
 }
 
@@ -470,11 +493,20 @@ double DateTime::toDays() const
     return std::floor(static_cast<double>(get<std::chrono::hours>().count()) / 24);
 }
 
+double DateTime::toHours() const
+{
+    CHECKDEFINED;
+    return std::floor(static_cast<double>(get<std::chrono::hours>().count()));
+}
 
 DateTime DateTime::maximumDateTime()
 {
     DateTime result;
     result.m_date = std::chrono::time_point<std::chrono::system_clock>::max();
+    result.m_isDefined = true;
+#ifdef EASY_DEBUG
+    result.updateString();
+#endif // EASY_DEBUG
     return result;
 }
 
@@ -482,6 +514,10 @@ DateTime DateTime::minimumDateTime()
 {
     DateTime result;
     result.m_date = std::chrono::time_point<std::chrono::system_clock>::min();
+    result.m_isDefined = true;
+#ifdef EASY_DEBUG
+    result.updateString();
+#endif // EASY_DEBUG
     return result;
 }
 
