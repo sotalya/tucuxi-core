@@ -1,21 +1,21 @@
-/* 
- * Tucuxi - Tucuxi-core library and command line tool. 
- * This code allows to perform prediction of drug concentration in blood 
+/*
+ * Tucuxi - Tucuxi-core library and command line tool.
+ * This code allows to perform prediction of drug concentration in blood
  * and to propose dosage adaptations.
- * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * It has been developed by HEIG-VD, in close collaboration with CHUV.
  * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Affero General Public License for more details. 
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -53,8 +53,7 @@ int Utils::dateDiffInHours(const DateTime& _t1, const DateTime& _t2)
         t1 = _t2;
         t2 = _t1;
     }
-    // return static_cast<int>((t1 - t2).toHours());
-    return static_cast<int>(ValueToDate(varToValue(t1) - varToValue(t2)).toHours());
+    return static_cast<int>((t1 - t2).toHours());
 }
 
 
@@ -71,8 +70,7 @@ int Utils::dateDiffInDays(const DateTime& _t1, const DateTime& _t2)
         t1 = _t2;
         t2 = _t1;
     }
-    // return static_cast<int>((t1 - t2).toDays());
-    return static_cast<int>(ValueToDate(varToValue(t1) - varToValue(t2)).toDays());
+    return static_cast<int>((t1 - t2).toDays());
 }
 
 
@@ -89,8 +87,7 @@ int Utils::dateDiffInWeeks(const DateTime& _t1, const DateTime& _t2)
         t1 = _t2;
         t2 = _t1;
     }
-    // return static_cast<int>((t1 - t2).toDays() / 7.0);
-    return static_cast<int>(ValueToDate(varToValue(t1) - varToValue(t2)).toDays() / 7.0);
+    return static_cast<int>((t1 - t2).toDays() / 7.0);
 }
 
 
