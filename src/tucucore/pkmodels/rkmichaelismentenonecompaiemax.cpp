@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "rkmichaelismentenaiemax.h"
+#include "rkmichaelismentenonecompaiemax.h"
 
 #include "tucucore/intakeevent.h"
 
@@ -27,26 +27,26 @@ namespace Tucuxi {
 namespace Core {
 
 
-std::vector<std::string> RkMichaelisMentenAiEmax::getParametersId()
+std::vector<std::string> RkMichaelisMentenOneCompAiEmax::getParametersId()
 {
     return {"V", "Vmax", "F", "Km", "Ka", "Emax", "t50", "tfs"};
 }
 
 
-std::vector<std::string> RkMichaelisMentenAiEmaxLag::getParametersId()
+std::vector<std::string> RkMichaelisMentenOneCompAiEmaxLag::getParametersId()
 {
     return {"V", "Vmax", "F", "Km", "Ka", "Emax", "t50", "tfs", "Tlag"};
 }
 
 
-RkMichaelisMentenAiEmax::RkMichaelisMentenAiEmax()
-    : IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenAiEmax>(
+RkMichaelisMentenOneCompAiEmax::RkMichaelisMentenOneCompAiEmax()
+    : IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenOneCompAiEmax>(
             std::make_unique<PertinentTimesCalculatorStandard>())
 {
 }
 
 
-bool RkMichaelisMentenAiEmax::checkInputs(
+bool RkMichaelisMentenOneCompAiEmax::checkInputs(
         const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 8,
@@ -94,7 +94,7 @@ bool RkMichaelisMentenAiEmax::checkInputs(
 }
 
 
-bool RkMichaelisMentenAiEmaxLag::checkInputs(
+bool RkMichaelisMentenOneCompAiEmaxLag::checkInputs(
         const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
     if (!checkCondition(_parameters.size() >= 9,
@@ -106,7 +106,8 @@ bool RkMichaelisMentenAiEmaxLag::checkInputs(
 
     m_Tlag = _parameters.getValue(ParameterId::Tlag);
 
-    bOK &= RkMichaelisMentenAiEmax::checkInputs(_intakeEvent, _parameters);
+    bOK &= RkMichaelisMentenOneCompAiEmax::checkInputs(_intakeEvent,
+                                                       _parameters);
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
 
     return bOK;

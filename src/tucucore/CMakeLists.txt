@@ -96,7 +96,7 @@ file(GLOB TUCUCORE_HEADERS_FILES
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/onecompartmentextra.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/onecompartmentextralag.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/onecompartmentinfusion.h
-    ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenaiemax.h
+    ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenonecompaiemax.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenenzyme.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenlinearonecomp.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenlinearonecompvmaxamount.h
@@ -196,7 +196,7 @@ file(GLOB TUCUCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/onecompartmentextra.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/onecompartmentextralag.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/onecompartmentinfusion.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenaiemax.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenonecompaiemax.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenenzyme.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenlinearonecomp.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenlinearonecompvmaxamount.cpp

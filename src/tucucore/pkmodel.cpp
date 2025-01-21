@@ -28,7 +28,7 @@
 #include "tucucore/pkmodels/onecompartmentextra.h"
 #include "tucucore/pkmodels/onecompartmentextralag.h"
 #include "tucucore/pkmodels/onecompartmentinfusion.h"
-#include "tucucore/pkmodels/rkmichaelismentenaiemax.h"
+#include "tucucore/pkmodels/rkmichaelismentenonecompaiemax.h"
 #include "tucucore/pkmodels/rkmichaelismentenenzyme.h"
 #include "tucucore/pkmodels/rkmichaelismentenlinearonecomp.h"
 #include "tucucore/pkmodels/rkmichaelismentenlinearonecompvmaxamount.h"
@@ -428,17 +428,17 @@ bool defaultPopulate(PkModelCollection& _collection)
 
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
                 AbsorptionModel::Extravascular,
-                RkMichaelisMentenAiEmax::getCreator());
+                RkMichaelisMentenOneCompAiEmax::getCreator());
         rc &= sharedPkModel->addParameterList(
                 AbsorptionModel::Extravascular,
-                RkMichaelisMentenAiEmax::getParametersId());
+                RkMichaelisMentenOneCompAiEmax::getParametersId());
 
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
                 AbsorptionModel::Extravascular,
-                RkMichaelisMentenAiEmaxLag::getCreator());
+                RkMichaelisMentenOneCompAiEmaxLag::getCreator());
         rc &= sharedPkModel->addParameterList(
                 AbsorptionModel::Extravascular,
-                RkMichaelisMentenAiEmaxLag::getParametersId());
+                RkMichaelisMentenOneCompAiEmaxLag::getParametersId());
 
         Tucuxi::Common::TranslatableString elimination;
         elimination.setString("Michaelis-Menten with Ai and Emax", "en");

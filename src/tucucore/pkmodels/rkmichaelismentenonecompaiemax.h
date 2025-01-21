@@ -28,7 +28,7 @@ namespace Tucuxi {
 namespace Core {
 
 
-enum class RkMichaelisMentenAiEmaxCompartments : int
+enum class RkMichaelisMentenOneCompAiEmaxCompartments : int
 {
     First = 0,
     Second
@@ -38,13 +38,13 @@ enum class RkMichaelisMentenAiEmaxCompartments : int
 /// \brief Intake interval calculator for the one compartment extravascular
 ///        algorithm
 /// \sa IntakeIntervalCalculator
-class RkMichaelisMentenAiEmax :
-        public IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenAiEmax>
+class RkMichaelisMentenOneCompAiEmax :
+        public IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenOneCompAiEmax>
 {
-
+    INTAKEINTERVALCALCULATOR_UTILS(RkMichaelisMentenOneCompAiEmax)
 public:
     /// \brief Constructor
-    RkMichaelisMentenAiEmax();
+    RkMichaelisMentenOneCompAiEmax();
 
     /// \brief Returns the list of required PK parameters Ids
     /// \return The list of required PK parameters Ids
@@ -96,7 +96,7 @@ protected:
     bool m_isWithLag{false};
 
 private:
-    typedef RkMichaelisMentenAiEmaxCompartments Compartments;
+    typedef RkMichaelisMentenOneCompAiEmaxCompartments Compartments;
 };
 
 
@@ -104,11 +104,12 @@ private:
 /// \brief Intake interval calculator for the one compartment extravascular
 ///        algorithm
 /// \sa IntakeIntervalCalculator
-class RkMichaelisMentenAiEmaxLag : public RkMichaelisMentenAiEmax
+class RkMichaelisMentenOneCompAiEmaxLag : public RkMichaelisMentenOneCompAiEmax
 {
+    INTAKEINTERVALCALCULATOR_UTILS(RkMichaelisMentenOneCompAiEmaxLag)
 public:
     /// \brief Constructor
-    RkMichaelisMentenAiEmaxLag()
+    RkMichaelisMentenOneCompAiEmaxLag()
     {
         m_delivered = false;
         m_isWithLag = true;
