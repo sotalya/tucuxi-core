@@ -53,9 +53,9 @@ public:
     inline void derive(double _t,
                        const Compartments_t& _c, Compartments_t& _dcdt)
     {
-        double const adj_t = _t - m_tfs;
+        double const adj_t = _t - m_Tfs;
         double const cc = _c[1] / m_V;
-        double const AI = 1 + (m_Emax * adj_t) / (m_t50 + adj_t);
+        double const AI = 1 + (m_Emax * adj_t) / (m_T50 + adj_t);
         double const ClAI = ((m_Vmax * cc) / (m_Km + cc)) * AI;
         double const ka_c0 = m_Ka * _c[0];
 
@@ -89,8 +89,8 @@ protected:
     Value m_Km{NAN};    /// Concentration of half-maximal elimination rate
     Value m_Ka{0.0};    /// Absorption rate constant
     Value m_Emax{NAN};  /// Maximum effect parameter
-    Value m_t50{NAN};   /// Time at which the effect reaches half of its maximum
-    Value m_tfs{0.0};   /// Time from treatment start
+    Value m_T50{NAN};   /// Time at which the effect reaches half of its maximum
+    Value m_Tfs{0.0};   /// Time from treatment start
 
     bool m_delivered{false};
     bool m_isWithLag{false};

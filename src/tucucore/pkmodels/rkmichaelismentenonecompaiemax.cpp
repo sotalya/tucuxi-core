@@ -29,13 +29,13 @@ namespace Core {
 
 std::vector<std::string> RkMichaelisMentenOneCompAiEmax::getParametersId()
 {
-    return {"V", "Vmax", "F", "Km", "Ka", "Emax", "t50", "tfs"};
+    return {"V", "Vmax", "F", "Km", "Ka", "Emax", "T50", "Tfs"};
 }
 
 
 std::vector<std::string> RkMichaelisMentenOneCompAiEmaxLag::getParametersId()
 {
-    return {"V", "Vmax", "F", "Km", "Ka", "Emax", "t50", "tfs", "Tlag"};
+    return {"V", "Vmax", "F", "Km", "Ka", "Emax", "T50", "Tfs", "Tlag"};
 }
 
 
@@ -75,8 +75,8 @@ bool RkMichaelisMentenOneCompAiEmax::checkInputs(
     m_Km = _parameters.getValue(ParameterId::Km);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_Emax = _parameters.getValue(ParameterId::Emax);
-    m_t50 = _parameters.getValue(ParameterId::t50);
-    m_tfs = _parameters.getValue(ParameterId::tfs);
+    m_T50 = _parameters.getValue(ParameterId::T50);
+    m_Tfs = _parameters.getValue(ParameterId::Tfs);
 
     bOK &= checkStrictlyPositiveValue(m_V, "The compartment volume");
     bOK &= checkStrictlyPositiveValue(m_Vmax, "The maximum elimination rate");
@@ -84,10 +84,10 @@ bool RkMichaelisMentenOneCompAiEmax::checkInputs(
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Ka, "The absorption rate");
     bOK &= checkStrictlyPositiveValue(m_Emax, "The maximum effect parameter");
-    bOK &= checkStrictlyPositiveValue(m_t50,
+    bOK &= checkStrictlyPositiveValue(m_T50,
                                       "The time at which the effect reaches " \
                                       "half of its maximum");
-    bOK &= checkStrictlyPositiveValue(m_tfs,
+    bOK &= checkStrictlyPositiveValue(m_Tfs,
                                       "The time from start");
 
     return bOK;

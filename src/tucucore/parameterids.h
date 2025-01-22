@@ -80,8 +80,8 @@ public:
         AllmCL,
         RQCL,
         RV2V1,
-        t50,
-        tfs,
+        T50,
+        Tfs,
         Unknown
     };
 
@@ -104,7 +104,7 @@ public:
                 {"ECmid", ParameterId::ECmid},   {"EDmid", ParameterId::EDmid},   {"DoseMid", ParameterId::DoseMid},
                 {"Fmax", ParameterId::Fmax},     {"NN", ParameterId::NN},         {"MTT", ParameterId::MTT},
                 {"AllmCL", ParameterId::AllmCL}, {"RQCL", ParameterId::RQCL},     {"RV2V1", ParameterId::RV2V1},
-                {"t50", ParameterId::t50},       {"tfs", ParameterId::tfs}};
+                {"T50", ParameterId::T50},       {"Tfs", ParameterId::Tfs}};
         std::map<std::string, Enum>::const_iterator it = PARAM_IDS.find(_id);
         if (it != PARAM_IDS.end()) {
             return it->second;
