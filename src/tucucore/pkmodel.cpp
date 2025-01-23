@@ -425,20 +425,10 @@ bool defaultPopulate(PkModelCollection& _collection)
         sharedPkModel =
                 std::make_shared<PkModel>("michaelismenten.1comp.aiemax",
                                           PkModel::AllowMultipleRoutes::No);
-
+        // For now we just have the lag-time version
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
-                AbsorptionModel::Extravascular,
-                RkMichaelisMentenOneCompAiEmax::getCreator());
-        rc &= sharedPkModel->addParameterList(
-                AbsorptionModel::Extravascular,
-                RkMichaelisMentenOneCompAiEmax::getParametersId());
-
-        rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
-                AbsorptionModel::Extravascular,
+                AbsorptionModel::ExtravascularLag,
                 RkMichaelisMentenOneCompAiEmaxLag::getCreator());
-        rc &= sharedPkModel->addParameterList(
-                AbsorptionModel::Extravascular,
-                RkMichaelisMentenOneCompAiEmaxLag::getParametersId());
 
         Tucuxi::Common::TranslatableString elimination;
         elimination.setString("Michaelis-Menten with Ai and Emax", "en");
