@@ -76,7 +76,7 @@ typedef Value Concentration;
 typedef std::vector<double> TimeOffsets;
 
 
-#ifdef CHECK_TYPES
+#ifdef TUCU_COMPILE_CHECK_TYPES
 
 // Idea taken from https://stackoverflow.com/questions/6806173/subclass-inherit-standard-containers
 
@@ -236,12 +236,12 @@ public:
     using base_vector::size;
 };
 
-#else  // CHECK_TYPES
+#else  // TUCU_COMPILE_CHECK_TYPES
 typedef std::vector<Concentration> Concentrations;
 typedef std::vector<Concentration> MultiCompConcentration;
 typedef std::vector<Concentrations> MultiCompConcentrations;
 typedef std::vector<Concentrations> MultiCycleConcentrations;
-#endif // CHECK_TYPES
+#endif // TUCU_COMPILE_CHECK_TYPES
 
 /// \ingroup TucuCore
 /// Percentile rank, between 0.0 and 100.0

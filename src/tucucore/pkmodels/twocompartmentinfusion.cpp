@@ -31,10 +31,6 @@
 namespace Tucuxi {
 namespace Core {
 
-#if 0
-#define DEBUG
-#endif
-
 TwoCompartmentInfusionMicro::TwoCompartmentInfusionMicro()
     : IntakeIntervalCalculatorBase<2, TwoCompartmentInfusionExponentials>(
             std::make_unique<PertinentTimesCalculatorInfusion>())
@@ -67,7 +63,7 @@ bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_Int = (_intakeEvent.getInterval()).toHours();
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
 
-#ifdef DEBUG
+#ifdef TUCU_INTAKECALCULATOR_VERBOSE
     Tucuxi::Common::LoggerHelper logHelper;
 
     logHelper.debug("<<Input Values>>");
@@ -83,7 +79,7 @@ bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     logHelper.debug("m_Beta: {}", m_Beta);
     logHelper.debug("m_Tinf: {}", m_Tinf);
     logHelper.debug("m_Int: {}", m_Int);
-#endif
+#endif // TUCU_INTAKECALCULATOR_VERBOSE
 
     // check the inputs
     bool bOK = checkPositiveValue(m_D, "The dose");
@@ -365,7 +361,7 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     // m_Cl = cl;
     // m_Q = q;
 
-#ifdef DEBUG
+#ifdef TUCU_INTAKECALCULATOR_VERBOSE
     Tucuxi::Common::LoggerHelper logHelper;
 
     logHelper.debug("<<Input Values>>");
@@ -384,7 +380,7 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     logHelper.debug("m_Beta: {}", m_Beta);
     logHelper.debug("m_Tinf: {}", m_Tinf);
     logHelper.debug("m_Int: {}", m_Int);
-#endif
+#endif // TUCU_INTAKECALCULATOR_VERBOSE
 
     // check the inputs
     bool bOK = checkPositiveValue(m_D, "The dose");
@@ -442,7 +438,7 @@ bool TwoCompartmentInfusionMacroRatios::checkInputs(
     // m_Cl = cl;
     // m_Q = q;
 
-#ifdef DEBUG
+#ifdef TUCU_INTAKECALCULATOR_VERBOSE
     Tucuxi::Common::LoggerHelper logHelper;
 
     logHelper.debug("<<Input Values>>");
@@ -461,7 +457,7 @@ bool TwoCompartmentInfusionMacroRatios::checkInputs(
     logHelper.debug("m_Beta: {}", m_Beta);
     logHelper.debug("m_Tinf: {}", m_Tinf);
     logHelper.debug("m_Int: {}", m_Int);
-#endif
+#endif // TUCU_INTAKECALCULATOR_VERBOSE
 
     // check the inputs
     bool bOK = checkPositiveValue(m_D, "The dose");

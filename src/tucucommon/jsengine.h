@@ -23,8 +23,10 @@
 #ifndef TUCUXI_TUCUCOMMON_JSENGINE_H
 #define TUCUXI_TUCUCOMMON_JSENGINE_H
 
+#include <map>
 #include <memory>
 #include <string>
+#include <thread>
 
 class CTinyJS;
 
@@ -64,6 +66,9 @@ public:
     /// \brief Clear the internal dictionary of variables
     void reset();
 
+    // A potential idea to save initialization time.
+    // However we should clear the engine, just keeping the registered functions
+    // static std::map<std::thread::id, std::unique_ptr<JSEngine> > sm_enginePerThread;
 private:
     std::unique_ptr<CTinyJS> m_pEngine; /// The "wrapped" Tiny JS script engine
 };

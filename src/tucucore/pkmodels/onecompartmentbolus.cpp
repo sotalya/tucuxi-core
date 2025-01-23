@@ -31,10 +31,6 @@
 namespace Tucuxi {
 namespace Core {
 
-#if 0
-#define DEBUG
-#endif
-
 OneCompartmentBolusMicro::OneCompartmentBolusMicro()
     : IntakeIntervalCalculatorBase<1, OneCompartmentBolusExponentials>(
             std::make_unique<PertinentTimesCalculatorStandard>())
@@ -58,7 +54,7 @@ bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
-#ifdef DEBUG
+#ifdef TUCU_INTAKECALCULATOR_VERBOSE
     Tucuxi::Common::LoggerHelper logHelper;
 
     logHelper.debug("<<Input Values>>");
@@ -67,7 +63,7 @@ bool OneCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     logHelper.debug("m_Ke: {}", m_Ke);
     logHelper.debug("m_nbPoints: {}", m_nbPoints);
     logHelper.debug("m_Int: {}", m_Int);
-#endif
+#endif // TUCU_INTAKECALCULATOR_VERBOSE
 
     // check the inputs
     bool bOK = checkPositiveValue(m_D, "The dose");
@@ -161,7 +157,7 @@ bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
-#ifdef DEBUG
+#ifdef TUCU_INTAKECALCULATOR_VERBOSE
     Tucuxi::Common::LoggerHelper logHelper;
 
     logHelper.debug("<<Input Values>>");
@@ -171,7 +167,7 @@ bool OneCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     logHelper.debug("m_Ke: {}", m_Ke);
     logHelper.debug("m_nbPoints: {}", m_nbPoints);
     logHelper.debug("m_Int: {}", m_Int);
-#endif
+#endif // TUCU_INTAKECALCULATOR_VERBOSE
 
     // check the inputs
     bool bOK = checkPositiveValue(m_D, "The dose");

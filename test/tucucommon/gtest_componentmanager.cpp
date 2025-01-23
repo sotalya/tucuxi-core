@@ -22,9 +22,15 @@
 
 #include <gtest/gtest.h>
 
+#include "tucucommon/component.h"
 #include "tucucommon/componentmanager.h"
 
-#define PRINT_MESSAGE(x) (std::cout << "\033[1;36m" << x << "\033[0m" << std::endl)
+template<typename T>
+constexpr void PRINT_MESSAGE(T _mess)
+{
+    std::cout << "\033[1;36m" << _mess << "\033[0m" << std::endl;
+}
+// #define PRINT_MESSAGE(x) (std::cout << "\033[1;36m" << x << "\033[0m" << std::endl)
 
 
 class ITest1 : public Tucuxi::Common::Interface
@@ -49,17 +55,17 @@ public:
         TestComponent* cmp = new TestComponent();
         return dynamic_cast<ITest1*>(cmp);
     }
-    virtual void Test1()
+    void Test1() override
     {
         PRINT_MESSAGE("Hello from Test1");
     }
-    virtual void Test2()
+    void Test2() override
     {
         PRINT_MESSAGE("Hello from Test2");
     }
 
 protected:
-    virtual Tucuxi::Common::Interface* getInterface(const std::string& _name)
+    Tucuxi::Common::Interface* getInterface(const std::string& _name) override
     {
         return Tucuxi::Common::Component::getInterfaceImpl(_name);
     }

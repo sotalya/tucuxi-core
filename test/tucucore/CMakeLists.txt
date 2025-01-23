@@ -5,15 +5,36 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+option(TUCU_TIME_DEBUG "Builds the dates and times with a string representation for easy debug")
+if (TUCU_TIME_DEBUG)
+    add_compile_definitions(TUCU_TIME_DEBUG)
+endif()
+
+option(TUCU_EASY_DEBUG "Builds some source files with facilitators for debugging. For instance macros replaced by function calls to easily add breakpoints")
+if (TUCU_EASY_DEBUG)
+    add_compile_definitions(TUCU_EASY_DEBUG)
+endif()
+
+option(TUCU_CHECK_DATETIME "Checks that each DateTime object is used initialized to a valid value. To be only used in DEBUG mode, for performance reason")
+if (TUCU_CHECK_DATETIME)
+    add_compile_definitions(TUCU_CHECK_DATETIME)
+endif()
+
+option(TUCU_COMPILE_CHECK_TYPES "Compiles with home-made classes for different classes, in order to check that there usage is correct. Compilers would allow a vector of same types to be compatible, but it would be nice to sometimes know what vectors are really used. Therefore we define Concentrations, MultiCompConcentration, MultiCompConcentrations and MultiCycleConcentrations without compatibility support. To be used to test if the code does not embed a code smell, but not in release mode. It could be implemented for AnalyteId and ActiveMoietyId as well")
+if (TUCU_COMPILE_CHECK_TYPES)
+    add_compile_definitions(TUCU_COMPILE_CHECK_TYPES)
+endif()
+
+# We need the test drugmodels
+add_compile_definitions(TUCU_DRUGMODELTESTS)
+
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../)
 # Include src directory
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../../src)
 
 include(${CMAKE_CURRENT_LIST_DIR}/../../libs/tucuxi-core_libs)
 include(${CMAKE_CURRENT_LIST_DIR}/../add_gtest)
-
-# We need the test PK models for successful tests
-add_compile_definitions(DRUGMODELTESTS)
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../../src/tucucommon tucucommon)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../../src/tucucore tucucore)
@@ -49,6 +70,7 @@ file(GLOB TUCUTESTCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/gtest_core.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_cachecomputing.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computingcomponentadjustments.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/gtest_computingcomponentadjustments2.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computingcomponentattimes.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computingcomponentconcentration.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computingcomponentpercentiles.cpp

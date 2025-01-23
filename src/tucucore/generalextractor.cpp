@@ -565,9 +565,11 @@ ComputingStatus GeneralExtractor::generalExtractions(
 
 
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Population) {
-#ifdef POPPARAMETERSFROMDEFAULTVALUES
+#ifdef TUCU_POPPARAMETERSFROMDEFAULTVALUES
             parametersExtractionResult = parameterExtractor.extractPopulation(_parameterSeries);
-#else
+
+#else // TUCU_POPPARAMETERSFROMDEFAULTVALUES
+
             //parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
 
             ParameterSetSeries intermediateParameterSeries;
@@ -588,7 +590,7 @@ ComputingStatus GeneralExtractor::generalExtractions(
                 return parametersExtractionResult;
             }
 
-#endif // POPPARAMETERSFROMDEFAULTVALUES
+#endif // TUCU_POPPARAMETERSFROMDEFAULTVALUES
 
             if (parametersExtractionResult != ComputingStatus::Ok) {
                 m_logger.error("Can not extract parameters");
@@ -764,9 +766,11 @@ ComputingStatus GeneralExtractor::extractParameters(
 
 
         if (_parametersType == PredictionParameterType::Population) {
-#ifdef POPPARAMETERSFROMDEFAULTVALUES
+#ifdef TUCU_POPPARAMETERSFROMDEFAULTVALUES
             parametersExtractionResult = parameterExtractor.extractPopulation(_parameterSeries);
-#else
+
+#else // TUCU_POPPARAMETERSFROMDEFAULTVALUES
+
             //parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
 
             ParameterSetSeries intermediateParameterSeries;
@@ -787,7 +791,7 @@ ComputingStatus GeneralExtractor::extractParameters(
                 return parametersExtractionResult;
             }
 
-#endif // POPPARAMETERSFROMDEFAULTVALUES
+#endif // TUCU_POPPARAMETERSFROMDEFAULTVALUES
 
             if (parametersExtractionResult != ComputingStatus::Ok) {
                 m_logger.error("Can not extract parameters");

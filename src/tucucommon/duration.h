@@ -216,10 +216,10 @@ private:
 
     std::chrono::duration<ChronoBaseType> m_duration; /// The encapsulated duration
 
-#ifdef EASY_DEBUG
+#ifdef TUCU_TIME_DEBUG
     std::string m_durationString;
     void updateDurationString();
-#endif // EASY_DEBUG
+#endif // TUCU_TIME_DEBUG
 };
 
 } // namespace Common

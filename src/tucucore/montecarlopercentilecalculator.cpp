@@ -23,9 +23,9 @@
 #include <algorithm>
 #include <ctime>
 #include <mutex>
-#ifdef CONFIG_OPENMP
+#ifdef TUCU_CONFIG_OPENMP
 #include <omp.h>
-#endif // CONFIG_OPENMP
+#endif // TUCU_CONFIG_OPENMP
 #include <random>
 #include <thread>
 
@@ -85,23 +85,15 @@ MonteCarloPercentileCalculatorBase::MonteCarloPercentileCalculatorBase()
 {
     // Here, hardcoded number of simulated patients
     // Aziz says this is an approximate number to assure a reasonable result for most cases
-#if 1
     if (sm_nbPatients != 0) {
         setNumberPatients(sm_nbPatients);
     }
     else {
         setNumberPatients(10000);
     }
-#else
-    setNumberPatients(8); // For test: need to fix unit test
-#endif
 }
 
-
-#define MULTITHREADEDSORT
-#define OPTIMALMULTI
-
-#ifndef MULTITHREADEDSORT
+#ifdef TUCU_SINGLETHREADEDPERCENTILESORT
 
 // The following comparators are used in variants of sorting
 class Compa
@@ -136,7 +128,7 @@ void sortPercentiles(std::vector<ConcentrationPrediction*>& _predictions, int _c
     std::sort(_predictions.begin(), _predictions.end(), CompPred(_cycle, _point));
 }
 
-#endif // MULTITHREADEDSORT
+#endif // TUCU_SINGLETHREADEDPERCENTILESORT
 
 ComputingStatus MonteCarloPercentileCalculatorBase::computePredictionsAndSortPercentiles(
         PercentilesPrediction& _percentiles,
@@ -183,7 +175,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictionsAndSortPer
             _percentiles, _percentileRanks, nbPatients, times, recordedIntakes, concentrations);
 }
 
-#ifdef CONFIG_OPENMP
+#ifdef TUCU_CONFIG_OPENMP
 ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
         const DateTime& _recordFrom,
         const DateTime& _recordTo,
@@ -199,7 +191,6 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
         std::vector<std::vector<std::vector<Concentration> > >& _concentrations,
         ComputingAborter* _aborter)
 {
-#define MULTITHREAD_MT
     // auto start = std::chrono::steady_clock::now();
 
     selectRecordedIntakes(_recordedIntakes, _intakes, _recordFrom, _recordTo);
@@ -277,7 +268,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
     return ComputingStatus::Ok;
 }
 
-#else // CONFIG_OPENMP
+#else // TUCU_CONFIG_OPENMP
 
 ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
         const DateTime& _recordFrom,
@@ -314,10 +305,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
     //    std::cout << "milliseconds for preparation: " << elapsed.count( ) << '\n';
     //    start = std::chrono::steady_clock::now();
 
-
-#define MULTITHREAD_MT
-
-#ifdef MULTITHREAD_MT
+#ifndef TUCU_SINGLETHREADEDPERCENTILECOMPUTATION
     // Parallelize this for loop with some shared and some copied-to-each-thread-with-current-state (firstprivate) variables
     unsigned int nbThreads = std::max(std::thread::hardware_concurrency(), static_cast<unsigned int>(1));
 
@@ -355,7 +343,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
     int threadIndex = 0;
     IntakeSeries newIntakes;
     cloneIntakeSeries(_intakes, newIntakes);
-#endif // MULTITHREAD_MT
+#endif // TUCU_SINGLETHREADEDPERCENTILECOMPUTATION
             size_t start = threadIndex * nbPatientsPerThread;
             size_t end = std::min(static_cast<size_t>((threadIndex + 1) * nbPatientsPerThread), _nbPatients);
 
@@ -363,11 +351,11 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
                 if (!abort) {
                     if ((_aborter != nullptr) && (_aborter->shouldAbort())) {
                         abort = true;
-#ifdef MULTITHREAD_MT
+#ifndef TUCU_SINGLETHREADEDPERCENTILECOMPUTATION
                         return;
-#else  // MULTITHREAD_MT
+#else  // TUCU_SINGLETHREADEDPERCENTILECOMPUTATION
                 break;
-#endif // MULTITHREAD_MT
+#endif // TUCU_SINGLETHREADEDPERCENTILECOMPUTATION
                     }
 
 
@@ -415,7 +403,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
                 predictionPtr->streamToFile(filename);
 #endif
             }
-#ifdef MULTITHREAD_MT
+#ifndef TUCU_SINGLETHREADEDPERCENTILECOMPUTATION
         }));
     }
 
@@ -450,7 +438,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
 
 
     std::for_each(workers.begin(), workers.end(), [](std::thread& _t) { _t.join(); });
-#endif // MULTITHREAD_MT
+#endif // TUCU_SINGLETHREADEDPERCENTILECOMPUTATION
 
     //    elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
     //    std::cout << "milliseconds for predictions calculation : " << elapsed.count( ) << '\n';
@@ -462,7 +450,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
 
     return ComputingStatus::Ok;
 }
-#endif // CONFIG_OPENMP
+#endif // TUCU_CONFIG_OPENMP
 
 typedef struct
 {
@@ -539,9 +527,9 @@ foundFalse:
                 static_cast<int>(static_cast<double>(percentileRank) / 100.0 * static_cast<double>(realPatientNumber)));
     }
 
-#ifdef MULTITHREADEDSORT
+#ifndef TUCU_SINGLETHREADEDPERCENTILESORT
 
-#ifdef OPTIMALMULTI
+#ifndef TUCU_MULTITHREADEDPERCENTILESUBOPTIMALSORT
 
     std::vector<std::thread> sortWorkers;
     std::mutex mutex;
@@ -618,7 +606,7 @@ foundFalse:
 
     std::for_each(sortWorkers.begin(), sortWorkers.end(), [](std::thread& _t) { _t.join(); });
 
-#else
+#else // TUCU_MULTITHREADEDPERCENTILESUBOPTIMALSORT
 
     std::vector<std::thread> sortWorkers;
     std::mutex mutex;
@@ -679,10 +667,10 @@ foundFalse:
 
     std::for_each(sortWorkers.begin(), sortWorkers.end(), [](std::thread& t) { t.join(); });
 
-#endif // OPTIMALMULTI
+#endif // TUCU_MULTITHREADEDPERCENTILESUBOPTIMALSORT
 
-#else
-#ifdef SORT1
+#else // TUCU_SINGLETHREADEDPERCENTILESORT
+#ifdef TUCU_SINGLETHREADEDPERCENTILESORTOPTION
     std::vector<int> pointers(nbPatients);
     for (int i = 0; i < nbPatients; i++) {
         pointers[i] = i;
@@ -703,7 +691,7 @@ foundFalse:
             }
         }
     }
-#else
+#else  // TUCU_SINGLETHREADEDPERCENTILESORTOPTION
 
     // Sort and set percentile
     for (unsigned int cycle = 0; cycle < recordedIntakes.size(); cycle++) {
@@ -722,8 +710,8 @@ foundFalse:
             }
         }
     }
-#endif // SORT1
-#endif // MULTITHREADEDSORT
+#endif // TUCU_SINGLETHREADEDPERCENTILESORTOPTION
+#endif // TUCU_SINGLETHREADEDPERCENTILESORT
 
     //    elapsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now( ) - start );
     //    std::cout << "milliseconds for predictions sort : " << elapsed.count( ) << '\n';

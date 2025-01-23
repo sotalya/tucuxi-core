@@ -31,10 +31,6 @@
 namespace Tucuxi {
 namespace Core {
 
-#if 0
-#define DEBUG
-#endif
-
 ThreeCompartmentBolusMicro::ThreeCompartmentBolusMicro()
     : IntakeIntervalCalculatorBase<3, ThreeCompartmentBolusExponentials>(
             std::make_unique<PertinentTimesCalculatorStandard>())
@@ -76,7 +72,7 @@ bool ThreeCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     m_Beta = -(std::cos(phi + 2 * 3.1428 / 3) * r2 - a2 / 3);
     m_Gamma = -(std::cos(phi + 4 * 3.1428 / 3) * r2 - a2 / 3);
 
-#ifdef DEBUG
+#ifdef TUCU_INTAKECALCULATOR_VERBOSE
     Tucuxi::Common::LoggerHelper logHelper;
 
     logHelper.debug("<<Input Values>>");
@@ -93,7 +89,8 @@ bool ThreeCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     logHelper.debug("m_Alpha: {}", m_Alpha);
     logHelper.debug("m_Beta: {}", m_Beta);
     logHelper.debug("m_Gamma: {}", m_Gamma);
-#endif
+#endif // TUCU_INTAKECALCULATOR_VERBOSE
+
     // check the inputs
     bool bOK = checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_F, "F");
@@ -238,7 +235,7 @@ bool ThreeCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     m_Beta = -(std::cos(phi + 2 * 3.1428 / 3) * r2 - a2 / 3);
     m_Gamma = -(std::cos(phi + 4 * 3.1428 / 3) * r2 - a2 / 3);
 
-#ifdef DEBUG
+#ifdef TUCU_INTAKECALCULATOR_VERBOSE
     Tucuxi::Common::LoggerHelper logHelper;
 
     logHelper.debug("<<Input Values>>");
@@ -256,7 +253,7 @@ bool ThreeCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     logHelper.debug("m_K31: {}", m_K31);
     logHelper.debug("m_nbPoints: {}", m_nbPoints);
     logHelper.debug("m_Int: {}", m_Int);
-#endif
+#endif // TUCU_INTAKECALCULATOR_VERBOSE
 
     // check the inputs
     bool bOK = checkPositiveValue(m_D, "The dose");

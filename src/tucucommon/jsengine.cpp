@@ -31,6 +31,11 @@ namespace Tucuxi {
 namespace Common {
 
 
+
+// A potential idea to save initialization time.
+// However we should clear the engine, just keeping the registered functions
+// std::map<std::thread::id, std::unique_ptr<JSEngine> > JSEngine::sm_enginePerThread;
+
 JSEngine::JSEngine()
 {
     reset();

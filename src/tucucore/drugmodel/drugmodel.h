@@ -41,9 +41,9 @@ struct TestPkAsymptotic;
 struct TestMultiAnalytesSingleActiveMoiety;
 struct TestMultiAnalytesMultiActiveMoieties;
 
-#ifdef DRUGMODELTESTS
+#ifdef TUCU_DRUGMODELTESTS
 class Drugs2Manager;
-#endif // DRUGMODELTESTS
+#endif // TUCU_DRUGMODELTESTS
 
 namespace Tucuxi {
 namespace Core {
@@ -442,9 +442,9 @@ private:
 
     InterParameterSetCorrelations m_interParameterSetCorrelations;
 
-#ifdef DRUGMODELTESTS
+#ifdef TUCU_DRUGMODELTESTS
 public:
-#endif // DRUGMODELTESTS
+#endif // TUCU_DRUGMODELTESTS
     ActiveMoieties m_activeMoieties;
 
     std::unique_ptr<TimeConsiderations> m_timeConsiderations;
@@ -457,9 +457,9 @@ public:
     friend TestMultiAnalytesSingleActiveMoiety;
     friend TestMultiAnalytesMultiActiveMoieties;
     friend TestPkAsymptotic;
-#ifdef DRUGMODELTESTS
+#ifdef TUCU_DRUGMODELTESTS
     friend Drugs2Manager;
-#endif // DRUGMODELTESTS
+#endif // TUCU_DRUGMODELTESTS
 };
 
 } // namespace Core

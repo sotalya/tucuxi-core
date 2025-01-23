@@ -51,10 +51,10 @@ class TimeOfDay;
 /// Methods year, month, day, hour, minute, second can be used to extract the different components of a date.
 /// \sa TimeOfDay, Duration
 ///
-/// This class can be compiled with DEFINES+=EASY_DEBUG. In that case it embeds a string
+/// This class can be compiled with DEFINES+=TUCU_TIME_DEBUG. In that case it embeds a string
 /// representing its state. Very useful for debugging.
 ///
-/// It can also be compiled with DEFINES+=CHECK_DATETIME. In that case the status of the object
+/// It can also be compiled with DEFINES+=TUCU_CHECK_DATETIME. In that case the status of the object
 /// is checked before being used. For instance, adding days to an undefined DateTime is unvalid and would
 /// throw an exception. These checks cost a bit of performance, so by default they are disabled.
 ///
@@ -74,12 +74,12 @@ public:
 
     /// \brief Enables thorough checks of undefined DateTime
     ///
-    /// The checks are only done if compiled with DEFINES+=CHECK_DATETIME
+    /// The checks are only done if compiled with DEFINES+=TUCU_CHECK_DATETIME
     static void enableChecks();
 
     /// \brief Disables thorough checks of undefined DateTime
     ///
-    /// The checks are only done if compiled with DEFINES+=CHECK_DATETIME
+    /// The checks are only done if compiled with DEFINES+=TUCU_CHECK_DATETIME
     static void disableChecks();
 
     /// \brief Build a date from the specified string
@@ -310,7 +310,7 @@ private:
     /// If not, then its value should not be used
     bool m_isDefined{false};
 
-#ifdef EASY_DEBUG
+#ifdef TUCU_TIME_DEBUG
 
     /// This string is used to store a representation of the DateTime for easier debuggingg
     std::string m_dateString;
@@ -318,7 +318,7 @@ private:
     /// This function is called after every modification of the object, to update m_dateString
     void updateString();
 
-#endif // EASY_DEBUG
+#endif // TUCU_TIME_DEBUG
 };
 
 } // namespace Common
