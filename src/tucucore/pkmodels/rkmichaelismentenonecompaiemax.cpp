@@ -46,11 +46,9 @@ RkMichaelisMentenOneCompAiEmax::RkMichaelisMentenOneCompAiEmax()
 }
 
 
-bool RkMichaelisMentenOneCompAiEmax::checkInputs(
-        const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
+bool RkMichaelisMentenOneCompAiEmax::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkCondition(_parameters.size() >= 8,
-                        "The number of parameters should be equal to 8.")) {
+    if (!checkCondition(_parameters.size() >= 8, "The number of parameters should be equal to 8.")) {
         return false;
     }
 
@@ -63,8 +61,7 @@ bool RkMichaelisMentenOneCompAiEmax::checkInputs(
 
     bOK &= checkPositiveValue(m_D, "The dose");
 
-    bOK &= checkCondition(m_nbPoints > 0,
-                          "The number of points is zero or negative.");
+    bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 
 
@@ -84,11 +81,11 @@ bool RkMichaelisMentenOneCompAiEmax::checkInputs(
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Ka, "The absorption rate");
     bOK &= checkStrictlyPositiveValue(m_Emax, "The maximum effect parameter");
-    bOK &= checkStrictlyPositiveValue(m_T50,
-                                      "The time at which the effect reaches " \
-                                      "half of its maximum");
-    bOK &= checkStrictlyPositiveValue(m_Tfs,
-                                      "The time from start");
+    bOK &= checkStrictlyPositiveValue(
+            m_T50,
+            "The time at which the effect reaches "
+            "half of its maximum");
+    bOK &= checkStrictlyPositiveValue(m_Tfs, "The time from start");
 
     return bOK;
 }
@@ -97,8 +94,7 @@ bool RkMichaelisMentenOneCompAiEmax::checkInputs(
 bool RkMichaelisMentenOneCompAiEmaxLag::checkInputs(
         const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)
 {
-    if (!checkCondition(_parameters.size() >= 9,
-                        "The number of parameters should be equal to 9.")) {
+    if (!checkCondition(_parameters.size() >= 9, "The number of parameters should be equal to 9.")) {
         return false;
     }
 
@@ -106,8 +102,7 @@ bool RkMichaelisMentenOneCompAiEmaxLag::checkInputs(
 
     m_Tlag = _parameters.getValue(ParameterId::Tlag);
 
-    bOK &= RkMichaelisMentenOneCompAiEmax::checkInputs(_intakeEvent,
-                                                       _parameters);
+    bOK &= RkMichaelisMentenOneCompAiEmax::checkInputs(_intakeEvent, _parameters);
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
 
     return bOK;

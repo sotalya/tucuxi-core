@@ -38,8 +38,7 @@ enum class RkMichaelisMentenOneCompAiEmaxCompartments : int
 /// \brief Intake interval calculator for the one compartment extravascular
 ///        algorithm
 /// \sa IntakeIntervalCalculator
-class RkMichaelisMentenOneCompAiEmax :
-        public IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenOneCompAiEmax>
+class RkMichaelisMentenOneCompAiEmax : public IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenOneCompAiEmax>
 {
     INTAKEINTERVALCALCULATOR_UTILS(RkMichaelisMentenOneCompAiEmax)
 public:
@@ -50,8 +49,7 @@ public:
     /// \return The list of required PK parameters Ids
     static std::vector<std::string> getParametersId();
 
-    inline void derive(double _t,
-                       const Compartments_t& _c, Compartments_t& _dcdt)
+    inline void derive(double _t, const Compartments_t& _c, Compartments_t& _dcdt)
     {
         double const adj_t = _t - m_Tfs;
         double const cc = _c[1] / m_V;
@@ -69,8 +67,7 @@ public:
         FINAL_UNUSED_PARAMETER(_concentrations);
     }
 
-    void initConcentrations(const Residuals& _inResiduals,
-                            MultiCompConcentration& _concentrations) override
+    void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
         _concentrations[0] = _inResiduals[1] / m_V;
         _concentrations[1] = _concentrations[0];
@@ -79,18 +76,17 @@ public:
     }
 
 protected:
-    bool checkInputs(const IntakeEvent& _intakeEvent,
-                     const ParameterSetEvent& _parameters) override;
+    bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    Value m_D{NAN};     /// Drug quantity
-    Value m_F{0.0};     /// Bioavailability
-    Value m_V{NAN};     /// Volume of the compartment
-    Value m_Vmax{NAN};  /// Maximum elimination rate
-    Value m_Km{NAN};    /// Concentration of half-maximal elimination rate
-    Value m_Ka{0.0};    /// Absorption rate constant
-    Value m_Emax{NAN};  /// Maximum effect parameter
-    Value m_T50{NAN};   /// Time at which the effect reaches half of its maximum
-    Value m_Tfs{0.0};   /// Time from treatment start
+    Value m_D{NAN};    /// Drug quantity
+    Value m_F{0.0};    /// Bioavailability
+    Value m_V{NAN};    /// Volume of the compartment
+    Value m_Vmax{NAN}; /// Maximum elimination rate
+    Value m_Km{NAN};   /// Concentration of half-maximal elimination rate
+    Value m_Ka{0.0};   /// Absorption rate constant
+    Value m_Emax{NAN}; /// Maximum effect parameter
+    Value m_T50{NAN};  /// Time at which the effect reaches half of its maximum
+    Value m_Tfs{0.0};  /// Time from treatment start
 
     bool m_delivered{false};
     bool m_isWithLag{false};
@@ -131,10 +127,9 @@ public:
 
 
 protected:
-    bool checkInputs(const IntakeEvent& _intakeEvent,
-                     const ParameterSetEvent& _parameters) override;
+    bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    Value m_Tlag{0.0};  /// Lag time before absorption begins
+    Value m_Tlag{0.0}; /// Lag time before absorption begins
 };
 
 

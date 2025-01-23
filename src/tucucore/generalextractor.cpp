@@ -487,10 +487,7 @@ ComputingStatus GeneralExtractor::generalExtractions(
                 }
             }
             CovariateExtractor covariateExtractor(
-                    _drugModel.getCovariates(),
-                    emptyPatientVariates,
-                    fantomStart, _traits->getEnd(),
-                    _dosageHistory);
+                    _drugModel.getCovariates(), emptyPatientVariates, fantomStart, _traits->getEnd(), _dosageHistory);
             ComputingStatus covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
 
             if (covariateExtractionResult != ComputingStatus::Ok) {
@@ -520,10 +517,7 @@ ComputingStatus GeneralExtractor::generalExtractions(
                 endDate = _covariateEndTime;
             }
             CovariateExtractor covariateExtractor(
-                    _drugModel.getCovariates(),
-                    patientVariatesList,
-                    fantomStart, _traits->getEnd(),
-                    _dosageHistory);
+                    _drugModel.getCovariates(), patientVariatesList, fantomStart, _traits->getEnd(), _dosageHistory);
             ComputingStatus covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
 
             if (covariateExtractionResult != ComputingStatus::Ok) {

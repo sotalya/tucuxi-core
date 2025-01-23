@@ -190,7 +190,8 @@ bool DrugFileValidator::validate(const std::string& _drugFileName, const std::st
 
             CovariateSeries covariatesSeries;
             {
-                CovariateExtractor covariateExtractor(drugModel->getCovariates(), patientVariates, startDate, endDate, DosageHistory());
+                CovariateExtractor covariateExtractor(
+                        drugModel->getCovariates(), patientVariates, startDate, endDate, DosageHistory());
                 ComputingStatus covariateExtractionResult = covariateExtractor.extract(covariatesSeries);
 
                 if (covariateExtractionResult != ComputingStatus::Ok) {
