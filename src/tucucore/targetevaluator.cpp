@@ -54,8 +54,9 @@ void TargetEvaluator::evaluateValue(
         _score = 1.0
                  - pow(log(_value) - log(_targetEvent.m_valueBest), 2)
                            / pow(0.5 * (log(_targetEvent.m_valueMax) - log(_targetEvent.m_valueMin)), 2);
-        _outputValue = _value;
+        // _outputValue = _value;
     }
+    _outputValue = _value;
 }
 
 double TargetEvaluator::aucOverMicCalculator(const TargetEvent& _targetEvent, CycleData& _cycle)
@@ -111,7 +112,8 @@ ComputingStatus TargetEvaluator::evaluate(
         const ConcentrationPrediction& _prediction,
         const IntakeSeries& _intakeSeries,
         const TargetEvent& _targetEvent,
-        TargetEvaluationResult& _result)
+        TargetEvaluationResult& _result,
+        ForceResultUpdate _forceResult)
 {
 
     if (_prediction.getTimes().empty()) {
@@ -457,16 +459,20 @@ ComputingStatus TargetEvaluator::evaluate(
     } break;
     }
 
+
+    if (bOk || (_forceResult == ForceResultUpdate::Force)) {
+        // We build the result, as there was no error
+        _result = TargetEvaluationResult(
+                _targetEvent.m_targetType,
+                score,
+                UnitManager::convertToUnit(value, _targetEvent.m_unit, _targetEvent.m_finalUnit),
+                _targetEvent.m_finalUnit);
+    }
+
     if (!bOk) {
         return ComputingStatus::InvalidCandidate;
     }
 
-    // We build the result, as there was no error
-    _result = TargetEvaluationResult(
-            _targetEvent.m_targetType,
-            score,
-            UnitManager::convertToUnit(value, _targetEvent.m_unit, _targetEvent.m_finalUnit),
-            _targetEvent.m_finalUnit);
 
     return ComputingStatus::Ok;
 }

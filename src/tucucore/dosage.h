@@ -1124,8 +1124,7 @@ public:
     ///                          treatment (if at least a dosage is present)
     /// \return True if at least a dosage is present (and, therefore, the start
     ///         of treatment date is a valid one), false otherwise.
-    [[nodiscard]]
-    bool getStartOfTreatment(DateTime &_startOfTreatment) const
+    [[nodiscard]] bool getStartOfTreatment(DateTime& _startOfTreatment) const
     {
         if (getNumberOfTimeRanges() == 0) {
             return false;
@@ -1133,7 +1132,7 @@ public:
 
         // Check if we are at steady state.
         DosageSteadyState const* steady_state_ptr =
-            dynamic_cast<DosageSteadyState const*>(m_history[getNumberOfTimeRanges()-1]->getDosage());
+                dynamic_cast<DosageSteadyState const*>(m_history[getNumberOfTimeRanges() - 1]->getDosage());
         if (steady_state_ptr != nullptr) {
             return false;
         }

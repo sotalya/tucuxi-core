@@ -420,9 +420,9 @@ ComputingStatus MultiComputingComponent::compute(
     TMP_UNUSED_PARAMETER(_request);
     TMP_UNUSED_PARAMETER(_response);
     return ComputingStatus::MultipleFormulationAndRoutesNotSupported;
-#ifdef NO_PERCENTILES
+#ifdef TUCU_NO_PERCENTILES
     return ComputingStatus::NoPercentilesCalculation;
-#endif
+#endif // TUCU_NO_PERCENTILES
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
         return ComputingStatus::NoComputingTraits;

@@ -47,19 +47,30 @@ class TargetEvaluator
 public:
     TargetEvaluator();
 
+    enum class ForceResultUpdate
+    {
+        Force = 0,
+        DoNotForce
+    };
+
     ///
     /// \brief evaluates a specific target on a prediction
     /// \param _prediction The calculated prediction
     /// \param _intakeSeries The intake series used for calculating the prediction
     /// \param _target The target to be evaluated
     /// \param _result The result of the evaluation
+    /// \param _forceResult Indicates if the _result is filled even if the candidate is out of range
     /// \return Result::Ok if everything went well, Result::InvalidCandidate if the candidate is outside the boundaries, Result::EvaluationError if there is an internal with the evaluation
+    ///
+    /// The _forceResult argument is used for computing the current dosage targets attainment,
+    /// and lets the _result empty for other non-valid cases (saves computation time)
     ///
     ComputingStatus evaluate(
             const ConcentrationPrediction& _prediction,
             const Tucuxi::Core::IntakeSeries& _intakeSeries,
             const TargetEvent& _targetEvent,
-            TargetEvaluationResult& _result);
+            TargetEvaluationResult& _result,
+            ForceResultUpdate _forceResult = ForceResultUpdate::Force);
 
     ///
     /// \brief aucOverMicCalculator

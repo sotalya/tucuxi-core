@@ -40,13 +40,13 @@
 namespace Tucuxi {
 namespace Common {
 
-#ifdef EASY_DEBUG
+#ifdef TUCU_TIME_DEBUG
 #define UPDATESTRING updateString()
 #else
 #define UPDATESTRING
-#endif // EASY_DEBUG
+#endif // TUCU_TIME_DEBUG
 
-#ifdef CHECK_DATETIME
+#ifdef TUCU_CHECK_DATETIME
 static bool sm_enableChecks = true;
 
 void DateTime::enableChecks()
@@ -86,7 +86,7 @@ void errorUndefinedDateTime(const DateTime& /*_date*/)
         }                                                             \
     }
 
-#else // CHECK_DATETIME
+#else // TUCU_CHECK_DATETIME
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #define SETDEFINED(value)    \
     {                        \
@@ -101,11 +101,11 @@ void errorUndefinedDateTime(const DateTime& /*_date*/)
 void DateTime::enableChecks() {}
 
 void DateTime::disableChecks() {}
-#endif // CHECK_DATETIME
+#endif // TUCU_CHECK_DATETIME
 
 
 
-#ifdef EASY_DEBUG
+#ifdef TUCU_TIME_DEBUG
 void DateTime::updateString()
 {
     if (!m_isDefined) {
@@ -117,7 +117,7 @@ void DateTime::updateString()
     m_dateString = str.str();
 }
 
-#endif
+#endif // TUCU_TIME_DEBUG
 
 DateTime::DateTime()
 {
@@ -201,9 +201,9 @@ DateTime DateTime::fromDurationSinceEpoch(const Duration& _durationSinceEpoch)
     DateTime date;
     date.m_date = std::chrono::time_point<std::chrono::system_clock>(d);
     date.m_isDefined = true;
-#ifdef EASY_DEBUG
+#ifdef TUCU_TIME_DEBUG
     date.updateString();
-#endif // EASY_DEBUG
+#endif // TUCU_TIME_DEBUG
     return date;
 }
 
@@ -504,9 +504,9 @@ DateTime DateTime::maximumDateTime()
     DateTime result;
     result.m_date = std::chrono::time_point<std::chrono::system_clock>::max();
     result.m_isDefined = true;
-#ifdef EASY_DEBUG
+#ifdef TUCU_TIME_DEBUG
     result.updateString();
-#endif // EASY_DEBUG
+#endif // TUCU_TIME_DEBUG
     return result;
 }
 
@@ -515,9 +515,9 @@ DateTime DateTime::minimumDateTime()
     DateTime result;
     result.m_date = std::chrono::time_point<std::chrono::system_clock>::min();
     result.m_isDefined = true;
-#ifdef EASY_DEBUG
+#ifdef TUCU_TIME_DEBUG
     result.updateString();
-#endif // EASY_DEBUG
+#endif // TUCU_TIME_DEBUG
     return result;
 }
 

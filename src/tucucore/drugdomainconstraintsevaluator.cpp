@@ -50,10 +50,8 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
     CovariateSeries covariateSeries;
 
 
-    CovariateExtractor extractor(_drugModel.getCovariates(),
-                                 _drugTreatment.getCovariates(),
-                                 _start, _end,
-                                 DosageHistory());
+    CovariateExtractor extractor(
+            _drugModel.getCovariates(), _drugTreatment.getCovariates(), _start, _end, DosageHistory());
 
     auto status = extractor.extract(covariateSeries);
     if (status != ComputingStatus::Ok) {
