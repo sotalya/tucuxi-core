@@ -28,13 +28,13 @@
 #include "tucucore/pkmodels/onecompartmentextra.h"
 #include "tucucore/pkmodels/onecompartmentextralag.h"
 #include "tucucore/pkmodels/onecompartmentinfusion.h"
-#include "tucucore/pkmodels/rkmichaelismentenonecompaiemax.h"
 #include "tucucore/pkmodels/rkmichaelismentenenzyme.h"
 #include "tucucore/pkmodels/rkmichaelismentenlinearonecomp.h"
 #include "tucucore/pkmodels/rkmichaelismentenlinearonecompvmaxamount.h"
 #include "tucucore/pkmodels/rkmichaelismentenlineartwocomp.h"
 #include "tucucore/pkmodels/rkmichaelismentenlineartwocompvmaxamount.h"
 #include "tucucore/pkmodels/rkmichaelismentenonecomp.h"
+#include "tucucore/pkmodels/rkmichaelismentenonecompaiemax.h"
 #include "tucucore/pkmodels/rkmichaelismentenonecompvmaxamount.h"
 #include "tucucore/pkmodels/rkmichaelismententwocomp.h"
 #include "tucucore/pkmodels/rkmichaelismententwocompvmaxamount.h"
@@ -422,13 +422,10 @@ bool defaultPopulate(PkModelCollection& _collection)
 
     {
         std::shared_ptr<PkModel> sharedPkModel;
-        sharedPkModel =
-                std::make_shared<PkModel>("michaelismenten.1comp.aiemax",
-                                          PkModel::AllowMultipleRoutes::No);
+        sharedPkModel = std::make_shared<PkModel>("michaelismenten.1comp.aiemax", PkModel::AllowMultipleRoutes::No);
         // For now we just have the lag-time version
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
-                AbsorptionModel::ExtravascularLag,
-                RkMichaelisMentenOneCompAiEmaxLag::getCreator());
+                AbsorptionModel::ExtravascularLag, RkMichaelisMentenOneCompAiEmaxLag::getCreator());
 
         Tucuxi::Common::TranslatableString elimination;
         elimination.setString("Michaelis-Menten with Ai and Emax", "en");
