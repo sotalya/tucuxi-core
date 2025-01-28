@@ -40,7 +40,6 @@ enum class RkMichaelisMentenOneCompAiEmaxCompartments : int
 /// \sa IntakeIntervalCalculator
 class RkMichaelisMentenOneCompAiEmax : public IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenOneCompAiEmax>
 {
-    INTAKEINTERVALCALCULATOR_UTILS(RkMichaelisMentenOneCompAiEmax)
 public:
     /// \brief Constructor
     RkMichaelisMentenOneCompAiEmax();
@@ -51,14 +50,14 @@ public:
 
     inline void derive(double _t, const Compartments_t& _c, Compartments_t& _dcdt)
     {
-        double const adj_t = _t - m_Tfs;
-        double const cc = _c[1] / m_V;
+        double const adj_t = _t + m_Tfs;
+        double const cc = _c[0];
         double const AI = 1 + (m_Emax * adj_t) / (m_T50 + adj_t);
         double const ClAI = ((m_Vmax * cc) / (m_Km + cc)) * AI;
-        double const ka_c0 = m_Ka * _c[0];
+        double const ka_c1 = m_Ka * _c[1];
 
-        _dcdt[0] = -ka_c0;
-        _dcdt[1] = ka_c0 - ClAI;
+        _dcdt[0] = -ka_c1;
+        _dcdt[1] = ka_c1 - ClAI;
     }
 
     inline void addFixedValue(double _t, Compartments_t& _concentrations)
@@ -67,13 +66,6 @@ public:
         FINAL_UNUSED_PARAMETER(_concentrations);
     }
 
-    void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
-    {
-        _concentrations[0] = _inResiduals[1] / m_V;
-        _concentrations[1] = _concentrations[0];
-        // Do not forget to reinitialize the flag for delivery of the drug
-        m_delivered = false;
-    }
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
@@ -125,6 +117,13 @@ public:
         }
     }
 
+    void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
+    {
+        _concentrations[0] = _inResiduals[0];
+        _concentrations[1] = _inResiduals[1] + m_D / m_V * m_F;
+        // Do not forget to reinitialize the flag for delivery of the drug
+        m_delivered = false;
+    }
 
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
