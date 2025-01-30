@@ -50,14 +50,14 @@ public:
 
     inline void derive(double _t, const Compartments_t& _c, Compartments_t& _dcdt)
     {
-        double const adj_t = _t + m_Tfs;
+        double const actualTime = _t + m_Tfs;
         double const cc = _c[0];
-        double const AI = 1 + (m_Emax * adj_t) / (m_T50 + adj_t);
-        double const ClAI = ((m_Vmax * cc) / (m_Km + cc)) * AI;
-        double const ka_c1 = m_Ka * _c[1];
+        double const ai = 1 + (m_Emax * actualTime) / (m_T50 + actualTime);
+        double const clAI = ((m_Vmax * cc) / (m_Km + cc)) * ai;
+        double const kaC1 = m_Ka * _c[1];
 
-        _dcdt[0] = -ka_c1;
-        _dcdt[1] = ka_c1 - ClAI;
+        _dcdt[0] = kaC1 - clAI;
+        _dcdt[1] = -kaC1;
     }
 
     inline void addFixedValue(double _t, Compartments_t& _concentrations)
@@ -111,7 +111,7 @@ public:
     {
         if (m_isWithLag) {
             if ((!m_delivered) && (_t >= m_Tlag)) {
-                _concentrations[1] += m_D / m_V * m_F;
+                _concentrations[0] += m_D / m_V * m_F;
                 m_delivered = true;
             }
         }
