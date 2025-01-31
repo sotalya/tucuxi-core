@@ -1,21 +1,21 @@
-/* 
- * Tucuxi - Tucuxi-core library and command line tool. 
- * This code allows to perform prediction of drug concentration in blood 
+/*
+ * Tucuxi - Tucuxi-core library and command line tool.
+ * This code allows to perform prediction of drug concentration in blood
  * and to propose dosage adaptations.
- * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * It has been developed by HEIG-VD, in close collaboration with CHUV.
  * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Affero General Public License for more details. 
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -77,6 +77,19 @@ const std::string& CovariateData::getNature() const
 PatientData::PatientData(vector<unique_ptr<Tucuxi::Core::PatientCovariate> >& _covariates)
     : m_covariates(move(_covariates))
 {
+    Tucuxi::Common::LoggerHelper logHelper;
+    // Validate the covariate data, checking that no two covariates have the same
+    // covariate ID and date.
+    for (size_t i = 0; i < m_covariates.size() - 1; ++i) {
+        for (size_t j = i + 1; j < m_covariates.size(); ++j) {
+            if ((m_covariates[i]->getId() == m_covariates[j]->getId())
+                && (m_covariates[i]->getEventTime() == m_covariates[j]->getEventTime())) {
+                logHelper.error(
+                        std::string("Duplicate covariate entry with ID = ") + m_covariates[j]->getId()
+                        + std::string(" at time ") + m_covariates[i]->getEventTime().str());
+            }
+        }
+    }
 }
 
 const vector<unique_ptr<Tucuxi::Core::PatientCovariate> >& PatientData::getCovariates() const
