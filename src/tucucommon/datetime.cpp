@@ -155,7 +155,7 @@ DateTime::DateTime(const std::string& _date, const std::string& _format)
     // std::istringstream ss(_date);
     ss >> std::get_time(&tm, _format.c_str());
     if (ss.fail()) {
-        throw std::runtime_error(std::string("Date Time parsing failed --- invalid date/time ") + ss.str());
+        throw std::runtime_error(std::string("Date Time parsing failed --- invalid time \"") + ss.str() + "\"");
     }
     date::year_month_day day = date::year_month_day(
             date::year(1900 + tm.tm_year),
