@@ -76,6 +76,21 @@ CovariateExtractor::CovariateExtractor(
     if (m_start > m_end) {
         throw std::runtime_error("[CovariateExtractor] Invalid time interval specified");
     }
+    // Reject duplicate patient covariates.
+    for (pvIterator_t it1 = m_patientCovariates.begin(); it1 != m_patientCovariates.end(); ++it1) {
+        for (pvIterator_t it2 = it1; it2 != m_patientCovariates.end(); ++it2) {
+            if (it1 == it2) {
+                continue;
+            }
+            if (((*it1)->getId() == (*it2)->getId()) && ((*it1)->getEventTime() == (*it2)->getEventTime())) {
+                Tucuxi::Common::LoggerHelper logHelper;
+                logHelper.error(
+                        std::string("Duplicate patient covariate entry with ID = ") + (*it1)->getId()
+                        + std::string(" at time ") + (*it1)->getEventTime().str());
+                throw std::runtime_error("[CovariateExtractor] Duplicate patient covariate entry");
+            }
+        }
+    }
 
     // ** Fill internal structures with ID and position in vector, splitting between computed and not **
     // Push covariate definitions, splitting between computed and not.
