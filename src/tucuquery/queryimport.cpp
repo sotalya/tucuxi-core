@@ -471,6 +471,10 @@ unique_ptr<Tucuxi::Query::FullSample> QueryImport::createSampleData(
 
     Tucuxi::Core::AnalyteId analyteId(getChildString(_concentrationRootIterator, ANALYTE_ID_NODE_NAME));
     Tucuxi::Core::Value value(getChildDouble(_concentrationRootIterator, VALUE_NODE_NAME));
+    if (value < 0) {
+        setStatus(Status::Error, "Invalid sample value " + std::to_string(value));
+    }
+
     TucuUnit unit = getChildUnit(_concentrationRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
 
     return make_unique<Tucuxi::Query::FullSample>(sampleId, sampleDate, analyteId, value, unit, weight);
