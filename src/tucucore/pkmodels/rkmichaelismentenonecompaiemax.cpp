@@ -85,7 +85,7 @@ bool RkMichaelisMentenOneCompAiEmax::checkInputs(const IntakeEvent& _intakeEvent
             m_T50,
             "The time at which the effect reaches "
             "half of its maximum");
-    bOK &= checkStrictlyPositiveValue(m_Tfs, "The time from start");
+    bOK &= checkPositiveValue(m_Tfs, "The time from start");
 
     return bOK;
 }
