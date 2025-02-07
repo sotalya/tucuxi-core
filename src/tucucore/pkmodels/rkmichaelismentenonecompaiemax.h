@@ -62,8 +62,15 @@ public:
 
     inline void addFixedValue(double _t, Compartments_t& _concentrations)
     {
-        FINAL_UNUSED_PARAMETER(_t);
-        FINAL_UNUSED_PARAMETER(_concentrations);
+        //FINAL_UNUSED_PARAMETER(_t);
+        //FINAL_UNUSED_PARAMETER(_concentrations);
+
+        if (m_isWithLag) {
+            if ((!m_delivered) && (_t >= m_Tlag)) {
+                _concentrations[1] += m_D / m_V * m_F;
+                m_delivered = true;
+            }
+        }
     }
 
 
@@ -82,6 +89,9 @@ protected:
 
     bool m_delivered{false};
     bool m_isWithLag{false};
+
+    // TODO : Bad location
+    Value m_Tlag{0.0}; /// Lag time before absorption begins
 
 private:
     typedef RkMichaelisMentenOneCompAiEmaxCompartments Compartments;
@@ -120,7 +130,7 @@ public:
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
         _concentrations[0] = _inResiduals[0];
-        _concentrations[1] = _inResiduals[1] + m_D / m_V * m_F;
+        _concentrations[1] = _inResiduals[1];
         // Do not forget to reinitialize the flag for delivery of the drug
         m_delivered = false;
     }
@@ -128,7 +138,7 @@ public:
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
-    Value m_Tlag{0.0}; /// Lag time before absorption begins
+    //Value m_Tlag{0.0}; /// Lag time before absorption begins
 };
 
 
