@@ -1759,7 +1759,8 @@ ComputingStatus ComputingAdjustments::evaluateCurrentDosageHistory(
         std::vector<TargetEvaluationResult> _evaluationResults;
 
         // We do the following even if the current dosage history is not in the target range
-        {
+        // TODO: To be checked
+        if (isValidCandidate) {
 
             if (!_request.getDrugModel().isSingleAnalyte()) {
 
