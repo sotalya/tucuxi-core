@@ -426,6 +426,8 @@ bool defaultPopulate(PkModelCollection& _collection)
         // For now we just have the lag-time version
         rc &= sharedPkModel->addIntakeIntervalCalculatorFactory(
                 AbsorptionModel::ExtravascularLag, RkMichaelisMentenOneCompAiEmaxLag::getCreator());
+        rc &= sharedPkModel->addParameterList(
+                AbsorptionModel::ExtravascularLag, RkMichaelisMentenOneCompAiEmaxLag::getParametersId());
 
         Tucuxi::Common::TranslatableString elimination;
         elimination.setString("Michaelis-Menten with Ai and Emax", "en");

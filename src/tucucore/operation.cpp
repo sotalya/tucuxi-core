@@ -410,13 +410,15 @@ bool JSOperation::evaluate(const OperationInputList& _inputs, double& _result)
     catch (const CScriptException* e) {
         sm_errorMessage = e->text;
         delete e;
-        //        Tucuxi::Common::LoggerHelper logger;
-        //        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
+        Tucuxi::Common::LoggerHelper logger;
+        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
         return false;
     }
     catch (...) {
-        //        Tucuxi::Common::LoggerHelper logger;
-        //        logger.error("Error with the execution of the JSOperation : {}", m_expression);
+        Tucuxi::Common::LoggerHelper logger;
+        logger.error("Error with the execution of the JSOperation : {}", m_expression);
+        std::cout << "Error with the execution of the JSOperation. It looks like the result is undefined :\n"
+                  << m_expression << '\n';
         return false;
     }
     return true;
