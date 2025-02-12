@@ -1,21 +1,21 @@
-/* 
- * Tucuxi - Tucuxi-core library and command line tool. 
- * This code allows to perform prediction of drug concentration in blood 
+/*
+ * Tucuxi - Tucuxi-core library and command line tool.
+ * This code allows to perform prediction of drug concentration in blood
  * and to propose dosage adaptations.
- * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * It has been developed by HEIG-VD, in close collaboration with CHUV.
  * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Affero General Public License for more details. 
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -30,6 +30,7 @@
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/covariateevent.h"
 #include "tucucore/definitions.h"
+#include "tucucore/dosage.h"
 #include "tucucore/drugtreatment/patientcovariate.h"
 #include "tucucore/intakeevent.h"
 
@@ -88,6 +89,7 @@ public:
     /// \param _patientCovariates Patient-specific covariates.
     /// \param _start Start time of the considered interval.
     /// \param _end End time of the considered interval.
+    /// \param _dosageHistory Dosage history (used to get the start of treatment date).
     /// \pre FORALL(d : _defaults) { d != nullptr }
     /// \pre FORALL(p : _patientCovariates) { p != nullptr }
     /// \pre _start <= _end
@@ -96,7 +98,8 @@ public:
             const CovariateDefinitions& _defaults,
             const PatientVariates& _patientCovariates,
             const DateTime& _start,
-            const DateTime& _end);
+            const DateTime& _end,
+            const DosageHistory& _dosageHistory = DosageHistory());
 
     /// \brief Default destructor for the Covariate Extractor.
     ~CovariateExtractor() override = default;
@@ -184,6 +187,28 @@ private:
 
     /// \brief Default value for an AgeInYears variable (if present).
     double m_initAgeInYears;
+
+    /// \brief Flag that marks whether a start of treatment date has been found
+    ///        in the dosage history.
+    bool m_hasStartOfTreatmentDate;
+
+    /// \brief Start of treatment date.
+    DateTime m_startOfTreatmentDate;
+
+    /// \brief Default value for a TimeFromStartInHours variable (if present).
+    double m_initTimeFromStartInHours;
+
+    /// \brief Default value for a TimeFromStartInDays variable (if present).
+    double m_initTimeFromStartInDays;
+
+    /// \brief Default value for a TimeFromStartInWeeks variable (if present).
+    double m_initTimeFromStartInWeeks;
+
+    /// \brief Default value for a TimeFromStartInMonths variable (if present).
+    double m_initTimeFromStartInMonths;
+
+    /// \brief Default value for a TimeFromStartInYears variable (if present).
+    double m_initTimeFromStartInYears;
 
     /// \brief Operable Graph Manager, in charge of performing all the computations needed to derive covariate values.
     OperableGraphManager m_ogm;

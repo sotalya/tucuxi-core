@@ -50,6 +50,8 @@
 #include "tucucore/residualerrormodelextractor.h"
 #include "tucucore/treatmentdrugmodelcompatibilitychecker.h"
 
+#include "definitions.h"
+
 namespace Tucuxi {
 namespace Core {
 
@@ -424,9 +426,15 @@ ComputingStatus ComputingComponent::compute(
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response)
 {
-#ifdef NO_PERCENTILES
+#ifdef TUCU_NO_PERCENTILES
     return ComputingStatus::NoPercentilesCalculation;
-#endif
+#endif // TUCU_NO_PERCENTILES
+
+    for (const auto& rank : _traits->getRanks()) {
+        if (rank > PERCENTILE_RANK_MAX || rank < PERCENTILE_RANK_MIN) {
+            return ComputingStatus::OutOfBoundsPercentileRank;
+        }
+    }
     if (_request.getDrugModel().getAnalyteSets().size() > 1) {
         return computePercentilesMulti(_traits, _request, _response);
     }
@@ -438,9 +446,9 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response)
 {
-#ifdef NO_PERCENTILES
+#ifdef TUCU_NO_PERCENTILES
     return ComputingStatus::NoPercentilesCalculation;
-#endif
+#endif // TUCU_NO_PERCENTILES
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
         return ComputingStatus::NoComputingTraits;
@@ -645,9 +653,9 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response)
 {
-#ifdef NO_PERCENTILES
+#ifdef TUCU_NO_PERCENTILES
     return ComputingStatus::NoPercentilesCalculation;
-#endif
+#endif // TUCU_NO_PERCENTILES
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
         return ComputingStatus::NoComputingTraits;

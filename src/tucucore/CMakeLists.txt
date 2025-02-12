@@ -5,6 +5,58 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+option(TUCU_NO_PERCENTILES "Builds tucucore with percentiles computation disabled. Only used for easing development.")
+if (TUCU_NO_PERCENTILES)
+    add_compile_definitions(TUCU_NO_PERCENTILES)
+endif()
+
+option(TUCU_DRUGMODELTESTS "Compiles tucucore with additional drug models embeded for tests.")
+if (TUCU_DRUGMODELTESTS)
+    add_compile_definitions(TUCU_DRUGMODELTESTS)
+endif()
+
+option(TUCU_NOCATCH "Converts try{} catch{} to try/catch at all. Allows to ease debug stages.")
+if (TUCU_NOCATCH)
+    add_compile_definitions(TUCU_NOCATCH)
+endif()
+
+option(TUCU_POPPARAMETERSFROMDEFAULTVALUES "Does not compute population PK parameters from the typical patient with a priori computation, but directly takes the values fixed in the drug model. Only used for testing purpose.")
+if (TUCU_POPPARAMETERSFROMDEFAULTVALUES)
+    add_compile_definitions(TUCU_POPPARAMETERSFROMDEFAULTVALUES)
+endif()
+
+option(TUCU_INTAKECALCULATOR_VERBOSE "Displays information of intakecalculators parameters. Only used for debugging purpose.")
+if (TUCU_INTAKECALCULATOR_VERBOSE)
+    add_compile_definitions(TUCU_INTAKECALCULATOR_VERBOSE)
+endif()
+
+option(TUCU_SINGLETHREADEDPERCENTILESORT "Runs a single-threaded version of percentiles sort.")
+if (TUCU_SINGLETHREADEDPERCENTILESORT)
+    add_compile_definitions(TUCU_SINGLETHREADEDPERCENTILESORT)
+endif()
+
+
+option(TUCU_MULTITHREADEDPERCENTILESUBOPTIMALSORT "If run with the multithreaded version of percentiles sort, selects a suboptimal multithreaded version.")
+if (TUCU_MULTITHREADEDPERCENTILESUBOPTIMALSORT)
+    add_compile_definitions(TUCU_MULTITHREADEDPERCENTILESUBOPTIMALSORT)
+endif()
+
+option(TUCU_SINGLETHREADEDPERCENTILESORTOPTION "If not in multithreaded version, selects a sort option over the other.")
+if (TUCU_SINGLETHREADEDPERCENTILESORTOPTION)
+    add_compile_definitions(TUCU_SINGLETHREADEDPERCENTILESORTOPTION)
+endif()
+
+option(TUCU_SINGLETHREADEDPERCENTILECOMPUTATION "Runs a multithreaded version of percentiles computation.")
+if (TUCU_SINGLETHREADEDPERCENTILECOMPUTATION)
+    add_compile_definitions(TUCU_SINGLETHREADEDPERCENTILECOMPUTATION)
+endif()
+
+option(TUCU_CONFIG_OPENMP "Runs percentiles computation with OpenMP.")
+if (TUCU_CONFIG_OPENMP)
+    add_compile_definitions(TUCU_CONFIG_OPENMP)
+endif()
+
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../)
 
 include(${CMAKE_CURRENT_LIST_DIR}/../../libs/tucuxi-core_libs)
@@ -96,6 +148,7 @@ file(GLOB TUCUCORE_HEADERS_FILES
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/onecompartmentextra.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/onecompartmentextralag.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/onecompartmentinfusion.h
+    ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenonecompaiemax.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenenzyme.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenlinearonecomp.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenlinearonecompvmaxamount.h
@@ -130,7 +183,7 @@ file(GLOB TUCUCORE_HEADERS_FILES
     ${CMAKE_CURRENT_LIST_DIR}/validvalues.h
     ${CMAKE_CURRENT_LIST_DIR}/version.h)
 
-file(GLOB TUCUCORE_SOURCE_FILES    
+file(GLOB TUCUCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/aposteriorietascalculator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/cachecomputing.cpp
     ${CMAKE_CURRENT_LIST_DIR}/cachedexponentials.cpp
@@ -195,6 +248,7 @@ file(GLOB TUCUCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/onecompartmentextra.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/onecompartmentextralag.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/onecompartmentinfusion.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenonecompaiemax.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenenzyme.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenlinearonecomp.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/rkmichaelismentenlinearonecompvmaxamount.cpp

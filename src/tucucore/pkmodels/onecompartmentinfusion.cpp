@@ -34,10 +34,6 @@
 namespace Tucuxi {
 namespace Core {
 
-#if 0
-#define DEBUG
-#endif
-
 OneCompartmentInfusionMicro::OneCompartmentInfusionMicro()
     : IntakeIntervalCalculatorBase<1, OneCompartmentInfusionExponentials>(
             std::make_unique<PertinentTimesCalculatorInfusion>())
@@ -63,7 +59,7 @@ bool OneCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_Int = (_intakeEvent.getInterval()).toHours();
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
 
-#ifdef DEBUG
+#ifdef TUCU_INTAKECALCULATOR_VERBOSE
     Tucuxi::Common::LoggerHelper logHelper;
 
     logHelper.debug("<<Input Values>>");
@@ -73,7 +69,7 @@ bool OneCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     logHelper.debug("m_Tinf: {}", m_Tinf);
     logHelper.debug("m_Int: {}", m_Int);
     logHelper.debug("m_nbPoints: {}", m_nbPoints);
-#endif
+#endif // TUCU_INTAKECALCULATOR_VERBOSE
 
     bool bOK = checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V, "The volume");

@@ -1,27 +1,28 @@
-/* 
- * Tucuxi - Tucuxi-core library and command line tool. 
- * This code allows to perform prediction of drug concentration in blood 
+/*
+ * Tucuxi - Tucuxi-core library and command line tool.
+ * This code allows to perform prediction of drug concentration in blood
  * and to propose dosage adaptations.
- * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * It has been developed by HEIG-VD, in close collaboration with CHUV.
  * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Affero General Public License for more details. 
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 
 #include "queryimport.h"
 
+#include "tucucommon/loggerhelper.h"
 #include "tucucommon/utils.h"
 #include "tucucommon/xmlattribute.h"
 #include "tucucommon/xmldocument.h"
@@ -470,6 +471,10 @@ unique_ptr<Tucuxi::Query::FullSample> QueryImport::createSampleData(
 
     Tucuxi::Core::AnalyteId analyteId(getChildString(_concentrationRootIterator, ANALYTE_ID_NODE_NAME));
     Tucuxi::Core::Value value(getChildDouble(_concentrationRootIterator, VALUE_NODE_NAME));
+    if (value < 0) {
+        setStatus(Status::Error, "Invalid sample value " + std::to_string(value));
+    }
+
     TucuUnit unit = getChildUnit(_concentrationRootIterator, UNIT_NODE_NAME, CheckUnit::Check);
 
     return make_unique<Tucuxi::Query::FullSample>(sampleId, sampleDate, analyteId, value, unit, weight);
@@ -657,7 +662,14 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(
         static const string TIME_NODE_NAME = "time";
 
         string timeValue = _dosageBoundedIterator->getChildren(TIME_NODE_NAME)->getValue();
-        Common::TimeOfDay time(Common::DateTime(timeValue, "%H:%M:%S").getTimeOfDay());
+        Common::TimeOfDay time;
+        try {
+            time = Common::DateTime(timeValue, "%H:%M:%S").getTimeOfDay();
+        }
+        catch (std::runtime_error const& e) {
+            setNodeError(_dosageBoundedIterator);
+            pDosageBounded = nullptr;
+        }
 
         Common::XmlNodeIterator doseRootIterator = _dosageBoundedIterator->getChildren(DOSE_NODE_NAME);
         Core::DoseValue doseValue = getChildDouble(doseRootIterator, DOSE_VALUE_NODE_NAME);
@@ -894,6 +906,10 @@ Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(
     Tucuxi::Core::PercentileRanks ranks;
     while (it != Common::XmlNodeIterator::none()) {
         Tucuxi::Core::PercentileRank rank = extractDouble(it);
+        if (rank > Core::PERCENTILE_RANK_MAX || rank < Core::PERCENTILE_RANK_MIN) {
+            setNodeError(it);
+            break;
+        }
         ranks.push_back(rank);
         it++;
     }

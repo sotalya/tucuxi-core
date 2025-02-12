@@ -364,6 +364,20 @@ bool JSOperation::evaluate(const OperationInputList& _inputs, double& _result)
     // Also the cast of result can go wrong.
     try {
 
+        // A potential idea to save initialization time.
+        // However we should clear the engine, just keeping the registered functions
+        /*
+        JSEngine* jSE = nullptr;
+        if (!JSEngine::sm_enginePerThread.contains(std::this_thread::get_id())) {
+            auto jS = std::make_unique<JSEngine>();
+            jSE = jS.get();
+            JSEngine::sm_enginePerThread[std::this_thread::get_id()] = std::move(jS);
+        }
+        else {
+            jSE = JSEngine::sm_enginePerThread.at(std::this_thread::get_id()).get();
+        }
+        JSEngine& jsEngine = *jSE;
+*/
         JSEngine jsEngine;
         // Push the inputs
 
@@ -396,13 +410,15 @@ bool JSOperation::evaluate(const OperationInputList& _inputs, double& _result)
     catch (const CScriptException* e) {
         sm_errorMessage = e->text;
         delete e;
-        //        Tucuxi::Common::LoggerHelper logger;
-        //        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
+        Tucuxi::Common::LoggerHelper logger;
+        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
         return false;
     }
     catch (...) {
-        //        Tucuxi::Common::LoggerHelper logger;
-        //        logger.error("Error with the execution of the JSOperation : {}", m_expression);
+        Tucuxi::Common::LoggerHelper logger;
+        logger.error("Error with the execution of the JSOperation : {}", m_expression);
+        std::cout << "Error with the execution of the JSOperation. It looks like the result is undefined :\n"
+                  << m_expression << '\n';
         return false;
     }
     return true;

@@ -5,6 +5,16 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(EASY_DEBUG "Builds the dates and times with a string representation for easy debug")
+if (EASY_DEBUG)
+    add_compile_definitions(EASY_DEBUG)
+endif()
+
+option(CHECK_DATETIME "Checks that each DateTime object is used initialized to a valid value. To be only used in DEBUG mode, for performance reason")
+if (CHECK_DATETIME)
+    add_compile_definitions(CHECK_DATETIME)
+endif()
+
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../)
 # Include src directory
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../../src)

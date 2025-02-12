@@ -1,21 +1,21 @@
-/* 
- * Tucuxi - Tucuxi-core library and command line tool. 
- * This code allows to perform prediction of drug concentration in blood 
+/*
+ * Tucuxi - Tucuxi-core library and command line tool.
+ * This code allows to perform prediction of drug concentration in blood
  * and to propose dosage adaptations.
- * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * It has been developed by HEIG-VD, in close collaboration with CHUV.
  * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Affero General Public License for more details. 
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -337,7 +337,6 @@ ComputingStatus GeneralExtractor::generalExtractions(
 
 
     if (nIntakes > 0) {
-
         // Check the fantom start. Set the calculation start time
         // to the first intake of the dosage history at earliest
         if (fantomStart < _dosageHistory.getDosageTimeRanges()[0]->getStartDate()) {
@@ -488,7 +487,7 @@ ComputingStatus GeneralExtractor::generalExtractions(
                 }
             }
             CovariateExtractor covariateExtractor(
-                    _drugModel.getCovariates(), emptyPatientVariates, fantomStart, _traits->getEnd());
+                    _drugModel.getCovariates(), emptyPatientVariates, fantomStart, _traits->getEnd(), _dosageHistory);
             ComputingStatus covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
 
             if (covariateExtractionResult != ComputingStatus::Ok) {
@@ -518,7 +517,7 @@ ComputingStatus GeneralExtractor::generalExtractions(
                 endDate = _covariateEndTime;
             }
             CovariateExtractor covariateExtractor(
-                    _drugModel.getCovariates(), patientVariatesList, fantomStart, _traits->getEnd());
+                    _drugModel.getCovariates(), patientVariatesList, fantomStart, _traits->getEnd(), _dosageHistory);
             ComputingStatus covariateExtractionResult = covariateExtractor.extract(_covariatesSeries);
 
             if (covariateExtractionResult != ComputingStatus::Ok) {
@@ -566,9 +565,11 @@ ComputingStatus GeneralExtractor::generalExtractions(
 
 
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Population) {
-#ifdef POPPARAMETERSFROMDEFAULTVALUES
+#ifdef TUCU_POPPARAMETERSFROMDEFAULTVALUES
             parametersExtractionResult = parameterExtractor.extractPopulation(_parameterSeries);
-#else
+
+#else // TUCU_POPPARAMETERSFROMDEFAULTVALUES
+
             //parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
 
             ParameterSetSeries intermediateParameterSeries;
@@ -589,7 +590,7 @@ ComputingStatus GeneralExtractor::generalExtractions(
                 return parametersExtractionResult;
             }
 
-#endif // POPPARAMETERSFROMDEFAULTVALUES
+#endif // TUCU_POPPARAMETERSFROMDEFAULTVALUES
 
             if (parametersExtractionResult != ComputingStatus::Ok) {
                 m_logger.error("Can not extract parameters");
@@ -765,9 +766,11 @@ ComputingStatus GeneralExtractor::extractParameters(
 
 
         if (_parametersType == PredictionParameterType::Population) {
-#ifdef POPPARAMETERSFROMDEFAULTVALUES
+#ifdef TUCU_POPPARAMETERSFROMDEFAULTVALUES
             parametersExtractionResult = parameterExtractor.extractPopulation(_parameterSeries);
-#else
+
+#else // TUCU_POPPARAMETERSFROMDEFAULTVALUES
+
             //parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
 
             ParameterSetSeries intermediateParameterSeries;
@@ -788,7 +791,7 @@ ComputingStatus GeneralExtractor::extractParameters(
                 return parametersExtractionResult;
             }
 
-#endif // POPPARAMETERSFROMDEFAULTVALUES
+#endif // TUCU_POPPARAMETERSFROMDEFAULTVALUES
 
             if (parametersExtractionResult != ComputingStatus::Ok) {
                 m_logger.error("Can not extract parameters");

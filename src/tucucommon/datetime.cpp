@@ -40,13 +40,13 @@
 namespace Tucuxi {
 namespace Common {
 
-#ifdef EASY_DEBUG
+#ifdef TUCU_TIME_DEBUG
 #define UPDATESTRING updateString()
 #else
 #define UPDATESTRING
-#endif // EASY_DEBUG
+#endif // TUCU_TIME_DEBUG
 
-#ifdef CHECK_DATETIME
+#ifdef TUCU_CHECK_DATETIME
 static bool sm_enableChecks = true;
 
 void DateTime::enableChecks()
@@ -86,7 +86,7 @@ void errorUndefinedDateTime(const DateTime& /*_date*/)
         }                                                             \
     }
 
-#else // CHECK_DATETIME
+#else // TUCU_CHECK_DATETIME
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #define SETDEFINED(value)    \
     {                        \
@@ -101,11 +101,11 @@ void errorUndefinedDateTime(const DateTime& /*_date*/)
 void DateTime::enableChecks() {}
 
 void DateTime::disableChecks() {}
-#endif // CHECK_DATETIME
+#endif // TUCU_CHECK_DATETIME
 
 
 
-#ifdef EASY_DEBUG
+#ifdef TUCU_TIME_DEBUG
 void DateTime::updateString()
 {
     if (!m_isDefined) {
@@ -117,7 +117,7 @@ void DateTime::updateString()
     m_dateString = str.str();
 }
 
-#endif
+#endif // TUCU_TIME_DEBUG
 
 DateTime::DateTime()
 {
@@ -155,7 +155,7 @@ DateTime::DateTime(const std::string& _date, const std::string& _format)
     // std::istringstream ss(_date);
     ss >> std::get_time(&tm, _format.c_str());
     if (ss.fail()) {
-        throw std::runtime_error("Date Time parsing failed");
+        throw std::runtime_error(std::string("Date Time parsing failed --- invalid time \"") + ss.str() + "\"");
     }
     date::year_month_day day = date::year_month_day(
             date::year(1900 + tm.tm_year),
@@ -201,9 +201,9 @@ DateTime DateTime::fromDurationSinceEpoch(const Duration& _durationSinceEpoch)
     DateTime date;
     date.m_date = std::chrono::time_point<std::chrono::system_clock>(d);
     date.m_isDefined = true;
-#ifdef EASY_DEBUG
+#ifdef TUCU_TIME_DEBUG
     date.updateString();
-#endif // EASY_DEBUG
+#endif // TUCU_TIME_DEBUG
     return date;
 }
 
@@ -276,10 +276,33 @@ void DateTime::addMonths(int _nMonths)
 }
 
 
+void DateTime::subMonths(int _nMonths)
+{
+    CHECKDEFINED;
+    date::year_month_day curDate = DateTime::getDate();
+    TimeOfDay t = getTimeOfDay();
+    int nMonths = year() * 12 + month() + _nMonths;
+    int nYears = nMonths / 12;
+    nMonths = nMonths % 12;
+    m_date = date::sys_days(
+            date::year_month_day(date::year(nYears), date::month(static_cast<unsigned int>(nMonths)), curDate.day()));
+    m_date -= std::chrono::milliseconds(t.getDuration());
+    UPDATESTRING;
+}
+
+
 void DateTime::addDays(int _nDays)
 {
     CHECKDEFINED;
     m_date += std::chrono::hours(_nDays * 24);
+    UPDATESTRING;
+}
+
+
+void DateTime::addHours(int _nHours)
+{
+    CHECKDEFINED;
+    m_date += std::chrono::hours(_nHours);
     UPDATESTRING;
 }
 
@@ -470,11 +493,20 @@ double DateTime::toDays() const
     return std::floor(static_cast<double>(get<std::chrono::hours>().count()) / 24);
 }
 
+double DateTime::toHours() const
+{
+    CHECKDEFINED;
+    return std::floor(static_cast<double>(get<std::chrono::hours>().count()));
+}
 
 DateTime DateTime::maximumDateTime()
 {
     DateTime result;
     result.m_date = std::chrono::time_point<std::chrono::system_clock>::max();
+    result.m_isDefined = true;
+#ifdef TUCU_TIME_DEBUG
+    result.updateString();
+#endif // TUCU_TIME_DEBUG
     return result;
 }
 
@@ -482,6 +514,10 @@ DateTime DateTime::minimumDateTime()
 {
     DateTime result;
     result.m_date = std::chrono::time_point<std::chrono::system_clock>::min();
+    result.m_isDefined = true;
+#ifdef TUCU_TIME_DEBUG
+    result.updateString();
+#endif // TUCU_TIME_DEBUG
     return result;
 }
 

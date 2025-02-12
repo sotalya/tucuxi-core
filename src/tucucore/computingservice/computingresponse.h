@@ -233,7 +233,7 @@ protected:
 };
 
 ///
-/// \brief The FullDosage class
+/// \brief The DosageAdjustment class
 /// This class embeds all information about a potential dosage adjustment:
 /// The dosage history, the score (suitability of the dosage), and concentrations
 /// if the concentrations have been calculated
@@ -292,9 +292,35 @@ public:
     // To be checked if we need that function instead of the previous one
     // std::vector<DosageAdjustment> getAdjustments() const { return m_adjustments;}
 
+    const DosageAdjustment& getCurrentDosageWithScore() const
+    {
+        return m_currentDosageWithScore;
+    }
+
+    void setCurrentDosageWithScore(DosageAdjustment _currentDosage)
+    {
+        m_currentDosageWithScore = _currentDosage;
+    }
+
+    void setIsCurrentInRange(bool _isInRange)
+    {
+        m_isCurrentInRange = _isInRange;
+    }
+
+    bool isCurrentInRange() const
+    {
+        return m_isCurrentInRange;
+    }
+
 protected:
     /// A vector of possible dosage adjustments
     std::vector<DosageAdjustment> m_adjustments;
+
+    /// Embeds the current dosage and its score/target attainment
+    DosageAdjustment m_currentDosageWithScore;
+
+    /// Indicates if the current dosage is in the targets range
+    bool m_isCurrentInRange{false};
 };
 
 ///

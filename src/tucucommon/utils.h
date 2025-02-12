@@ -90,6 +90,14 @@ std::string varToString(const DateTime& _value);
 /// \return Equivalent date.
 DateTime ValueToDate(const Value& _value);
 
+/// \brief Express the difference between two dates in hours.
+/// \param _t1 First date in the difference.
+/// \param _t2 Second date in the difference.
+/// \note The absolute value of the difference is returned!
+/// \return Number of hours by which the two dates differ.
+/// Be careful, the returned value is an int, and as such is floored.
+int dateDiffInHours(const DateTime& _t1, const DateTime& _t2);
+
 /// \brief Express the difference between two dates in days.
 /// \param _t1 First date in the difference.
 /// \param _t2 Second date in the difference.

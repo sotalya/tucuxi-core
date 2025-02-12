@@ -38,6 +38,8 @@ SOURCES += \
     ../../../src/tucucli/tucucli.cpp \
     ../../../src/tucucli/clicomputer.cpp
 
+QMAKE_CXXFLAGS += -std=c++20
+
 !win32 {
     # Because of Eigen:
     QMAKE_CXXFLAGS += -Wno-int-in-bool-context

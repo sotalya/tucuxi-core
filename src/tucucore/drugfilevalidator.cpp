@@ -34,6 +34,7 @@
 #include "tucucommon/loggerhelper.h"
 
 #include "tucucore/covariateextractor.h"
+#include "tucucore/dosage.h"
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugmodelchecker.h"
 #include "tucucore/drugmodelimport.h"
@@ -189,7 +190,8 @@ bool DrugFileValidator::validate(const std::string& _drugFileName, const std::st
 
             CovariateSeries covariatesSeries;
             {
-                CovariateExtractor covariateExtractor(drugModel->getCovariates(), patientVariates, startDate, endDate);
+                CovariateExtractor covariateExtractor(
+                        drugModel->getCovariates(), patientVariates, startDate, endDate, DosageHistory());
                 ComputingStatus covariateExtractionResult = covariateExtractor.extract(covariatesSeries);
 
                 if (covariateExtractionResult != ComputingStatus::Ok) {
