@@ -967,6 +967,13 @@ public:
         return m_endDate;
     }
 
+    /// \brief Setter for the end date of the interval.
+    /// \param End date of the interval.
+    void setEndDate(DateTime _endDate)
+    {
+        m_endDate = _endDate;
+    }
+
     /// \brief Check a time range against a list of time ranges for overlaps.
     /// \param _timeRange Time range to check.
     /// \param _timeRangeList List of time ranges to compare against.
