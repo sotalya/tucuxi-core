@@ -53,7 +53,7 @@ public:
         double const actualTime = _t + m_Tfs;
         double const cc = _c[0];
         double const ai = 1 + (m_Emax * actualTime) / (m_T50 + actualTime);
-        double const clAI = ((m_Vmax * cc) / (m_Km + cc)) * ai;
+        double const clAI = ((m_Vmax * cc) / (m_Km + cc)) * ai / m_V;
         double const kaC1 = m_Ka * _c[1];
 
         _dcdt[0] = kaC1 - clAI;
