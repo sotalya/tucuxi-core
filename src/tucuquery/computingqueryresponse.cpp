@@ -82,11 +82,19 @@ void ComputingQueryResponse::setRequestResponseId(Tucuxi::Core::RequestResponseI
     m_queryId = std::move(_requestResponseId);
 }
 
+void ComputingQueryResponse::setComputingTimeInSeconds(std::chrono::duration<double> _computingTime)
+{
+    m_computingTimeInSeconds = _computingTime;
+}
+
+std::chrono::duration<double> ComputingQueryResponse::getComputingTimeInSeconds() const
+{
+    return m_computingTimeInSeconds;
+}
+
 ComputingResponseMetaData::ComputingResponseMetaData(std::string _drugModelID) : m_drugModelId(std::move(_drugModelID))
 {
 }
-
-
 
 } // namespace Query
 } // namespace Tucuxi

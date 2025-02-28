@@ -46,6 +46,8 @@ QueryComputer::QueryComputer() = default;
 void QueryComputer::compute(
         ComputingQuery& _query, ComputingQueryResponse& _response, const std::string& _tqfOutputFileName)
 {
+    // Record start time
+    auto start = std::chrono::high_resolution_clock::now();
 
     auto computingComponent = dynamic_cast<Core::IComputingService*>(Core::ComputingComponent::createComponent());
 
@@ -86,6 +88,11 @@ void QueryComputer::compute(
             _response.setQueryStatus(QueryStatus::PartiallyOk);
         }
     }
+
+    // Record end time
+    auto finish = std::chrono::high_resolution_clock::now();
+    // Store the computing time in the response
+    _response.setComputingTimeInSeconds(finish - start);
 
     delete computingComponent;
 }

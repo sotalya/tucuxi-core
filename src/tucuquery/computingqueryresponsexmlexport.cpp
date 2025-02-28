@@ -109,6 +109,8 @@ bool ComputingQueryResponseXmlExport::exportToString(
     Tucuxi::Common::XmlNode description = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "description");
     queryStatus.addChild(description);
 
+    addNode(queryStatus, "execTimeInMs", _computingQueryResponse.getComputingTimeInSeconds().count() * 1000.0);
+
     if ((_computingQueryResponse.getQueryStatus() == QueryStatus::ImportError)
         || (_computingQueryResponse.getQueryStatus() == QueryStatus::BadFormat)) {
         //Only queryId and queryStatus Information
@@ -154,6 +156,9 @@ bool ComputingQueryResponseXmlExport::exportToString(
         Tucuxi::Common::XmlNode description = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "description");
         requestStatus.addChild(description);
 
+        addNode(requestStatus,
+                "execTimeInMs",
+                response.m_computingResponse->getComputingTimeInSeconds().count() * 1000.0);
 
         // We start by checking for adjustements, as AdjustmentResponse is a subclass of SinglePredictionResponse
         if (dynamic_cast<const Tucuxi::Core::AdjustmentData*>(response.m_computingResponse->getData()) != nullptr) {

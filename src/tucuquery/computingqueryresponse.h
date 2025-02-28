@@ -96,6 +96,22 @@ public:
             std::unique_ptr<ComputingResponseMetaData> _metaData);
     void setRequestResponseId(Tucuxi::Core::RequestResponseId _requestResponseId);
 
+
+    ///
+    /// \brief Set the computing time of this request
+    /// \param _computingTime the computing time of the request
+    ///
+    void setComputingTimeInSeconds(std::chrono::duration<double> _computingTime);
+
+    ///
+    /// \brief get the computing time of this request
+    /// \return the computing time of the request
+    /// The time is indicated in seconds, and will roughly correspond to the
+    /// sum of the execution time of each request. It should be slightly higher,
+    /// but not that much.
+    ///
+    std::chrono::duration<double> getComputingTimeInSeconds() const;
+
     Tucuxi::Core::RequestResponseId m_queryId;
 
     QueryStatus m_queryStatus{QueryStatus::Undefined};
@@ -105,6 +121,8 @@ public:
     std::vector<SingleResponseData> m_requestResponses;
 
     std::unique_ptr<QueryResponseMetaData> m_metaData;
+
+    std::chrono::duration<double, std::ratio<1, 1> > m_computingTimeInSeconds{0};
 };
 
 

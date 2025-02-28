@@ -444,6 +444,10 @@ public:
     ///
     std::chrono::duration<double> getComputingTimeInSeconds() const;
 
+    ///
+    /// \brief set the computing status
+    /// \param _result The computing status
+    ///
     void setComputingStatus(ComputingStatus _result);
 
     ComputingStatus getComputingStatus() const;

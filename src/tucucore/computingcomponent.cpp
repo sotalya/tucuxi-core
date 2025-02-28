@@ -148,6 +148,8 @@ ComputingStatus ComputingComponent::compute(
         // Store the computing time in the response
         _response->setComputingTimeInSeconds(finish - start);
 
+        // std::cout << "Request \t" << _request.getId() << "\tComputing time (ms): \t" << 1000.0 * _response->getComputingTimeInSeconds().count() << '\n';
+
         _response->setComputingStatus(result);
         return result;
     }
