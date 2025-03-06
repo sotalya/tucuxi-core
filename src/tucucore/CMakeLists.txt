@@ -178,6 +178,7 @@ file(GLOB TUCUCORE_HEADERS_FILES
     ${CMAKE_CURRENT_LIST_DIR}/targetevaluator.h
     ${CMAKE_CURRENT_LIST_DIR}/targetevent.h
     ${CMAKE_CURRENT_LIST_DIR}/targetextractor.h
+    ${CMAKE_CURRENT_LIST_DIR}/tdacalculator.h
     ${CMAKE_CURRENT_LIST_DIR}/timedevent.h
     ${CMAKE_CURRENT_LIST_DIR}/treatmentdrugmodelcompatibilitychecker.h
     ${CMAKE_CURRENT_LIST_DIR}/validvalues.h
@@ -275,6 +276,7 @@ file(GLOB TUCUCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/sampleevent.cpp
     ${CMAKE_CURRENT_LIST_DIR}/sampleextractor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/targetevaluationresult.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/tdacalculator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/targetevaluator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/targetevent.cpp
     ${CMAKE_CURRENT_LIST_DIR}/targetextractor.cpp
