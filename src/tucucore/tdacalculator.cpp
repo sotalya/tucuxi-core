@@ -23,9 +23,17 @@ std::vector<Duration> TDACalculator::calculateDurations(
                               firstDate,
                               lastDate,
                               1,
-                              TucuUnit("mg/l"),
+                              TucuUnit("mg"),
                               intakes,
-                              ExtractionOption::EndofDate);
+                              ExtractionOption::ForceCycle);
+
+    auto dt1 = intakes.back().getEventTime();
+
+    for (const auto& sample : samples) {
+        Duration diff = sample->getDate() - dt1;
+        double hours = diff.toHours();
+        durations.push_back(diff);
+    }
 
     return durations;
 }

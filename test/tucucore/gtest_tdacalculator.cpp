@@ -57,13 +57,15 @@ Samples create_samples(){
     AnalyteId analyteId("theAnalyte");
 
     samples.push_back(
-            std::make_unique<Sample>(DATE_TIME_NO_VAR(2017, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
+            std::make_unique<Sample>(DATE_TIME_NO_VAR(2017, 07, 12, 8, 30, 00), analyteId, 12.0, TucuUnit("ug/l")));
     samples.push_back(
-            std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 10.0, TucuUnit("ug/l")));
+            std::make_unique<Sample>(DATE_TIME_NO_VAR(2017, 07, 12, 15, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
     samples.push_back(
-            std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 03, 8, 00, 00), analyteId, 14.0, TucuUnit("mg/l")));
+            std::make_unique<Sample>(DATE_TIME_NO_VAR(2017, 07, 12, 20, 00, 00), analyteId, 10.0, TucuUnit("ug/l")));
     samples.push_back(
-            std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 12, 8, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
+            std::make_unique<Sample>(DATE_TIME_NO_VAR(2017, 07, 13, 8, 00, 00), analyteId, 14.0, TucuUnit("mg/l")));
+    samples.push_back(
+            std::make_unique<Sample>(DATE_TIME_NO_VAR(2017, 07, 13, 18, 00, 00), analyteId, 12.0, TucuUnit("ug/l")));
 
     return samples;
 }
@@ -76,13 +78,13 @@ TEST(Core_TestTDAExtractor, CalculateDurations) {
     std::unique_ptr<DosageHistory> dh = createDosageHistory();
     Samples samples = create_samples();
 
-    tda_calc.calculateDurations(samples, *dh);
-    // std::vector<Duration> durations = calculator->calculateDurations(samples, *dosageHistory);
+    std::vector<Duration> durations = tda_calc.calculateDurations(samples, *dh);
 
-    // ASSERT_EQ(durations.size(), samples.size());
+    ASSERT_EQ(durations.size(), samples.size());
 
-    // // Vérification des valeurs attendues (à ajuster selon la logique)
-    // EXPECT_EQ(durations[0].toHours(), -1.0);  // Échantillon avant la première prise connue
-    // EXPECT_GT(durations[1].toHours(), 0);     // Devrait être une durée positive
-    // EXPECT_GT(durations[2].toHours(), 0);
+    EXPECT_EQ(durations[0].toHours(), -3.0);
+    EXPECT_EQ(durations[1].toHours(), 3.5);
+    EXPECT_EQ(durations[2].toHours(), 8.5);
+    EXPECT_EQ(durations[3].toHours(), 20.5);
+    EXPECT_EQ(durations[4].toHours(), 30.5);
 }
