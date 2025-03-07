@@ -27,11 +27,29 @@ std::vector<Duration> TDACalculator::calculateDurations(
                               intakes,
                               ExtractionOption::ForceCycle);
 
-    auto dt1 = intakes.back().getEventTime();
 
-    for (const auto& sample : _samples) {
-        Duration diff = sample->getDate() - dt1;
-        double hours = diff.toHours();
+    for (const auto& sample: _samples){
+        DateTime sampleTime = sample->getDate();
+        DateTime closestIntake;
+        Duration diff;
+        bool found = false;
+
+        for (const auto& intake: intakes){
+            DateTime intakeTime = intake.getEventTime();
+            if (intakeTime <= sampleTime) {
+                closestIntake = intakeTime;
+                found = true;
+            } else {
+                break; //If we pass the sampleTime stop looping.
+            }
+        }
+
+        if (found) { // If found we substract
+            diff = sampleTime - closestIntake;
+        } else { // This case should be triggerd if the sample time is before all intakeTime. So we can use the first intakeTime.
+            diff = sampleTime - intakes.front().getEventTime();
+        }
+
         durations.push_back(diff);
     }
 
