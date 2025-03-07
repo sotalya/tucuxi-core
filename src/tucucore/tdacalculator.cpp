@@ -8,18 +8,18 @@ TDACalculator::TDACalculator(){}
 
 
 std::vector<Duration> TDACalculator::calculateDurations(
-        const Samples& samples, const DosageHistory& dosageHistory) const {
+        const Samples& _samples, const DosageHistory& _dosageHistory) const {
     IntakeSeries intakes;
     IntakeExtractor extractor;
     std::vector<Duration> durations;
 
-    durations.reserve(samples.size());
+    durations.reserve(_samples.size());
 
-    DateTime firstDate = dosageHistory.getDosageTimeRanges().front()->getStartDate();
-    DateTime lastDate = dosageHistory.getDosageTimeRanges().back()->getEndDate();
+    DateTime firstDate = _dosageHistory.getDosageTimeRanges().front()->getStartDate();
+    DateTime lastDate = _dosageHistory.getDosageTimeRanges().back()->getEndDate();
 
     ComputingStatus result = extractor.extract(
-                              dosageHistory,
+                              _dosageHistory,
                               firstDate,
                               lastDate,
                               1,
@@ -29,7 +29,7 @@ std::vector<Duration> TDACalculator::calculateDurations(
 
     auto dt1 = intakes.back().getEventTime();
 
-    for (const auto& sample : samples) {
+    for (const auto& sample : _samples) {
         Duration diff = sample->getDate() - dt1;
         double hours = diff.toHours();
         durations.push_back(diff);
