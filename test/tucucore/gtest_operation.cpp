@@ -237,6 +237,51 @@ TEST(Core_TestOperation, JSOperation)
     ASSERT_DOUBLE_EQ(-1.11, res);
 }
 
+// This test is just here to show that there could be an assignation in an if condition
+TEST(Core_TestOperation, JSOperationIfEqual)
+{
+    double res;
+    bool rc;
+
+    JSOperation jsOp1(
+            "if (a == 1) r = 0; else r = 1;return r;",
+            {OperationInput("a", InputType::INTEGER),
+             OperationInput("b", InputType::INTEGER),
+             OperationInput("c", InputType::INTEGER)});
+    // Operation ok ?
+    rc = jsOp1.evaluate({OperationInput("c", 3), OperationInput("a", 1), OperationInput("b", 2)}, res);
+    ASSERT_TRUE(rc);
+    ASSERT_DOUBLE_EQ(0, res);
+
+    rc = jsOp1.evaluate({OperationInput("c", 3), OperationInput("a", 0), OperationInput("b", 2)}, res);
+    ASSERT_TRUE(rc);
+    ASSERT_DOUBLE_EQ(1, res);
+
+    JSOperation jsOp2(
+            R"(if (flu == 0)
+                theta_4=1;
+            else if (flu = 1 && (gsta1=1 || gsta1=2))
+                theta_4=0.92;
+            else if (flu = 1 && gsta1=3)
+                theta_4=0.96;
+            return theta_4;
+            )",
+            {OperationInput("flu", InputType::INTEGER), OperationInput("gsta1", InputType::INTEGER)});
+    // Operation ok ?
+    rc = jsOp2.evaluate({OperationInput("flu", 0), OperationInput("gsta1", 1)}, res);
+    ASSERT_TRUE(rc);
+    ASSERT_DOUBLE_EQ(1, res);
+
+    rc = jsOp2.evaluate({OperationInput("flu", 1), OperationInput("gsta1", 1)}, res);
+    ASSERT_TRUE(rc);
+    ASSERT_DOUBLE_EQ(0.92, res);
+
+    // Unfortunately
+    rc = jsOp2.evaluate({OperationInput("flu", 1), OperationInput("gsta1", 3)}, res);
+    ASSERT_TRUE(rc);
+    ASSERT_DOUBLE_EQ(0.92, res);
+}
+
 TEST(Core_TestOperation, DynamicOperation)
 {
     JSExpression jsOp1("a*b+c", {OperationInput("a"), OperationInput("b", InputType::INTEGER), OperationInput("c")});
