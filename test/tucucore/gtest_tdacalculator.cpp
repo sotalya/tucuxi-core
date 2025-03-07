@@ -1,18 +1,21 @@
-#include <gtest/gtest.h>
-#include <date/date.h>
 #include <memory>
 
-#include "testutils.h"
-#include "tucucore/tdacalculator.h"
+#include <date/date.h>
+#include <gtest/gtest.h>
+
 #include "tucucore/dosage.h"
-#include "gtest_core.h"
 #include "tucucore/intakeextractor.h"
+#include "tucucore/tdacalculator.h"
+
+#include "gtest_core.h"
+#include "testutils.h"
 
 
 using namespace Tucuxi::Core;
 using namespace Tucuxi::Common;
 
-std::unique_ptr<DosageHistory> createDosageHistory() {
+std::unique_ptr<DosageHistory> createDosageHistory()
+{
     DateTime startJune2017(
             date::year_month_day(date::year(2017), date::month(6), date::day(1)), std::chrono::seconds(0));
     DateTime endJune2017(date::year_month_day(date::year(2017), date::month(7), date::day(1)), std::chrono::seconds(0));
@@ -52,7 +55,8 @@ std::unique_ptr<DosageHistory> createDosageHistory() {
     return dosageHistory;
 }
 
-Samples createSamples(){
+Samples createSamples()
+{
     Samples samples;
     AnalyteId analyteId("theAnalyte");
 
@@ -70,7 +74,8 @@ Samples createSamples(){
 }
 
 
-TEST(Core_TestTDAExtractor, CalculateDurations) {
+TEST(Core_TestTDAExtractor, CalculateDurations)
+{
     IntakeExtractor extractor;
     TDACalculator tdaCalc;
 
