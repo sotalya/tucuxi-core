@@ -164,6 +164,9 @@ public:
         return *m_inefficacyAlarm;
     }
 
+    // For now we do not have invariants on the target values, but we could add some,
+    // related to the DFS specifications. It would however maybe invalidate drug models
+    // where the toxicity and inefficacy alarms are wrong.
     INVARIANTS(INVARIANT(
                        Invariants::INV_TARGETDEFINITION_0001,
                        (!m_activeMoietyId.empty()),

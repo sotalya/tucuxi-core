@@ -361,6 +361,21 @@ public:
         return nullptr;
     }
 
+    bool isSingleMoiety() const
+    {
+        return (m_activeMoieties.size() == 1);
+    }
+
+    size_t nbAnalytes()
+    {
+        size_t nb = 0;
+
+        for (const auto& analyteGroup : getAnalyteSets()) {
+            nb += analyteGroup->getAnalytes().size();
+        }
+        return nb;
+    }
+
     bool isSingleAnalyte() const
     {
         return (m_activeMoieties.size() == 1) && (m_analyteSets.size() == 1)

@@ -94,7 +94,7 @@ public:
     /// By default, at creation, the ComputingComponent calls defaultPopulate() to create the Pk
     /// models collection. This function allows to override it with a custom collection.
     ///
-    void setPkModelCollection(std::shared_ptr<PkModelCollection> _collection);
+    void setPkModelCollection(std::shared_ptr<PkModelCollection> _collection) override;
 
 protected:
     /// \brief Access other interfaces of the same component.

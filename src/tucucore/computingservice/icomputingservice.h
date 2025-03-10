@@ -34,6 +34,7 @@ namespace Core {
 
 class ComputingRequest;
 class ComputingResponse;
+class PkModelCollection;
 
 
 ///
@@ -61,6 +62,14 @@ public:
     /// This function should only be called if compute() returned something different from ComputingResult::Ok
     ///
     virtual std::string getErrorString() const = 0;
+
+    ///
+    /// \brief setPkModelCollection sets the Pk models collection to be used in further computations
+    /// \param _collection A shared pointer to the Pk models collection
+    /// By default, at creation, the ComputingComponent calls defaultPopulate() to create the Pk
+    /// models collection. This function allows to override it with a custom collection.
+    ///
+    virtual void setPkModelCollection(std::shared_ptr<PkModelCollection> _collection) = 0;
 };
 
 } // namespace Core

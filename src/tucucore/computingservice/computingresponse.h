@@ -74,12 +74,12 @@ public:
         m_concentrations.push_back(_concentrations);
     }
 
-    const std::vector<TimeOffsets>& getTimes()
+    const std::vector<TimeOffsets>& getTimes() const
     {
         return m_times;
     }
 
-    const MultiCompConcentrations& getConcentrations()
+    const MultiCompConcentrations& getConcentrations() const
     {
         return m_concentrations;
     }
@@ -151,6 +151,10 @@ public:
     std::vector<Tucuxi::Common::DateTime> m_times;
 
     /// Concentration values
+    /// It is a vector of concentrations. It is divided by compartment and then by value in time:
+    /// m_concentrations[compartmentIndex][timeIndex]
+    /// So, for a single analyte we will typically have a [0][nbTimes] array, which is more
+    /// efficient than having the opposite
     std::vector<Concentrations> m_concentrations;
 
     /// Unit of concentrations
