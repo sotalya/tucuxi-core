@@ -183,6 +183,11 @@ protected:
             GroupsIntakeSeries& intakeSeriesPerGroup);
 
 
+    std::vector<const FullFormulationAndRoute*> selectFormulationAndRoutes(
+            FormulationAndRouteSelectionOption _option,
+            const FormulationAndRoutes& _availableFormulationAndRoutes,
+            const DosageHistory& _dosageHistory);
+
     ///
     /// \brief Evaluate the current dosage history with respect to the targets
     /// \param _traits The computing traits to use

@@ -289,7 +289,7 @@ std::vector<DosageAdjustment> ComputingAdjustments::sortAndFilterCandidates(
     return _candidates;
 }
 
-std::vector<const FullFormulationAndRoute*> selectFormulationAndRoutes(
+std::vector<const FullFormulationAndRoute*> ComputingAdjustments::selectFormulationAndRoutes(
         FormulationAndRouteSelectionOption _option,
         const FormulationAndRoutes& _availableFormulationAndRoutes,
         const DosageHistory& _dosageHistory)
@@ -525,6 +525,7 @@ ComputingStatus ComputingAdjustments::computeCandidate(
 
             // The final unit depends on the computing options
             TucuUnit finalUnit = getFinalUnit(_traits, _request.getDrugModel().getActiveMoieties()[0].get());
+            TucuUnit modelUnit = _request.getDrugModel().getActiveMoieties()[0]->getUnit();
 
             for (size_t i = 0; i < pPrediction->getValues().size(); i++) {
                 Tucuxi::Common::UnitManager::updateAndConvertToUnit<
