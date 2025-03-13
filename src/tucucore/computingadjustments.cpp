@@ -29,7 +29,6 @@
 #include "tucucore/computingutils.h"
 #include "tucucore/concentrationcalculator.h"
 #include "tucucore/covariateevent.h"
-#include "tucucore/cyclestatisticscalculator.h"
 #include "tucucore/dosage.h"
 #include "tucucore/drugmodel/formulationandroute.h"
 #include "tucucore/generalextractor.h"
@@ -223,7 +222,7 @@ TucuUnit ComputingAdjustments::getFinalUnit(const ComputingTraitAdjustment* _tra
     return TucuUnit("ug/l");
 }
 
-bool compareCandidates(const DosageAdjustment& _a, const DosageAdjustment& _b)
+static bool compareCandidates(const DosageAdjustment& _a, const DosageAdjustment& _b)
 {
     return _a.getGlobalScore() < _b.getGlobalScore();
 }
