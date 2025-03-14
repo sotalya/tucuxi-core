@@ -1,15 +1,12 @@
 #ifndef TIMEAFTERDOSECALCULATOR_H
 #define TIMEAFTERDOSECALCULATOR_H
 
-#include <iostream>
-#include <memory>
 #include <vector>
 
 #include "tucucommon/duration.h"
 
-#include "dosage.h" // For dosageHistory
+#include "dosage.h"
 #include "drugtreatment/sample.h"
-#include "intakeextractor.h"
 
 using Tucuxi::Common::DateTime;
 using Tucuxi::Common::Duration;

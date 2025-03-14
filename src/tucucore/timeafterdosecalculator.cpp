@@ -1,5 +1,6 @@
 #include "timeafterdosecalculator.h"
 
+#include "intakeextractor.h"
 
 namespace Tucuxi {
 namespace Core {
