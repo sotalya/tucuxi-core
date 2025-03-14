@@ -5,7 +5,7 @@
 
 #include "tucucore/dosage.h"
 #include "tucucore/intakeextractor.h"
-#include "tucucore/tdacalculator.h"
+#include "tucucore/timeafterdosecalculator.h"
 
 #include "gtest_core.h"
 #include "testutils.h"
@@ -77,7 +77,7 @@ Samples createSamples()
 TEST(Core_TestTDAExtractor, CalculateDurations)
 {
     IntakeExtractor extractor;
-    TDACalculator tdaCalc;
+    TimeAfterDoseCalculator tdaCalc;
 
     std::unique_ptr<DosageHistory> dh = createDosageHistory();
     Samples samples = createSamples();

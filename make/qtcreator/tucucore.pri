@@ -118,7 +118,8 @@ HEADERS += \
     $$PWD/../../src/tucucore/pkmodels/rktwocompartmenterlang.h \
     $$PWD/../../src/tucucore/treatmentdrugmodelcompatibilitychecker.h \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentextralag.h \
-    $$PWD/../../src/tucucore/computingadjustments.h
+    $$PWD/../../src/tucucore/computingadjustments.h \
+    $$PWD/../../src/tucucore/timeafterdosecalculator.h
 
 SOURCES += \
     $$PWD/../../src/tucucore/cachecomputing.cpp \
@@ -217,7 +218,8 @@ SOURCES += \
     $$PWD/../../src/tucucore/pkmodels/rktwocompartmenterlang.cpp \
     $$PWD/../../src/tucucore/treatmentdrugmodelcompatibilitychecker.cpp \
     $$PWD/../../src/tucucore/pkmodels/onecompartmentextralag.cpp \
-    $$PWD/../../src/tucucore/computingadjustments.cpp
+    $$PWD/../../src/tucucore/computingadjustments.cpp \
+    $$PWD/../../src/tucucore/timeafterdosecalculator.cpp
 
 DISTFILES += \
     $$PWD/../../src/tucucore/makefile

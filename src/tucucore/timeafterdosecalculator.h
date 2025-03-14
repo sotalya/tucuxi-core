@@ -1,28 +1,29 @@
-#ifndef TDACALCULATOR_H
-#define TDACALCULATOR_H
+#ifndef TIMEAFTERDOSECALCULATOR_H
+#define TIMEAFTERDOSECALCULATOR_H
 
 #include <iostream>
 #include <memory>
 #include <vector>
 
-#include "drugtreatment/sample.h"
 #include "tucucommon/duration.h"
-#include "intakeextractor.h"
-#include "dosage.h" // For dosageHistory
 
-using Tucuxi::Common::Duration;
+#include "dosage.h" // For dosageHistory
+#include "drugtreatment/sample.h"
+#include "intakeextractor.h"
+
 using Tucuxi::Common::DateTime;
+using Tucuxi::Common::Duration;
 
 namespace Tucuxi {
 namespace Core {
 
-class TDACalculator
+class TimeAfterDoseCalculator
 {
 public:
-    /// \brief Default constructor for the TDACalculator class.
+    /// \brief Default constructor for the TimeAfterDoseCalculator class.
     ///
-    /// Initializes a TDACalculator object without any specific configuration.
-    explicit TDACalculator();
+    /// Initializes a TimeAfterDoseCalculator object without any specific configuration.
+    explicit TimeAfterDoseCalculator();
 
     /// \brief Calculates the durations between each sample and the closest preceding intake.
     ///
@@ -37,11 +38,10 @@ public:
     std::vector<Duration> calculateDurations(const Samples& samples, const DosageHistory& dosageHistory) const;
 
 private:
-
 };
 
 
 } // namespace Core
 } // namespace Tucuxi
 
-#endif // TDACALCULATOR_H
+#endif // TIMEAFTERDOSECALCULATOR_H

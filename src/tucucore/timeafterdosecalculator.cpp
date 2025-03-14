@@ -1,14 +1,15 @@
-#include "tdacalculator.h"
+#include "timeafterdosecalculator.h"
 
 
 namespace Tucuxi {
 namespace Core {
 
-TDACalculator::TDACalculator(){}
+TimeAfterDoseCalculator::TimeAfterDoseCalculator() {}
 
 
-std::vector<Duration> TDACalculator::calculateDurations(
-        const Samples& _samples, const DosageHistory& _dosageHistory) const {
+std::vector<Duration> TimeAfterDoseCalculator::calculateDurations(
+        const Samples& _samples, const DosageHistory& _dosageHistory) const
+{
     IntakeSeries intakes;
     IntakeExtractor extractor;
     std::vector<Duration> durations;
@@ -19,34 +20,30 @@ std::vector<Duration> TDACalculator::calculateDurations(
     DateTime lastDate = _dosageHistory.getDosageTimeRanges().back()->getEndDate();
 
     ComputingStatus result = extractor.extract(
-                              _dosageHistory,
-                              firstDate,
-                              lastDate,
-                              1,
-                              TucuUnit("mg"),
-                              intakes,
-                              ExtractionOption::ForceCycle);
+            _dosageHistory, firstDate, lastDate, 1, TucuUnit("mg"), intakes, ExtractionOption::ForceCycle);
 
 
-    for (const auto& sample: _samples){
+    for (const auto& sample : _samples) {
         DateTime sampleTime = sample->getDate();
         DateTime closestIntake;
         Duration diff;
         bool found = false;
 
-        for (const auto& intake: intakes){
+        for (const auto& intake : intakes) {
             DateTime intakeTime = intake.getEventTime();
             if (intakeTime <= sampleTime) {
                 closestIntake = intakeTime;
                 found = true;
-            } else {
+            }
+            else {
                 break; //If we pass the sampleTime stop looping.
             }
         }
 
         if (found) { // If found we substract
             diff = sampleTime - closestIntake;
-        } else { // This case should be triggerd if the sample time is before all intakeTime. So we can use the first intakeTime.
+        }
+        else { // This case should be triggerd if the sample time is before all intakeTime. So we can use the first intakeTime.
             diff = sampleTime - intakes.front().getEventTime();
         }
 
