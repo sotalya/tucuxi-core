@@ -184,6 +184,11 @@ public:
         return m_infusionTime;
     }
 
+    void setAbsorptionModel(AbsorptionModel _model)
+    {
+        m_route = _model;
+    }
+
     /// \brief Compare two intakes, sorting them according to intake time.
     /// \param _other The intake to compare to.
     /// \return True if the current IntakeEvent is relative to an intake that precedes the one is compared to, false

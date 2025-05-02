@@ -34,9 +34,15 @@ bool double_ne_rel_abs(double a, double b, double relative_tolerance, double abs
 
 Tucuxi::Core::FormulationAndRoute getInfusionFormulationAndRoute();
 
+Tucuxi::Core::AbsorptionModel getInfusionAbsorptionModel();
+
 Tucuxi::Core::FormulationAndRoute getBolusFormulationAndRoute();
 
+Tucuxi::Core::AbsorptionModel getBolusAbsorptionModel();
+
 Tucuxi::Core::FormulationAndRoute getExtraFormulationAndRoute();
+
+Tucuxi::Core::AbsorptionModel getExtraAbsorptionModel();
 
 static const int CYCLE_SIZE = 251;
 
@@ -342,7 +348,8 @@ std::unique_ptr<DrugTreatment> buildDrugTreatment(
         DoseValue _doseValue = DoseValue(200),
         TucuUnit _unit = TucuUnit("mg"),
         int interval = 6,
-        unsigned int nbrDoses = 16);
+        unsigned int nbrDoses = 16,
+        Duration infusionTime = Duration());
 
 std::unique_ptr<DosageTimeRange> buildDosageTimeRange(
         const FormulationAndRoute& _route,

@@ -2062,7 +2062,7 @@ std::unique_ptr<FullFormulationAndRoute> DrugModelImport::extractFullFormulation
         return nullptr;
     }
 
-    FormulationAndRoute spec(formulation, administrationRoute, absorptionModel, administrationName);
+    DMFormulationAndRoute spec(formulation, administrationRoute, absorptionModel, administrationName);
 
     auto formulationAndRoute = std::make_unique<FullFormulationAndRoute>(spec, formulationAndRouteId);
     formulationAndRoute->setLoadingDoseRecommended(isLoadingDoseRecommended);

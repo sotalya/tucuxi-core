@@ -433,6 +433,17 @@ ComputingStatus GeneralExtractor::generalExtractions(
         }
     }
 
+    for (auto& intake : intakeSeries) {
+        auto f = _drugModel.getFormulationAndRoutes().get(intake.getFormulationAndRoute());
+        if ((f->getFormulationAndRoute().getAbsorptionModel() == AbsorptionModel::Infusion)
+            && (intake.getInfusionTime().isEmpty())) {
+            intake.setAbsorptionModel(AbsorptionModel::Intravascular);
+        }
+        else {
+            intake.setAbsorptionModel(f->getFormulationAndRoute().getAbsorptionModel());
+        }
+    }
+
     /*
     if (fullFormulationAndRoutes.size() > 1) {
         m_logger.error("The computing engine does not support multiple formulations and routes");
@@ -689,7 +700,8 @@ bool GeneralExtractor::findFormulationAndRoutes(
     for (const auto& fTreatment : _treatmentFandR) {
         bool found = false;
         for (const auto& f : _drugModelFandR) {
-            if (f->getFormulationAndRoute().getAbsorptionModel() == fTreatment.getAbsorptionModel()) {
+            // Here we depend on the administration route. That could be handled differently in the future
+            if (f->getFormulationAndRoute().getAdministrationRoute() == fTreatment.getAdministrationRoute()) {
                 _result[fTreatment] = f.get();
                 found = true;
             }
@@ -723,7 +735,7 @@ ComputingStatus GeneralExtractor::convertAnalytes(
     return ComputingStatus::Ok;
 }
 
-
+#ifdef UNDEFINED
 ComputingStatus GeneralExtractor::extractParameters(
         const std::vector<Tucuxi::Core::FormulationAndRoute>& _formulationsAndRoutes,
         const AnalyteSets& _analyteSets,
@@ -820,6 +832,8 @@ ComputingStatus GeneralExtractor::extractParameters(
     }
     return ComputingStatus::Ok;
 }
+
+#endif // 0
 
 } // namespace Core
 } // namespace Tucuxi

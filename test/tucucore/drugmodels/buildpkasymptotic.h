@@ -134,7 +134,7 @@ public:
             auto absorptionParameters = std::make_unique<ParameterSetDefinition>();
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            FormulationAndRoute formulationSpecs(
+            DMFormulationAndRoute formulationSpecs(
                     Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular, "No details");
             auto formulationAndRoute = std::make_unique<FullFormulationAndRoute>(formulationSpecs, "extraId");
             formulationAndRoute->addAssociation(std::move(association));

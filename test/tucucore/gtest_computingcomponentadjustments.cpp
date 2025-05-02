@@ -175,7 +175,10 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRouteA
     for (auto const& adj : resp->getAdjustments()) {
         ASSERT_EQ(
                 adj.m_history.getLastFormulationAndRoute(),
-                drugModel->getFormulationAndRoutes().getDefault()->getFormulationAndRoute());
+                drugModel->getFormulationAndRoutes()
+                        .getDefault()
+                        ->getFormulationAndRoute()
+                        .getTreatmentFormulationAndRoute());
     }
 
     // Delete all dynamically allocated objects
@@ -374,7 +377,10 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRouteB
     for (auto const& adj : resp->getAdjustments()) {
         ASSERT_EQ(
                 adj.m_history.getLastFormulationAndRoute(),
-                drugModel->getFormulationAndRoutes().getDefault()->getFormulationAndRoute());
+                drugModel->getFormulationAndRoutes()
+                        .getDefault()
+                        ->getFormulationAndRoute()
+                        .getTreatmentFormulationAndRoute());
     }
 
     // Delete all dynamically allocated objects

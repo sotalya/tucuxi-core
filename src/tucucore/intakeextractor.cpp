@@ -348,6 +348,8 @@ int IntakeExtractor::extract(
     }
 
     // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
+    // Actually the absorption model is set by the generalextractor, we should be able to get rid
+    // of this test
     if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion)
         && (_dosage.m_infusionTime.isEmpty())) {
         // TODO : Be careful here, the formulation and route is not in line the AbsorptionModel::Intravascular
@@ -398,6 +400,8 @@ int IntakeExtractor::extract(
     }
 
     // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
+    // Actually the absorption model is set by the generalextractor, we should be able to get rid
+    // of this test
     if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion)
         && (_dosage.m_infusionTime.isEmpty())) {
 
@@ -450,6 +454,8 @@ int IntakeExtractor::extract(
     }
 
     // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
+    // Actually the absorption model is set by the generalextractor, we should be able to get rid
+    // of this test
     if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion)
         && (_dosage.m_infusionTime.isEmpty())) {
 

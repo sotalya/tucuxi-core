@@ -53,6 +53,15 @@ void ParameterDefinitionIterator::build()
             }
         }
     }
+    else if (!m_treatmentFormulationAndRoutes.empty()) {
+        for (const auto& f : m_treatmentFormulationAndRoutes) {
+            const ParameterSetDefinition* parameter = m_model.getAbsorptionParameters(m_analyteGroupId, f);
+            if (parameter != nullptr) {
+                m_absorptionParameters.push_back(parameter);
+                m_total += parameter->getNbParameters();
+            }
+        }
+    }
     else {
         const ParameterSetDefinition* parameter =
                 m_model.getAbsorptionParameters(m_analyteGroupId, m_formulation, m_route);

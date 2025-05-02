@@ -100,13 +100,12 @@ std::string ComputingComponent::getErrorString() const
     return "Error message function not yet implemented";
 }
 
-
 ComputingStatus ComputingComponent::compute(
         const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
 {
     // Record start time
     auto start = std::chrono::high_resolution_clock::now();
-    TUCU_TRY
+    //TUCU_TRY
     {
         if (m_utils == nullptr) {
             m_logger.error("The Computing Component has not been initialized");
@@ -153,11 +152,12 @@ ComputingStatus ComputingComponent::compute(
         _response->setComputingStatus(result);
         return result;
     }
+    /*
     TUCU_CATCH(...)
     {
         _response->setComputingStatus(ComputingStatus::ComputingComponentExceptionError);
         return ComputingStatus::ComputingComponentExceptionError;
-    }
+    }*/
 }
 
 

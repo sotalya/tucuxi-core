@@ -461,7 +461,8 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
     //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
     // Add a treatment intake every ten days in June
     // 200mg via a intravascular at 08h30, starting the 01.06
-    LastingDose periodicDose(dose, doseUnit, formulationAndRoute, Duration(), interval);
+    LastingDose periodicDose(
+            dose, doseUnit, formulationAndRoute.getTreatmentFormulationAndRoute(), Duration(), interval);
     DosageRepeat repeatedDose(periodicDose, 10000);
     auto timeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(start, repeatedDose);
     drugTreatment->getModifiableDosageHistory().addTimeRange(*timeRange);

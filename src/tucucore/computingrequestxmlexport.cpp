@@ -522,7 +522,7 @@ void ComputingRequestXmlExport::exportFormulationAndRoute(
     addNode(formulationAndRoute, "formulation", _dosage.getLastFormulationAndRoute().getFormulation());
     addNode(formulationAndRoute, "administrationName", _dosage.getLastFormulationAndRoute().getAdministrationName());
     addNode(formulationAndRoute, "administrationRoute", _dosage.getLastFormulationAndRoute().getAdministrationRoute());
-    addNode(formulationAndRoute, "absorptionModel", _dosage.getLastFormulationAndRoute().getAbsorptionModel());
+    //addNode(formulationAndRoute, "absorptionModel", _dosage.getLastFormulationAndRoute().getAbsorptionModel());
 }
 
 std::string ComputingRequestXmlExport::toString(const Tucuxi::Core::Formulation& _formulation)

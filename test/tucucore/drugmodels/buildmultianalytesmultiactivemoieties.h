@@ -368,7 +368,7 @@ public:
         model->setDomain(std::move(drugDomain));
 
         {
-            FormulationAndRoute formulationSpecs(
+            DMFormulationAndRoute formulationSpecs(
                     Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular, "No details");
             std::unique_ptr<FullFormulationAndRoute> formulationAndRoute(
                     new FullFormulationAndRoute(formulationSpecs, "extraId"));

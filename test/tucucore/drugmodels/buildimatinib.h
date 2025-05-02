@@ -176,7 +176,7 @@ public:
             absorptionParameters->addParameter(std::move(PF));
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            FormulationAndRoute formulationSpecs(
+            DMFormulationAndRoute formulationSpecs(
                     Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular, "No details");
             auto formulationAndRoute = std::make_unique<FullFormulationAndRoute>(formulationSpecs, "extraId");
             formulationAndRoute->addAssociation(std::move(association));
@@ -221,7 +221,7 @@ public:
             absorptionParameters->addParameter(std::move(PF));
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            FormulationAndRoute formulationSpecs(
+            DMFormulationAndRoute formulationSpecs(
                     Formulation::ParenteralSolution,
                     AdministrationRoute::IntravenousBolus,
                     AbsorptionModel::Intravascular,
@@ -282,7 +282,7 @@ public:
             absorptionParameters->addParameter(std::move(PF));
 
             association->setAbsorptionParameters(std::move(absorptionParameters));
-            FormulationAndRoute formulationSpecs(
+            DMFormulationAndRoute formulationSpecs(
                     Formulation::ParenteralSolution,
                     AdministrationRoute::IntravenousDrip,
                     AbsorptionModel::Infusion,

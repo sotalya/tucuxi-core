@@ -145,7 +145,11 @@ ComputingStatus ComputingAdjustments::buildCandidates(
         for (const auto& interval : intervalValues) {
             for (const auto& infusion : infusionTimes) {
                 _candidates.push_back(
-                        {_formulationAndRoute->getFormulationAndRoute(), dose, doseUnit, interval, infusion});
+                        {_formulationAndRoute->getFormulationAndRoute().getTreatmentFormulationAndRoute(),
+                         dose,
+                         doseUnit,
+                         interval,
+                         infusion});
 #if 0
                 std::string mess;
                 mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)
@@ -197,7 +201,11 @@ ComputingStatus ComputingAdjustments::buildCandidatesForInterval(
     for (auto dose : doseValues) {
         for (const auto& infusion : infusionTimes) {
             _candidates.push_back(
-                    {_formulationAndRoute->getFormulationAndRoute(), dose, doseUnit, _interval, infusion});
+                    {_formulationAndRoute->getFormulationAndRoute().getTreatmentFormulationAndRoute(),
+                     dose,
+                     doseUnit,
+                     _interval,
+                     infusion});
 #if 0
             std::string mess;
             mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)
@@ -999,7 +1007,7 @@ ComputingStatus ComputingAdjustments::addRest(
     candidates.reserve(intervalValues.size());
     for (const auto& interval : intervalValues) {
         candidates.push_back(
-                {fullFormulationAndRoute->getFormulationAndRoute(),
+                {fullFormulationAndRoute->getFormulationAndRoute().getTreatmentFormulationAndRoute(),
                  0,
                  dUnit,
                  interval,

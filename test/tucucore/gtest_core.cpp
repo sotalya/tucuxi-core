@@ -85,15 +85,30 @@ Tucuxi::Core::FormulationAndRoute getInfusionFormulationAndRoute()
             Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
 }
 
+Tucuxi::Core::AbsorptionModel getInfusionAbsorptionModel()
+{
+    return AbsorptionModel::Infusion;
+}
+
 Tucuxi::Core::FormulationAndRoute getBolusFormulationAndRoute()
 {
     return FormulationAndRoute(
             Formulation::Test, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
 }
 
+Tucuxi::Core::AbsorptionModel getBolusAbsorptionModel()
+{
+    return AbsorptionModel::Intravascular;
+}
+
 Tucuxi::Core::FormulationAndRoute getExtraFormulationAndRoute()
 {
     return FormulationAndRoute(Formulation::Test, AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
+}
+
+Tucuxi::Core::AbsorptionModel getExtraAbsorptionModel()
+{
+    return AbsorptionModel::Extravascular;
 }
 
 std::unique_ptr<DrugTreatment> buildDrugTreatment(
@@ -102,14 +117,15 @@ std::unique_ptr<DrugTreatment> buildDrugTreatment(
         DoseValue _doseValue,
         TucuUnit _unit,
         int interval,
-        unsigned int nbrDoses)
+        unsigned int nbrDoses,
+        Duration infusionTime)
 {
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
-    LastingDose periodicDose(_doseValue, _unit, _route, Duration(), Duration(std::chrono::hours(interval)));
+    LastingDose periodicDose(_doseValue, _unit, _route, infusionTime, Duration(std::chrono::hours(interval)));
     DosageRepeat repeatedDose(periodicDose, nbrDoses);
     auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(startDateTime, repeatedDose);
 

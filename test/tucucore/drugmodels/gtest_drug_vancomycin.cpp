@@ -768,7 +768,110 @@ TEST(Core_TestDrugVancomycin, Vancomycin)
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
             Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-    auto drugTreatment = buildDrugTreatment(route, startSept2018);
+    auto drugTreatment =
+            buildDrugTreatment(route, startSept2018, 200, TucuUnit("mg"), 6, 16, Duration(std::chrono::hours(1)));
+
+    {
+
+        RequestResponseId requestResponseId = "1";
+        Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+        Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+        double nbPointsPerHour = 10.0;
+        ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+        std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                requestResponseId, start, end, nbPointsPerHour, computingOption);
+
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+        std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+        ComputingStatus result;
+        result = component->compute(request, response);
+
+        ASSERT_EQ(result, ComputingStatus::Ok);
+
+        const ComputedData* responseData = response->getData();
+        ASSERT_TRUE(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
+        const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
+        if (resp == nullptr) {
+            return;
+        }
+
+        ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "vancomycin");
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+
+        //std::cout << "Population parameters : " << std::endl;
+        //for (auto parameter : resp->getData()[0].m_parameters) {
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //}
+    }
+
+    {
+
+        RequestResponseId requestResponseId = "1";
+        Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+        Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+        double nbPointsPerHour = 10.0;
+        ComputingOption computingOption(PredictionParameterType::Apriori, CompartmentsOption::MainCompartment);
+        std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+                requestResponseId, start, end, nbPointsPerHour, computingOption);
+
+        ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+
+        std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+        ComputingStatus result;
+        result = component->compute(request, response);
+
+        ASSERT_EQ(result, ComputingStatus::Ok);
+
+        const ComputedData* responseData = response->getData();
+        ASSERT_TRUE(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
+        const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
+
+        ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "vancomycin");
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+
+        //std::cout << "A priori parameters : " << std::endl;
+        //for (auto parameter : resp->getData()[0].m_parameters) {
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //}
+    }
+
+    if (component != nullptr) {
+        delete component;
+    }
+}
+
+
+TEST(Core_TestDrugVancomycin, VancomycinInfusionTime0)
+{
+    DrugModelImport importer;
+
+    std::unique_ptr<DrugModel> drugModel;
+
+    auto importStatus = importer.importFromString(drugModel, vancomycin_tdd);
+    ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
+    //        importer.importFromFile(drugModel, "/home/ythoma/docs/ezechiel/git/dev/src/drugs2/ch.tucuxi.vancomycin.tdd");
+
+    ASSERT_TRUE(drugModel != nullptr);
+
+
+    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+    ASSERT_TRUE(component != nullptr);
+
+    const FormulationAndRoute route(
+            Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+
+    DateTime startSept2018(
+            date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+            Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+
+    auto drugTreatment =
+            buildDrugTreatment(route, startSept2018, 200, TucuUnit("mg"), 6, 16, Duration(std::chrono::hours(0)));
 
     {
 

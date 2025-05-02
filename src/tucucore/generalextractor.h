@@ -105,7 +105,7 @@ public:
 
     ComputingStatus convertAnalytes(
             IntakeSeries& _intakeSeries, const DrugModel& _drugModel, const AnalyteSet* _analyteGroup);
-
+    /*
     ComputingStatus extractParameters(
             const std::vector<FormulationAndRoute>& _formulationsAndRoutes,
             const AnalyteSets& _analyteSets,
@@ -115,7 +115,7 @@ public:
             const DateTime& _end,
             PredictionParameterType _parametersType,
             GroupsParameterSetSeries& _parameterSeries);
-
+*/
 
     ComputingStatus extractPkModel(
             const DrugModel& _drugModel,

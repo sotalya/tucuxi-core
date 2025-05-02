@@ -609,7 +609,8 @@ public:
         if (_dose < 0) {
             throw std::invalid_argument("Dose value = " + std::to_string(_dose) + " is invalid (must be >= 0).");
         }
-        if (_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion && _infusionTime.isNegative()) {
+        if (_routeOfAdministration.getAdministrationRoute() == AdministrationRoute::IntravenousDrip
+            && _infusionTime.isNegative()) {
             throw std::invalid_argument("Infusion time for INFUSION is invalid (must be >= 0).");
         }
         // Let's tolerate infusion time 0

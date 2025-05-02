@@ -270,7 +270,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
                 TucuUnit("mg"),
                 Duration(std::chrono::hours(24)),
                 getBolusFormulationAndRoute(),
-                getBolusFormulationAndRoute().getAbsorptionModel(),
+                getBolusAbsorptionModel(),
                 Duration(std::chrono::minutes(20)),
                 static_cast<int>(251));
         intakes.emplace_back(
@@ -282,7 +282,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
                 TucuUnit("mg"),
                 Duration(std::chrono::hours(24)),
                 getBolusFormulationAndRoute(),
-                getBolusFormulationAndRoute().getAbsorptionModel(),
+                getBolusAbsorptionModel(),
                 Duration(std::chrono::minutes(20)),
                 static_cast<int>(251));
 

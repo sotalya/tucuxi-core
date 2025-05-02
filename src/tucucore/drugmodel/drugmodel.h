@@ -93,9 +93,19 @@ public:
     ParameterDefinitionIterator(
             const DrugModel& _model,
             AnalyteGroupId _analyteGroupId,
-            const std::vector<FormulationAndRoute>& _formulation)
+            const std::vector<DMFormulationAndRoute>& _formulation)
         : m_model(_model), m_analyteGroupId(std::move(_analyteGroupId)), m_formulation(Formulation::Undefined),
           m_route(AdministrationRoute::Undefined), m_formulationAndRoutes(_formulation)
+    {
+        build();
+    }
+
+    ParameterDefinitionIterator(
+            const DrugModel& _model,
+            AnalyteGroupId _analyteGroupId,
+            const std::vector<FormulationAndRoute>& _formulation)
+        : m_model(_model), m_analyteGroupId(std::move(_analyteGroupId)), m_formulation(Formulation::Undefined),
+          m_route(AdministrationRoute::Undefined), m_treatmentFormulationAndRoutes(_formulation)
     {
         build();
     }
@@ -103,7 +113,8 @@ public:
     ParameterDefinitionIterator(const ParameterDefinitionIterator& _right)
         : m_model(_right.m_model), m_analyteGroupId(_right.m_analyteGroupId), m_formulation(_right.m_formulation),
           m_route(_right.m_route), m_fullFormulationAndRoutes(_right.m_fullFormulationAndRoutes),
-          m_formulationAndRoutes(_right.m_formulationAndRoutes), m_index(_right.m_index)
+          m_formulationAndRoutes(_right.m_formulationAndRoutes),
+          m_treatmentFormulationAndRoutes(_right.m_treatmentFormulationAndRoutes), m_index(_right.m_index)
 
     {
         build();
@@ -130,7 +141,8 @@ private:
     const Formulation m_formulation;
     const AdministrationRoute m_route;
     const std::vector<const FullFormulationAndRoute*> m_fullFormulationAndRoutes;
-    const std::vector<FormulationAndRoute> m_formulationAndRoutes;
+    const std::vector<DMFormulationAndRoute> m_formulationAndRoutes;
+    const std::vector<FormulationAndRoute> m_treatmentFormulationAndRoutes;
     size_t m_index{0};
     size_t m_total{0};
 
@@ -284,12 +296,18 @@ public:
     }
 
     ParameterDefinitionIterator getParameterDefinitions(
-            const AnalyteGroupId& _analyteGroupId, const std::vector<FormulationAndRoute>& _formulation) const
+            const AnalyteGroupId& _analyteGroupId, const std::vector<DMFormulationAndRoute>& _formulation) const
     {
         ParameterDefinitionIterator iterator(*this, _analyteGroupId, _formulation);
         return iterator;
     }
 
+    ParameterDefinitionIterator getParameterDefinitions(
+            const AnalyteGroupId& _analyteGroupId, const std::vector<FormulationAndRoute>& _formulation) const
+    {
+        ParameterDefinitionIterator iterator(*this, _analyteGroupId, _formulation);
+        return iterator;
+    }
 
 
     ///
@@ -409,12 +427,27 @@ private:
         return m_formulationAndRoutes->get(_formulation);
     }
 
+    const FullFormulationAndRoute* getFormulationAndRoute(const DMFormulationAndRoute& _formulation) const
+    {
+        return m_formulationAndRoutes->get(_formulation);
+    }
+
     const ParameterSetDefinition* getAbsorptionParameters(
             const AnalyteGroupId& _analyteGroupId,
             const Formulation& _formulation,
             const AdministrationRoute _route) const
     {
         const FullFormulationAndRoute* fr = getFormulationAndRoute(_formulation, _route);
+        if (fr != nullptr) {
+            return fr->getParameterDefinitions(_analyteGroupId);
+        }
+        return nullptr;
+    }
+
+    const ParameterSetDefinition* getAbsorptionParameters(
+            const AnalyteGroupId& _analyteGroupId, const DMFormulationAndRoute& _formulation) const
+    {
+        const FullFormulationAndRoute* fr = getFormulationAndRoute(_formulation);
         if (fr != nullptr) {
             return fr->getParameterDefinitions(_analyteGroupId);
         }

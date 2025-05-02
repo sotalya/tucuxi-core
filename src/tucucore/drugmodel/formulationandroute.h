@@ -169,17 +169,137 @@ protected:
 };
 
 
+
 class FormulationAndRoute
 {
 public:
     // Construction for testing purpose
     FormulationAndRoute(AbsorptionModel _absorptionModel)
+        : m_formulation(Formulation::Undefined), m_route(AdministrationRoute::Undefined)
+    {
+    }
+
+    FormulationAndRoute(
+            Formulation _formulation,
+            AdministrationRoute _route,
+            AbsorptionModel _absorptionModel,
+            std::string _administrationName = "")
+        : m_formulation(_formulation), m_route(_route), m_administrationName(std::move(_administrationName))
+    {
+    }
+
+
+    Formulation getFormulation() const
+    {
+        return m_formulation;
+    }
+
+    AdministrationRoute getAdministrationRoute() const
+    {
+        return m_route;
+    }
+
+    std::string getAdministrationName() const
+    {
+        return m_administrationName;
+    }
+
+    AbsorptionModel getAbsorptionModel() const
+    {
+        static std::map<AdministrationRoute, AbsorptionModel> map = {
+                {AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular},
+                {AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular},
+                {AdministrationRoute::Nasal, AbsorptionModel::Extravascular},
+                {AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion},
+                {AdministrationRoute::Oral, AbsorptionModel::Extravascular},
+                {AdministrationRoute::Rectal, AbsorptionModel::Extravascular},
+                {AdministrationRoute::Subcutaneous, AbsorptionModel::Extravascular},
+                {AdministrationRoute::Sublingual, AbsorptionModel::Extravascular},
+                {AdministrationRoute::Transdermal, AbsorptionModel::Extravascular},
+                {AdministrationRoute::Undefined, AbsorptionModel::Undefined}};
+        if (map.end() != map.find(m_route)) {
+            return map[m_route];
+        }
+        return AbsorptionModel::Undefined;
+    }
+
+    bool operator==(const FormulationAndRoute& _v2) const
+    {
+        return (m_route == _v2.m_route) && (m_formulation == _v2.m_formulation)
+               && (this->m_administrationName == _v2.m_administrationName);
+    }
+
+    bool isCompatible(const FormulationAndRoute& _v2) const
+    {
+        return (m_route == _v2.m_route);
+        //return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route)
+        //       && (m_formulation == _v2.m_formulation);
+    }
+
+    /// \brief Is the duration smaller?
+    bool operator<(const FormulationAndRoute& _f) const
+    {
+        if (m_formulation < _f.m_formulation) {
+            return true;
+        }
+        if (m_formulation > _f.m_formulation) {
+            return false;
+        }
+        if (m_route < _f.m_route) {
+            return true;
+        }
+        if (m_route > _f.m_route) {
+            return false;
+        }
+        if (m_administrationName < _f.m_administrationName) {
+            return true;
+        }
+        if (m_administrationName > _f.m_administrationName) {
+            return false;
+        }
+        return false;
+    }
+
+    INVARIANTS(INVARIANT(
+                       Invariants::INV_FORMULATIONANDROUTE_0001,
+                       (m_formulation != Formulation::Undefined),
+                       "A formulation and route has no formulation defined");
+               INVARIANT(
+                       Invariants::INV_FORMULATIONANDROUTE_0001,
+                       (m_route != AdministrationRoute::Undefined),
+                       "A formulation and route has an undefined route of administration");
+               INVARIANT(
+                       Invariants::INV_FORMULATIONANDROUTE_0001,
+                       (!m_administrationName.empty()),
+                       "A formulation and route has an empty administration name");)
+
+protected:
+    /// Formulation, based on an Enum type
+    Formulation m_formulation;
+
+    /// Route of administration, based on an Enum type
+    AdministrationRoute m_route;
+
+    /// Administration name, as a free text field
+    std::string m_administrationName;
+};
+
+std::vector<FormulationAndRoute> mergeFormulationAndRouteList(
+        const std::vector<FormulationAndRoute>& _v1, const std::vector<FormulationAndRoute>& _v2);
+
+
+
+class DMFormulationAndRoute
+{
+public:
+    // Construction for testing purpose
+    DMFormulationAndRoute(AbsorptionModel _absorptionModel)
         : m_formulation(Formulation::Undefined), m_route(AdministrationRoute::Undefined),
           m_absorptionModel(_absorptionModel)
     {
     }
 
-    FormulationAndRoute(
+    DMFormulationAndRoute(
             Formulation _formulation,
             AdministrationRoute _route,
             AbsorptionModel _absorptionModel,
@@ -210,21 +330,26 @@ public:
         return m_administrationName;
     }
 
-    bool operator==(const FormulationAndRoute& _v2) const
+    bool operator==(const DMFormulationAndRoute& _v2) const
     {
         return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route)
                && (m_formulation == _v2.m_formulation) && (this->m_administrationName == _v2.m_administrationName);
     }
 
-    bool isCompatible(const FormulationAndRoute& _v2) const
+    bool isCompatible(const DMFormulationAndRoute& _v2) const
     {
         return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route);
         return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route)
                && (m_formulation == _v2.m_formulation);
     }
 
+    bool isCompatible(const FormulationAndRoute& _v2) const
+    {
+        return (m_route == _v2.getAdministrationRoute());
+    }
+
     /// \brief Is the duration smaller?
-    bool operator<(const FormulationAndRoute& _f) const
+    bool operator<(const DMFormulationAndRoute& _f) const
     {
         if (m_formulation < _f.m_formulation) {
             return true;
@@ -251,6 +376,11 @@ public:
             return false;
         }
         return false;
+    }
+
+    FormulationAndRoute getTreatmentFormulationAndRoute() const
+    {
+        return FormulationAndRoute(m_formulation, m_route, m_absorptionModel, m_administrationName);
     }
 
     INVARIANTS(INVARIANT(
@@ -285,15 +415,15 @@ protected:
     std::string m_administrationName;
 };
 
-std::vector<FormulationAndRoute> mergeFormulationAndRouteList(
-        const std::vector<FormulationAndRoute>& _v1, const std::vector<FormulationAndRoute>& _v2);
+std::vector<DMFormulationAndRoute> mergeFormulationAndRouteList(
+        const std::vector<DMFormulationAndRoute>& _v1, const std::vector<DMFormulationAndRoute>& _v2);
 
 
 
 class FullFormulationAndRoute
 {
 public:
-    FullFormulationAndRoute(FormulationAndRoute _specs, std::string _id)
+    FullFormulationAndRoute(DMFormulationAndRoute _specs, std::string _id)
         : m_id(std::move(_id)), m_specs(std::move(_specs)), m_loadingDoseRecommended(true),
           m_restPeriodRecommended(true)
     {
@@ -362,7 +492,7 @@ public:
     {
         return m_validInfusionTimes.get();
     }
-    const FormulationAndRoute& getFormulationAndRoute() const
+    const DMFormulationAndRoute& getFormulationAndRoute() const
     {
         return m_specs;
     }
@@ -477,7 +607,7 @@ protected:
     /// A unique Id, useful when a DrugModel embeds more than one Formulation
     std::string m_id;
 
-    FormulationAndRoute m_specs;
+    DMFormulationAndRoute m_specs;
 
     std::vector<std::unique_ptr<AnalyteConversion> > m_analyteConversions;
 
@@ -533,6 +663,13 @@ public:
     /// \return A pointer to a FullFormulationAndRoute, nullptr if not in the set
     ///
     const FullFormulationAndRoute* get(const FormulationAndRoute& _formulation) const;
+
+    ///
+    /// \brief get Get a formulation and route object based on the formulation and the route
+    /// \param _formulation Formulation and route to look for
+    /// \return A pointer to a FullFormulationAndRoute, nullptr if not in the set
+    ///
+    const FullFormulationAndRoute* get(const DMFormulationAndRoute& _formulation) const;
 
     ///
     /// \brief getDefault Get the default formulation and route object.
