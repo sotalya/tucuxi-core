@@ -32,7 +32,7 @@ ComputingStatus IntakeToCalculatorAssociator::associate(
 {
     auto it = _intakes.begin();
     while (it != _intakes.end()) {
-        std::shared_ptr<IntakeIntervalCalculator> pCalc = _pkModel.getCalculatorForRoute(it->getRoute());
+        std::shared_ptr<IntakeIntervalCalculator> pCalc = _pkModel.getCalculatorForRoute(it->getAbsorptionModel());
 
         if (pCalc == nullptr) {
             return ComputingStatus::UnsupportedRoute;

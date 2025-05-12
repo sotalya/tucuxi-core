@@ -45,8 +45,7 @@ TEST(Core_TestPertinentTimesCalculator, Standard)
                 0.0,
                 Tucuxi::Common::TucuUnit("mg"),
                 interval,
-                Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Extravascular),
-                AbsorptionModel::Extravascular,
+                Tucuxi::Core::FormulationAndRoute(),
                 infusionTime,
                 static_cast<size_t>(nbPoints));
         calculator.calculateTimes(intake, nbPoints, times);
@@ -74,8 +73,7 @@ TEST(Core_TestPertinentTimesCalculator, Infusion)
                 0.0,
                 Tucuxi::Common::TucuUnit("mg"),
                 interval,
-                Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion),
-                AbsorptionModel::Infusion,
+                Tucuxi::Core::FormulationAndRoute(),
                 infusionTime,
                 nbPoints);
         calculator.calculateTimes(intake, static_cast<Eigen::Index>(nbPoints), times);
@@ -98,8 +96,7 @@ TEST(Core_TestPertinentTimesCalculator, Infusion)
                 0.0,
                 Tucuxi::Common::TucuUnit("mg"),
                 interval,
-                Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion),
-                AbsorptionModel::Infusion,
+                Tucuxi::Core::FormulationAndRoute(),
                 infusionTime,
                 nbPoints);
         calculator.calculateTimes(intake, static_cast<Eigen::Index>(nbPoints), times);
@@ -121,8 +118,7 @@ TEST(Core_TestPertinentTimesCalculator, Infusion)
                 0.0,
                 Tucuxi::Common::TucuUnit("mg"),
                 interval,
-                Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion),
-                AbsorptionModel::Infusion,
+                Tucuxi::Core::FormulationAndRoute(),
                 infusionTime,
                 nbPoints);
         calculator.calculateTimes(intake, static_cast<Eigen::Index>(nbPoints), times);
@@ -145,8 +141,7 @@ TEST(Core_TestPertinentTimesCalculator, Infusion)
                 0.0,
                 Tucuxi::Common::TucuUnit("mg"),
                 interval,
-                Tucuxi::Core::FormulationAndRoute(AbsorptionModel::Infusion),
-                AbsorptionModel::Infusion,
+                Tucuxi::Core::FormulationAndRoute(),
                 infusionTime,
                 nbPoints);
         calculator.calculateTimes(intake, static_cast<Eigen::Index>(nbPoints), times);

@@ -139,10 +139,7 @@ TEST(Core_TestNonMemDrugs, Imatinib)
     Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Intravascular;
 
     Tucuxi::Core::FormulationAndRoute formulationAndRoute(
-            Tucuxi::Core::Formulation::ParenteralSolution,
-            Tucuxi::Core::AdministrationRoute::IntravenousBolus,
-            Tucuxi::Core::AbsorptionModel::Intravascular,
-            "");
+            Tucuxi::Core::Formulation::ParenteralSolution, Tucuxi::Core::AdministrationRoute::IntravenousBolus, "");
 
     Tucuxi::Core::IntakeSeries intakeSeries;
     {

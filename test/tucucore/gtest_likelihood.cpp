@@ -56,7 +56,6 @@ static IntakeSeries buildIntakeSeries()
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(CYCLE_SIZE));
     intakes.emplace_back(
@@ -68,7 +67,6 @@ static IntakeSeries buildIntakeSeries()
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(CYCLE_SIZE));
 

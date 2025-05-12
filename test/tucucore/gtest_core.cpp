@@ -81,36 +81,34 @@ bool double_ne_rel_abs(double a, double b, double relative_tolerance, double abs
 
 Tucuxi::Core::FormulationAndRoute getInfusionFormulationAndRoute()
 {
-    return Tucuxi::Core::FormulationAndRoute(
-            Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+    return Tucuxi::Core::FormulationAndRoute(Formulation::Test, AdministrationRoute::IntravenousDrip);
 }
-
+/*
 Tucuxi::Core::AbsorptionModel getInfusionAbsorptionModel()
 {
     return AbsorptionModel::Infusion;
 }
-
+*/
 Tucuxi::Core::FormulationAndRoute getBolusFormulationAndRoute()
 {
-    return FormulationAndRoute(
-            Formulation::Test, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+    return FormulationAndRoute(Formulation::Test, AdministrationRoute::IntravenousBolus);
 }
-
+/*
 Tucuxi::Core::AbsorptionModel getBolusAbsorptionModel()
 {
     return AbsorptionModel::Intravascular;
 }
-
+*/
 Tucuxi::Core::FormulationAndRoute getExtraFormulationAndRoute()
 {
-    return FormulationAndRoute(Formulation::Test, AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
+    return FormulationAndRoute(Formulation::Test, AdministrationRoute::Intramuscular);
 }
-
+/*
 Tucuxi::Core::AbsorptionModel getExtraAbsorptionModel()
 {
     return AbsorptionModel::Extravascular;
 }
-
+*/
 std::unique_ptr<DrugTreatment> buildDrugTreatment(
         const FormulationAndRoute& _route,
         const DateTime startDateTime,

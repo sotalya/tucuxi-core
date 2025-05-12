@@ -761,8 +761,7 @@ TEST(Core_TestDrugVancomycin, Vancomycin)
 
     ASSERT_TRUE(component != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+    const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -863,8 +862,7 @@ TEST(Core_TestDrugVancomycin, VancomycinInfusionTime0)
 
     ASSERT_TRUE(component != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+    const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),

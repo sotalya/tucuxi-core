@@ -827,8 +827,7 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten2compBolus)
 
     ASSERT_TRUE(component != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+    const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -926,8 +925,7 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtra)
 
     ASSERT_TRUE(component != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -1026,8 +1024,7 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtraPercentilesAp
 
     ASSERT_TRUE(component != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),

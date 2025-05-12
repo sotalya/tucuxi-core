@@ -468,8 +468,7 @@ TEST(Core_TestComputingComponentAtTimes, MeasureFar)
     DateTime endTreatment = startTreatment + treatmentDuration;
 
 
-    FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular, "foo bar");
+    FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, "foo bar");
 
     // Test of a posteriori concentration prediction with one unvalid sample too early in time
     auto drugTreatment = buildSimpleDrugTreatment(route, startTreatment, interval, treatmentDuration);
@@ -556,8 +555,7 @@ TEST(Core_TestComputingComponentAtTimes, MeasureFarTimes)
     DateTime endTreatment = startTreatment + treatmentDuration;
 
 
-    FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular, "foo bar");
+    FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, "foo bar");
 
     // Test of a posteriori concentration prediction with one unvalid sample too early in time
     auto drugTreatment = buildSimpleDrugTreatment(route, startTreatment, interval, treatmentDuration);

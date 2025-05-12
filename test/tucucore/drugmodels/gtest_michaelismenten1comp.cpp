@@ -482,8 +482,7 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1comp)
 
     ASSERT_TRUE(component != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+    const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -577,8 +576,7 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes)
 
     ASSERT_TRUE(component != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+    const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -586,8 +584,7 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes)
 
     auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue(200), TucuUnit("mg"), 6, 16);
 
-    const FormulationAndRoute route2(
-            Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route2(Formulation::OralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018_2(
             date::year_month_day(date::year(2018), date::month(9), date::day(5)),

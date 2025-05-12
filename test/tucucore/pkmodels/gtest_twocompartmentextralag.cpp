@@ -77,8 +77,7 @@ void testFirstDose(
             _dose,
             TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(_route),
-            _route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             _nbPoints);
 

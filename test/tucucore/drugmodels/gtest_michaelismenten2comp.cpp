@@ -851,8 +851,7 @@ TEST(Core_TestMichaelisMenten2comp, Bolus)
 
     ASSERT_TRUE(component != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+    const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -950,8 +949,7 @@ TEST(Core_TestMichaelisMenten2comp, Infusion)
 
     ASSERT_TRUE(component != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+    const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -1049,8 +1047,7 @@ TEST(Core_TestMichaelisMenten2comp, Extra)
 
     ASSERT_TRUE(component != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::ParenteralSolution, AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::Intramuscular);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -1146,8 +1143,7 @@ TEST(Core_TestMichaelisMenten2comp, ExtraLag)
     ASSERT_TRUE(component != nullptr);
 
 
-    const FormulationAndRoute route(
-            Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag);
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -1242,11 +1238,9 @@ TEST(Core_TestMichaelisMenten2comp, Mix)
 
     ASSERT_TRUE(component != nullptr);
 
-    const FormulationAndRoute route1(
-            Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+    const FormulationAndRoute route1(Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus);
 
-    const FormulationAndRoute route2(
-            Formulation::ParenteralSolution, AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route2(Formulation::ParenteralSolution, AdministrationRoute::Intramuscular);
 
     auto drugTreatment = buildDrugTreatmentMix(route1, route2);
 
@@ -1340,14 +1334,11 @@ TEST(Core_TestMichaelisMenten2comp, MixPercentiles)
 
     ASSERT_TRUE(component != nullptr);
 
-    const FormulationAndRoute route1(
-            Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+    const FormulationAndRoute route1(Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus);
 
-    const FormulationAndRoute route2(
-            Formulation::ParenteralSolution, AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route2(Formulation::ParenteralSolution, AdministrationRoute::Intramuscular);
 
-    const FormulationAndRoute route3(
-            Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+    const FormulationAndRoute route3(Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip);
 
     auto drugTreatment = buildDrugTreatmentMix3(route1, route2, route3);
 

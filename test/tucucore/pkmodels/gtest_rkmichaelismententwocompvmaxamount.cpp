@@ -996,8 +996,7 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountBolus)
 
     ASSERT_TRUE(component != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
+    const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::IntravenousBolus);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -1096,8 +1095,7 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountInfu)
 
     ASSERT_TRUE(component != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+    const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -1196,8 +1194,7 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountExtra)
 
     ASSERT_TRUE(component != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag);
+    const FormulationAndRoute route(Formulation::ParenteralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -1299,9 +1296,9 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix)
     {
 
         const std::vector<FormulationAndRoute> routes = {
-                {Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion},
-                {Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag},
-                {Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag}};
+                {Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip},
+                {Formulation::ParenteralSolution, AdministrationRoute::Oral},
+                {Formulation::ParenteralSolution, AdministrationRoute::Oral}};
 
 
         auto drugTreatment = buildMixedDrugTreatment(routes);
@@ -1367,9 +1364,9 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix)
     {
 
         const std::vector<FormulationAndRoute> routes = {
-                {Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag},
-                {Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion},
-                {Formulation::ParenteralSolution, AdministrationRoute::Oral, AbsorptionModel::ExtravascularLag}};
+                {Formulation::ParenteralSolution, AdministrationRoute::Oral},
+                {Formulation::ParenteralSolution, AdministrationRoute::IntravenousDrip},
+                {Formulation::ParenteralSolution, AdministrationRoute::Oral}};
 
         auto drugTreatment = buildMixedDrugTreatment(routes);
 

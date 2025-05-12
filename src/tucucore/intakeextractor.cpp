@@ -350,8 +350,7 @@ int IntakeExtractor::extract(
     // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
     // Actually the absorption model is set by the generalextractor, we should be able to get rid
     // of this test
-    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion)
-        && (_dosage.m_infusionTime.isEmpty())) {
+    if (_dosage.m_routeOfAdministration.hasInfusion() && _dosage.m_infusionTime.isEmpty()) {
         // TODO : Be careful here, the formulation and route is not in line the AbsorptionModel::Intravascular
         IntakeEvent intake(
                 _start,
@@ -373,7 +372,6 @@ int IntakeExtractor::extract(
                 _toUnit,
                 interval,
                 _dosage.getLastFormulationAndRoute(),
-                _dosage.m_routeOfAdministration.getAbsorptionModel(),
                 _dosage.m_infusionTime,
                 static_cast<CycleSize>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
@@ -402,8 +400,7 @@ int IntakeExtractor::extract(
     // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
     // Actually the absorption model is set by the generalextractor, we should be able to get rid
     // of this test
-    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion)
-        && (_dosage.m_infusionTime.isEmpty())) {
+    if (_dosage.m_routeOfAdministration.hasInfusion() && _dosage.m_infusionTime.isEmpty()) {
 
         // TODO : Be careful here, the formulation and route is not in line the AbsorptionModel::Intravascular
         IntakeEvent intake(
@@ -427,7 +424,6 @@ int IntakeExtractor::extract(
                 _toUnit,
                 interval,
                 _dosage.getLastFormulationAndRoute(),
-                _dosage.m_routeOfAdministration.getAbsorptionModel(),
                 _dosage.m_infusionTime,
                 static_cast<CycleSize>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
@@ -456,8 +452,7 @@ int IntakeExtractor::extract(
     // If the absorption model is INFUSION but the infusion time is 0, then use INTRAVASCULAR instead
     // Actually the absorption model is set by the generalextractor, we should be able to get rid
     // of this test
-    if ((_dosage.m_routeOfAdministration.getAbsorptionModel() == AbsorptionModel::Infusion)
-        && (_dosage.m_infusionTime.isEmpty())) {
+    if (_dosage.m_routeOfAdministration.hasInfusion() && _dosage.m_infusionTime.isEmpty()) {
 
         // TODO : Be careful here, the formulation and route is not in line the AbsorptionModel::Intravascular
         IntakeEvent intake(
@@ -481,7 +476,6 @@ int IntakeExtractor::extract(
                 _toUnit,
                 interval,
                 _dosage.getLastFormulationAndRoute(),
-                _dosage.m_routeOfAdministration.getAbsorptionModel(),
                 _dosage.m_infusionTime,
                 static_cast<CycleSize>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);

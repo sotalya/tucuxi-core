@@ -84,8 +84,7 @@ static void testMultiConcentrationCalculator(
                 _dose,
                 TucuUnit("mg"),
                 interval,
-                Tucuxi::Core::FormulationAndRoute(_route),
-                _route,
+                Tucuxi::Core::FormulationAndRoute(),
                 infusionTime,
                 _nbPoints);
 
@@ -165,8 +164,7 @@ static void testMultiConcentrationCalculator(
                     _dose,
                     TucuUnit("mg"),
                     interval * nbCycles,
-                    Tucuxi::Core::FormulationAndRoute(_route),
-                    _route,
+                    Tucuxi::Core::FormulationAndRoute(),
                     infusionTime,
                     (_nbPoints - 1) * nbCycles + 1);
 
@@ -205,8 +203,7 @@ static void testMultiConcentrationCalculator(
                         _dose,
                         TucuUnit("mg"),
                         interval,
-                        Tucuxi::Core::FormulationAndRoute(_route),
-                        _route,
+                        Tucuxi::Core::FormulationAndRoute(),
                         infusionTime,
                         _nbPoints);
                 event.setCalculator(calculator2);
@@ -276,8 +273,7 @@ static void testMultiConcentrationCalculator(
                 _dose,
                 TucuUnit("mg"),
                 interval,
-                Tucuxi::Core::FormulationAndRoute(_route),
-                _route,
+                Tucuxi::Core::FormulationAndRoute(),
                 infusionTime,
                 nbPoints);
 

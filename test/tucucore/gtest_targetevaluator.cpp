@@ -96,7 +96,7 @@ public:
                 DoseValue(200.0),
                 TucuUnit("mg"),
                 Duration(std::chrono::hours(7 * 24)),
-                FormulationAndRoute(Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion),
+                FormulationAndRoute(Formulation::Test, AdministrationRoute::IntravenousDrip),
                 AbsorptionModel::Infusion,
                 Duration(std::chrono::minutes(20)),
                 static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));

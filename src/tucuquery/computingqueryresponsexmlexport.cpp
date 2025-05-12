@@ -659,9 +659,9 @@ void ComputingQueryResponseXmlExport::exportFormulationAndRoute(
     addNode(formulationAndRoute,
             "administrationRoute",
             administrationRouteEnumToString(_dosage.getLastFormulationAndRoute().getAdministrationRoute()));
-    addNode(formulationAndRoute,
-            "absorptionModel",
-            absorptionModelEnumToString(_dosage.getLastFormulationAndRoute().getAbsorptionModel()));
+    //addNode(formulationAndRoute,
+    //        "absorptionModel",
+    //        absorptionModelEnumToString(_dosage.getLastFormulationAndRoute().getAbsorptionModel()));
 }
 
 std::string ComputingQueryResponseXmlExport::formulationEnumToString(const Tucuxi::Core::Formulation& _formulation)

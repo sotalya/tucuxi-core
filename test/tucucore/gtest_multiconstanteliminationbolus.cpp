@@ -84,8 +84,7 @@ TEST(Core_TestMultiConstantEliminationBolus, MultiConstantEliminationBolus)
             dose,
             TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(Tucuxi::Core::AbsorptionModel::Intravascular),
-            Tucuxi::Core::AbsorptionModel::Intravascular,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             CYCLE_SIZE);
 

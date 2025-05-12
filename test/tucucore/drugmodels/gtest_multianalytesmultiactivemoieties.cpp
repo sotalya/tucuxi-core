@@ -103,8 +103,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -270,7 +269,6 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
                 TucuUnit("mg"),
                 Duration(std::chrono::hours(24)),
                 getBolusFormulationAndRoute(),
-                getBolusAbsorptionModel(),
                 Duration(std::chrono::minutes(20)),
                 static_cast<int>(251));
         intakes.emplace_back(
@@ -282,7 +280,6 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
                 TucuUnit("mg"),
                 Duration(std::chrono::hours(24)),
                 getBolusFormulationAndRoute(),
-                getBolusAbsorptionModel(),
                 Duration(std::chrono::minutes(20)),
                 static_cast<int>(251));
 
@@ -366,8 +363,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -570,8 +566,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_Adjustments)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),

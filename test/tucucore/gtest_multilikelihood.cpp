@@ -98,7 +98,6 @@ TEST(Core_TestMultiLikeliHood, oneAnalyte1Sample)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(CYCLE_SIZE));
 
@@ -111,7 +110,6 @@ TEST(Core_TestMultiLikeliHood, oneAnalyte1Sample)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(CYCLE_SIZE));
 
@@ -230,7 +228,6 @@ TEST(Core_TestMultiLikeliHood, oneAnalyte3Samples)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(CYCLE_SIZE));
 
@@ -243,7 +240,6 @@ TEST(Core_TestMultiLikeliHood, oneAnalyte3Samples)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(CYCLE_SIZE));
 
@@ -362,7 +358,6 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(CYCLE_SIZE));
 
@@ -375,7 +370,6 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
 
             static_cast<int>(CYCLE_SIZE));
@@ -510,7 +504,6 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(CYCLE_SIZE));
 
@@ -523,7 +516,6 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
 
             static_cast<int>(CYCLE_SIZE));
@@ -655,7 +647,6 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesDifferentTimes)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(CYCLE_SIZE));
 
@@ -668,7 +659,6 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesDifferentTimes)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
 
             static_cast<int>(CYCLE_SIZE));
@@ -807,7 +797,6 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesSameTime)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(CYCLE_SIZE));
 
@@ -820,7 +809,6 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesSameTime)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
 
             static_cast<int>(CYCLE_SIZE));
@@ -982,7 +970,6 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes6Samples)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(CYCLE_SIZE));
 
@@ -995,7 +982,6 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes6Samples)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
 
             static_cast<int>(CYCLE_SIZE));

@@ -173,21 +173,12 @@ protected:
 class FormulationAndRoute
 {
 public:
-    // Construction for testing purpose
-    FormulationAndRoute(AbsorptionModel _absorptionModel)
-        : m_formulation(Formulation::Undefined), m_route(AdministrationRoute::Undefined)
-    {
-    }
+    FormulationAndRoute() : m_formulation(Formulation::Undefined), m_route(AdministrationRoute::Undefined) {}
 
-    FormulationAndRoute(
-            Formulation _formulation,
-            AdministrationRoute _route,
-            AbsorptionModel _absorptionModel,
-            std::string _administrationName = "")
+    FormulationAndRoute(Formulation _formulation, AdministrationRoute _route, std::string _administrationName = "")
         : m_formulation(_formulation), m_route(_route), m_administrationName(std::move(_administrationName))
     {
     }
-
 
     Formulation getFormulation() const
     {
@@ -204,6 +195,11 @@ public:
         return m_administrationName;
     }
 
+    bool hasInfusion() const
+    {
+        return m_route == AdministrationRoute::IntravenousDrip;
+    }
+    /*
     AbsorptionModel getAbsorptionModel() const
     {
         static std::map<AdministrationRoute, AbsorptionModel> map = {
@@ -222,6 +218,7 @@ public:
         }
         return AbsorptionModel::Undefined;
     }
+*/
 
     bool operator==(const FormulationAndRoute& _v2) const
     {
@@ -232,8 +229,6 @@ public:
     bool isCompatible(const FormulationAndRoute& _v2) const
     {
         return (m_route == _v2.m_route);
-        //return (m_absorptionModel == _v2.m_absorptionModel) && (m_route == _v2.m_route)
-        //       && (m_formulation == _v2.m_formulation);
     }
 
     /// \brief Is the duration smaller?
@@ -380,7 +375,7 @@ public:
 
     FormulationAndRoute getTreatmentFormulationAndRoute() const
     {
-        return FormulationAndRoute(m_formulation, m_route, m_absorptionModel, m_administrationName);
+        return FormulationAndRoute(m_formulation, m_route, m_administrationName);
     }
 
     INVARIANTS(INVARIANT(

@@ -100,8 +100,7 @@ TEST(Core_TestCacheComputing, ImatinibSplitInterval)
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -154,8 +153,7 @@ TEST(Core_TestCacheComputing, ImatinibFullInterval)
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),

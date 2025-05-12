@@ -147,8 +147,7 @@ TEST(Core_TestComputingComponentAdjusements, ConstantElimination)
     drugModel->getCovariates()[3]->setRefreshPeriod(
             Duration(std::chrono::hours(1), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-    const FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
     DateTime treatmentStartDate(2018_y / sep / 1, 8h + 0min);
 
@@ -263,8 +262,7 @@ TEST(Core_TestComputingComponentAdjusements, ConstantEliminationDaily)
     drugModel->getCovariates()[3]->setRefreshPeriod(
             Duration(std::chrono::hours(1), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-    const FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
     DateTime treatmentStartDate(2018_y / sep / 1, 8h + 0min);
 

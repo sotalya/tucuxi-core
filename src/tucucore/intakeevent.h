@@ -40,8 +40,8 @@ namespace Core {
 class IntakeIntervalCalculator;
 
 /// \ingroup TucuCore
-/// \brief A class reprensting the event of taking a dose.
-/// Represents a Dose, as extracted from a DAL Dosage.
+/// \brief A class representing the event of taking a dose.
+/// Represents a Dose, as extracted from a Dosage history.
 class IntakeEvent : public TimedEvent
 {
 public:
@@ -53,7 +53,7 @@ public:
     /// \param _offsetTime Number of hours since the first dose.
     /// \param _dose Quantity of drug administered.
     /// \param _interval Time before the next intake.
-    /// \param _route Route of administration.
+    /// \param _formulationAndRoute Formulation and route of administration.
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _nbPoints Number of points to compute for this intake.
     IntakeEvent(
@@ -63,12 +63,50 @@ public:
             TucuUnit _doseUnit,
             Duration _interval,
             FormulationAndRoute _formulationAndRoute,
-            AbsorptionModel _route,
             Duration _infusionTime,
             CycleSize _nbPoints)
         : TimedEvent(_time), m_dose(_dose), m_doseUnit(std::move(_doseUnit)), m_offsetTime(_offsetTime),
-          m_formulationAndRoute(std::move(_formulationAndRoute)), m_route(_route), m_interval(_interval),
-          m_infusionTime(_infusionTime), m_calculator(nullptr)
+          m_formulationAndRoute(std::move(_formulationAndRoute)), m_absorptionModel(AbsorptionModel::Undefined),
+          m_interval(_interval), m_infusionTime(_infusionTime), m_calculator(nullptr)
+    {
+        // YTA : I don't get why we should have odd numbers...
+        m_nbPoints = _nbPoints; // % 2 != 0 ? _nbPoints : _nbPoints + 1;  // Must use an odd number
+
+        if (_interval.isNegative()) {
+            std::cout << "Negative interval" << '\n';
+        }
+
+        if (_interval.isEmpty()) {
+            std::cout << "Zero interval" << '\n';
+        }
+    }
+
+
+    /// \brief Constructor
+    /// \param _time Time of the dose intake.
+    /// \param _offsetTime Number of hours since the first dose.
+    /// \param _dose Quantity of drug administered.
+    /// \param _interval Time before the next intake.
+    /// \param _formulationAndRoute Formulation and route of administration.
+    /// \param _absorptionModel Absorption model of the administration.
+    /// \param _infusionTime Duration in case of an infusion.
+    /// \param _nbPoints Number of points to compute for this intake.
+    ///
+    /// This constructor is meant to be used for tests, not by the software itself.
+    ///
+    IntakeEvent(
+            DateTime _time,
+            Duration _offsetTime,
+            DoseValue _dose,
+            TucuUnit _doseUnit,
+            Duration _interval,
+            FormulationAndRoute _formulationAndRoute,
+            AbsorptionModel _absorptionModel,
+            Duration _infusionTime,
+            CycleSize _nbPoints)
+        : TimedEvent(_time), m_dose(_dose), m_doseUnit(std::move(_doseUnit)), m_offsetTime(_offsetTime),
+          m_formulationAndRoute(std::move(_formulationAndRoute)), m_absorptionModel(_absorptionModel),
+          m_interval(_interval), m_infusionTime(_infusionTime), m_calculator(nullptr)
     {
         // YTA : I don't get why we should have odd numbers...
         m_nbPoints = _nbPoints; // % 2 != 0 ? _nbPoints : _nbPoints + 1;  // Must use an odd number
@@ -99,8 +137,8 @@ public:
     bool operator==(const IntakeEvent& _other) const
     {
         return (m_time == _other.m_time && m_dose == _other.m_dose && m_offsetTime == _other.m_offsetTime
-                && m_nbPoints == _other.m_nbPoints && m_route == _other.m_route && m_interval == _other.m_interval
-                && m_infusionTime == _other.m_infusionTime);
+                && m_nbPoints == _other.m_nbPoints && m_absorptionModel == _other.m_absorptionModel
+                && m_interval == _other.m_interval && m_infusionTime == _other.m_infusionTime);
     }
 
     /// \brief Change the time before the next intake.
@@ -170,11 +208,11 @@ public:
         return m_formulationAndRoute;
     }
 
-    /// \brief Get the route of administration of the treatment.
-    /// \return Route of administration.
-    AbsorptionModel getRoute() const
+    /// \brief Get the absorption model of administration of the treatment.
+    /// \return Absorption model of administration.
+    AbsorptionModel getAbsorptionModel() const
     {
-        return m_route;
+        return m_absorptionModel;
     }
 
     /// \brief Get the infusion time (in milliseconds).
@@ -186,7 +224,7 @@ public:
 
     void setAbsorptionModel(AbsorptionModel _model)
     {
-        m_route = _model;
+        m_absorptionModel = _model;
     }
 
     /// \brief Compare two intakes, sorting them according to intake time.
@@ -257,7 +295,7 @@ private:
     /// The formulation and route of this intake
     FormulationAndRoute m_formulationAndRoute;
     /// The route of administration
-    AbsorptionModel m_route;
+    AbsorptionModel m_absorptionModel;
     /// The time before the next intake
     Duration m_interval;
     /// The duration in case of an infusion

@@ -372,7 +372,7 @@ ComputingStatus GeneralExtractor::generalExtractions(
             Value dose = 0.0;
             TucuUnit doseUnit = _drugModel.getAnalyteSets()[0]->getDoseUnit();
 
-            auto absorptionModel = lastIntake->getRoute();
+            auto absorptionModel = lastIntake->getAbsorptionModel();
 
             Duration infusionTime;
             if (absorptionModel == AbsorptionModel::Infusion) {

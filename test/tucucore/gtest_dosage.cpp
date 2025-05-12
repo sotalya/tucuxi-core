@@ -35,8 +35,7 @@ TEST(Core_TestDosage, SingleDose)
 {
     const DoseValue validDose = 100.0;
     const DoseValue invalidDose = -100.0;
-    const FormulationAndRoute routePerfusion(
-            Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+    const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip);
     const Duration emptyInfusionTime;
     const Duration invalidInfusionTime(-std::chrono::minutes(20));
     const Duration validInfusionTime(std::chrono::minutes(20));
@@ -63,8 +62,7 @@ TEST(Core_TestDosage, SingleDose)
 TEST(Core_TestDosage, LastingDose)
 {
     const DoseValue validDose = 100.0;
-    const FormulationAndRoute routePerfusion(
-            Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+    const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip);
     const Duration validInfusionTime(std::chrono::minutes(20));
     const Duration emptyInterval;
     const Duration invalidInterval(-std::chrono::hours(10));
@@ -91,8 +89,7 @@ TEST(Core_TestDosage, LastingDose)
 TEST(Core_TestDosage, DailyDose)
 {
     const DoseValue validDose = 100.0;
-    const FormulationAndRoute routePerfusion(
-            Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+    const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip);
     const Duration validInfusionTime(std::chrono::minutes(20));
     // Cannot have an invalid or invalid time of day (at worst, it simply takes the current time)
     const TimeOfDay validTimeOfDay(Duration(std::chrono::seconds(12345)));
@@ -135,8 +132,7 @@ TEST(Core_TestDosage, DailyDose)
 TEST(Core_TestDosage, WeeklyDose)
 {
     const DoseValue validDose = 100.0;
-    const FormulationAndRoute routePerfusion(
-            Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+    const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip);
     const Duration validInfusionTime(std::chrono::minutes(20));
     // Cannot have an invalid or invalid time of day (at worst, it simply takes the current time)
     const TimeOfDay validTimeOfDay(Duration(std::chrono::seconds(12345)));
@@ -281,8 +277,7 @@ TEST(Core_TestDosage, DosageTimeRange)
     // Give an undefined start date, expect an exception
     DateTime emptyDate;
     emptyDate.reset();
-    const FormulationAndRoute routePerfusion(
-            Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+    const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip);
     LastingDose fakeDose(
             DoseValue(200.0),
             TucuUnit("mg"),

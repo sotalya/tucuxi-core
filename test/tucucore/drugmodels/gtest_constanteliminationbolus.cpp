@@ -97,8 +97,7 @@ TEST(Core_TestConstantEliminationBolus, Test0)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -265,8 +264,7 @@ TEST(Core_TestConstantEliminationBolus, Test1)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -431,8 +429,7 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelAdditive)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -533,8 +530,7 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelExponential)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -633,8 +629,7 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelProportional)
     static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -734,8 +729,7 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelMixed)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -845,8 +839,7 @@ TEST(Core_TestConstantEliminationBolus, ParamAdditive)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -956,8 +949,7 @@ TEST(Core_TestConstantEliminationBolus, ParamAdditiveResidualErrorModelAdditive)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -1068,8 +1060,7 @@ TEST(Core_TestConstantEliminationBolus, ParamExponentialResidualErrorModelExpone
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -1181,8 +1172,7 @@ TEST(Core_TestConstantEliminationBolus, ParamProportionalResidualErrorModelPropo
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -1311,8 +1301,7 @@ TEST(Core_TestConstantEliminationBolus, Adjustments)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -1454,8 +1443,7 @@ TEST(Core_TestConstantEliminationBolus, Adjustments2)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),

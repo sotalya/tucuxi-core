@@ -404,8 +404,7 @@ public:
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
         if (m_dosages.empty()) {
-            return FormulationAndRoute(
-                    Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
+            return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined);
         }
         return m_dosages.back()->getLastFormulationAndRoute();
     }
@@ -510,8 +509,7 @@ public:
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
         if (m_dosages.empty()) {
-            return FormulationAndRoute(
-                    Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
+            return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined);
         }
         return m_dosages.back()->getLastFormulationAndRoute();
     }

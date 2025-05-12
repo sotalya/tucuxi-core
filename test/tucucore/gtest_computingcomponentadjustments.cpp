@@ -52,8 +52,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllD
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -124,8 +123,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRouteA
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -197,8 +195,7 @@ TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndR
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -260,8 +257,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteBest
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -326,8 +322,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRouteB
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -399,8 +394,7 @@ TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndR
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -520,8 +514,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibSteadyStateLastFormulationA
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -595,8 +588,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibSteadyStateLastFormulationA
         auto drugModel = builder.buildDrugModel();
         ASSERT_TRUE(drugModel != nullptr);
 
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -663,8 +655,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllD
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
@@ -747,8 +738,7 @@ TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndR
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -809,8 +799,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibAllFormulationAndRouteBestD
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-    const FormulationAndRoute route(
-            Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
     DateTime startSept2018(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),

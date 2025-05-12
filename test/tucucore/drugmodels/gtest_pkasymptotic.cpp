@@ -86,8 +86,7 @@ TEST(Core_TestPkAsymptotic, test0)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -246,8 +245,7 @@ TEST(Core_TestPkAsymptotic, Adjustments)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -387,8 +385,7 @@ TEST(Core_TestPkAsymptotic, AdjustmentsSlowRate)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -528,8 +525,7 @@ TEST(Core_TestPkAsymptotic, AdjustmentsLoadingDose)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -692,7 +688,7 @@ TEST(Core_TestPkAsymptotic, AdjustmentsFirstDose)
 
     {
         auto drugTreatment = std::make_unique<DrugTreatment>();
-        // const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        // const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
                 "covR", "0.5", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
@@ -830,8 +826,7 @@ TEST(Core_TestPkAsymptotic, AdjustmentsLoadingDoseFirstDose)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),

@@ -85,8 +85,8 @@ static void testSteadyState(
             _dose,
             TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(_route),
-            _route,
+            Tucuxi::Core::FormulationAndRoute(),
+            //_route,
             infusionTime,
             _nbPoints);
 
@@ -187,8 +187,7 @@ static void testSingleVsMultiple(
             _dose,
             TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(_route),
-            _route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             _nbPoints);
 
@@ -372,8 +371,7 @@ static void testCompare(
             _dose,
             TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(_route),
-            _route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             _nbPoints);
     Tucuxi::Core::Residuals inResiduals(residualSize);
@@ -685,8 +683,9 @@ TEST(Core_TestIntervalCalculator, twoCompErlang)
             400,
             TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(Tucuxi::Core::AbsorptionModel::Extravascular),
-            Tucuxi::Core::AbsorptionModel::Extravascular,
+            Tucuxi::Core::FormulationAndRoute(),
+            //Tucuxi::Core::FormulationAndRoute(Tucuxi::Core::AbsorptionModel::Extravascular),
+            //Tucuxi::Core::AbsorptionModel::Extravascular,
             infusionTime,
             CYCLE_SIZE);
     Tucuxi::Core::Residuals inResiduals(residualSize);

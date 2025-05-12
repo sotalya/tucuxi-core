@@ -745,7 +745,7 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(
     static const string FORMULATION_NODE_NAME = "formulation";
     static const string ADMINISTRATION_NAME_NODE_NAME = "administrationName";
     static const string ADMINISTRATION_ROUTE_NODE_NAME = "administrationRoute";
-    static const string ABSORPTION_MODEL_NODE_NAME = "absorptionModel";
+    // static const string ABSORPTION_MODEL_NODE_NAME = "absorptionModel";
 
     string formulationValue = getChildString(_formulationAndRouteRootIterator, FORMULATION_NODE_NAME);
     Core::Formulation formulation = Core::Formulation::Undefined;
@@ -811,6 +811,7 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(
         setStatus(Status::Error, "Unvalid administration route");
     }
 
+    /*
     string absorptionModelValue = getChildString(_formulationAndRouteRootIterator, ABSORPTION_MODEL_NODE_NAME);
     Core::AbsorptionModel absorptionModel = Core::AbsorptionModel::Undefined;
 
@@ -834,9 +835,8 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(
         absorptionModel = Core::AbsorptionModel::Undefined;
         setStatus(Status::Error, "Unvalid absorption model");
     }
-
-    return make_unique<Core::FormulationAndRoute>(
-            formulation, administrationRoute, absorptionModel, administrationName);
+*/
+    return make_unique<Core::FormulationAndRoute>(formulation, administrationRoute, administrationName);
 }
 
 unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterator& _requestRootIterator)

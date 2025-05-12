@@ -75,7 +75,6 @@ TEST(Core_TestPercentileCalculator, AprioriInvalidParameters)
     Tucuxi::Common::Duration interval = 24h;
     Tucuxi::Common::Duration infusionTime = 0h;
     double dose = 400;
-    Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Extravascular;
 
     DateTime recordFrom = now;
     DateTime recordTo = now + 96h;
@@ -87,8 +86,7 @@ TEST(Core_TestPercentileCalculator, AprioriInvalidParameters)
             dose,
             Tucuxi::Common::TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(route),
-            route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             CYCLE_SIZE);
     std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 =
@@ -102,8 +100,7 @@ TEST(Core_TestPercentileCalculator, AprioriInvalidParameters)
             dose,
             Tucuxi::Common::TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(route),
-            route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             CYCLE_SIZE);
     intakeEvent2.setCalculator(calculator2);
@@ -115,8 +112,7 @@ TEST(Core_TestPercentileCalculator, AprioriInvalidParameters)
             dose,
             Tucuxi::Common::TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(route),
-            route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             CYCLE_SIZE);
     intakeEvent3.setCalculator(calculator2);
@@ -128,8 +124,7 @@ TEST(Core_TestPercentileCalculator, AprioriInvalidParameters)
             dose,
             Tucuxi::Common::TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(route),
-            route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             CYCLE_SIZE);
     intakeEvent4.setCalculator(calculator2);
@@ -226,7 +221,6 @@ TEST(Core_TestPercentileCalculator, Apriori)
     Tucuxi::Common::Duration interval = 24h;
     Tucuxi::Common::Duration infusionTime = 0h;
     double dose = 400;
-    Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Extravascular;
 
     DateTime recordFrom = now;
     DateTime recordTo = now + 96h;
@@ -238,8 +232,7 @@ TEST(Core_TestPercentileCalculator, Apriori)
             dose,
             Tucuxi::Common::TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(route),
-            route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             CYCLE_SIZE);
     std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 =
@@ -253,8 +246,7 @@ TEST(Core_TestPercentileCalculator, Apriori)
             dose,
             Tucuxi::Common::TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(route),
-            route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             CYCLE_SIZE);
     intakeEvent2.setCalculator(calculator2);
@@ -266,8 +258,7 @@ TEST(Core_TestPercentileCalculator, Apriori)
             dose,
             Tucuxi::Common::TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(route),
-            route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             CYCLE_SIZE);
     intakeEvent3.setCalculator(calculator2);
@@ -279,8 +270,7 @@ TEST(Core_TestPercentileCalculator, Apriori)
             dose,
             Tucuxi::Common::TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(route),
-            route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             CYCLE_SIZE);
     intakeEvent4.setCalculator(calculator2);
@@ -391,7 +381,6 @@ TEST(Core_TestPercentileCalculator, AposterioriNormal)
     Tucuxi::Common::Duration interval = 24h;
     Tucuxi::Common::Duration infusionTime = 0h;
     double dose = 400;
-    Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Extravascular;
 
     DateTime recordFrom = now;
     DateTime recordTo = now + 24h;
@@ -403,8 +392,7 @@ TEST(Core_TestPercentileCalculator, AposterioriNormal)
             dose,
             Tucuxi::Common::TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(route),
-            route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             CYCLE_SIZE);
     std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 =
@@ -514,7 +502,6 @@ TEST(Core_TestPercentileCalculator, AposterioriMatrixCache)
     Tucuxi::Common::Duration interval = 24h;
     Tucuxi::Common::Duration infusionTime = 0h;
     double dose = 400;
-    Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Extravascular;
 
     DateTime recordFrom = now;
     DateTime recordTo = now + 24h;
@@ -526,8 +513,7 @@ TEST(Core_TestPercentileCalculator, AposterioriMatrixCache)
             dose,
             Tucuxi::Common::TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(route),
-            route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             CYCLE_SIZE);
     std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 =
@@ -633,7 +619,6 @@ TEST(Core_TestPercentileCalculator, Aposteriori)
     Tucuxi::Common::Duration interval = 24h;
     Tucuxi::Common::Duration infusionTime = 0h;
     double dose = 400;
-    Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Extravascular;
 
     DateTime recordFrom = now;
     DateTime recordTo = now + 24h;
@@ -645,8 +630,7 @@ TEST(Core_TestPercentileCalculator, Aposteriori)
             dose,
             Tucuxi::Common::TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(route),
-            route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             CYCLE_SIZE);
     std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 =
@@ -753,7 +737,6 @@ TEST(Core_TestPercentileCalculator, AposterioriUnlikelySample)
     Tucuxi::Common::Duration interval = 24h;
     Tucuxi::Common::Duration infusionTime = 0h;
     double dose = 400;
-    Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Extravascular;
 
     DateTime recordFrom = now;
     DateTime recordTo = now + 24h;
@@ -765,8 +748,7 @@ TEST(Core_TestPercentileCalculator, AposterioriUnlikelySample)
             dose,
             Tucuxi::Common::TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(route),
-            route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             CYCLE_SIZE);
     std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 =
@@ -873,7 +855,6 @@ TEST(Core_TestPercentileCalculator, AposterioriInvalidParameters)
     Tucuxi::Common::Duration interval = 24h;
     Tucuxi::Common::Duration infusionTime = 0h;
     double dose = 400;
-    Tucuxi::Core::AbsorptionModel route = Tucuxi::Core::AbsorptionModel::Extravascular;
 
     DateTime recordFrom = now;
     DateTime recordTo = now + 24h;
@@ -885,8 +866,7 @@ TEST(Core_TestPercentileCalculator, AposterioriInvalidParameters)
             dose,
             Tucuxi::Common::TucuUnit("mg"),
             interval,
-            Tucuxi::Core::FormulationAndRoute(route),
-            route,
+            Tucuxi::Core::FormulationAndRoute(),
             infusionTime,
             CYCLE_SIZE);
     std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 =

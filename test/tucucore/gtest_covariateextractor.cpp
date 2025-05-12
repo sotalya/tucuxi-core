@@ -179,8 +179,7 @@ public:
     static Tucuxi::Core::DailyDose get_dosage()
     {
         const DoseValue validDose = 100.0;
-        const FormulationAndRoute routePerfusion(
-                Formulation::Test, AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion);
+        const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip);
         const Duration validInfusionTime(std::chrono::minutes(120));
         const TimeOfDay validTimeOfDay(Duration(std::chrono::seconds(12345)));
 

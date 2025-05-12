@@ -34,15 +34,15 @@ bool double_ne_rel_abs(double a, double b, double relative_tolerance, double abs
 
 Tucuxi::Core::FormulationAndRoute getInfusionFormulationAndRoute();
 
-Tucuxi::Core::AbsorptionModel getInfusionAbsorptionModel();
+//Tucuxi::Core::AbsorptionModel getInfusionAbsorptionModel();
 
 Tucuxi::Core::FormulationAndRoute getBolusFormulationAndRoute();
 
-Tucuxi::Core::AbsorptionModel getBolusAbsorptionModel();
+//Tucuxi::Core::AbsorptionModel getBolusAbsorptionModel();
 
 Tucuxi::Core::FormulationAndRoute getExtraFormulationAndRoute();
 
-Tucuxi::Core::AbsorptionModel getExtraAbsorptionModel();
+//Tucuxi::Core::AbsorptionModel getExtraAbsorptionModel();
 
 static const int CYCLE_SIZE = 251;
 
@@ -79,8 +79,9 @@ static void testCalculator(
                 _dose,
                 TucuUnit("mg"),
                 interval,
-                Tucuxi::Core::FormulationAndRoute(_route),
-                _route,
+                Tucuxi::Core::FormulationAndRoute(),
+                //Tucuxi::Core::FormulationAndRoute(_route),
+                //_route,
                 infusionTime,
                 _nbPoints);
 
@@ -158,8 +159,9 @@ static void testCalculator(
                     _dose,
                     TucuUnit("mg"),
                     interval * nbCycles,
-                    Tucuxi::Core::FormulationAndRoute(_route),
-                    _route,
+                    Tucuxi::Core::FormulationAndRoute(),
+                    //Tucuxi::Core::FormulationAndRoute(_route),
+                    //_route,
                     infusionTime,
                     (_nbPoints - 1) * nbCycles + 1);
 
@@ -198,8 +200,9 @@ static void testCalculator(
                         _dose,
                         TucuUnit("mg"),
                         interval,
-                        Tucuxi::Core::FormulationAndRoute(_route),
-                        _route,
+                        Tucuxi::Core::FormulationAndRoute(),
+                        //Tucuxi::Core::FormulationAndRoute(_route),
+                        //_route,
                         infusionTime,
                         _nbPoints);
                 event.setCalculator(calculator2);
@@ -268,8 +271,9 @@ static void testCalculator(
                 _dose,
                 TucuUnit("mg"),
                 interval,
-                Tucuxi::Core::FormulationAndRoute(_route),
-                _route,
+                Tucuxi::Core::FormulationAndRoute(),
+                //ucuxi::Core::FormulationAndRoute(_route),
+                //_route,
                 infusionTime,
                 nbPoints);
 

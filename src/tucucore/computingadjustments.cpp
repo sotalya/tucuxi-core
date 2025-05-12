@@ -486,6 +486,17 @@ ComputingStatus ComputingAdjustments::computeCandidate(
             return status;
         }
 
+        for (auto& intake : intakeSeriesPerGroup[analyteGroupId]) {
+            auto f = _request.getDrugModel().getFormulationAndRoutes().get(intake.getFormulationAndRoute());
+            if ((f->getFormulationAndRoute().getAbsorptionModel() == AbsorptionModel::Infusion)
+                && (intake.getInfusionTime().isEmpty())) {
+                intake.setAbsorptionModel(AbsorptionModel::Intravascular);
+            }
+            else {
+                intake.setAbsorptionModel(f->getFormulationAndRoute().getAbsorptionModel());
+            }
+        }
+
         ComputingStatus intakeAssociationResult =
                 IntakeToCalculatorAssociator::associate(intakeSeriesPerGroup[analyteGroupId], *pkModel[analyteGroupId]);
 
@@ -1394,6 +1405,17 @@ ComputingStatus ComputingAdjustments::generatePrediction(
             return intakeExtractionResult;
         }
 
+        for (auto& intake : intakeSeriesPerGroup[analyteGroupId]) {
+            auto f = _request.getDrugModel().getFormulationAndRoutes().get(intake.getFormulationAndRoute());
+            if ((f->getFormulationAndRoute().getAbsorptionModel() == AbsorptionModel::Infusion)
+                && (intake.getInfusionTime().isEmpty())) {
+                intake.setAbsorptionModel(AbsorptionModel::Intravascular);
+            }
+            else {
+                intake.setAbsorptionModel(f->getFormulationAndRoute().getAbsorptionModel());
+            }
+        }
+
         ComputingStatus intakeAssociationResult = IntakeToCalculatorAssociator::associate(
                 intakeSeriesPerGroup[analyteGroupId], *_pkModel[analyteGroupId]);
 
@@ -1689,6 +1711,17 @@ ComputingStatus ComputingAdjustments::evaluateCurrentDosageHistory(
 
             if (intakeExtractionResult != ComputingStatus::Ok) {
                 return intakeExtractionResult;
+            }
+
+            for (auto& intake : intakeSeriesPerGroup[analyteGroupId]) {
+                auto f = _request.getDrugModel().getFormulationAndRoutes().get(intake.getFormulationAndRoute());
+                if ((f->getFormulationAndRoute().getAbsorptionModel() == AbsorptionModel::Infusion)
+                    && (intake.getInfusionTime().isEmpty())) {
+                    intake.setAbsorptionModel(AbsorptionModel::Intravascular);
+                }
+                else {
+                    intake.setAbsorptionModel(f->getFormulationAndRoute().getAbsorptionModel());
+                }
             }
 
             auto status = m_utils->m_generalExtractor->convertAnalytes(

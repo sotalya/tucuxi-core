@@ -132,7 +132,7 @@ void DosageHistory::mergeDosage(const DosageTimeRange* _newDosage)
 FormulationAndRoute DosageHistory::getLastFormulationAndRoute() const
 {
     if (m_history.empty()) {
-        return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined, AbsorptionModel::Undefined);
+        return FormulationAndRoute(Formulation::Undefined, AdministrationRoute::Undefined);
     }
     return m_history.back()->m_dosage->getLastFormulationAndRoute();
 }

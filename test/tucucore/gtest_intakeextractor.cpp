@@ -93,7 +93,6 @@ TEST(Core_TestIntakeExtractor, OncePerWeek)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -105,7 +104,6 @@ TEST(Core_TestIntakeExtractor, OncePerWeek)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -117,7 +115,6 @@ TEST(Core_TestIntakeExtractor, OncePerWeek)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -129,7 +126,6 @@ TEST(Core_TestIntakeExtractor, OncePerWeek)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -141,7 +137,6 @@ TEST(Core_TestIntakeExtractor, OncePerWeek)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(10)),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -153,7 +148,6 @@ TEST(Core_TestIntakeExtractor, OncePerWeek)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(10)),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
 
@@ -271,7 +265,6 @@ TEST(Core_TestIntakeExtractor, OnceEveryTenDays)
             TucuUnit("mg"),
             Duration(std::chrono::hours(10 * 24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(10 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -283,7 +276,6 @@ TEST(Core_TestIntakeExtractor, OnceEveryTenDays)
             TucuUnit("mg"),
             Duration(std::chrono::hours(10 * 24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(10 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -295,7 +287,6 @@ TEST(Core_TestIntakeExtractor, OnceEveryTenDays)
             TucuUnit("mg"),
             Duration(std::chrono::hours(10 * 24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(10 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -307,7 +298,6 @@ TEST(Core_TestIntakeExtractor, OnceEveryTenDays)
             TucuUnit("mg"),
             Duration(std::chrono::hours(4 * 24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(10)),
             static_cast<int>(4 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -319,7 +309,6 @@ TEST(Core_TestIntakeExtractor, OnceEveryTenDays)
             TucuUnit("mg"),
             Duration(std::chrono::hours(4 * 24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(10)),
             static_cast<int>(4 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -331,7 +320,6 @@ TEST(Core_TestIntakeExtractor, OnceEveryTenDays)
             TucuUnit("mg"),
             Duration(std::chrono::hours(4 * 24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(10)),
             static_cast<int>(4 * 24 * NB_POINTS_PER_HOUR + 1)));
     // The 16.07.2017 must be EXCLUDED (the intervals are closed on the left, but opened on the right side!)
@@ -395,7 +383,6 @@ TEST(Core_TestIntakeExtractor, OnceEvery36Hours)
             TucuUnit("mg"),
             Duration(std::chrono::hours(36)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(36 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -407,7 +394,6 @@ TEST(Core_TestIntakeExtractor, OnceEvery36Hours)
             TucuUnit("mg"),
             Duration(std::chrono::hours(36)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(36 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -419,7 +405,6 @@ TEST(Core_TestIntakeExtractor, OnceEvery36Hours)
             TucuUnit("mg"),
             Duration(std::chrono::hours(36)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(36 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -431,7 +416,6 @@ TEST(Core_TestIntakeExtractor, OnceEvery36Hours)
             TucuUnit("mg"),
             Duration(std::chrono::hours(36)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(36 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -443,7 +427,6 @@ TEST(Core_TestIntakeExtractor, OnceEvery36Hours)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
 
@@ -506,7 +489,6 @@ TEST(Core_TestIntakeExtractor, FiveTimesEvery12Hours)
             TucuUnit("mg"),
             Duration(std::chrono::hours(12)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(12 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -518,7 +500,6 @@ TEST(Core_TestIntakeExtractor, FiveTimesEvery12Hours)
             TucuUnit("mg"),
             Duration(std::chrono::hours(12)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(12 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -530,7 +511,6 @@ TEST(Core_TestIntakeExtractor, FiveTimesEvery12Hours)
             TucuUnit("mg"),
             Duration(std::chrono::hours(12)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(12 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -542,7 +522,6 @@ TEST(Core_TestIntakeExtractor, FiveTimesEvery12Hours)
             TucuUnit("mg"),
             Duration(std::chrono::hours(12)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(12 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -554,7 +533,6 @@ TEST(Core_TestIntakeExtractor, FiveTimesEvery12Hours)
             TucuUnit("mg"),
             Duration(std::chrono::hours(12)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(12 * NB_POINTS_PER_HOUR + 1)));
 
@@ -612,7 +590,6 @@ TEST(Core_TestIntakeExtractor, FiveTimesEvery12HoursEarlyStop)
             TucuUnit("mg"),
             Duration(std::chrono::hours(12)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(12 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -624,7 +601,6 @@ TEST(Core_TestIntakeExtractor, FiveTimesEvery12HoursEarlyStop)
             TucuUnit("mg"),
             Duration(std::chrono::hours(12)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(12 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -636,7 +612,6 @@ TEST(Core_TestIntakeExtractor, FiveTimesEvery12HoursEarlyStop)
             TucuUnit("mg"),
             Duration(std::chrono::hours(12)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(12 * NB_POINTS_PER_HOUR + 1)));
 
@@ -706,7 +681,6 @@ TEST(Core_TestIntakeExtractor, TwiceEveryTenDays)
             TucuUnit("mg"),
             Duration(std::chrono::hours(10)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(10 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -718,7 +692,6 @@ TEST(Core_TestIntakeExtractor, TwiceEveryTenDays)
             TucuUnit("mg"),
             Duration(std::chrono::hours(10 * 23)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(10 * 23 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -730,7 +703,6 @@ TEST(Core_TestIntakeExtractor, TwiceEveryTenDays)
             TucuUnit("mg"),
             Duration(std::chrono::hours(10)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(10 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -742,7 +714,6 @@ TEST(Core_TestIntakeExtractor, TwiceEveryTenDays)
             TucuUnit("mg"),
             Duration(std::chrono::hours(10 * 23)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(10 * 23 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -754,7 +725,6 @@ TEST(Core_TestIntakeExtractor, TwiceEveryTenDays)
             TucuUnit("mg"),
             Duration(std::chrono::hours(10)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(10 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -766,7 +736,6 @@ TEST(Core_TestIntakeExtractor, TwiceEveryTenDays)
             TucuUnit("mg"),
             Duration(std::chrono::hours(10 * 23)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(10 * 23 * NB_POINTS_PER_HOUR + 1)));
 
@@ -826,7 +795,6 @@ TEST(Core_TestIntakeExtractor, OnceEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -838,7 +806,6 @@ TEST(Core_TestIntakeExtractor, OnceEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -850,7 +817,6 @@ TEST(Core_TestIntakeExtractor, OnceEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -862,7 +828,6 @@ TEST(Core_TestIntakeExtractor, OnceEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -874,7 +839,6 @@ TEST(Core_TestIntakeExtractor, OnceEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -886,7 +850,6 @@ TEST(Core_TestIntakeExtractor, OnceEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -898,7 +861,6 @@ TEST(Core_TestIntakeExtractor, OnceEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
 
@@ -984,7 +946,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -996,7 +957,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1008,7 +968,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
 
@@ -1022,7 +981,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1034,7 +992,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1046,7 +1003,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
 
@@ -1059,7 +1015,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1071,7 +1026,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1083,7 +1037,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
 
@@ -1097,7 +1050,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1109,7 +1061,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1121,7 +1072,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
 
@@ -1134,7 +1084,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1146,7 +1095,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1158,7 +1106,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
 
@@ -1172,7 +1119,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1184,7 +1130,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1196,7 +1141,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
 
@@ -1209,7 +1153,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1221,7 +1164,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1233,7 +1175,6 @@ TEST(Core_TestIntakeExtractor, ThreeTimesEveryDay)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
 
@@ -1336,7 +1277,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1348,7 +1288,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1360,7 +1299,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1372,7 +1310,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1384,7 +1321,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1396,7 +1332,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1408,7 +1343,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1420,7 +1354,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1432,7 +1365,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1444,7 +1376,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     // Second repeat
@@ -1457,7 +1388,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1469,7 +1399,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1481,7 +1410,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1493,7 +1421,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1505,7 +1432,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1517,7 +1443,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1529,7 +1454,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1541,7 +1465,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1553,7 +1476,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1565,7 +1487,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
 
@@ -1580,7 +1501,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1592,7 +1512,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1604,7 +1523,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1616,7 +1534,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
     // Second repeat
@@ -1629,7 +1546,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1641,7 +1557,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1653,7 +1568,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1665,7 +1579,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
 
@@ -1680,7 +1593,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1692,7 +1604,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(10)),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     // Second repeat
@@ -1705,7 +1616,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1717,7 +1627,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence1)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(10)),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
 
@@ -1809,7 +1718,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
                     TucuUnit("mg"),
                     Duration(std::chrono::hours(3)),
                     getBolusFormulationAndRoute(),
-                    getBolusAbsorptionModel(),
                     Duration(),
                     static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)),
             ScheduledIntakeOp::Skip);
@@ -1823,7 +1731,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
                     TucuUnit("mg"),
                     Duration(std::chrono::hours(3)),
                     getExtraFormulationAndRoute(),
-                    getExtraAbsorptionModel(),
                     Duration(),
                     static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)),
             ScheduledIntakeOp::Add);
@@ -1837,7 +1744,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
                     TucuUnit("mg"),
                     Duration(std::chrono::hours(24)),
                     getInfusionFormulationAndRoute(),
-                    getInfusionAbsorptionModel(),
                     Duration(std::chrono::minutes(20)),
                     static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)),
             ScheduledIntakeOp::Skip);
@@ -1859,7 +1765,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1871,7 +1776,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1883,7 +1787,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1895,7 +1798,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1907,7 +1809,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1919,7 +1820,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1931,7 +1831,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1943,7 +1842,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1955,7 +1853,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1967,7 +1864,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     // Second repeat
@@ -1980,7 +1876,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -1992,7 +1887,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2004,7 +1898,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2016,7 +1909,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2028,7 +1920,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2040,7 +1931,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2052,7 +1942,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2064,7 +1953,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2076,7 +1964,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2088,7 +1975,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(3)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(3 * NB_POINTS_PER_HOUR + 1)));
 
@@ -2103,7 +1989,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2115,7 +2000,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2127,7 +2011,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2139,7 +2022,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
     // Second repeat
@@ -2152,7 +2034,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2164,7 +2045,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2176,7 +2056,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2188,7 +2067,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(6)),
             getExtraFormulationAndRoute(),
-            getExtraAbsorptionModel(),
             Duration(),
             static_cast<int>(6 * NB_POINTS_PER_HOUR + 1)));
 
@@ -2203,7 +2081,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(20)),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2215,7 +2092,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(10)),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
     // Second repeat
@@ -2228,7 +2104,6 @@ TEST(Core_TestIntakeExtractor, ComplexParallelSequence2)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getInfusionFormulationAndRoute(),
-            getInfusionAbsorptionModel(),
             Duration(std::chrono::minutes(10)),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
 
@@ -2329,7 +2204,6 @@ TEST(Core_TestIntakeExtractor, FullWeekExceptMonday)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2341,7 +2215,6 @@ TEST(Core_TestIntakeExtractor, FullWeekExceptMonday)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2353,7 +2226,6 @@ TEST(Core_TestIntakeExtractor, FullWeekExceptMonday)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2365,7 +2237,6 @@ TEST(Core_TestIntakeExtractor, FullWeekExceptMonday)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2377,7 +2248,6 @@ TEST(Core_TestIntakeExtractor, FullWeekExceptMonday)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2389,7 +2259,6 @@ TEST(Core_TestIntakeExtractor, FullWeekExceptMonday)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2401,7 +2270,6 @@ TEST(Core_TestIntakeExtractor, FullWeekExceptMonday)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2413,7 +2281,6 @@ TEST(Core_TestIntakeExtractor, FullWeekExceptMonday)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2425,7 +2292,6 @@ TEST(Core_TestIntakeExtractor, FullWeekExceptMonday)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2437,7 +2303,6 @@ TEST(Core_TestIntakeExtractor, FullWeekExceptMonday)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2449,7 +2314,6 @@ TEST(Core_TestIntakeExtractor, FullWeekExceptMonday)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2461,7 +2325,6 @@ TEST(Core_TestIntakeExtractor, FullWeekExceptMonday)
             TucuUnit("mg"),
             Duration(std::chrono::hours(7 * 24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(7 * 24 * NB_POINTS_PER_HOUR + 1)));
 
@@ -2531,7 +2394,6 @@ TEST(Core_TestIntakeExtractor, OnceEvery36HoursAtSteadyState)
             TucuUnit("mg"),
             Duration(std::chrono::hours(36)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(36 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2543,7 +2405,6 @@ TEST(Core_TestIntakeExtractor, OnceEvery36HoursAtSteadyState)
             TucuUnit("mg"),
             Duration(std::chrono::hours(36)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(36 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2555,7 +2416,6 @@ TEST(Core_TestIntakeExtractor, OnceEvery36HoursAtSteadyState)
             TucuUnit("mg"),
             Duration(std::chrono::hours(36)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(36 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2567,7 +2427,6 @@ TEST(Core_TestIntakeExtractor, OnceEvery36HoursAtSteadyState)
             TucuUnit("mg"),
             Duration(std::chrono::hours(36)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(36 * NB_POINTS_PER_HOUR + 1)));
     expectedIntakes.push_back(IntakeEvent(
@@ -2579,7 +2438,6 @@ TEST(Core_TestIntakeExtractor, OnceEvery36HoursAtSteadyState)
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
-            getBolusAbsorptionModel(),
             Duration(),
             static_cast<int>(24 * NB_POINTS_PER_HOUR + 1)));
 

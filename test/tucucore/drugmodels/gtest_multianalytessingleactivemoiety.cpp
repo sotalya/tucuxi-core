@@ -96,8 +96,7 @@ TEST(Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoiety)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -243,8 +242,7 @@ TEST(Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoietyCo
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -436,8 +434,7 @@ TEST(Core_TestMultiAnalytesSingleActiveMoiety, Adjustments)
 
 
     {
-        const FormulationAndRoute route(
-                Formulation::OralSolution, AdministrationRoute::Oral, AbsorptionModel::Extravascular);
+        const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
 
         DateTime startSept2018(
                 date::year_month_day(date::year(2018), date::month(9), date::day(1)),
