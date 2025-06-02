@@ -50,12 +50,17 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
     CovariateSeries covariateSeries;
 
 
-    CovariateExtractor extractor(
-            _drugModel.getCovariates(), _drugTreatment.getCovariates(), _start, _end, DosageHistory());
+    TUCU_TRY {
+        CovariateExtractor extractor(
+                _drugModel.getCovariates(), _drugTreatment.getCovariates(), _start, _end, DosageHistory());
 
-    auto status = extractor.extract(covariateSeries);
-    if (status != ComputingStatus::Ok) {
-        return DrugDomainConstraintsEvaluator::Result::ComputationError;
+        auto status = extractor.extract(covariateSeries);
+        if (status != ComputingStatus::Ok) {
+            return DrugDomainConstraintsEvaluator::Result::ComputationError;
+        }
+    }
+    TUCU_CATCH(...) {
+        return DrugDomainConstraintsEvaluator::Result::CovariateExtractionError;
     }
 
     DrugDomainConstraintsEvaluator::Result result =

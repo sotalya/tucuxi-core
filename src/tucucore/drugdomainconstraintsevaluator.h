@@ -58,6 +58,9 @@ public:
         /// The patient covariates are fully compatible with the drug model
         Compatible,
 
+        /// The extraction of covariates ended up with an issue, because of bad covariate list
+        CovariateExtractionError,
+
         /// A computation error occured
         ComputationError
     };
