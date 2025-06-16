@@ -425,7 +425,6 @@ static const std::string tdd = R"(<?xml version='1.0' encoding='UTF-8'?>
                 <formulation>oralSolution</formulation>
                 <administrationName>foo bar</administrationName>
                 <administrationRoute>oral</administrationRoute>
-                <absorptionModel>extra</absorptionModel>
                 <dosages>
                     <analyteConversions>
                         <analyteConversion>
