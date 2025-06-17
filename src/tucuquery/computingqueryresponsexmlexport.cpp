@@ -1,21 +1,21 @@
-/* 
- * Tucuxi - Tucuxi-core library and command line tool. 
- * This code allows to perform prediction of drug concentration in blood 
+/*
+ * Tucuxi - Tucuxi-core library and command line tool.
+ * This code allows to perform prediction of drug concentration in blood
  * and to propose dosage adaptations.
- * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * It has been developed by HEIG-VD, in close collaboration with CHUV.
  * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Affero General Public License for more details. 
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -477,7 +477,6 @@ bool ComputingQueryResponseXmlExport::exportPercentiles(
 bool ComputingQueryResponseXmlExport::exportDosageTimeRange(
         const std::unique_ptr<Tucuxi::Core::DosageTimeRange>& _timeRange, Tucuxi::Common::XmlNode& _rootNode)
 {
-
     Tucuxi::Common::XmlNode dosageTimeRange =
             m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dosageTimeRange");
     _rootNode.addChild(dosageTimeRange);
@@ -485,7 +484,9 @@ bool ComputingQueryResponseXmlExport::exportDosageTimeRange(
     addNode(dosageTimeRange, "start", dateTimeToString(_timeRange->getStartDate()));
     addNode(dosageTimeRange, "end", dateTimeToString(_timeRange->getEndDate()));
 
-    Tucuxi::Common::XmlNode dosage = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dosage");
+    Tucuxi::Common::XmlNode dosage =
+        m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dosage");
+
     dosageTimeRange.addChild(dosage);
 
     return exportAbstractDosage(*_timeRange->getDosage(), dosage);
@@ -511,8 +512,113 @@ bool ComputingQueryResponseXmlExport::exportAbstractDosage(
     TRY_EXPORT(DosageSteadyState);
     TRY_EXPORT(DosageRepeat);
     TRY_EXPORT(DosageSequence);
+    TRY_EXPORT(SingleDoseAtTimeList);
+    TRY_EXPORT(SingleDoseAtTime);
+    TRY_EXPORT(ShortDoseList);
+    TRY_EXPORT(ShortDose);
 
     return false;
+}
+
+bool ComputingQueryResponseXmlExport::exportDosage(
+        const Tucuxi::Core::SingleDoseAtTimeList& _dosage,
+        Tucuxi::Common::XmlNode& _rootNode)
+{
+    Tucuxi::Common::XmlNode singleDoseAtTimeList =
+        m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element,
+                         "singleDoseAtTimeList");
+    _rootNode.addChild(singleDoseAtTimeList);
+
+    for (Tucuxi::Core::SingleDoseAtTime const & dosage : _dosage.getDosageList()) {
+        exportDosage(dosage, singleDoseAtTimeList);
+    }
+
+    return true;
+}
+
+bool ComputingQueryResponseXmlExport::exportDosage(
+        const Tucuxi::Core::SingleDoseAtTime& _dosage,
+        Tucuxi::Common::XmlNode& _rootNode)
+{
+    Tucuxi::Common::XmlNode singleDoseAtTime =
+        m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element,
+                         "singleDoseAtTime");
+    _rootNode.addChild(singleDoseAtTime);
+
+    addNode(singleDoseAtTime, "doseDate",
+            dateTimeToString(_dosage.getDateTime()));
+
+    Tucuxi::Common::XmlNode dose =
+        m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dose");
+    singleDoseAtTime.addChild(dose);
+    addNode(dose, "value", double(_dosage.getDoseValue()));
+    addNode(dose, "unit", _dosage.getDoseUnit().toString());
+
+    Tucuxi::Common::XmlNode formulationAndRoute =
+        m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element,
+                         "formulationAndRoute");
+    singleDoseAtTime.addChild(formulationAndRoute);
+    addNode(formulationAndRoute,
+            "formulation",
+            formulationEnumToString(_dosage.getFormulationAndRoute().getFormulation()));
+    addNode(formulationAndRoute, "administrationName",
+            _dosage.getFormulationAndRoute().getAdministrationName());
+    addNode(formulationAndRoute,
+            "administrationRoute",
+            administrationRouteEnumToString(_dosage.getFormulationAndRoute().getAdministrationRoute()));
+
+    return true;
+}
+
+bool ComputingQueryResponseXmlExport::exportDosage(
+        const Tucuxi::Core::ShortDoseList& _dosage,
+        Tucuxi::Common::XmlNode& _rootNode)
+{
+    Tucuxi::Common::XmlNode shortDoseList =
+        m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element,
+                         "shortDoseList");
+    _rootNode.addChild(shortDoseList);
+
+    addNode(shortDoseList, "unit", _dosage.getDoseUnit().toString());
+    Tucuxi::Common::XmlNode formulationAndRoute =
+        m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element,
+                         "formulationAndRoute");
+    shortDoseList.addChild(formulationAndRoute);
+    addNode(formulationAndRoute,
+            "formulation",
+            formulationEnumToString(_dosage.getFormulationAndRoute().getFormulation()));
+    addNode(formulationAndRoute, "administrationName",
+            _dosage.getFormulationAndRoute().getAdministrationName());
+    addNode(formulationAndRoute,
+            "administrationRoute",
+            administrationRouteEnumToString(_dosage.getFormulationAndRoute().getAdministrationRoute()));
+
+    Tucuxi::Common::XmlNode doseList =
+        m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element,
+                         "doseList");
+    shortDoseList.addChild(doseList);
+
+    for (Tucuxi::Core::ShortDose const & dosage : _dosage.getDosageList()) {
+        exportDosage(dosage, doseList);
+    }
+
+    return true;
+}
+
+bool ComputingQueryResponseXmlExport::exportDosage(
+        const Tucuxi::Core::ShortDose& _dosage,
+        Tucuxi::Common::XmlNode& _rootNode)
+{
+    Tucuxi::Common::XmlNode doseDateValue =
+        m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element,
+                         "doseDateValue");
+    _rootNode.addChild(doseDateValue);
+
+    addNode(doseDateValue, "doseDate",
+            dateTimeToString(_dosage.getDateTime()));
+    addNode(doseDateValue, "value", double(_dosage.getDoseValue()));
+
+    return true;
 }
 
 bool ComputingQueryResponseXmlExport::exportDosage(

@@ -1,21 +1,21 @@
-/* 
- * Tucuxi - Tucuxi-core library and command line tool. 
- * This code allows to perform prediction of drug concentration in blood 
+/*
+ * Tucuxi - Tucuxi-core library and command line tool.
+ * This code allows to perform prediction of drug concentration in blood
  * and to propose dosage adaptations.
- * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * It has been developed by HEIG-VD, in close collaboration with CHUV.
  * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Affero General Public License for more details. 
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -35,6 +35,99 @@ using namespace Tucuxi::Core;
 using namespace Tucuxi::Common;
 
 static constexpr double NB_POINTS_PER_HOUR = CYCLE_SIZE / 24.0;
+
+/// \brief Scenario using independent single doses.
+TEST(Core_TestIntakeExtractor, SingleDoseAtTimeList)
+{
+    // List of time ranges that will be pushed into the history
+    DosageTimeRangeList timeRangeList;
+
+    DateTime const dateBefore(date::year_month_day(date::year(2017),
+                                                   date::month(7),
+                                                   date::day(15)),
+                              std::chrono::hours(0));
+    DateTime const dateTime1(date::year_month_day(date::year(2017),
+                                                  date::month(7),
+                                                  date::day(17)),
+                             std::chrono::hours(11));
+    DateTime const dateTime2(date::year_month_day(date::year(2017),
+                                                  date::month(7),
+                                                  date::day(18)),
+                             std::chrono::hours(12));
+    DateTime const dateTime3(date::year_month_day(date::year(2017),
+                                                  date::month(7),
+                                                  date::day(19)),
+                             std::chrono::hours(14));
+    DateTime const dateTime4(date::year_month_day(date::year(2017),
+                                                  date::month(8),
+                                                  date::day(19)),
+                             std::chrono::hours(18));
+    DateTime const dateAfter(date::year_month_day(date::year(2018),
+                                                  date::month(7),
+                                                  date::day(15)),
+                             std::chrono::hours(0));
+
+    FormulationAndRoute const routePerfusion1(Formulation::Test,
+                                              AdministrationRoute::IntravenousDrip);
+    DoseValue const dose1 = 100.0;
+    DoseValue const dose4 = 300.0;
+
+    TucuUnit unit1 = TucuUnit("mg");
+
+    SingleDoseAtTime sd1(dateTime1, routePerfusion1, dose1, unit1);
+    SingleDoseAtTime sd2(dateTime2, routePerfusion1, dose1, unit1);
+    SingleDoseAtTime sd3(dateTime3, routePerfusion1, dose1, unit1);
+    SingleDoseAtTime sd4(dateTime4, routePerfusion1, dose4, unit1);
+
+    Tucuxi::Core::SingleDoseAtTimeList sdl(sd1);
+    ASSERT_NO_THROW (sdl.addDosage(sd2));
+    ASSERT_NO_THROW (sdl.addDosage(sd3));
+    ASSERT_NO_THROW (sdl.addDosage(sd4));
+
+    std::vector< SingleDoseAtTime > doses = sdl.getDosageList(dateBefore);
+    std::vector< Duration > time_steps = sdl.getTimeStepList(dateBefore);
+
+    DosageTimeRange dtr(dateBefore, sdl);
+    // Create the dosage history.
+    DosageHistory dh;
+    dh.addTimeRange(dtr);
+
+            // DateTime _time,
+            // Duration _offsetTime,
+            // DoseValue _dose,
+            // TucuUnit _doseUnit,
+            // Duration _interval,
+            // FormulationAndRoute _formulationAndRoute,
+            // AbsorptionModel _route,
+            // Duration _infusionTime,
+            // CycleSize _nbPoints
+
+    // Expected intake series.
+    IntakeSeries expectedIntakes;
+    for (std::size_t i = 0; i < doses.size(); ++i) {
+        expectedIntakes.push_back(IntakeEvent(doses.at(i).getDateTime(),
+                                              Duration(),
+                                              doses.at(i).getDoseValue(),
+                                              doses.at(i).getTucuUnit(),
+                                              time_steps.at(i),
+                                              doses.at(i).getFormulationAndRoute(),
+                                              Duration(),
+                                              static_cast<int>(36 * NB_POINTS_PER_HOUR + 1)));
+    }
+
+    IntakeSeries iSeries;
+    IntakeExtractor extractor;
+    ComputingStatus result =
+            extractor.extract(dh, dateBefore, dateAfter,
+                              NB_POINTS_PER_HOUR, TucuUnit("mg"), iSeries);
+    ASSERT_EQ (result, ComputingStatus::Ok);
+
+    ASSERT_EQ (iSeries.size(), expectedIntakes.size());
+
+    for (std::size_t i = 0; i < iSeries.size(); ++i) {
+        ASSERT_EQ (iSeries[i], expectedIntakes[i]);
+    }
+}
 
 /// \brief Scenario where a treatment is given once per week.
 TEST(Core_TestIntakeExtractor, OncePerWeek)

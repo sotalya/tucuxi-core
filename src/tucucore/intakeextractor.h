@@ -1,21 +1,21 @@
-/* 
- * Tucuxi - Tucuxi-core library and command line tool. 
- * This code allows to perform prediction of drug concentration in blood 
+/*
+ * Tucuxi - Tucuxi-core library and command line tool.
+ * This code allows to perform prediction of drug concentration in blood
  * and to propose dosage adaptations.
- * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * It has been developed by HEIG-VD, in close collaboration with CHUV.
  * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Affero General Public License for more details. 
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -41,6 +41,8 @@ namespace Core {
 class IntakeExtractor
 {
     friend DosageBounded;
+    friend SingleDoseAtTimeList;
+    friend ShortDoseList;
     friend DosageLoop;
     friend DosageSteadyState;
     friend DosageRepeat;
@@ -125,6 +127,36 @@ private:
             const TucuUnit& _toUnit,
             IntakeSeries& _series,
             ExtractionOption _option);
+
+
+    /// \ingroup TucuCore
+    /// \brief Iterate over a list of individual doses and extract them.
+    ///
+    /// \param _singleDoseAtTimeList Object carrying a list of individual doses.
+    /// \param _start Start time/date for the considered interval.
+    /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points
+    ///        per hour.
+    /// \param _toUnit Final unit expected for the intake series output.
+    /// \param _series Returned series of intake in the considered interval.
+    /// \return number of intakes in the given interval, -1 in case of error.
+    ///
+    /// \pre _start IS NOT unset
+    /// \pre _end IS unset OR _end > _start
+    /// \post _series[OUT] = _series[IN] + extracted_intakes
+    /// (it would have been easier to simply empty the input _series, but this
+    /// guarantees an uniform behavior across the
+    /// whole set of calls)
+    /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
+    int extract(
+            const SingleDoseAtTimeList& _singleDoseAtTimeList,
+            const DateTime& _start,
+            const DateTime& _end,
+            double _nbPointsPerHour,
+            const TucuUnit& _toUnit,
+            IntakeSeries& _series,
+            ExtractionOption _option);
+
 
     /// \ingroup TucuCore
     /// \brief Iterate over a loop of dosages and extract the list of intakes.

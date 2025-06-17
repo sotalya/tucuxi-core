@@ -1,28 +1,29 @@
-/* 
- * Tucuxi - Tucuxi-core library and command line tool. 
- * This code allows to perform prediction of drug concentration in blood 
+/*
+ * Tucuxi - Tucuxi-core library and command line tool.
+ * This code allows to perform prediction of drug concentration in blood
  * and to propose dosage adaptations.
- * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * It has been developed by HEIG-VD, in close collaboration with CHUV.
  * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Affero General Public License for more details. 
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 
 #include "tucucore/dosage.h"
-
 #include "tucucore/intakeextractor.h"
+
+#include "tucucommon/loggerhelper.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -47,6 +48,8 @@ namespace Core {
 
 
 DOSAGE_UTILS_IMPL(DosageBounded)
+DOSAGE_UTILS_IMPL(ShortDoseList)
+DOSAGE_UTILS_IMPL(SingleDoseAtTimeList)
 DOSAGE_UTILS_IMPL(DosageLoop)
 DOSAGE_UTILS_IMPL(DosageSteadyState)
 DOSAGE_UTILS_IMPL(DosageRepeat)
@@ -83,6 +86,215 @@ bool timeRangesOverlap(const DosageTimeRange& _first, const DosageTimeRange& _se
            || (_first.m_startDate > _second.m_startDate && _first.m_endDate < _second.m_endDate);
 }
 
+
+SingleDoseAtTime::~SingleDoseAtTime()
+{
+
+}
+
+
+SingleDoseAtTimeList::~SingleDoseAtTimeList()
+{
+
+}
+
+
+std::vector< Duration >
+SingleDoseAtTimeList::getTimeStepList(DateTime const& _intervalStart) const
+{
+    std::vector< Duration > timeStepList;
+    if (m_dosage_list.size() == 1) {
+        if (m_dosage_list.at(0)->getDateTime() >= _intervalStart) {
+            // Dosage time is ok, but we have nothing to compare against, so
+            // we return the default value.
+            timeStepList.emplace_back(SINGLE_DOSE_DEFAULT_TSTEP);
+        }
+    } else {
+        int64_t avg_val = 0;
+        for (std::size_t i = 0; i < m_dosage_list.size() - 1; ++i) {
+            const auto& current = m_dosage_list.at(i);
+            const auto& next = m_dosage_list.at(i + 1);
+
+            if (m_dosage_list.at(i)->getDateTime() >= _intervalStart) {
+                timeStepList.emplace_back(next->getDateTime() -
+                                          current->getDateTime());
+            }
+            avg_val +=
+                (next->getDateTime() - current->getDateTime()).toMilliseconds();
+        }
+        avg_val /= (m_dosage_list.size() - 1);
+        if (m_dosage_list.back()->getDateTime() >= _intervalStart) {
+            timeStepList.emplace_back(Duration(std::chrono::milliseconds(avg_val)));
+        }
+    }
+
+    return timeStepList;
+}
+
+
+std::vector< SingleDoseAtTime >
+SingleDoseAtTimeList::getDosageList() const
+{
+    std::vector< SingleDoseAtTime > dosageList;
+
+    for (auto const& dose : m_dosage_list) {
+        dosageList.emplace_back(dose->clone());
+    }
+
+    return dosageList;
+}
+
+
+std::vector< SingleDoseAtTime >
+SingleDoseAtTimeList::getDosageList(DateTime const& _intervalStart) const
+{
+    std::vector< SingleDoseAtTime > dosageList;
+
+    for (auto const& dose : m_dosage_list) {
+        if (dose->getDateTime() >= _intervalStart) {
+            dosageList.emplace_back(dose->clone());
+        }
+    }
+
+    return dosageList;
+}
+
+
+void
+SingleDoseAtTimeList::addDosage(SingleDoseAtTime const& _dosage)
+{
+    std::unique_ptr<SingleDoseAtTime> newDose =
+        std::make_unique< SingleDoseAtTime >(_dosage);
+    auto it = std::lower_bound(
+        m_dosage_list.begin(), m_dosage_list.end(), newDose,
+        [](const std::unique_ptr< SingleDoseAtTime >& a,
+           const std::unique_ptr< SingleDoseAtTime >& b) {
+            return a->getDateTime() < b->getDateTime();
+        }
+    );
+
+    // We do not want duplicates --- they are most likely mistakes. If we
+    // encounter one, we just warn the user and skip the insertion.
+    // Duplicates here means "a dosage administered at the same time".
+    if (it == m_dosage_list.end() ||
+        (*it)->getDateTime() != newDose->getDateTime()) {
+        m_dosage_list.insert(it, std::move(newDose));
+    } else {
+        if (*(*it) == *newDose) {
+            std::cerr << "WARNING: Duplicate insertion detected (dose at time "
+                      << newDose->getDateTime().str()
+                      << "), skipped!";
+        } else {
+            throw std::runtime_error("Conflicting dosage found at time " +
+                                     newDose->getDateTime().str());
+        }
+    }
+}
+
+
+ShortDose::~ShortDose()
+{
+
+}
+
+
+ShortDoseList::~ShortDoseList()
+{
+
+}
+
+
+std::vector< Duration >
+ShortDoseList::getTimeStepList(DateTime const& _intervalStart) const
+{
+    std::vector< Duration > timeStepList;
+    if (m_dosage_list.size() == 1) {
+        if (m_dosage_list.at(0)->getDateTime() >= _intervalStart) {
+            // Dosage time is ok, but we have nothing to compare against, so
+            // we return the default value.
+            timeStepList.emplace_back(SINGLE_DOSE_DEFAULT_TSTEP);
+        }
+    } else {
+        int64_t avg_val = 0;
+        for (std::size_t i = 0; i < m_dosage_list.size() - 1; ++i) {
+            const auto& current = m_dosage_list.at(i);
+            const auto& next = m_dosage_list.at(i + 1);
+
+            if (m_dosage_list.at(i)->getDateTime() >= _intervalStart) {
+                timeStepList.emplace_back(next->getDateTime() -
+                                          current->getDateTime());
+            }
+            avg_val +=
+                (next->getDateTime() - current->getDateTime()).toMilliseconds();
+        }
+        avg_val /= (m_dosage_list.size() - 1);
+        if (m_dosage_list.back()->getDateTime() >= _intervalStart) {
+            timeStepList.emplace_back(Duration(std::chrono::milliseconds(avg_val)));
+        }
+    }
+
+    return timeStepList;
+}
+
+
+std::vector< ShortDose >
+ShortDoseList::getDosageList() const
+{
+    std::vector< ShortDose > dosageList;
+
+    for (auto const& dose : m_dosage_list) {
+        dosageList.emplace_back(dose->clone());
+    }
+
+    return dosageList;
+}
+
+
+std::vector< ShortDose >
+ShortDoseList::getDosageList(DateTime const& _intervalStart) const
+{
+    std::vector< ShortDose > dosageList;
+
+    for (auto const& dose : m_dosage_list) {
+        if (dose->getDateTime() >= _intervalStart) {
+            dosageList.emplace_back(dose->clone());
+        }
+    }
+
+    return dosageList;
+}
+
+
+void
+ShortDoseList::addDosage(ShortDose const& _dosage)
+{
+    std::unique_ptr< ShortDose > newDose =
+        std::make_unique< ShortDose >(_dosage);
+    auto it = std::lower_bound(
+        m_dosage_list.begin(), m_dosage_list.end(), newDose,
+        [](const std::unique_ptr< ShortDose >& a,
+           const std::unique_ptr< ShortDose >& b) {
+            return a->getDateTime() < b->getDateTime();
+        }
+    );
+
+    // We do not want duplicates --- they are most likely mistakes. If we
+    // encounter one, we just warn the user and skip the insertion.
+    // Duplicates here means "a dosage administered at the same time".
+    if (it == m_dosage_list.end() ||
+        (*it)->getDateTime() != newDose->getDateTime()) {
+        m_dosage_list.insert(it, std::move(newDose));
+    } else {
+        if (*(*it) == *newDose) {
+            std::cerr << "WARNING: Duplicate insertion detected (dose at time "
+                      << newDose->getDateTime().str()
+                      << "), skipped!";
+        } else {
+            throw std::runtime_error("Conflicting dosage found at time " +
+                                     newDose->getDateTime().str());
+        }
+    }
+}
 
 
 void DosageHistory::mergeDosage(const DosageTimeRange* _newDosage)

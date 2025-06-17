@@ -59,7 +59,10 @@ enum class ExtractionOption
     ForceCycle
 };
 
-
+/// Default time step for the single dose list when only a single element is
+/// present in the list (cannot do interpolation to guess what the next timestep
+/// could be).
+static Duration const SINGLE_DOSE_DEFAULT_TSTEP {Duration(std::chrono::hours(12))};
 
 /// \brief Implement the extract and clone operations for Dosage subclasses.
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
@@ -293,6 +296,667 @@ public:
 private:
     DateTime m_lastDoseTime;
 };
+
+
+/// \ingroup TucuCore
+/// \brief Minimalistic individual dose.
+class SingleDoseAtTime
+{
+public:
+    /// \brief Construct a minimalistic individual dose from its constituents.
+    ///
+    /// \param _dateTime Dose's date and time.
+    /// \param _formulationAndRoute Dose's formulation and route.
+    /// \param _value Dose's value.
+    /// \param _doseUnit Dose's unit.
+    SingleDoseAtTime(DateTime const& _dateTime,
+                     FormulationAndRoute const& _formulationAndRoute,
+                     DoseValue const& _doseValue,
+                     TucuUnit const& _doseUnit) :
+        m_dateTime{_dateTime},
+        m_formulationAndRoute{_formulationAndRoute},
+        m_doseValue{_doseValue},
+        m_doseUnit{_doseUnit}
+    {
+        if (_doseValue < 0) {
+            throw std::invalid_argument("Dose value = " +
+                                        std::to_string(_doseValue) +
+                                        " is invalid (must be >= 0).");
+        }
+    }
+
+    virtual ~SingleDoseAtTime();
+
+    /// \brief Copy-construct an individual dose.
+    SingleDoseAtTime(const SingleDoseAtTime&) = default;
+
+    /// \brief Return a clone of the current dosage.
+    ///
+    /// \return lone of the current dosage.
+    SingleDoseAtTime clone() const
+    {
+        return SingleDoseAtTime(m_dateTime,
+                                m_formulationAndRoute,
+                                m_doseValue,
+                                m_doseUnit);
+    }
+
+    /// Comparison operator, used in tests.
+    ///
+    /// \param _other Object to compare against.
+    ///
+    /// \return true if the two objects are identical, false otherwise.
+    bool operator==(SingleDoseAtTime const& _other) const {
+        return
+            m_dateTime == _other.m_dateTime &&
+            m_formulationAndRoute == _other.m_formulationAndRoute &&
+            m_doseValue == _other.m_doseValue &&
+            m_doseUnit == _other.m_doseUnit;
+    }
+
+    /// Non-equality operator, comes cheap once the equality is defined.
+    ///
+    /// \param _other Object to compare against.
+    ///
+    /// \return true if the two objects differ, false otherwise.
+    bool operator!=(SingleDoseAtTime const& _other) const {
+        return !(*this == _other);
+    }
+
+    /// Output the dose to a stream (for debugging purposes).
+    ///
+    /// \param _output Output stream.
+    /// \param _sd Dose to output
+    ///
+    /// \return Stream given in input (to chain strings in output).
+    friend std::ostream& operator<<(std::ostream& _output,
+                                    SingleDoseAtTime& _sd)
+    {
+        // clang-format off
+        _output << "Dose at: "
+                << _sd.m_dateTime.str()
+                << ", value = "
+                << _sd.m_doseValue
+                << "\n";
+        // clang-format on
+        return _output;
+    }
+
+    /// \brief Return the date/time of the dose.
+    ///
+    /// \return Date/time of the current dose.
+    DateTime getDateTime() const
+    {
+        return m_dateTime;
+    }
+
+    /// \brief Return the formulation and route of the dose.
+    ///
+    /// \return Formulation and route of the current dose.
+    FormulationAndRoute getFormulationAndRoute() const
+    {
+        return m_formulationAndRoute;
+    }
+
+    /// \brief Return the dose value of the dose.
+    ///
+    /// \return Dose value of the current dose.
+    DoseValue getDoseValue() const
+    {
+        return m_doseValue;
+    }
+
+    /// \brief Return the unit of measurement of the dose.
+    ///
+    /// \return Unit of measurement of the current dose.
+    TucuUnit getDoseUnit() const
+    {
+        return m_doseUnit;
+    }
+
+private:
+    /// Dose's administration time.
+    DateTime m_dateTime;
+    /// Formulation and route details.
+    FormulationAndRoute m_formulationAndRoute;
+    /// Dose's value.
+    DoseValue m_doseValue;
+    /// Unit of measurement in which the value is expressed.
+    TucuUnit m_doseUnit;
+};
+
+
+/// \ingroup TucuCore
+/// \brief List of individual doses.
+class SingleDoseAtTimeList : public DosageBounded
+{
+public:
+    friend IntakeExtractor;
+
+    /// \brief Construct a list of individual doses.
+    ///
+    /// \param _dosage First individual dose to add to the list (our list needs
+    ///        at least one).
+    SingleDoseAtTimeList(SingleDoseAtTime const& _dosage)
+    {
+        m_dosage_list.emplace_back(std::make_unique< SingleDoseAtTime >(_dosage));
+    }
+
+    /// \brief Copy-construct a list of individual doses.
+    ///
+    /// \param _other List of SingleDoseAtTimeList that has to be copied.
+    SingleDoseAtTimeList(SingleDoseAtTimeList const& _other)
+    {
+        for (auto const& dose : _other.m_dosage_list) {
+            m_dosage_list.emplace_back(std::make_unique< SingleDoseAtTime >(*dose));
+        }
+    }
+
+    virtual ~SingleDoseAtTimeList() override;
+
+    /// Comparison operator, used in tests.
+    ///
+    /// \param _other Object to compare against.
+    ///
+    /// \return true if the two objects are identical, false otherwise.
+    bool operator==(SingleDoseAtTimeList const& _other) const
+    {
+        return m_dosage_list.size() == _other.m_dosage_list.size() &&
+            std::equal(m_dosage_list.begin(), m_dosage_list.end(),
+                       _other.m_dosage_list.begin(),
+                       [](const std::unique_ptr<SingleDoseAtTime>& a,
+                          const std::unique_ptr<SingleDoseAtTime>& b) {
+                           return *a == *b;
+                       });
+    }
+
+    /// Non-equality operator, comes cheap once the equality is defined.
+    ///
+    /// \param _other Object to compare against.
+    ///
+    /// \return true if the two objects differ, false otherwise.
+    bool operator!=(SingleDoseAtTimeList const& _other) const
+    {
+        return !(*this == _other);
+    }
+
+    /// \brief Return a pointer to a clone of the correct subclass.
+    ///
+    /// \return Pointer to a new object of subclass' type.
+    std::unique_ptr<DosageBounded> clone() const override
+    {
+        return std::make_unique< SingleDoseAtTimeList >(*this);
+    }
+
+    /// \brief Return a pointer to a clone of the base class.
+    ///
+    /// \return Pointer to a new object of subclass' type.
+    std::unique_ptr<Dosage> cloneDosage() const override
+    {
+        return clone();
+    }
+
+    /// \brief Request the time step size. This is not meaningful for a sequence
+    ///        of individual, independent doses, but the implementation is
+    ///        required by inheritance constraints. For this reason, if called it
+    ///        throws an exception.
+    /// \throws std::runtime_error.
+    Duration getTimeStep() const override
+    {
+        throw std::runtime_error("getTimeStep() called on SingleDoseAtTimeList");
+    }
+
+    /// Output the dose list to a stream (for debugging purposes).
+    ///
+    /// \param _output Output stream.
+    /// \param _sdl Dose list to output
+    ///
+    /// \return Stream given in input (to chain strings in output).
+
+    friend std::ostream& operator<<(std::ostream& _output,
+                                    SingleDoseAtTimeList& _sdl)
+    {
+        // clang-format off
+        for (auto const& dose : _sdl.m_dosage_list) {
+            _output << "Dose at: "
+                    << dose->getDateTime().str()
+                    << ", value = "
+                    << dose->getDoseValue()
+                    << "\n";
+            // clang-format on
+        }
+        return _output;
+    }
+
+    /// \brief Extract drugs' intake in a given time interval (visitor pattern).
+    /// The intakes will be added to the series passed as a sequence ('_series').
+    ///
+    /// \param _extractor Intake extractor.
+    /// \param _start Start time/date for the considered interval.
+    /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points
+    ///        per hour.
+    /// \param _toUnit Final unit expected for the intake series output.
+    /// \param _series Returned series of intake in the considered interval.
+    ///
+    /// \return Number of intakes in the given interval, -1 in case of error.
+    int extract(
+            IntakeExtractor& _extractor,
+            DateTime const& _start,
+            DateTime const& _end,
+            double _nbPointsPerHour,
+            TucuUnit const& _toUnit,
+            IntakeSeries& _series,
+            ExtractionOption _option) const override;
+
+    /// \brief Return the formulation and route of the last dosage.
+    ///
+    /// \return Last formulation and route of the dosage.
+    FormulationAndRoute getLastFormulationAndRoute() const override
+    {
+        return m_dosage_list.back()->getFormulationAndRoute();
+    }
+
+    /// \brief Return the list of formulation and route of the dosages.
+    ///
+    /// \return List of formulation and route of the dosages.
+    std::vector< FormulationAndRoute > getFormulationAndRouteList() const override
+    {
+        std::vector< FormulationAndRoute > far;
+
+        for (auto const& dose : m_dosage_list) {
+            far.emplace_back(dose->getFormulationAndRoute());
+        }
+
+        return far;
+    }
+
+    /// \brief Return the instant of the first intake in the given interval.
+    ///
+    /// \param _intervalStart Starting point of the interval.
+    //
+    /// \return Time of the first intake.
+    DateTime getFirstIntakeInterval(DateTime const& _intervalStart) const
+    {
+        for (auto const& dose : m_dosage_list) {
+            if (dose->getDateTime() >= _intervalStart) {
+                return dose->getDateTime();
+            }
+        }
+
+        /// TODO: evaluate here whether throwing an exception is the right thing
+        ///       to do, or whether '_intervalStart' should be returned (as other
+        ///       implementations of this function do).
+
+        /// Option 1: throw exception
+        throw std::invalid_argument("getFirstIntakeInterval() called with " \
+                                    "start interval past the intakes end!");
+        // /// Option 2: return '_intervalStart'
+        // return _intervalStart;
+    }
+
+    /// \brief Get the time step between each (sorted) pair of doses, starting
+    ///        with the specified time point (doses before that one are ignored).
+    ///
+    /// \param _intervalStart Starting point of the interval.
+    //
+    /// \return List of time steps between adjacent pairs of doses.
+    std::vector< Duration > getTimeStepList(DateTime const& _intervalStart) const;
+
+    /// \brief Get the dosages administered.
+    //
+    /// \return List of dosages administered.
+    std::vector< SingleDoseAtTime > getDosageList() const;
+
+    /// \brief Get the dosages administered past a specified time point.
+    ///
+    /// \param _intervalStart Starting point of the interval.
+    //
+    /// \return List of dosages past a specified time point.
+    std::vector< SingleDoseAtTime > getDosageList(DateTime const& _intervalStart) const;
+
+    /// \brief Add a given dosage to the list of dosages.
+    ///
+    /// \param _dosage Dosage to add.
+    void addDosage(SingleDoseAtTime const& _dosage);
+
+
+protected:
+    /// SORTED list of individual dosages. Sorting is performed at dosage
+    /// insertion. Duplicates are not allowed.
+    std::vector< std::unique_ptr< SingleDoseAtTime > > m_dosage_list;
+};
+
+
+/// \ingroup TucuCore
+/// \brief Hyper-minimalistic individual dose.
+class ShortDose
+{
+public:
+    /// \brief Construct an hyper-minimalistic individual dose from its
+    ///        constituents (just date & value).
+    ///
+    /// \param _dateTime Dose's date and time.
+    /// \param _value Dose's value.
+    ShortDose(DateTime const& _dateTime,
+              DoseValue const& _doseValue) :
+        m_dateTime{_dateTime},
+        m_doseValue{_doseValue}
+    {
+        if (_doseValue < 0) {
+            throw std::invalid_argument("Dose value = " +
+                                        std::to_string(_doseValue) +
+                                        " is invalid (must be >= 0).");
+        }
+    }
+
+    virtual ~ShortDose();
+
+    /// \brief Copy-construct an individual dose.
+    ShortDose(const ShortDose&) = default;
+
+    /// \brief Return a clone of the current dosage.
+    ///
+    /// \return lone of the current dosage.
+    ShortDose clone() const
+    {
+        return ShortDose(m_dateTime, m_doseValue);
+    }
+
+    /// Comparison operator, used in tests.
+    ///
+    /// \param _other Object to compare against.
+    ///
+    /// \return true if the two objects are identical, false otherwise.
+    bool operator==(ShortDose const& _other) const {
+        return
+            m_dateTime == _other.m_dateTime &&
+            m_doseValue == _other.m_doseValue;
+    }
+
+    /// Non-equality operator, comes cheap once the equality is defined.
+    ///
+    /// \param _other Object to compare against.
+    ///
+    /// \return true if the two objects differ, false otherwise.
+    bool operator!=(ShortDose const& _other) const {
+        return !(*this == _other);
+    }
+
+    /// Output the dose to a stream (for debugging purposes).
+    ///
+    /// \param _output Output stream.
+    /// \param _sd Dose to output
+    ///
+    /// \return Stream given in input (to chain strings in output).
+    friend std::ostream& operator<<(std::ostream& _output,
+                                    ShortDose& _sd)
+    {
+        // clang-format off
+        _output << "Dose at: "
+                << _sd.m_dateTime.str()
+                << ", value = "
+                << _sd.m_doseValue
+                << "\n";
+        // clang-format on
+        return _output;
+    }
+
+    /// \brief Return the date/time of the dose.
+    ///
+    /// \return Date/time of the current dose.
+    DateTime getDateTime() const
+    {
+        return m_dateTime;
+    }
+
+    /// \brief Return the dose value of the dose.
+    ///
+    /// \return Dose value of the current dose.
+    DoseValue getDoseValue() const
+    {
+        return m_doseValue;
+    }
+
+private:
+    DateTime m_dateTime;
+    DoseValue m_doseValue;
+};
+
+
+/// \ingroup TucuCore
+/// \brief List of hyper-minimalistic individual doses. This class contains the
+///        "common" parts (formulation and route, as well as the doses' unit),
+///        while the individual doses just have date and value.
+class ShortDoseList : public DosageBounded
+{
+public:
+    friend IntakeExtractor;
+
+    /// \brief Construct a list of individual hyper-minimalistic doses.
+    ///
+    /// \param _dosage First individual dose to add to the list (our list needs
+    ///        at least one, and this ensure that an object is only built when
+    ///        one is available).
+    /// \param _formulationAndRoute Doses' formulation and route.
+    /// \param _doseUnit Doses' unit.
+    ShortDoseList(ShortDose const& _dosage,
+                  FormulationAndRoute const& _formulationAndRoute,
+                  TucuUnit const& _doseUnit) :
+        m_formulationAndRoute{_formulationAndRoute},
+        m_doseUnit{_doseUnit}
+    {
+        m_dosage_list.emplace_back(std::make_unique< ShortDose >(_dosage));
+    }
+
+    /// \brief Copy-construct a list of individual doses.
+    ///
+    /// \param _other List of ShortDoseList that has to be copied.
+    ShortDoseList(ShortDoseList const& _other) :
+        m_formulationAndRoute{_other.m_formulationAndRoute},
+        m_doseUnit{_other.m_doseUnit}
+    {
+        for (auto const& dose : _other.m_dosage_list) {
+            m_dosage_list.emplace_back(std::make_unique< ShortDose >(*dose));
+        }
+    }
+
+    virtual ~ShortDoseList() override;
+
+    /// Comparison operator, used in tests.
+    ///
+    /// \param _other Object to compare against.
+    ///
+    /// \return true if the two objects are identical, false otherwise.
+    bool operator==(ShortDoseList const& _other) const
+    {
+        return m_formulationAndRoute == _other.m_formulationAndRoute &&
+            m_doseUnit ==_other.m_doseUnit &&
+            m_dosage_list.size() == _other.m_dosage_list.size() &&
+            std::equal(m_dosage_list.begin(), m_dosage_list.end(),
+                       _other.m_dosage_list.begin(),
+                       [](const std::unique_ptr<ShortDose>& a,
+                          const std::unique_ptr<ShortDose>& b) {
+                           return *a == *b;
+                       });
+    }
+
+    /// Non-equality operator, comes cheap once the equality is defined.
+    ///
+    /// \param _other Object to compare against.
+    ///
+    /// \return true if the two objects differ, false otherwise.
+    bool operator!=(ShortDoseList const& _other) const
+    {
+        return !(*this == _other);
+    }
+
+    /// \brief Return a pointer to a clone of the correct subclass.
+    ///
+    /// \return Pointer to a new object of subclass' type.
+    std::unique_ptr<DosageBounded> clone() const override
+    {
+        return std::make_unique< ShortDoseList >(*this);
+    }
+
+    /// \brief Return a pointer to a clone of the base class.
+    ///
+    /// \return Pointer to a new object of subclass' type.
+    std::unique_ptr<Dosage> cloneDosage() const override
+    {
+        return clone();
+    }
+
+    /// \brief Request the time step size. This is not meaningful for a sequence
+    ///        of individual, independent doses, but the implementation is
+    ///        required by inheritance constraints. For this reason, if called it
+    ///        throws an exception.
+    /// \throws std::runtime_error.
+    Duration getTimeStep() const override
+    {
+        throw std::runtime_error("getTimeStep() called on ShortDoseList");
+    }
+
+    /// Output the dose list to a stream (for debugging purposes).
+    ///
+    /// \param _output Output stream.
+    /// \param _sdl Dose list to output
+    ///
+    /// \return Stream given in input (to chain strings in output).
+
+    friend std::ostream& operator<<(std::ostream& _output,
+                                    ShortDoseList& _sdl)
+    {
+        // clang-format off
+        for (auto const& dose : _sdl.m_dosage_list) {
+            _output << "Dose at: "
+                    << dose->getDateTime().str()
+                    << ", value = "
+                    << dose->getDoseValue()
+                    << "\n";
+            // clang-format on
+        }
+        return _output;
+    }
+
+    /// \brief Extract drugs' intake in a given time interval (visitor pattern).
+    /// The intakes will be added to the series passed as a sequence ('_series').
+    ///
+    /// \param _extractor Intake extractor.
+    /// \param _start Start time/date for the considered interval.
+    /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points
+    ///        per hour.
+    /// \param _toUnit Final unit expected for the intake series output.
+    /// \param _series Returned series of intake in the considered interval.
+    ///
+    /// \return Number of intakes in the given interval, -1 in case of error.
+    int extract(
+            IntakeExtractor& _extractor,
+            DateTime const& _start,
+            DateTime const& _end,
+            double _nbPointsPerHour,
+            TucuUnit const& _toUnit,
+            IntakeSeries& _series,
+            ExtractionOption _option) const override;
+
+    /// \brief Return the formulation and route of the last dosage.
+    ///
+    /// \return Last formulation and route of the dosage.
+    FormulationAndRoute getLastFormulationAndRoute() const override
+    {
+        return m_formulationAndRoute;
+    }
+
+    /// \brief Return the list of formulation and route of the dosages. Since we
+    ///        only have a common one, we repeat it as many times as needed.
+    ///
+    /// \return List of formulation and route of the dosages.
+    std::vector< FormulationAndRoute > getFormulationAndRouteList() const override
+    {
+        std::vector< FormulationAndRoute > far;
+        for (std::size_t i = 0; i < m_dosage_list.size(); ++i) {
+            far.emplace_back(m_formulationAndRoute);
+        }
+
+        return far;
+    }
+
+    /// \brief Return the instant of the first intake in the given interval.
+    ///
+    /// \param _intervalStart Starting point of the interval.
+    //
+    /// \return Time of the first intake.
+    DateTime getFirstIntakeInterval(DateTime const& _intervalStart) const
+    {
+        for (auto const& dose : m_dosage_list) {
+            if (dose->getDateTime() >= _intervalStart) {
+                return dose->getDateTime();
+            }
+        }
+
+        /// TODO: evaluate here whether throwing an exception is the right thing
+        ///       to do, or whether '_intervalStart' should be returned (as other
+        ///       implementations of this function do).
+
+        /// Option 1: throw exception
+        throw std::invalid_argument("getFirstIntakeInterval() called with " \
+                                    "start interval past the intakes end!");
+        // /// Option 2: return '_intervalStart'
+        // return _intervalStart;
+    }
+
+    /// \brief Get the time step between each (sorted) pair of doses, starting
+    ///        with the specified time point (doses before that one are ignored).
+    ///
+    /// \param _intervalStart Starting point of the interval.
+    //
+    /// \return List of time steps between adjacent pairs of doses.
+    std::vector< Duration > getTimeStepList(DateTime const& _intervalStart) const;
+
+    /// \brief Get the dosages administered.
+    //
+    /// \return List of dosages administered.
+    std::vector< ShortDose > getDosageList() const;
+
+    /// \brief Get the dosages administered past a specified time point.
+    ///
+    /// \param _intervalStart Starting point of the interval.
+    //
+    /// \return List of dosages past a specified time point.
+    std::vector< ShortDose > getDosageList(DateTime const& _intervalStart) const;
+
+    /// \brief Add a given dosage to the list of dosages.
+    ///
+    /// \param _dosage Dosage to add.
+    void addDosage(ShortDose const& _dosage);
+
+    /// \brief Return the common formulation and route of the doses.
+    ///
+    /// \return Common formulation and route of the doses.
+    FormulationAndRoute getFormulationAndRoute() const
+    {
+        return m_formulationAndRoute;
+    }
+
+    /// \brief Return the common unit of measurement of the doses.
+    ///
+    /// \return Common unit of measurement of the doses.
+    TucuUnit getDoseUnit() const
+    {
+        return m_doseUnit;
+    }
+
+protected:
+    /// SORTED list of individual dosages. Sorting is performed at dosage
+    /// insertion. Duplicates are not allowed.
+    std::vector< std::unique_ptr< ShortDose > > m_dosage_list;
+    /// Common formulation and route details.
+    FormulationAndRoute m_formulationAndRoute;
+    /// Common unit of measurement for the doses.
+    TucuUnit m_doseUnit;
+};
+
 
 /// \ingroup TucuCore
 /// \brief Dosage that is administered a given number of times.

@@ -1,21 +1,21 @@
-/* 
- * Tucuxi - Tucuxi-core library and command line tool. 
- * This code allows to perform prediction of drug concentration in blood 
+/*
+ * Tucuxi - Tucuxi-core library and command line tool.
+ * This code allows to perform prediction of drug concentration in blood
  * and to propose dosage adaptations.
- * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * It has been developed by HEIG-VD, in close collaboration with CHUV.
  * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Affero General Public License for more details. 
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -191,6 +191,41 @@ int IntakeExtractor::extract(
         ExtractionOption _option)
 {
     return _dosageBounded.extract(*this, _start, _end, _nbPointsPerHour, _toUnit, _series, _option);
+}
+
+
+int IntakeExtractor::extract(
+        const SingleDoseAtTimeList& _singleDoseAtTimeList,
+        const DateTime& _start,
+        const DateTime& _end,
+        double _nbPointsPerHour,
+        const TucuUnit& _toUnit,
+        IntakeSeries& _series,
+        ExtractionOption _option)
+{
+    EXTRACT_PRECONDITIONS(_start, _end, _series);
+
+    int nbIntakes = 0;
+    DateTime iEnd = _end.isUndefined() ? DateTime::now() : _end;
+
+    std::vector< SingleDoseAtTime > doses =
+        _singleDoseAtTimeList.getDosageList(_start);
+
+    // Time steps are available, but not needed here.
+    // std::vector< Duration > time_steps =
+    //     _singleDoseAtTimeList.getTimeStepList(_start);
+
+    for (std::size_t i = 0; i < doses.size(); ++i) {
+        nbIntakes += extract(doses.at(i),
+                             doses.at(i).getDateTime(),
+                             iEnd,
+                             _nbPointsPerHour,
+                             _toUnit,
+                             _series,
+                             _option);
+    }
+
+    return nbIntakes;
 }
 
 
