@@ -1,21 +1,21 @@
-/* 
- * Tucuxi - Tucuxi-core library and command line tool. 
- * This code allows to perform prediction of drug concentration in blood 
+/*
+ * Tucuxi - Tucuxi-core library and command line tool.
+ * This code allows to perform prediction of drug concentration in blood
  * and to propose dosage adaptations.
- * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * It has been developed by HEIG-VD, in close collaboration with CHUV.
  * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Affero General Public License for more details. 
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -90,9 +90,6 @@ protected:
     std::string absorptionModelEnumToString(const Tucuxi::Core::AbsorptionModel& _absorptionModel);
 
 
-
-
-
     void addNode(Tucuxi::Common::XmlNode& _rootNode, const std::string& _nodeName, const std::string& _nodeValue);
 
     template<typename T>
@@ -108,6 +105,12 @@ protected:
 
 public:
     bool exportAbstractDosage(const Tucuxi::Core::Dosage& _dosage, Tucuxi::Common::XmlNode& _rootNode);
+
+    bool exportDosage(const Tucuxi::Core::SingleDoseAtTimeList& _dosage, Tucuxi::Common::XmlNode& _rootNode);
+    bool exportDosage(const Tucuxi::Core::SingleDoseAtTime& _dosage, Tucuxi::Common::XmlNode& _rootNode);
+
+    bool exportDosage(const Tucuxi::Core::ShortDoseList& _dosage, Tucuxi::Common::XmlNode& _rootNode);
+    bool exportDosage(const Tucuxi::Core::ShortDose& _dosage, Tucuxi::Common::XmlNode& _rootNode);
 
     bool exportDosage(const Tucuxi::Core::DosageBounded& _dosage, Tucuxi::Common::XmlNode& _rootNode);
 
