@@ -42,7 +42,7 @@ class IntakeExtractor
 {
     friend DosageBounded;
     friend SingleDoseAtTimeList;
-    friend ShortDoseList;
+    friend SimpleDoseList;
     friend DosageLoop;
     friend DosageSteadyState;
     friend DosageRepeat;
@@ -150,6 +150,36 @@ private:
     /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
     int extract(
             const SingleDoseAtTimeList& _singleDoseAtTimeList,
+            const DateTime& _start,
+            const DateTime& _end,
+            double _nbPointsPerHour,
+            const TucuUnit& _toUnit,
+            IntakeSeries& _series,
+            ExtractionOption _option);
+
+    /// \ingroup TucuCore
+    /// \brief Iterate over a list of (simple) individual doses and extract
+    ///        them.
+    ///
+    /// \param _simpleDoseList Object carrying a list of simple individual
+    ///         doses.
+    /// \param _start Start time/date for the considered interval.
+    /// \param _end End time/date for the considered interval, could be unset.
+    /// \param _nbPointsPerHour Expected density of points in number of points
+    ///        per hour.
+    /// \param _toUnit Final unit expected for the intake series output.
+    /// \param _series Returned series of intake in the considered interval.
+    /// \return number of intakes in the given interval, -1 in case of error.
+    ///
+    /// \pre _start IS NOT unset
+    /// \pre _end IS unset OR _end > _start
+    /// \post _series[OUT] = _series[IN] + extracted_intakes
+    /// (it would have been easier to simply empty the input _series, but this
+    /// guarantees an uniform behavior across the
+    /// whole set of calls)
+    /// \post FORALL intake IN extracted_intakes, intake.time IN [_start, _end)
+    int extract(
+            const SimpleDoseList& _simpleDoseList,
             const DateTime& _start,
             const DateTime& _end,
             double _nbPointsPerHour,

@@ -514,8 +514,8 @@ bool ComputingQueryResponseXmlExport::exportAbstractDosage(
     TRY_EXPORT(DosageSequence);
     TRY_EXPORT(SingleDoseAtTimeList);
     TRY_EXPORT(SingleDoseAtTime);
-    TRY_EXPORT(ShortDoseList);
-    TRY_EXPORT(ShortDose);
+    TRY_EXPORT(SimpleDoseList);
+    TRY_EXPORT(SimpleDose);
 
     return false;
 }
@@ -551,6 +551,8 @@ bool ComputingQueryResponseXmlExport::exportDosage(
     Tucuxi::Common::XmlNode dose =
         m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dose");
     singleDoseAtTime.addChild(dose);
+    addNode(dose, "infusionTimeInMinutes",
+            _dosage.getInfusionTime().toMinutes());
     addNode(dose, "value", double(_dosage.getDoseValue()));
     addNode(dose, "unit", _dosage.getDoseUnit().toString());
 
@@ -571,19 +573,19 @@ bool ComputingQueryResponseXmlExport::exportDosage(
 }
 
 bool ComputingQueryResponseXmlExport::exportDosage(
-        const Tucuxi::Core::ShortDoseList& _dosage,
+        const Tucuxi::Core::SimpleDoseList& _dosage,
         Tucuxi::Common::XmlNode& _rootNode)
 {
-    Tucuxi::Common::XmlNode shortDoseList =
+    Tucuxi::Common::XmlNode simpleDoseList =
         m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element,
-                         "shortDoseList");
-    _rootNode.addChild(shortDoseList);
+                         "simpleDoseList");
+    _rootNode.addChild(simpleDoseList);
 
-    addNode(shortDoseList, "unit", _dosage.getDoseUnit().toString());
+    addNode(simpleDoseList, "unit", _dosage.getDoseUnit().toString());
     Tucuxi::Common::XmlNode formulationAndRoute =
         m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element,
                          "formulationAndRoute");
-    shortDoseList.addChild(formulationAndRoute);
+    simpleDoseList.addChild(formulationAndRoute);
     addNode(formulationAndRoute,
             "formulation",
             formulationEnumToString(_dosage.getFormulationAndRoute().getFormulation()));
@@ -596,9 +598,9 @@ bool ComputingQueryResponseXmlExport::exportDosage(
     Tucuxi::Common::XmlNode doseList =
         m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element,
                          "doseList");
-    shortDoseList.addChild(doseList);
+    simpleDoseList.addChild(doseList);
 
-    for (Tucuxi::Core::ShortDose const & dosage : _dosage.getDosageList()) {
+    for (Tucuxi::Core::SimpleDose const & dosage : _dosage.getDosageList()) {
         exportDosage(dosage, doseList);
     }
 
@@ -606,7 +608,7 @@ bool ComputingQueryResponseXmlExport::exportDosage(
 }
 
 bool ComputingQueryResponseXmlExport::exportDosage(
-        const Tucuxi::Core::ShortDose& _dosage,
+        const Tucuxi::Core::SimpleDose& _dosage,
         Tucuxi::Common::XmlNode& _rootNode)
 {
     Tucuxi::Common::XmlNode doseDateValue =
@@ -616,6 +618,8 @@ bool ComputingQueryResponseXmlExport::exportDosage(
 
     addNode(doseDateValue, "doseDate",
             dateTimeToString(_dosage.getDateTime()));
+    addNode(doseDateValue, "infusionTimeInMinutes",
+            _dosage.getInfusionTime().toMinutes());
     addNode(doseDateValue, "value", double(_dosage.getDoseValue()));
 
     return true;

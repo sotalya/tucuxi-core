@@ -39,11 +39,13 @@ TEST(Core_TestDosage, SingleDoseAtTime)
                                              AdministrationRoute::IntravenousDrip);
     DoseValue const validDose = 100.0;
     DoseValue const invalidDose = -100.0;
+    Duration const validInfusionTime(std::chrono::minutes(20));
     TucuUnit unit = TucuUnit("mg");
 
     ASSERT_THROW ({
             Tucuxi::Core::SingleDoseAtTime sd1(dateTime,
                                                routePerfusion,
+                                               validInfusionTime,
                                                invalidDose,
                                                unit);
         }, std::invalid_argument);
@@ -51,30 +53,35 @@ TEST(Core_TestDosage, SingleDoseAtTime)
     ASSERT_NO_THROW ({
             Tucuxi::Core::SingleDoseAtTime sd1(dateTime,
                                                routePerfusion,
+                                               validInfusionTime,
                                                validDose,
                                                unit);
         });
 
     // Check getters are ok.
-    SingleDoseAtTime sd(dateTime, routePerfusion, validDose, unit);
+    SingleDoseAtTime sd(dateTime, routePerfusion, validInfusionTime,
+                        validDose, unit);
     ASSERT_TRUE (sd.getDateTime() == dateTime);
     ASSERT_TRUE (sd.getFormulationAndRoute() == routePerfusion);
+    ASSERT_TRUE (sd.getInfusionTime() == validInfusionTime);
     ASSERT_TRUE (sd.getDoseValue() == validDose);
-    ASSERT_TRUE (sd.getTucuUnit() == unit);
+    ASSERT_TRUE (sd.getDoseUnit() == unit);
 
     // Check copy constructor is fine.
     SingleDoseAtTime sd_copy = sd;
     ASSERT_TRUE (sd_copy.getDateTime() == dateTime);
     ASSERT_TRUE (sd_copy.getFormulationAndRoute() == routePerfusion);
+    ASSERT_TRUE (sd_copy.getInfusionTime() == validInfusionTime);
     ASSERT_TRUE (sd_copy.getDoseValue() == validDose);
-    ASSERT_TRUE (sd_copy.getTucuUnit() == unit);
+    ASSERT_TRUE (sd_copy.getDoseUnit() == unit);
 
     // Check clone operation is fine.
     SingleDoseAtTime sd_clone = sd.clone();
     ASSERT_TRUE (sd_clone.getDateTime() == dateTime);
     ASSERT_TRUE (sd_clone.getFormulationAndRoute() == routePerfusion);
+    ASSERT_TRUE (sd_clone.getInfusionTime() == validInfusionTime);
     ASSERT_TRUE (sd_clone.getDoseValue() == validDose);
-    ASSERT_TRUE (sd_clone.getTucuUnit() == unit);
+    ASSERT_TRUE (sd_clone.getDoseUnit() == unit);
 
     // Check equality/inequality operators.
     ASSERT_TRUE (sd == sd_copy);
@@ -91,9 +98,10 @@ TEST(Core_TestDosage, SingleDoseAtTimeList)
                              std::chrono::hours(12));
     FormulationAndRoute const routePerfusion1(Formulation::Test,
                                               AdministrationRoute::IntravenousDrip);
+    Duration const infusionTime(std::chrono::minutes(60));
     DoseValue const dose1 = 100.0;
     TucuUnit unit1 = TucuUnit("mg");
-    SingleDoseAtTime sd1(dateTime1, routePerfusion1, dose1, unit1);
+    SingleDoseAtTime sd1(dateTime1, routePerfusion1, infusionTime, dose1, unit1);
 
     // This is identical to (1) --- should just give a warning but be ignored.
     DateTime const dateTime1_bis(date::year_month_day(date::year(2017),
@@ -101,10 +109,10 @@ TEST(Core_TestDosage, SingleDoseAtTimeList)
                                                   date::day(17)),
                              std::chrono::hours(12));
     FormulationAndRoute const routePerfusion1_bis(Formulation::Test,
-                                              AdministrationRoute::IntravenousDrip);
+                                                  AdministrationRoute::IntravenousDrip);
     DoseValue const dose1_bis = 100.0;
     TucuUnit unit1_bis = TucuUnit("mg");
-    SingleDoseAtTime sd1_bis(dateTime1_bis, routePerfusion1_bis,
+    SingleDoseAtTime sd1_bis(dateTime1_bis, routePerfusion1_bis, infusionTime,
                              dose1_bis, unit1_bis);
 
     // This is identical to (1) except for the value --- should throw an
@@ -114,10 +122,10 @@ TEST(Core_TestDosage, SingleDoseAtTimeList)
                                                   date::day(17)),
                              std::chrono::hours(12));
     FormulationAndRoute const routePerfusion1_tris(Formulation::Test,
-                                              AdministrationRoute::IntravenousDrip);
+                                                   AdministrationRoute::IntravenousDrip);
     DoseValue const dose1_tris = 200.0;
     TucuUnit unit1_tris = TucuUnit("mg");
-    SingleDoseAtTime sd1_tris(dateTime1_tris, routePerfusion1_tris,
+    SingleDoseAtTime sd1_tris(dateTime1_tris, routePerfusion1_tris, infusionTime,
                               dose1_tris, unit1_tris);
 
     DateTime const dateTime2(date::year_month_day(date::year(2017),
@@ -128,7 +136,7 @@ TEST(Core_TestDosage, SingleDoseAtTimeList)
                                               AdministrationRoute::IntravenousDrip);
     DoseValue const dose2 = 112.3;
     TucuUnit unit2 = TucuUnit("kg");
-    SingleDoseAtTime sd2(dateTime2, routePerfusion2, dose2, unit2);
+    SingleDoseAtTime sd2(dateTime2, routePerfusion2, infusionTime, dose2, unit2);
 
     DateTime const dateTime3(date::year_month_day(date::year(2017),
                                                       date::month(7),
@@ -138,7 +146,7 @@ TEST(Core_TestDosage, SingleDoseAtTimeList)
                                               AdministrationRoute::IntravenousDrip);
     DoseValue const dose3 = 112.3;
     TucuUnit unit3 = TucuUnit("kg");
-    SingleDoseAtTime sd3(dateTime3, routePerfusion3,
+    SingleDoseAtTime sd3(dateTime3, routePerfusion3, infusionTime,
                              dose3, unit3);
 
     ASSERT_NO_THROW ({
@@ -205,6 +213,9 @@ TEST(Core_TestDosage, SingleDoseAtTimeList)
     ASSERT_TRUE (ret_list.at(0) == sd2);
     ASSERT_TRUE (ret_list.at(1) == sd3);
     ASSERT_TRUE (ret_list.at(2) == sd1);
+    ASSERT_TRUE (ret_list.at(0).getInfusionTime() == infusionTime);
+    ASSERT_TRUE (ret_list.at(1).getInfusionTime() == infusionTime);
+    ASSERT_TRUE (ret_list.at(2).getInfusionTime() == infusionTime);
     // Now check the individual components.
     std::vector< FormulationAndRoute > far_list =
         sdl1_copy.getFormulationAndRouteList();
