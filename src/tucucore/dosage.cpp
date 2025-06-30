@@ -48,7 +48,7 @@ namespace Core {
 
 
 DOSAGE_UTILS_IMPL(DosageBounded)
-DOSAGE_UTILS_IMPL(ShortDoseList)
+DOSAGE_UTILS_IMPL(SimpleDoseList)
 DOSAGE_UTILS_IMPL(SingleDoseAtTimeList)
 DOSAGE_UTILS_IMPL(DosageLoop)
 DOSAGE_UTILS_IMPL(DosageSteadyState)
@@ -192,20 +192,20 @@ SingleDoseAtTimeList::addDosage(SingleDoseAtTime const& _dosage)
 }
 
 
-ShortDose::~ShortDose()
+SimpleDose::~SimpleDose()
 {
 
 }
 
 
-ShortDoseList::~ShortDoseList()
+SimpleDoseList::~SimpleDoseList()
 {
 
 }
 
 
 std::vector< Duration >
-ShortDoseList::getTimeStepList(DateTime const& _intervalStart) const
+SimpleDoseList::getTimeStepList(DateTime const& _intervalStart) const
 {
     std::vector< Duration > timeStepList;
     if (m_dosage_list.size() == 1) {
@@ -237,10 +237,10 @@ ShortDoseList::getTimeStepList(DateTime const& _intervalStart) const
 }
 
 
-std::vector< ShortDose >
-ShortDoseList::getDosageList() const
+std::vector< SimpleDose >
+SimpleDoseList::getDosageList() const
 {
-    std::vector< ShortDose > dosageList;
+    std::vector< SimpleDose > dosageList;
 
     for (auto const& dose : m_dosage_list) {
         dosageList.emplace_back(dose->clone());
@@ -250,10 +250,10 @@ ShortDoseList::getDosageList() const
 }
 
 
-std::vector< ShortDose >
-ShortDoseList::getDosageList(DateTime const& _intervalStart) const
+std::vector< SimpleDose >
+SimpleDoseList::getDosageList(DateTime const& _intervalStart) const
 {
-    std::vector< ShortDose > dosageList;
+    std::vector< SimpleDose > dosageList;
 
     for (auto const& dose : m_dosage_list) {
         if (dose->getDateTime() >= _intervalStart) {
@@ -266,14 +266,14 @@ ShortDoseList::getDosageList(DateTime const& _intervalStart) const
 
 
 void
-ShortDoseList::addDosage(ShortDose const& _dosage)
+SimpleDoseList::addDosage(SimpleDose const& _dosage)
 {
-    std::unique_ptr< ShortDose > newDose =
-        std::make_unique< ShortDose >(_dosage);
+    std::unique_ptr< SimpleDose > newDose =
+        std::make_unique< SimpleDose >(_dosage);
     auto it = std::lower_bound(
         m_dosage_list.begin(), m_dosage_list.end(), newDose,
-        [](const std::unique_ptr< ShortDose >& a,
-           const std::unique_ptr< ShortDose >& b) {
+        [](const std::unique_ptr< SimpleDose >& a,
+           const std::unique_ptr< SimpleDose >& b) {
             return a->getDateTime() < b->getDateTime();
         }
     );

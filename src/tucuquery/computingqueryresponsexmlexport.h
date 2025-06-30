@@ -109,8 +109,8 @@ public:
     bool exportDosage(const Tucuxi::Core::SingleDoseAtTimeList& _dosage, Tucuxi::Common::XmlNode& _rootNode);
     bool exportDosage(const Tucuxi::Core::SingleDoseAtTime& _dosage, Tucuxi::Common::XmlNode& _rootNode);
 
-    bool exportDosage(const Tucuxi::Core::ShortDoseList& _dosage, Tucuxi::Common::XmlNode& _rootNode);
-    bool exportDosage(const Tucuxi::Core::ShortDose& _dosage, Tucuxi::Common::XmlNode& _rootNode);
+    bool exportDosage(const Tucuxi::Core::SimpleDoseList& _dosage, Tucuxi::Common::XmlNode& _rootNode);
+    bool exportDosage(const Tucuxi::Core::SimpleDose& _dosage, Tucuxi::Common::XmlNode& _rootNode);
 
     bool exportDosage(const Tucuxi::Core::DosageBounded& _dosage, Tucuxi::Common::XmlNode& _rootNode);
 

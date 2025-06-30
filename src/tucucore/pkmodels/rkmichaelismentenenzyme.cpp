@@ -67,7 +67,6 @@ bool RkMichaelisMentenEnzymeExtra::checkInputs(const IntakeEvent& _intakeEvent, 
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
-
     m_ktr = (m_NN + 1.0) / m_MTT;
     // Logarithm of the approximation to the gamma function
     auto l = 0.9189385 + (m_NN + 0.5) * std::log(m_NN) - m_NN + std::log(1.0 + 1.0 / (12.0 * m_NN));

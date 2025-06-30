@@ -307,14 +307,17 @@ public:
     ///
     /// \param _dateTime Dose's date and time.
     /// \param _formulationAndRoute Dose's formulation and route.
+    /// \param _infusionTime Duration in case of an infusion.
     /// \param _value Dose's value.
     /// \param _doseUnit Dose's unit.
     SingleDoseAtTime(DateTime const& _dateTime,
                      FormulationAndRoute const& _formulationAndRoute,
+                     Duration const& _infusionTime,
                      DoseValue const& _doseValue,
                      TucuUnit const& _doseUnit) :
         m_dateTime{_dateTime},
         m_formulationAndRoute{_formulationAndRoute},
+        m_infusionTime{_infusionTime},
         m_doseValue{_doseValue},
         m_doseUnit{_doseUnit}
     {
@@ -337,6 +340,7 @@ public:
     {
         return SingleDoseAtTime(m_dateTime,
                                 m_formulationAndRoute,
+                                m_infusionTime,
                                 m_doseValue,
                                 m_doseUnit);
     }
@@ -350,6 +354,7 @@ public:
         return
             m_dateTime == _other.m_dateTime &&
             m_formulationAndRoute == _other.m_formulationAndRoute &&
+            m_infusionTime == _other.m_infusionTime &&
             m_doseValue == _other.m_doseValue &&
             m_doseUnit == _other.m_doseUnit;
     }
@@ -377,6 +382,8 @@ public:
                 << _sd.m_dateTime.str()
                 << ", value = "
                 << _sd.m_doseValue
+                << ", infusion time = "
+                << _sd.m_infusionTime
                 << "\n";
         // clang-format on
         return _output;
@@ -396,6 +403,14 @@ public:
     FormulationAndRoute getFormulationAndRoute() const
     {
         return m_formulationAndRoute;
+    }
+
+    /// \brief Return the infusion time.
+    ///
+    /// \return Infusion time for the current dose.
+    Duration getInfusionTime() const
+    {
+        return m_infusionTime;
     }
 
     /// \brief Return the dose value of the dose.
@@ -419,6 +434,8 @@ private:
     DateTime m_dateTime;
     /// Formulation and route details.
     FormulationAndRoute m_formulationAndRoute;
+    /// Infusion time.
+    Duration m_infusionTime;
     /// Dose's value.
     DoseValue m_doseValue;
     /// Unit of measurement in which the value is expressed.
@@ -522,6 +539,8 @@ public:
                     << dose->getDateTime().str()
                     << ", value = "
                     << dose->getDoseValue()
+                    << ", infusion time = "
+                    << dose->getInfusionTime()
                     << "\n";
             // clang-format on
         }
@@ -630,17 +649,20 @@ protected:
 
 /// \ingroup TucuCore
 /// \brief Hyper-minimalistic individual dose.
-class ShortDose
+class SimpleDose
 {
 public:
     /// \brief Construct an hyper-minimalistic individual dose from its
-    ///        constituents (just date & value).
+    ///        constituents (just date, infusion time, and value).
     ///
     /// \param _dateTime Dose's date and time.
+    /// \param _infusionTime Duration in case of an infusion.
     /// \param _value Dose's value.
-    ShortDose(DateTime const& _dateTime,
-              DoseValue const& _doseValue) :
+    SimpleDose(DateTime const& _dateTime,
+               Duration const& _infusionTime,
+               DoseValue const& _doseValue) :
         m_dateTime{_dateTime},
+        m_infusionTime{_infusionTime},
         m_doseValue{_doseValue}
     {
         if (_doseValue < 0) {
@@ -650,17 +672,17 @@ public:
         }
     }
 
-    virtual ~ShortDose();
+    virtual ~SimpleDose();
 
     /// \brief Copy-construct an individual dose.
-    ShortDose(const ShortDose&) = default;
+    SimpleDose(const SimpleDose&) = default;
 
     /// \brief Return a clone of the current dosage.
     ///
     /// \return lone of the current dosage.
-    ShortDose clone() const
+    SimpleDose clone() const
     {
-        return ShortDose(m_dateTime, m_doseValue);
+        return SimpleDose(m_dateTime, m_infusionTime, m_doseValue);
     }
 
     /// Comparison operator, used in tests.
@@ -668,9 +690,10 @@ public:
     /// \param _other Object to compare against.
     ///
     /// \return true if the two objects are identical, false otherwise.
-    bool operator==(ShortDose const& _other) const {
+    bool operator==(SimpleDose const& _other) const {
         return
             m_dateTime == _other.m_dateTime &&
+            m_infusionTime == _other.m_infusionTime &&
             m_doseValue == _other.m_doseValue;
     }
 
@@ -679,7 +702,7 @@ public:
     /// \param _other Object to compare against.
     ///
     /// \return true if the two objects differ, false otherwise.
-    bool operator!=(ShortDose const& _other) const {
+    bool operator!=(SimpleDose const& _other) const {
         return !(*this == _other);
     }
 
@@ -690,13 +713,15 @@ public:
     ///
     /// \return Stream given in input (to chain strings in output).
     friend std::ostream& operator<<(std::ostream& _output,
-                                    ShortDose& _sd)
+                                    SimpleDose& _sd)
     {
         // clang-format off
         _output << "Dose at: "
                 << _sd.m_dateTime.str()
                 << ", value = "
                 << _sd.m_doseValue
+                << ", infusion time = "
+                << _sd.m_infusionTime
                 << "\n";
         // clang-format on
         return _output;
@@ -710,6 +735,14 @@ public:
         return m_dateTime;
     }
 
+    /// \brief Return the infusion time.
+    ///
+    /// \return Infusion time for the current dose.
+    Duration getInfusionTime() const
+    {
+        return m_infusionTime;
+    }
+
     /// \brief Return the dose value of the dose.
     ///
     /// \return Dose value of the current dose.
@@ -719,7 +752,11 @@ public:
     }
 
 private:
+    /// Dose's administration time.
     DateTime m_dateTime;
+    /// Infusion time.
+    Duration m_infusionTime;
+    /// Dose's value.
     DoseValue m_doseValue;
 };
 
@@ -727,8 +764,8 @@ private:
 /// \ingroup TucuCore
 /// \brief List of hyper-minimalistic individual doses. This class contains the
 ///        "common" parts (formulation and route, as well as the doses' unit),
-///        while the individual doses just have date and value.
-class ShortDoseList : public DosageBounded
+///        while the individual doses just have date, infusion time, and value.
+class SimpleDoseList : public DosageBounded
 {
 public:
     friend IntakeExtractor;
@@ -740,43 +777,43 @@ public:
     ///        one is available).
     /// \param _formulationAndRoute Doses' formulation and route.
     /// \param _doseUnit Doses' unit.
-    ShortDoseList(ShortDose const& _dosage,
-                  FormulationAndRoute const& _formulationAndRoute,
-                  TucuUnit const& _doseUnit) :
+    SimpleDoseList(SimpleDose const& _dosage,
+                   FormulationAndRoute const& _formulationAndRoute,
+                   TucuUnit const& _doseUnit) :
         m_formulationAndRoute{_formulationAndRoute},
         m_doseUnit{_doseUnit}
     {
-        m_dosage_list.emplace_back(std::make_unique< ShortDose >(_dosage));
+        m_dosage_list.emplace_back(std::make_unique< SimpleDose >(_dosage));
     }
 
     /// \brief Copy-construct a list of individual doses.
     ///
-    /// \param _other List of ShortDoseList that has to be copied.
-    ShortDoseList(ShortDoseList const& _other) :
+    /// \param _other List of SimpleDoseList that has to be copied.
+    SimpleDoseList(SimpleDoseList const& _other) :
         m_formulationAndRoute{_other.m_formulationAndRoute},
         m_doseUnit{_other.m_doseUnit}
     {
         for (auto const& dose : _other.m_dosage_list) {
-            m_dosage_list.emplace_back(std::make_unique< ShortDose >(*dose));
+            m_dosage_list.emplace_back(std::make_unique< SimpleDose >(*dose));
         }
     }
 
-    virtual ~ShortDoseList() override;
+    virtual ~SimpleDoseList() override;
 
     /// Comparison operator, used in tests.
     ///
     /// \param _other Object to compare against.
     ///
     /// \return true if the two objects are identical, false otherwise.
-    bool operator==(ShortDoseList const& _other) const
+    bool operator==(SimpleDoseList const& _other) const
     {
         return m_formulationAndRoute == _other.m_formulationAndRoute &&
             m_doseUnit ==_other.m_doseUnit &&
             m_dosage_list.size() == _other.m_dosage_list.size() &&
             std::equal(m_dosage_list.begin(), m_dosage_list.end(),
                        _other.m_dosage_list.begin(),
-                       [](const std::unique_ptr<ShortDose>& a,
-                          const std::unique_ptr<ShortDose>& b) {
+                       [](const std::unique_ptr< SimpleDose >& a,
+                          const std::unique_ptr< SimpleDose >& b) {
                            return *a == *b;
                        });
     }
@@ -786,7 +823,7 @@ public:
     /// \param _other Object to compare against.
     ///
     /// \return true if the two objects differ, false otherwise.
-    bool operator!=(ShortDoseList const& _other) const
+    bool operator!=(SimpleDoseList const& _other) const
     {
         return !(*this == _other);
     }
@@ -796,7 +833,7 @@ public:
     /// \return Pointer to a new object of subclass' type.
     std::unique_ptr<DosageBounded> clone() const override
     {
-        return std::make_unique< ShortDoseList >(*this);
+        return std::make_unique< SimpleDoseList >(*this);
     }
 
     /// \brief Return a pointer to a clone of the base class.
@@ -814,7 +851,7 @@ public:
     /// \throws std::runtime_error.
     Duration getTimeStep() const override
     {
-        throw std::runtime_error("getTimeStep() called on ShortDoseList");
+        throw std::runtime_error("getTimeStep() called on SimpleDoseList");
     }
 
     /// Output the dose list to a stream (for debugging purposes).
@@ -825,7 +862,7 @@ public:
     /// \return Stream given in input (to chain strings in output).
 
     friend std::ostream& operator<<(std::ostream& _output,
-                                    ShortDoseList& _sdl)
+                                    SimpleDoseList& _sdl)
     {
         // clang-format off
         for (auto const& dose : _sdl.m_dosage_list) {
@@ -833,6 +870,8 @@ public:
                     << dose->getDateTime().str()
                     << ", value = "
                     << dose->getDoseValue()
+                    << ", infusion time = "
+                    << dose->getInfusionTime()
                     << "\n";
             // clang-format on
         }
@@ -917,19 +956,19 @@ public:
     /// \brief Get the dosages administered.
     //
     /// \return List of dosages administered.
-    std::vector< ShortDose > getDosageList() const;
+    std::vector< SimpleDose > getDosageList() const;
 
     /// \brief Get the dosages administered past a specified time point.
     ///
     /// \param _intervalStart Starting point of the interval.
     //
     /// \return List of dosages past a specified time point.
-    std::vector< ShortDose > getDosageList(DateTime const& _intervalStart) const;
+    std::vector< SimpleDose > getDosageList(DateTime const& _intervalStart) const;
 
     /// \brief Add a given dosage to the list of dosages.
     ///
     /// \param _dosage Dosage to add.
-    void addDosage(ShortDose const& _dosage);
+    void addDosage(SimpleDose const& _dosage);
 
     /// \brief Return the common formulation and route of the doses.
     ///
@@ -950,7 +989,7 @@ public:
 protected:
     /// SORTED list of individual dosages. Sorting is performed at dosage
     /// insertion. Duplicates are not allowed.
-    std::vector< std::unique_ptr< ShortDose > > m_dosage_list;
+    std::vector< std::unique_ptr< SimpleDose > > m_dosage_list;
     /// Common formulation and route details.
     FormulationAndRoute m_formulationAndRoute;
     /// Common unit of measurement for the doses.
