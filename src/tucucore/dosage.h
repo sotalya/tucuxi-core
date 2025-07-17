@@ -581,13 +581,13 @@ public:
     /// \return List of formulation and route of the dosages.
     std::vector< FormulationAndRoute > getFormulationAndRouteList() const override
     {
-        std::vector< FormulationAndRoute > far;
+        std::vector< FormulationAndRoute > resultList;
 
         for (auto const& dose : m_dosage_list) {
-            far.emplace_back(dose->getFormulationAndRoute());
+            resultList.emplace_back(dose->getFormulationAndRoute());
         }
 
-        return far;
+        return resultList;
     }
 
     /// \brief Return the instant of the first intake in the given interval.
@@ -913,12 +913,12 @@ public:
     /// \return List of formulation and route of the dosages.
     std::vector< FormulationAndRoute > getFormulationAndRouteList() const override
     {
-        std::vector< FormulationAndRoute > far;
+        std::vector< FormulationAndRoute > resultList;
         for (std::size_t i = 0; i < m_dosage_list.size(); ++i) {
-            far.emplace_back(m_formulationAndRoute);
+            resultList.emplace_back(m_formulationAndRoute);
         }
 
-        return far;
+        return resultList;
     }
 
     /// \brief Return the instant of the first intake in the given interval.
