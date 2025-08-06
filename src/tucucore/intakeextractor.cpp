@@ -141,9 +141,7 @@ int IntakeExtractor::extract(
 
     // We check the extraction range
     if (iEnd >= iStart) {
-        nbIntakes = _timeRange.m_dosage->extract(*this, iStart, iEnd,
-                                                 _nbPointsPerHour, _toUnit,
-                                                 _series, _option);
+        nbIntakes = _timeRange.m_dosage->extract(*this, iStart, iEnd, _nbPointsPerHour, _toUnit, _series, _option);
     }
     // Add unplanned intakes that fall in the desired interval
     for (auto& intake : _timeRange.m_addedIntakes) {
@@ -156,8 +154,7 @@ int IntakeExtractor::extract(
     for (auto& intake : _timeRange.m_skippedIntakes) {
         if (intake.getEventTime() >= _start && intake.getEventTime() < _end) {
             auto intakeToRemove =
-                    std::find_if(_series.begin(), _series.end(),
-                                 [&intake](const IntakeEvent& _ev) -> bool {
+                    std::find_if(_series.begin(), _series.end(), [&intake](const IntakeEvent& _ev) -> bool {
                         return intake == _ev;
                     });
             if (intakeToRemove != _series.end()) {
@@ -209,10 +206,8 @@ int IntakeExtractor::extract(
     int nbIntakes = 0;
     DateTime iEnd = _end.isUndefined() ? DateTime::now() : _end;
 
-    std::vector< SingleDoseAtTime > doses =
-        _singleDoseAtTimeList.getDosageList(_start);
-    std::vector< Duration > timeSteps =
-        _singleDoseAtTimeList.getTimeStepList(_start);
+    std::vector<SingleDoseAtTime> doses = _singleDoseAtTimeList.getDosageList(_start);
+    std::vector<Duration> timeSteps = _singleDoseAtTimeList.getTimeStepList(_start);
     Duration interval;
 
     for (std::size_t i = 0; i < doses.size(); ++i) {
@@ -223,16 +218,15 @@ int IntakeExtractor::extract(
             interval = timeSteps.at(i);
         }
         IntakeEvent intake(
-                           doses.at(i).getDateTime(),
-                           Duration(),
-                           UnitManager::convertToUnit<UnitManager::UnitType::Weight>(doses.at(i).getDoseValue(),
-                                                                                     doses.at(i).getDoseUnit(),
-                                                                                     _toUnit),
-                           _toUnit,
-                           interval,
-                           doses.at(i).getFormulationAndRoute(),
-                           doses.at(i).getInfusionTime(),
-                           static_cast<CycleSize>(interval.toHours() * _nbPointsPerHour) + 1);
+                doses.at(i).getDateTime(),
+                Duration(),
+                UnitManager::convertToUnit<UnitManager::UnitType::Weight>(
+                        doses.at(i).getDoseValue(), doses.at(i).getDoseUnit(), _toUnit),
+                _toUnit,
+                interval,
+                doses.at(i).getFormulationAndRoute(),
+                doses.at(i).getInfusionTime(),
+                static_cast<CycleSize>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
 
         nbIntakes += 1;
@@ -256,10 +250,8 @@ int IntakeExtractor::extract(
     int nbIntakes = 0;
     DateTime iEnd = _end.isUndefined() ? DateTime::now() : _end;
 
-    std::vector< SimpleDose > doses =
-        _simpleDoseList.getDosageList(_start);
-    std::vector< Duration > timeSteps =
-        _simpleDoseList.getTimeStepList(_start);
+    std::vector<SimpleDose> doses = _simpleDoseList.getDosageList(_start);
+    std::vector<Duration> timeSteps = _simpleDoseList.getTimeStepList(_start);
     Duration interval;
 
     for (std::size_t i = 0; i < doses.size(); ++i) {
@@ -270,16 +262,15 @@ int IntakeExtractor::extract(
             interval = timeSteps.at(i);
         }
         IntakeEvent intake(
-                           doses.at(i).getDateTime(),
-                           Duration(),
-                           UnitManager::convertToUnit<UnitManager::UnitType::Weight>(doses.at(i).getDoseValue(),
-                                                                                     _simpleDoseList.getDoseUnit(),
-                                                                                     _toUnit),
-                           _toUnit,
-                           interval,
-                           _simpleDoseList.getLastFormulationAndRoute(),
-                           doses.at(i).getInfusionTime(),
-                           static_cast<CycleSize>(interval.toHours() * _nbPointsPerHour) + 1);
+                doses.at(i).getDateTime(),
+                Duration(),
+                UnitManager::convertToUnit<UnitManager::UnitType::Weight>(
+                        doses.at(i).getDoseValue(), _simpleDoseList.getDoseUnit(), _toUnit),
+                _toUnit,
+                interval,
+                _simpleDoseList.getLastFormulationAndRoute(),
+                doses.at(i).getInfusionTime(),
+                static_cast<CycleSize>(interval.toHours() * _nbPointsPerHour) + 1);
         _series.push_back(intake);
 
         nbIntakes += 1;

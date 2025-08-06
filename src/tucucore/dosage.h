@@ -62,7 +62,7 @@ enum class ExtractionOption
 /// Default time step for the single dose list when only a single element is
 /// present in the list (cannot do interpolation to guess what the next timestep
 /// could be).
-static Duration const SINGLE_DOSE_DEFAULT_TSTEP {Duration(std::chrono::hours(12))};
+static Duration const SINGLE_DOSE_DEFAULT_TSTEP{Duration(std::chrono::hours(12))};
 
 /// \brief Implement the extract and clone operations for Dosage subclasses.
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
@@ -310,21 +310,17 @@ public:
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _value Dose's value.
     /// \param _doseUnit Dose's unit.
-    SingleDoseAtTime(DateTime const& _dateTime,
-                     FormulationAndRoute const& _formulationAndRoute,
-                     Duration const& _infusionTime,
-                     DoseValue const& _doseValue,
-                     TucuUnit const& _doseUnit) :
-        m_dateTime{_dateTime},
-        m_formulationAndRoute{_formulationAndRoute},
-        m_infusionTime{_infusionTime},
-        m_doseValue{_doseValue},
-        m_doseUnit{_doseUnit}
+    SingleDoseAtTime(
+            DateTime const& _dateTime,
+            FormulationAndRoute const& _formulationAndRoute,
+            Duration const& _infusionTime,
+            DoseValue const& _doseValue,
+            TucuUnit const& _doseUnit)
+        : m_dateTime{_dateTime}, m_formulationAndRoute{_formulationAndRoute}, m_infusionTime{_infusionTime},
+          m_doseValue{_doseValue}, m_doseUnit{_doseUnit}
     {
         if (_doseValue < 0) {
-            throw std::invalid_argument("Dose value = " +
-                                        std::to_string(_doseValue) +
-                                        " is invalid (must be >= 0).");
+            throw std::invalid_argument("Dose value = " + std::to_string(_doseValue) + " is invalid (must be >= 0).");
         }
     }
 
@@ -338,11 +334,7 @@ public:
     /// \return lone of the current dosage.
     SingleDoseAtTime clone() const
     {
-        return SingleDoseAtTime(m_dateTime,
-                                m_formulationAndRoute,
-                                m_infusionTime,
-                                m_doseValue,
-                                m_doseUnit);
+        return SingleDoseAtTime(m_dateTime, m_formulationAndRoute, m_infusionTime, m_doseValue, m_doseUnit);
     }
 
     /// Comparison operator, used in tests.
@@ -350,13 +342,11 @@ public:
     /// \param _other Object to compare against.
     ///
     /// \return true if the two objects are identical, false otherwise.
-    bool operator==(SingleDoseAtTime const& _other) const {
-        return
-            m_dateTime == _other.m_dateTime &&
-            m_formulationAndRoute == _other.m_formulationAndRoute &&
-            m_infusionTime == _other.m_infusionTime &&
-            m_doseValue == _other.m_doseValue &&
-            m_doseUnit == _other.m_doseUnit;
+    bool operator==(SingleDoseAtTime const& _other) const
+    {
+        return m_dateTime == _other.m_dateTime && m_formulationAndRoute == _other.m_formulationAndRoute
+               && m_infusionTime == _other.m_infusionTime && m_doseValue == _other.m_doseValue
+               && m_doseUnit == _other.m_doseUnit;
     }
 
     /// Non-equality operator, comes cheap once the equality is defined.
@@ -364,7 +354,8 @@ public:
     /// \param _other Object to compare against.
     ///
     /// \return true if the two objects differ, false otherwise.
-    bool operator!=(SingleDoseAtTime const& _other) const {
+    bool operator!=(SingleDoseAtTime const& _other) const
+    {
         return !(*this == _other);
     }
 
@@ -374,8 +365,7 @@ public:
     /// \param _sd Dose to output
     ///
     /// \return Stream given in input (to chain strings in output).
-    friend std::ostream& operator<<(std::ostream& _output,
-                                    SingleDoseAtTime& _sd)
+    friend std::ostream& operator<<(std::ostream& _output, SingleDoseAtTime& _sd)
     {
         // clang-format off
         _output << "Dose at: "
@@ -478,11 +468,12 @@ public:
     /// \return true if the two objects are identical, false otherwise.
     bool operator==(SingleDoseAtTimeList const& _other) const
     {
-        return m_dosageList.size() == _other.m_dosageList.size() &&
-               std::equal(m_dosageList.begin(), m_dosageList.end(),
-                                                                               _other.m_dosageList.begin(),
-                       [](const std::unique_ptr<SingleDoseAtTime>& a,
-                          const std::unique_ptr<SingleDoseAtTime>& b) {
+        return m_dosageList.size() == _other.m_dosageList.size()
+               && std::equal(
+                       m_dosageList.begin(),
+                       m_dosageList.end(),
+                       _other.m_dosageList.begin(),
+                       [](const std::unique_ptr<SingleDoseAtTime>& a, const std::unique_ptr<SingleDoseAtTime>& b) {
                            return *a == *b;
                        });
     }
@@ -530,8 +521,7 @@ public:
     ///
     /// \return Stream given in input (to chain strings in output).
 
-    friend std::ostream& operator<<(std::ostream& _output,
-                                    SingleDoseAtTimeList& _sdl)
+    friend std::ostream& operator<<(std::ostream& _output, SingleDoseAtTimeList& _sdl)
     {
         // clang-format off
         for (auto const& dose : _sdl.m_dosageList) {
@@ -608,7 +598,7 @@ public:
         ///       implementations of this function do).
 
         /// Option 1: throw exception
-        throw std::invalid_argument("getFirstIntakeInterval() called with " \
+        throw std::invalid_argument("getFirstIntakeInterval() called with "
                                     "start interval past the intakes end!");
         // /// Option 2: return '_intervalStart'
         // return _intervalStart;
@@ -658,17 +648,11 @@ public:
     /// \param _dateTime Dose's date and time.
     /// \param _infusionTime Duration in case of an infusion.
     /// \param _value Dose's value.
-    SimpleDose(DateTime const& _dateTime,
-               Duration const& _infusionTime,
-               DoseValue const& _doseValue) :
-        m_dateTime{_dateTime},
-        m_infusionTime{_infusionTime},
-        m_doseValue{_doseValue}
+    SimpleDose(DateTime const& _dateTime, Duration const& _infusionTime, DoseValue const& _doseValue)
+        : m_dateTime{_dateTime}, m_infusionTime{_infusionTime}, m_doseValue{_doseValue}
     {
         if (_doseValue < 0) {
-            throw std::invalid_argument("Dose value = " +
-                                        std::to_string(_doseValue) +
-                                        " is invalid (must be >= 0).");
+            throw std::invalid_argument("Dose value = " + std::to_string(_doseValue) + " is invalid (must be >= 0).");
         }
     }
 
@@ -690,11 +674,10 @@ public:
     /// \param _other Object to compare against.
     ///
     /// \return true if the two objects are identical, false otherwise.
-    bool operator==(SimpleDose const& _other) const {
-        return
-            m_dateTime == _other.m_dateTime &&
-            m_infusionTime == _other.m_infusionTime &&
-            m_doseValue == _other.m_doseValue;
+    bool operator==(SimpleDose const& _other) const
+    {
+        return m_dateTime == _other.m_dateTime && m_infusionTime == _other.m_infusionTime
+               && m_doseValue == _other.m_doseValue;
     }
 
     /// Non-equality operator, comes cheap once the equality is defined.
@@ -702,7 +685,8 @@ public:
     /// \param _other Object to compare against.
     ///
     /// \return true if the two objects differ, false otherwise.
-    bool operator!=(SimpleDose const& _other) const {
+    bool operator!=(SimpleDose const& _other) const
+    {
         return !(*this == _other);
     }
 
@@ -712,8 +696,7 @@ public:
     /// \param _sd Dose to output
     ///
     /// \return Stream given in input (to chain strings in output).
-    friend std::ostream& operator<<(std::ostream& _output,
-                                    SimpleDose& _sd)
+    friend std::ostream& operator<<(std::ostream& _output, SimpleDose& _sd)
     {
         // clang-format off
         _output << "Dose at: "
@@ -777,11 +760,9 @@ public:
     ///        one is available).
     /// \param _formulationAndRoute Doses' formulation and route.
     /// \param _doseUnit Doses' unit.
-    SimpleDoseList(SimpleDose const& _dosage,
-                   FormulationAndRoute const& _formulationAndRoute,
-                   TucuUnit const& _doseUnit) :
-        m_formulationAndRoute{_formulationAndRoute},
-        m_doseUnit{_doseUnit}
+    SimpleDoseList(
+            SimpleDose const& _dosage, FormulationAndRoute const& _formulationAndRoute, TucuUnit const& _doseUnit)
+        : m_formulationAndRoute{_formulationAndRoute}, m_doseUnit{_doseUnit}
     {
         m_dosage_list.emplace_back(std::make_unique<SimpleDose>(_dosage));
     }
@@ -789,9 +770,8 @@ public:
     /// \brief Copy-construct a list of individual doses.
     ///
     /// \param _other List of SimpleDoseList that has to be copied.
-    SimpleDoseList(SimpleDoseList const& _other) :
-        m_formulationAndRoute{_other.m_formulationAndRoute},
-        m_doseUnit{_other.m_doseUnit}
+    SimpleDoseList(SimpleDoseList const& _other)
+        : m_formulationAndRoute{_other.m_formulationAndRoute}, m_doseUnit{_other.m_doseUnit}
     {
         for (auto const& dose : _other.m_dosage_list) {
             m_dosage_list.emplace_back(std::make_unique<SimpleDose>(*dose));
@@ -807,13 +787,13 @@ public:
     /// \return true if the two objects are identical, false otherwise.
     bool operator==(SimpleDoseList const& _other) const
     {
-        return m_formulationAndRoute == _other.m_formulationAndRoute &&
-            m_doseUnit ==_other.m_doseUnit &&
-            m_dosage_list.size() == _other.m_dosage_list.size() &&
-            std::equal(m_dosage_list.begin(), m_dosage_list.end(),
+        return m_formulationAndRoute == _other.m_formulationAndRoute && m_doseUnit == _other.m_doseUnit
+               && m_dosage_list.size() == _other.m_dosage_list.size()
+               && std::equal(
+                       m_dosage_list.begin(),
+                       m_dosage_list.end(),
                        _other.m_dosage_list.begin(),
-                       [](const std::unique_ptr<SimpleDose>& a,
-                          const std::unique_ptr<SimpleDose>& b) {
+                       [](const std::unique_ptr<SimpleDose>& a, const std::unique_ptr<SimpleDose>& b) {
                            return *a == *b;
                        });
     }
@@ -861,8 +841,7 @@ public:
     ///
     /// \return Stream given in input (to chain strings in output).
 
-    friend std::ostream& operator<<(std::ostream& _output,
-                                    SimpleDoseList& _sdl)
+    friend std::ostream& operator<<(std::ostream& _output, SimpleDoseList& _sdl)
     {
         // clang-format off
         for (auto const& dose : _sdl.m_dosage_list) {
@@ -939,7 +918,7 @@ public:
         ///       implementations of this function do).
 
         /// Option 1: throw exception
-        throw std::invalid_argument("getFirstIntakeInterval() called with " \
+        throw std::invalid_argument("getFirstIntakeInterval() called with "
                                     "start interval past the intakes end!");
         // /// Option 2: return '_intervalStart'
         // return _intervalStart;

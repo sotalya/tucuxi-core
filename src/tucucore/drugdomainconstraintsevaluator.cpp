@@ -50,7 +50,8 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
     CovariateSeries covariateSeries;
 
 
-    TUCU_TRY {
+    TUCU_TRY
+    {
         CovariateExtractor extractor(
                 _drugModel.getCovariates(), _drugTreatment.getCovariates(), _start, _end, DosageHistory());
 
@@ -59,7 +60,8 @@ DrugDomainConstraintsEvaluator::Result DrugDomainConstraintsEvaluator::evaluate(
             return DrugDomainConstraintsEvaluator::Result::ComputationError;
         }
     }
-    TUCU_CATCH(...) {
+    TUCU_CATCH(...)
+    {
         return DrugDomainConstraintsEvaluator::Result::CovariateExtractionError;
     }
 

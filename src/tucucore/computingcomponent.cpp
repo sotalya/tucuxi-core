@@ -882,7 +882,7 @@ ComputingStatus ComputingComponent::preparePercentilesResponse(
                 DateTime start = selectedIntakes[cycle].getEventTime();
 
                 std::chrono::milliseconds ms =
-                    std::chrono::milliseconds(static_cast<long long>(times.back() * 3600 * 1000));
+                        std::chrono::milliseconds(static_cast<long long>(times.back() * 3600 * 1000));
                 Duration ds(ms);
                 DateTime end = start + ds;
 
