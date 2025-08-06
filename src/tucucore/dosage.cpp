@@ -87,22 +87,15 @@ bool timeRangesOverlap(const DosageTimeRange& _first, const DosageTimeRange& _se
 }
 
 
-SingleDoseAtTime::~SingleDoseAtTime()
+SingleDoseAtTime::~SingleDoseAtTime(){}
+
+
+SingleDoseAtTimeList::~SingleDoseAtTimeList(){}
+
+
+std::vector<Duration> SingleDoseAtTimeList::getTimeStepList(DateTime const& _intervalStart) const
 {
-
-}
-
-
-SingleDoseAtTimeList::~SingleDoseAtTimeList()
-{
-
-}
-
-
-std::vector< Duration >
-SingleDoseAtTimeList::getTimeStepList(DateTime const& _intervalStart) const
-{
-    std::vector< Duration > timeStepList;
+    std::vector<Duration> timeStepList;
     if (m_dosageList.size() == 1) {
         if (m_dosageList.at(0)->getDateTime() >= _intervalStart) {
             // Dosage time is ok, but we have nothing to compare against, so
@@ -132,10 +125,9 @@ SingleDoseAtTimeList::getTimeStepList(DateTime const& _intervalStart) const
 }
 
 
-std::vector< SingleDoseAtTime >
-SingleDoseAtTimeList::getDosageList() const
+std::vector<SingleDoseAtTime> SingleDoseAtTimeList::getDosageList() const
 {
-    std::vector< SingleDoseAtTime > dosageList;
+    std::vector<SingleDoseAtTime> dosageList;
 
     dosageList.reserve(m_dosageList.size());
     for (auto const& dose : m_dosageList) {
@@ -146,10 +138,9 @@ SingleDoseAtTimeList::getDosageList() const
 }
 
 
-std::vector< SingleDoseAtTime >
-SingleDoseAtTimeList::getDosageList(DateTime const& _intervalStart) const
+std::vector<SingleDoseAtTime> SingleDoseAtTimeList::getDosageList(DateTime const& _intervalStart) const
 {
-    std::vector< SingleDoseAtTime > dosageList;
+    std::vector<SingleDoseAtTime> dosageList;
 
     for (auto const& dose : m_dosageList) {
         if (dose->getDateTime() >= _intervalStart) {
@@ -161,11 +152,10 @@ SingleDoseAtTimeList::getDosageList(DateTime const& _intervalStart) const
 }
 
 
-void
-SingleDoseAtTimeList::addDosage(SingleDoseAtTime const& _dosage)
+void SingleDoseAtTimeList::addDosage(SingleDoseAtTime const& _dosage)
 {
     std::unique_ptr<SingleDoseAtTime> newDose =
-        std::make_unique< SingleDoseAtTime >(_dosage);
+        std::make_unique<SingleDoseAtTime>(_dosage);
     auto it = std::lower_bound(
             m_dosageList.begin(), m_dosageList.end(), newDose,
         [](const std::unique_ptr< SingleDoseAtTime >& _a,
@@ -193,22 +183,15 @@ SingleDoseAtTimeList::addDosage(SingleDoseAtTime const& _dosage)
 }
 
 
-SimpleDose::~SimpleDose()
+SimpleDose::~SimpleDose() {}
+
+
+SimpleDoseList::~SimpleDoseList() {}
+
+
+std::vector<Duration> SimpleDoseList::getTimeStepList(DateTime const& _intervalStart) const
 {
-
-}
-
-
-SimpleDoseList::~SimpleDoseList()
-{
-
-}
-
-
-std::vector< Duration >
-SimpleDoseList::getTimeStepList(DateTime const& _intervalStart) const
-{
-    std::vector< Duration > timeStepList;
+    std::vector<Duration> timeStepList;
     if (m_dosage_list.size() == 1) {
         if (m_dosage_list.at(0)->getDateTime() >= _intervalStart) {
             // Dosage time is ok, but we have nothing to compare against, so
@@ -238,10 +221,9 @@ SimpleDoseList::getTimeStepList(DateTime const& _intervalStart) const
 }
 
 
-std::vector< SimpleDose >
-SimpleDoseList::getDosageList() const
+std::vector<SimpleDose> SimpleDoseList::getDosageList() const
 {
-    std::vector< SimpleDose > dosageList;
+    std::vector<SimpleDose> dosageList;
 
     dosageList.reserve(m_dosage_list.size());
     for (auto const& dose : m_dosage_list) {
@@ -252,10 +234,9 @@ SimpleDoseList::getDosageList() const
 }
 
 
-std::vector< SimpleDose >
-SimpleDoseList::getDosageList(DateTime const& _intervalStart) const
+std::vector<SimpleDose> SimpleDoseList::getDosageList(DateTime const& _intervalStart) const
 {
-    std::vector< SimpleDose > dosageList;
+    std::vector<SimpleDose> dosageList;
 
     for (auto const& dose : m_dosage_list) {
         if (dose->getDateTime() >= _intervalStart) {
@@ -267,15 +248,14 @@ SimpleDoseList::getDosageList(DateTime const& _intervalStart) const
 }
 
 
-void
-SimpleDoseList::addDosage(SimpleDose const& _dosage)
+void SimpleDoseList::addDosage(SimpleDose const& _dosage)
 {
-    std::unique_ptr< SimpleDose > newDose =
-        std::make_unique< SimpleDose >(_dosage);
+    std::unique_ptr<SimpleDose> newDose =
+        std::make_unique<SimpleDose>(_dosage);
     auto it = std::lower_bound(
         m_dosage_list.begin(), m_dosage_list.end(), newDose,
-        [](const std::unique_ptr< SimpleDose >& _a,
-           const std::unique_ptr< SimpleDose >& _b) {
+        [](const std::unique_ptr<SimpleDose>& _a,
+           const std::unique_ptr<SimpleDose>& _b) {
             return _a->getDateTime() < _b->getDateTime();
         }
     );

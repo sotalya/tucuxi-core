@@ -456,7 +456,7 @@ public:
     ///        at least one).
     SingleDoseAtTimeList(SingleDoseAtTime const& _dosage)
     {
-        m_dosageList.emplace_back(std::make_unique< SingleDoseAtTime >(_dosage));
+        m_dosageList.emplace_back(std::make_unique<SingleDoseAtTime>(_dosage));
     }
 
     /// \brief Copy-construct a list of individual doses.
@@ -465,7 +465,7 @@ public:
     SingleDoseAtTimeList(SingleDoseAtTimeList const& _other)
     {
         for (auto const& dose : _other.m_dosageList) {
-            m_dosageList.emplace_back(std::make_unique< SingleDoseAtTime >(*dose));
+            m_dosageList.emplace_back(std::make_unique<SingleDoseAtTime>(*dose));
         }
     }
 
@@ -502,7 +502,7 @@ public:
     /// \return Pointer to a new object of subclass' type.
     std::unique_ptr<DosageBounded> clone() const override
     {
-        return std::make_unique< SingleDoseAtTimeList >(*this);
+        return std::make_unique<SingleDoseAtTimeList>(*this);
     }
 
     /// \brief Return a pointer to a clone of the base class.
@@ -579,9 +579,9 @@ public:
     /// \brief Return the list of formulation and route of the dosages.
     ///
     /// \return List of formulation and route of the dosages.
-    std::vector< FormulationAndRoute > getFormulationAndRouteList() const override
+    std::vector<FormulationAndRoute> getFormulationAndRouteList() const override
     {
-        std::vector< FormulationAndRoute > resultList;
+        std::vector<FormulationAndRoute> resultList;
 
         for (auto const& dose : m_dosageList) {
             resultList.emplace_back(dose->getFormulationAndRoute());
@@ -620,19 +620,19 @@ public:
     /// \param _intervalStart Starting point of the interval.
     //
     /// \return List of time steps between adjacent pairs of doses.
-    std::vector< Duration > getTimeStepList(DateTime const& _intervalStart) const;
+    std::vector<Duration> getTimeStepList(DateTime const& _intervalStart) const;
 
     /// \brief Get the dosages administered.
     //
     /// \return List of dosages administered.
-    std::vector< SingleDoseAtTime > getDosageList() const;
+    std::vector<SingleDoseAtTime> getDosageList() const;
 
     /// \brief Get the dosages administered past a specified time point.
     ///
     /// \param _intervalStart Starting point of the interval.
     //
     /// \return List of dosages past a specified time point.
-    std::vector< SingleDoseAtTime > getDosageList(DateTime const& _intervalStart) const;
+    std::vector<SingleDoseAtTime> getDosageList(DateTime const& _intervalStart) const;
 
     /// \brief Add a given dosage to the list of dosages.
     ///
@@ -643,7 +643,7 @@ public:
 protected:
     /// SORTED list of individual dosages. Sorting is performed at dosage
     /// insertion. Duplicates are not allowed.
-    std::vector< std::unique_ptr< SingleDoseAtTime > > m_dosageList;
+    std::vector<std::unique_ptr<SingleDoseAtTime>> m_dosageList;
 };
 
 
@@ -783,7 +783,7 @@ public:
         m_formulationAndRoute{_formulationAndRoute},
         m_doseUnit{_doseUnit}
     {
-        m_dosage_list.emplace_back(std::make_unique< SimpleDose >(_dosage));
+        m_dosage_list.emplace_back(std::make_unique<SimpleDose>(_dosage));
     }
 
     /// \brief Copy-construct a list of individual doses.
@@ -794,7 +794,7 @@ public:
         m_doseUnit{_other.m_doseUnit}
     {
         for (auto const& dose : _other.m_dosage_list) {
-            m_dosage_list.emplace_back(std::make_unique< SimpleDose >(*dose));
+            m_dosage_list.emplace_back(std::make_unique<SimpleDose>(*dose));
         }
     }
 
@@ -812,8 +812,8 @@ public:
             m_dosage_list.size() == _other.m_dosage_list.size() &&
             std::equal(m_dosage_list.begin(), m_dosage_list.end(),
                        _other.m_dosage_list.begin(),
-                       [](const std::unique_ptr< SimpleDose >& a,
-                          const std::unique_ptr< SimpleDose >& b) {
+                       [](const std::unique_ptr<SimpleDose>& a,
+                          const std::unique_ptr<SimpleDose>& b) {
                            return *a == *b;
                        });
     }
@@ -833,7 +833,7 @@ public:
     /// \return Pointer to a new object of subclass' type.
     std::unique_ptr<DosageBounded> clone() const override
     {
-        return std::make_unique< SimpleDoseList >(*this);
+        return std::make_unique<SimpleDoseList>(*this);
     }
 
     /// \brief Return a pointer to a clone of the base class.
@@ -911,9 +911,9 @@ public:
     ///        only have a common one, we repeat it as many times as needed.
     ///
     /// \return List of formulation and route of the dosages.
-    std::vector< FormulationAndRoute > getFormulationAndRouteList() const override
+    std::vector<FormulationAndRoute> getFormulationAndRouteList() const override
     {
-        std::vector< FormulationAndRoute > resultList;
+        std::vector<FormulationAndRoute> resultList;
         for (std::size_t i = 0; i < m_dosage_list.size(); ++i) {
             resultList.emplace_back(m_formulationAndRoute);
         }
@@ -951,19 +951,19 @@ public:
     /// \param _intervalStart Starting point of the interval.
     //
     /// \return List of time steps between adjacent pairs of doses.
-    std::vector< Duration > getTimeStepList(DateTime const& _intervalStart) const;
+    std::vector<Duration> getTimeStepList(DateTime const& _intervalStart) const;
 
     /// \brief Get the dosages administered.
     //
     /// \return List of dosages administered.
-    std::vector< SimpleDose > getDosageList() const;
+    std::vector<SimpleDose> getDosageList() const;
 
     /// \brief Get the dosages administered past a specified time point.
     ///
     /// \param _intervalStart Starting point of the interval.
     //
     /// \return List of dosages past a specified time point.
-    std::vector< SimpleDose > getDosageList(DateTime const& _intervalStart) const;
+    std::vector<SimpleDose> getDosageList(DateTime const& _intervalStart) const;
 
     /// \brief Add a given dosage to the list of dosages.
     ///
@@ -989,7 +989,7 @@ public:
 protected:
     /// SORTED list of individual dosages. Sorting is performed at dosage
     /// insertion. Duplicates are not allowed.
-    std::vector< std::unique_ptr< SimpleDose > > m_dosage_list;
+    std::vector<std::unique_ptr<SimpleDose>> m_dosage_list;
     /// Common formulation and route details.
     FormulationAndRoute m_formulationAndRoute;
     /// Common unit of measurement for the doses.
