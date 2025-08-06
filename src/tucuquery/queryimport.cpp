@@ -556,8 +556,7 @@ unique_ptr<Core::Dosage> QueryImport::createDosage(Common::XmlNodeIterator& _dos
             return make_unique<Core::DosageLoop>(*pDosageBounded);
         }
         else if (dosageIterator->getName() == SINGLE_DOSE_AT_TIME_LIST_NODE_NAME) {
-            std::unique_ptr<Core::DosageBounded> pDosageBounded =
-                createDosageBounded(_dosageRootIterator);
+            std::unique_ptr<Core::DosageBounded> pDosageBounded = createDosageBounded(_dosageRootIterator);
 
             if (!pDosageBounded) {
                 return nullptr;
@@ -567,13 +566,13 @@ unique_ptr<Core::Dosage> QueryImport::createDosage(Common::XmlNodeIterator& _dos
                 std::unique_ptr<Core::SingleDoseAtTimeList> upSingleDoseAtTimeList(pSingleDoseAtTimeList);
                 pDosageBounded.release();
                 return upSingleDoseAtTimeList;
-            } else {
+            }
+            else {
                 return nullptr;
             }
         }
         else if (dosageIterator->getName() == SIMPLE_DOSE_LIST_NODE_NAME) {
-            std::unique_ptr<Core::DosageBounded> pDosageBounded =
-                createDosageBounded(_dosageRootIterator);
+            std::unique_ptr<Core::DosageBounded> pDosageBounded = createDosageBounded(_dosageRootIterator);
 
             if (!pDosageBounded) {
                 return nullptr;
@@ -583,7 +582,8 @@ unique_ptr<Core::Dosage> QueryImport::createDosage(Common::XmlNodeIterator& _dos
                 std::unique_ptr<Core::SimpleDoseList> upSimpleDoseList(pSimpleDoseList);
                 pDosageBounded.release();
                 return upSimpleDoseList;
-            } else {
+            }
+            else {
                 return nullptr;
             }
         }
@@ -778,52 +778,41 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(
         pDosageBounded = nullptr;
 
         // Start from the first single dose of the list.
-        Common::XmlNodeIterator doseRootIterator =
-            _dosageBoundedIterator->getChildren(SINGLE_DOSE_AT_TIME_NODE_NAME);
+        Common::XmlNodeIterator doseRootIterator = _dosageBoundedIterator->getChildren(SINGLE_DOSE_AT_TIME_NODE_NAME);
         while (doseRootIterator != Common::XmlNodeIterator::none()) {
             // Parse the XML and create the dose.
-            Common::DateTime doseDate = getChildDateTime(doseRootIterator,
-                                                         DOSE_DATE_NODE_NAME);
-            Common::XmlNodeIterator doseNodeIterator =
-                doseRootIterator->getChildren(DOSE_NODE_NAME);
-            Core::DoseValue doseValue =
-                getChildDouble(doseNodeIterator, DOSE_VALUE_NODE_NAME);
-            TucuUnit doseUnit = getChildUnit(doseNodeIterator,
-                                             DOSE_UNIT_NODE_NAME,
-                                             CheckUnit::Check);
-            double infuTimeInMinutes = getChildDouble(doseNodeIterator,
-                                                      DOSE_INFUSIONTIME_NAME);
-            Common::Duration infusionTime =
-                Duration(std::chrono::minutes(static_cast<int>(infuTimeInMinutes)));
+            Common::DateTime doseDate = getChildDateTime(doseRootIterator, DOSE_DATE_NODE_NAME);
+            Common::XmlNodeIterator doseNodeIterator = doseRootIterator->getChildren(DOSE_NODE_NAME);
+            Core::DoseValue doseValue = getChildDouble(doseNodeIterator, DOSE_VALUE_NODE_NAME);
+            TucuUnit doseUnit = getChildUnit(doseNodeIterator, DOSE_UNIT_NODE_NAME, CheckUnit::Check);
+            double infuTimeInMinutes = getChildDouble(doseNodeIterator, DOSE_INFUSIONTIME_NAME);
+            Common::Duration infusionTime = Duration(std::chrono::minutes(static_cast<int>(infuTimeInMinutes)));
 
             Common::XmlNodeIterator formulationAndRouteRootIterator =
-                doseRootIterator->getChildren(FORMULATION_AND_ROUTE_NODE_NAME);
+                    doseRootIterator->getChildren(FORMULATION_AND_ROUTE_NODE_NAME);
             unique_ptr<Core::FormulationAndRoute> formulationAndRoute =
-                createFormulationAndRoute(formulationAndRouteRootIterator);
+                    createFormulationAndRoute(formulationAndRouteRootIterator);
 
             // Create a dosage from the retrieved data.
-            Core::SingleDoseAtTime dosage(doseDate,
-                                          *formulationAndRoute,
-                                          infusionTime,
-                                          doseValue,
-                                          doseUnit);
+            Core::SingleDoseAtTime dosage(doseDate, *formulationAndRoute, infusionTime, doseValue, doseUnit);
 
             if (pDosageBounded == nullptr) {
                 try {
-                    pDosageBounded =
-                        make_unique<Core::SingleDoseAtTimeList>(dosage);
+                    pDosageBounded = make_unique<Core::SingleDoseAtTimeList>(dosage);
                 }
                 catch (std::invalid_argument& e) {
                     setNodeError(_dosageBoundedIterator);
                     pDosageBounded = nullptr;
                 }
-            } else {
+            }
+            else {
                 // In theory we would be safe even with a static_cast, but to be
                 // future-proof, perform a dynamic_cast here instead.
                 if (Core::SingleDoseAtTimeList* pSDL =
-                    dynamic_cast<Core::SingleDoseAtTimeList*>(pDosageBounded.get())) {
+                            dynamic_cast<Core::SingleDoseAtTimeList*>(pDosageBounded.get())) {
                     pSDL->addDosage(dosage);
-                } else {
+                }
+                else {
                     throw std::runtime_error("Invalid cast to SingleDoseAtTimeList");
                 }
             }
@@ -835,51 +824,41 @@ unique_ptr<Core::DosageBounded> QueryImport::createDosageBoundedFromIterator(
         pDosageBounded = nullptr;
 
         // Start from the global data.
-        TucuUnit doseUnit = getChildUnit(_dosageBoundedIterator,
-                                         DOSE_UNIT_NODE_NAME,
-                                         CheckUnit::Check);
+        TucuUnit doseUnit = getChildUnit(_dosageBoundedIterator, DOSE_UNIT_NODE_NAME, CheckUnit::Check);
         Common::XmlNodeIterator formulationAndRouteRootIterator =
-            _dosageBoundedIterator->getChildren(FORMULATION_AND_ROUTE_NODE_NAME);
+                _dosageBoundedIterator->getChildren(FORMULATION_AND_ROUTE_NODE_NAME);
         unique_ptr<Core::FormulationAndRoute> formulationAndRoute =
-            createFormulationAndRoute(formulationAndRouteRootIterator);
+                createFormulationAndRoute(formulationAndRouteRootIterator);
 
-        Common::XmlNodeIterator doseListIterator =
-            _dosageBoundedIterator->getChildren(DOSE_LIST_NODE_NAME);
-        Common::XmlNodeIterator doseDateValueIterator =
-            doseListIterator->getChildren(DOSE_DATE_VALUE_NODE_NAME);
+        Common::XmlNodeIterator doseListIterator = _dosageBoundedIterator->getChildren(DOSE_LIST_NODE_NAME);
+        Common::XmlNodeIterator doseDateValueIterator = doseListIterator->getChildren(DOSE_DATE_VALUE_NODE_NAME);
         while (doseDateValueIterator != Common::XmlNodeIterator::none()) {
             // Parse the XML and create the dose.
-            Common::DateTime doseDate = getChildDateTime(doseDateValueIterator,
-                                                         DOSE_DATE_NODE_NAME);
-            Core::DoseValue doseValue =
-                getChildDouble(doseDateValueIterator, DOSE_VALUE_NODE_NAME);
+            Common::DateTime doseDate = getChildDateTime(doseDateValueIterator, DOSE_DATE_NODE_NAME);
+            Core::DoseValue doseValue = getChildDouble(doseDateValueIterator, DOSE_VALUE_NODE_NAME);
 
-            double infuTimeInMinutes = getChildDouble(doseDateValueIterator,
-                                                      DOSE_INFUSIONTIME_NAME);
-            Common::Duration infusionTime =
-                Duration(std::chrono::minutes(static_cast<int>(infuTimeInMinutes)));
+            double infuTimeInMinutes = getChildDouble(doseDateValueIterator, DOSE_INFUSIONTIME_NAME);
+            Common::Duration infusionTime = Duration(std::chrono::minutes(static_cast<int>(infuTimeInMinutes)));
 
             // Create a dosage from the retrieved data.
             Core::SimpleDose dosage(doseDate, infusionTime, doseValue);
 
             if (pDosageBounded == nullptr) {
                 try {
-                    pDosageBounded =
-                        make_unique<Core::SimpleDoseList>(dosage,
-                                                          *formulationAndRoute,
-                                                          doseUnit);
+                    pDosageBounded = make_unique<Core::SimpleDoseList>(dosage, *formulationAndRoute, doseUnit);
                 }
                 catch (std::invalid_argument& e) {
                     setNodeError(_dosageBoundedIterator);
                     pDosageBounded = nullptr;
                 }
-            } else {
+            }
+            else {
                 // In theory we would be safe even with a static_cast, but to be
                 // future-proof, perform a dynamic_cast here instead.
-                if (Core::SimpleDoseList* pSDL =
-                    dynamic_cast<Core::SimpleDoseList*>(pDosageBounded.get())) {
+                if (Core::SimpleDoseList* pSDL = dynamic_cast<Core::SimpleDoseList*>(pDosageBounded.get())) {
                     pSDL->addDosage(dosage);
-                } else {
+                }
+                else {
                     throw std::runtime_error("Invalid cast to SimpleDoseList");
                 }
             }
@@ -921,10 +900,8 @@ unique_ptr<Core::FormulationAndRoute> QueryImport::createFormulationAndRoute(
         setStatus(Status::Error, "Unvalid formulation value");
     }
 
-    string administrationName = getChildString(_formulationAndRouteRootIterator,
-                                               ADMINISTRATION_NAME_NODE_NAME);
-    string administrationRouteValue = getChildString(_formulationAndRouteRootIterator,
-                                                     ADMINISTRATION_ROUTE_NODE_NAME);
+    string administrationName = getChildString(_formulationAndRouteRootIterator, ADMINISTRATION_NAME_NODE_NAME);
+    string administrationRouteValue = getChildString(_formulationAndRouteRootIterator, ADMINISTRATION_ROUTE_NODE_NAME);
 
     Core::AdministrationRoute administrationRoute = Core::AdministrationRoute::Undefined;
 
