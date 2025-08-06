@@ -141,6 +141,9 @@ enum class [[nodiscard]] ComputingStatus{
 
 std::ostream& operator<<(std::ostream& _stream, const ComputingStatus& _e);
 
+
+std::string errorMessage(ComputingStatus _status);
+
 } // namespace Core
 } // namespace Tucuxi
 

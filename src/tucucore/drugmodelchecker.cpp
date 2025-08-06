@@ -479,13 +479,19 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
 
         Duration realHalfLife;
         if (unit.toString() == "h") {
-            realHalfLife = Duration(std::chrono::minutes(static_cast<int>(halfLife * 60)));
+            realHalfLife = Duration(std::chrono::minutes(static_cast<long long int>(halfLife * 60)));
+        }
+        if (unit.toString() == "y") {
+            realHalfLife = Duration(std::chrono::minutes(static_cast<long long int>(halfLife * 60 * 24 * 365)));
+        }
+        if (unit.toString() == "w") {
+            realHalfLife = Duration(std::chrono::minutes(static_cast<long long int>(halfLife * 60 * 24 * 7)));
         }
         else if (unit.toString() == "d") {
-            realHalfLife = Duration(std::chrono::minutes(static_cast<int>(halfLife * 60 * 24)));
+            realHalfLife = Duration(std::chrono::minutes(static_cast<long long int>(halfLife * 60 * 24)));
         }
         else if (unit.toString() == "min") {
-            realHalfLife = Duration(std::chrono::minutes(static_cast<int>(halfLife)));
+            realHalfLife = Duration(std::chrono::minutes(static_cast<long long int>(halfLife)));
         }
         else {
             return {false, R"(The half life unit should be "h", "d" or "min")"};
@@ -509,7 +515,8 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
 
         if (result != ComputingStatus::Ok) {
             return {false,
-                    "A prediction calculation based on the halflife and the multiplier went wrong. There is an issue within the drug model that I can not easily spot.\nPlease check the operations (the soft functions used for PK parameters for instance)."};
+                    "A prediction calculation based on the halflife and the multiplier went wrong. There is an issue within the drug model that I can not easily spot.\nPlease check the operations (the soft functions used for PK parameters for instance). Error code: "
+                            + errorMessage(result)};
         }
 
         const ComputedData* responseData = response->getData();

@@ -68,6 +68,12 @@ std::vector<Tucuxi::Common::Duration> ValidDurations::getDurations() const
 
 Tucuxi::Common::Duration ValidDurations::valueToDuration(Value _value) const
 {
+    if (m_unit == TucuUnit("y")) {
+        return Duration(365 * 7 * 24h) * _value;
+    }
+    if (m_unit == TucuUnit("w")) {
+        return Duration(7 * 24h) * _value;
+    }
     if (m_unit == TucuUnit("d")) {
         return Duration(24h) * _value;
     }
