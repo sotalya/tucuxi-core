@@ -140,7 +140,7 @@ void ParameterSetEvent::addParameterEvent(const ParameterDefinition& _definition
 
         // Update our mapping between id (string) to index
         ParameterId::Enum id = ParameterId::fromString(it->getParameterId());
-        m_IdToIndex[static_cast<size_t>(id)] = index;
+        m_IdToIndex[static_cast<size_t>(id)] = index; // NOLINT(cppcoreguidelines-pro-bounds-constant-array-index)
 
         index++;
     }

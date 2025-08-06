@@ -8,9 +8,6 @@
 #include "dosage.h"
 #include "drugtreatment/sample.h"
 
-using Tucuxi::Common::DateTime;
-using Tucuxi::Common::Duration;
-
 namespace Tucuxi {
 namespace Core {
 

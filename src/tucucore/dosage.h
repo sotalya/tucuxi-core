@@ -456,7 +456,7 @@ public:
     ///        at least one).
     SingleDoseAtTimeList(SingleDoseAtTime const& _dosage)
     {
-        m_dosage_list.emplace_back(std::make_unique< SingleDoseAtTime >(_dosage));
+        m_dosageList.emplace_back(std::make_unique< SingleDoseAtTime >(_dosage));
     }
 
     /// \brief Copy-construct a list of individual doses.
@@ -464,8 +464,8 @@ public:
     /// \param _other List of SingleDoseAtTimeList that has to be copied.
     SingleDoseAtTimeList(SingleDoseAtTimeList const& _other)
     {
-        for (auto const& dose : _other.m_dosage_list) {
-            m_dosage_list.emplace_back(std::make_unique< SingleDoseAtTime >(*dose));
+        for (auto const& dose : _other.m_dosageList) {
+            m_dosageList.emplace_back(std::make_unique< SingleDoseAtTime >(*dose));
         }
     }
 
@@ -478,9 +478,9 @@ public:
     /// \return true if the two objects are identical, false otherwise.
     bool operator==(SingleDoseAtTimeList const& _other) const
     {
-        return m_dosage_list.size() == _other.m_dosage_list.size() &&
-            std::equal(m_dosage_list.begin(), m_dosage_list.end(),
-                       _other.m_dosage_list.begin(),
+        return m_dosageList.size() == _other.m_dosageList.size() &&
+               std::equal(m_dosageList.begin(), m_dosageList.end(),
+                                                                               _other.m_dosageList.begin(),
                        [](const std::unique_ptr<SingleDoseAtTime>& a,
                           const std::unique_ptr<SingleDoseAtTime>& b) {
                            return *a == *b;
@@ -534,7 +534,7 @@ public:
                                     SingleDoseAtTimeList& _sdl)
     {
         // clang-format off
-        for (auto const& dose : _sdl.m_dosage_list) {
+        for (auto const& dose : _sdl.m_dosageList) {
             _output << "Dose at: "
                     << dose->getDateTime().str()
                     << ", value = "
@@ -573,7 +573,7 @@ public:
     /// \return Last formulation and route of the dosage.
     FormulationAndRoute getLastFormulationAndRoute() const override
     {
-        return m_dosage_list.back()->getFormulationAndRoute();
+        return m_dosageList.back()->getFormulationAndRoute();
     }
 
     /// \brief Return the list of formulation and route of the dosages.
@@ -583,7 +583,7 @@ public:
     {
         std::vector< FormulationAndRoute > resultList;
 
-        for (auto const& dose : m_dosage_list) {
+        for (auto const& dose : m_dosageList) {
             resultList.emplace_back(dose->getFormulationAndRoute());
         }
 
@@ -597,7 +597,7 @@ public:
     /// \return Time of the first intake.
     DateTime getFirstIntakeInterval(DateTime const& _intervalStart) const
     {
-        for (auto const& dose : m_dosage_list) {
+        for (auto const& dose : m_dosageList) {
             if (dose->getDateTime() >= _intervalStart) {
                 return dose->getDateTime();
             }
@@ -643,7 +643,7 @@ public:
 protected:
     /// SORTED list of individual dosages. Sorting is performed at dosage
     /// insertion. Duplicates are not allowed.
-    std::vector< std::unique_ptr< SingleDoseAtTime > > m_dosage_list;
+    std::vector< std::unique_ptr< SingleDoseAtTime > > m_dosageList;
 };
 
 

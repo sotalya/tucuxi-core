@@ -169,18 +169,18 @@ protected:
             bool& _multipleFormulationAndRoutes);
 
     [[nodiscard]] ComputingStatus computeCandidate(
-            const SimpleDosageCandidate& candidate,
+            const SimpleDosageCandidate& _candidate,
             const ComputingTraitAdjustment* _traits,
             const ComputingRequest& _request,
-            std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& pkModel,
-            std::vector<AnalyteGroupId>& allGroupIds,
-            std::map<AnalyteGroupId, Etas> etas,
-            std::vector<DosageAdjustment>& allAdjustments,
-            DateTime& calculationStartTime,
-            bool& isValidCandidate,
-            std::vector<Tucuxi::Core::ConcentrationPredictionPtr>& analytesPredictions,
-            std::unique_ptr<DosageTimeRange>& newDosage,
-            GroupsIntakeSeries& intakeSeriesPerGroup);
+            std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& _pkModel,
+            std::vector<AnalyteGroupId>& _allGroupIds,
+            std::map<AnalyteGroupId, Etas> _etas,
+            std::vector<DosageAdjustment>& _allAdjustments,
+            DateTime& _calculationStartTime,
+            bool& _isValidCandidate,
+            std::vector<Tucuxi::Core::ConcentrationPredictionPtr>& _analytesPredictions,
+            std::unique_ptr<DosageTimeRange>& _newDosage,
+            GroupsIntakeSeries& _intakeSeriesPerGroup);
 
 
     std::vector<const FullFormulationAndRoute*> selectFormulationAndRoutes(
@@ -200,11 +200,11 @@ protected:
             const ComputingTraitAdjustment* _traits,
             const ComputingRequest& _request,
             AdjustmentData& _adjustmentData,
-            std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& pkModel,
-            std::vector<AnalyteGroupId>& allGroupIds,
-            std::map<AnalyteGroupId, Etas> etas,
-            std::map<ActiveMoietyId, TargetSeries> targetSeries,
-            DateTime calculationStartTime);
+            std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& _pkModel,
+            std::vector<AnalyteGroupId>& _allGroupIds,
+            std::map<AnalyteGroupId, Etas> _etas,
+            std::map<ActiveMoietyId, TargetSeries> _targetSeries,
+            DateTime _calculationStartTime);
 
     ///
     /// \brief Extract a DosageHistory for steady state computation

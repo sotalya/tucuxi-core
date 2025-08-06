@@ -103,27 +103,27 @@ std::vector< Duration >
 SingleDoseAtTimeList::getTimeStepList(DateTime const& _intervalStart) const
 {
     std::vector< Duration > timeStepList;
-    if (m_dosage_list.size() == 1) {
-        if (m_dosage_list.at(0)->getDateTime() >= _intervalStart) {
+    if (m_dosageList.size() == 1) {
+        if (m_dosageList.at(0)->getDateTime() >= _intervalStart) {
             // Dosage time is ok, but we have nothing to compare against, so
             // we return the default value.
             timeStepList.emplace_back(SINGLE_DOSE_DEFAULT_TSTEP);
         }
     } else {
         int64_t avg_val = 0;
-        for (std::size_t i = 0; i < m_dosage_list.size() - 1; ++i) {
-            const auto& current = m_dosage_list.at(i);
-            const auto& next = m_dosage_list.at(i + 1);
+        for (std::size_t i = 0; i < m_dosageList.size() - 1; ++i) {
+            const auto& current = m_dosageList.at(i);
+            const auto& next = m_dosageList.at(i + 1);
 
-            if (m_dosage_list.at(i)->getDateTime() >= _intervalStart) {
+            if (m_dosageList.at(i)->getDateTime() >= _intervalStart) {
                 timeStepList.emplace_back(next->getDateTime() -
                                           current->getDateTime());
             }
             avg_val +=
                 (next->getDateTime() - current->getDateTime()).toMilliseconds();
         }
-        avg_val /= (m_dosage_list.size() - 1);
-        if (m_dosage_list.back()->getDateTime() >= _intervalStart) {
+        avg_val /= (m_dosageList.size() - 1);
+        if (m_dosageList.back()->getDateTime() >= _intervalStart) {
             timeStepList.emplace_back(Duration(std::chrono::milliseconds(avg_val)));
         }
     }
@@ -137,7 +137,8 @@ SingleDoseAtTimeList::getDosageList() const
 {
     std::vector< SingleDoseAtTime > dosageList;
 
-    for (auto const& dose : m_dosage_list) {
+    dosageList.reserve(m_dosageList.size());
+    for (auto const& dose : m_dosageList) {
         dosageList.emplace_back(dose->clone());
     }
 
@@ -150,7 +151,7 @@ SingleDoseAtTimeList::getDosageList(DateTime const& _intervalStart) const
 {
     std::vector< SingleDoseAtTime > dosageList;
 
-    for (auto const& dose : m_dosage_list) {
+    for (auto const& dose : m_dosageList) {
         if (dose->getDateTime() >= _intervalStart) {
             dosageList.emplace_back(dose->clone());
         }
@@ -166,19 +167,19 @@ SingleDoseAtTimeList::addDosage(SingleDoseAtTime const& _dosage)
     std::unique_ptr<SingleDoseAtTime> newDose =
         std::make_unique< SingleDoseAtTime >(_dosage);
     auto it = std::lower_bound(
-        m_dosage_list.begin(), m_dosage_list.end(), newDose,
-        [](const std::unique_ptr< SingleDoseAtTime >& a,
-           const std::unique_ptr< SingleDoseAtTime >& b) {
-            return a->getDateTime() < b->getDateTime();
+            m_dosageList.begin(), m_dosageList.end(), newDose,
+        [](const std::unique_ptr< SingleDoseAtTime >& _a,
+           const std::unique_ptr< SingleDoseAtTime >& _b) {
+            return _a->getDateTime() < _b->getDateTime();
         }
     );
 
     // We do not want duplicates --- they are most likely mistakes. If we
     // encounter one, we just warn the user and skip the insertion.
     // Duplicates here means "a dosage administered at the same time".
-    if (it == m_dosage_list.end() ||
+    if (it == m_dosageList.end() ||
         (*it)->getDateTime() != newDose->getDateTime()) {
-        m_dosage_list.insert(it, std::move(newDose));
+        m_dosageList.insert(it, std::move(newDose));
     } else {
         if (*(*it) == *newDose) {
             std::cerr << "WARNING: Duplicate insertion detected (dose at time "
@@ -215,7 +216,7 @@ SimpleDoseList::getTimeStepList(DateTime const& _intervalStart) const
             timeStepList.emplace_back(SINGLE_DOSE_DEFAULT_TSTEP);
         }
     } else {
-        int64_t avg_val = 0;
+        int64_t avgVal = 0;
         for (std::size_t i = 0; i < m_dosage_list.size() - 1; ++i) {
             const auto& current = m_dosage_list.at(i);
             const auto& next = m_dosage_list.at(i + 1);
@@ -224,12 +225,12 @@ SimpleDoseList::getTimeStepList(DateTime const& _intervalStart) const
                 timeStepList.emplace_back(next->getDateTime() -
                                           current->getDateTime());
             }
-            avg_val +=
+            avgVal +=
                 (next->getDateTime() - current->getDateTime()).toMilliseconds();
         }
-        avg_val /= (m_dosage_list.size() - 1);
+        avgVal /= (m_dosage_list.size() - 1);
         if (m_dosage_list.back()->getDateTime() >= _intervalStart) {
-            timeStepList.emplace_back(Duration(std::chrono::milliseconds(avg_val)));
+            timeStepList.emplace_back(Duration(std::chrono::milliseconds(avgVal)));
         }
     }
 
@@ -242,6 +243,7 @@ SimpleDoseList::getDosageList() const
 {
     std::vector< SimpleDose > dosageList;
 
+    dosageList.reserve(m_dosage_list.size());
     for (auto const& dose : m_dosage_list) {
         dosageList.emplace_back(dose->clone());
     }
@@ -272,9 +274,9 @@ SimpleDoseList::addDosage(SimpleDose const& _dosage)
         std::make_unique< SimpleDose >(_dosage);
     auto it = std::lower_bound(
         m_dosage_list.begin(), m_dosage_list.end(), newDose,
-        [](const std::unique_ptr< SimpleDose >& a,
-           const std::unique_ptr< SimpleDose >& b) {
-            return a->getDateTime() < b->getDateTime();
+        [](const std::unique_ptr< SimpleDose >& _a,
+           const std::unique_ptr< SimpleDose >& _b) {
+            return _a->getDateTime() < _b->getDateTime();
         }
     );
 

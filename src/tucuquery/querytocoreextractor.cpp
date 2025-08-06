@@ -99,7 +99,7 @@ Tucuxi::Core::PatientVariates QueryToCoreExtractor::extractPatientVariates(const
                 covariate->getId(),
                 covariate->getValue(),
                 covariate->getDataType(),
-                Common::TucuUnit(covariate->getUnit()),
+                covariate->getUnit(),
                 covariate->getEventTime()));
     }
 

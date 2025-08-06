@@ -31,7 +31,7 @@ namespace Tucuxi {
 
 namespace Core {
 class ComputingRequest;
-}
+} // namespace Core
 
 namespace Query {
 

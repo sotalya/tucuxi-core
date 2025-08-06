@@ -92,7 +92,7 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
 #endif // CONFIG_SIGN
 
         if (result.count("help") > 0) {
-            std::cout << options.help({"", "Group"}) << std::endl;
+            std::cout << options.help({"", "Group"}) << '\n';
             exit(0);
         }
 
@@ -106,8 +106,8 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
             inputFileName = result["input"].as<std::string>();
         }
         else {
-            std::cout << "The input file is mandatory" << std::endl << std::endl;
-            std::cout << options.help({"", "Group"}) << std::endl;
+            std::cout << "The input file is mandatory" << '\n' << '\n';
+            std::cout << options.help({"", "Group"}) << '\n';
             exit(-2);
         }
 
@@ -116,8 +116,8 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
             outputFileName = result["output"].as<std::string>();
         }
         else {
-            std::cout << "The output file is mandatory" << std::endl << std::endl;
-            std::cout << options.help({"", "Group"}) << std::endl;
+            std::cout << "The output file is mandatory" << '\n' << '\n';
+            std::cout << options.help({"", "Group"}) << '\n';
             exit(-2);
         }
 

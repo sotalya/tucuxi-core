@@ -553,7 +553,7 @@ bool ComputingQueryResponseXmlExport::exportDosage(
     singleDoseAtTime.addChild(dose);
     addNode(dose, "infusionTimeInMinutes",
             _dosage.getInfusionTime().toMinutes());
-    addNode(dose, "value", double(_dosage.getDoseValue()));
+    addNode(dose, "value", _dosage.getDoseValue());
     addNode(dose, "unit", _dosage.getDoseUnit().toString());
 
     Tucuxi::Common::XmlNode formulationAndRoute =
@@ -620,7 +620,7 @@ bool ComputingQueryResponseXmlExport::exportDosage(
             dateTimeToString(_dosage.getDateTime()));
     addNode(doseDateValue, "infusionTimeInMinutes",
             _dosage.getInfusionTime().toMinutes());
-    addNode(doseDateValue, "value", double(_dosage.getDoseValue()));
+    addNode(doseDateValue, "value", _dosage.getDoseValue());
 
     return true;
 }
@@ -750,7 +750,7 @@ void ComputingQueryResponseXmlExport::exportDose(
     Tucuxi::Common::XmlNode dose = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dose");
     _rootNode.addChild(dose);
 
-    addNode(dose, "value", double(_dosage.getDose()));
+    addNode(dose, "value", _dosage.getDose());
     addNode(dose, "unit", std::string("mg"));
     addNode(dose, "infusionTimeInMinutes", _dosage.getInfusionTime().toMinutes());
 }
@@ -925,7 +925,7 @@ bool ComputingQueryResponseXmlExport::exportCycleData(
         //addNode(statistics, "minimum", minimum);
         //addNode(statistics, "maximum", maximum);
         if (!ok) {
-            std::cout << "Something went wrong here" << std::endl;
+            std::cout << "Something went wrong here" << '\n';
         }
     }
 

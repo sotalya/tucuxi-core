@@ -76,7 +76,7 @@ bool ComputingResponseExport::exportToFiles(
                 for (const auto& p : dosage.getData()[0].m_parameters) {
                     file << p.m_value << "\t";
                 }
-                file << std::endl;
+                file << '\n';
 
                 double firstTime = dosage.getData()[0].m_start.toSeconds();
                 size_t dataIndex = 0;
@@ -90,7 +90,7 @@ bool ComputingResponseExport::exportToFiles(
                     }
                     dataIndex++;
                 }
-                file << std::endl;
+                file << '\n';
 
                 dataIndex = 0;
                 for (auto& cycleData : dosage.getData()) {
@@ -103,7 +103,7 @@ bool ComputingResponseExport::exportToFiles(
                     }
                     dataIndex++;
                 }
-                file << std::endl;
+                file << '\n';
             }
         }
         else if (
@@ -117,7 +117,7 @@ bool ComputingResponseExport::exportToFiles(
                 for (auto& cycleData : prediction->getData()) {
                     for (size_t i = 0; i < cycleData.m_concentrations[0].size(); i++) {
                         file << (cycleData.m_start.toSeconds() - firstTime) / 3600.0 + cycleData.m_times[0][i] << "\t"
-                             << cycleData.m_concentrations[0][i] << std::endl;
+                             << cycleData.m_concentrations[0][i] << '\n';
                     }
                 }
             }
@@ -132,7 +132,7 @@ bool ComputingResponseExport::exportToFiles(
 
             for (size_t i = 0; i < prediction->m_concentrations[0].size(); i++) {
                 file << (prediction->m_times[i].toSeconds() - firstTime) / 3600.0 << "\t"
-                     << prediction->m_concentrations[0][i] << std::endl;
+                     << prediction->m_concentrations[0][i] << '\n';
             }
         }
         else if (
@@ -153,7 +153,7 @@ bool ComputingResponseExport::exportToFiles(
                             file << "\t";
                         }
                     }
-                    file << std::endl;
+                    file << '\n';
                 }
             }
         }

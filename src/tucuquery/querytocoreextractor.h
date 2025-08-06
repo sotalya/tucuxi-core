@@ -24,6 +24,8 @@
 #define QUERYTOCOREEXTRACTOR_H
 
 
+#include <utility>
+
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/covariateevent.h"
 #include "tucucore/drugtreatment/sample.h"
@@ -109,7 +111,7 @@ public:
 
     void setErrorMessage(std::string _errorMessage)
     {
-        m_errorMessage = _errorMessage;
+        m_errorMessage = std::move(_errorMessage);
     }
 
 private:

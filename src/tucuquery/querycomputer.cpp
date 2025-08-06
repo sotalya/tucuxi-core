@@ -59,7 +59,7 @@ void QueryComputer::compute(
 
         if (!_tqfOutputFileName.empty()) {
             Tucuxi::Core::ComputingRequestXmlExport exporter;
-            exporter.exportToFile(*(computingRequest.get()), _tqfOutputFileName + computingRequest->getId());
+            exporter.exportToFile(*computingRequest, _tqfOutputFileName + computingRequest->getId());
         }
 
         Core::ComputingStatus result = computingComponent->compute(*computingRequest, computingResponse);
