@@ -875,6 +875,8 @@ ComputingStatus ComputingAdjustments::compute(
     // Now we have adjustments, predictions, and target evaluation results, let's build the response
     resp->setAdjustments(finalCandidates);
 
+    ComputingComponent::setCompartmentInfo(_traits, _request, *resp);
+
     // Finally add the response to the set of responses
     _response->addResponse(std::move(resp));
 

@@ -95,6 +95,10 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllD
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
     const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
 
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+
     // We expect 7 valid adjustment candidates
     ASSERT_EQ(resp->getAdjustments().size(), static_cast<size_t>(7));
 
@@ -166,6 +170,10 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRouteA
     const ComputedData* responseData = response->getData();
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
     const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
+
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
     // We expect 7 valid adjustment candidates
     ASSERT_EQ(resp->getAdjustments().size(), static_cast<size_t>(7));
@@ -240,6 +248,10 @@ TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndR
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
     const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
 
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+
     // We expect 7 valid adjustment candidates
     ASSERT_EQ(resp->getAdjustments().size(), static_cast<size_t>(7));
 
@@ -300,6 +312,10 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteBest
     const ComputedData* responseData = response->getData();
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
     const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
+
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
     // We expect 7 valid adjustment candidates
     ASSERT_EQ(resp->getAdjustments().size(), static_cast<size_t>(1));
@@ -365,6 +381,10 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRouteB
     const ComputedData* responseData = response->getData();
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
     const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
+
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
     // We expect 7 valid adjustment candidates
     ASSERT_EQ(resp->getAdjustments().size(), static_cast<size_t>(1));
@@ -438,6 +458,10 @@ TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndR
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
     const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
 
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+
     // We expect 1 valid adjustment candidate
     ASSERT_EQ(resp->getAdjustments().size(), static_cast<size_t>(1));
 
@@ -492,7 +516,11 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibEmptyTreatmentDefaultFormul
     const ComputedData* responseData = response->getData();
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
     const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
-    TMP_UNUSED_PARAMETER(resp);
+
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+
     // We expect 7 valid adjustment candidates
     //ASSERT_EQ(resp->getAdjustments().size(), static_cast<size_t>(7));
 
@@ -558,6 +586,10 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibSteadyStateLastFormulationA
     const ComputedData* responseData = response->getData();
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
     const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
+
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
     // We expect 4 valid adjustment candidates
     ASSERT_EQ(resp->getAdjustments().size(), static_cast<size_t>(4));
@@ -632,6 +664,10 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibSteadyStateLastFormulationA
         const ComputedData* responseData = response->getData();
         ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
         const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
+
+        ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         // We expect 2 valid adjustment candidates
         ASSERT_EQ(resp->getAdjustments().size(), static_cast<size_t>(2));
@@ -714,6 +750,10 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllD
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
     const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
 
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+
     // We expect 4 valid adjustment candidates
     ASSERT_EQ(resp->getAdjustments().size(), static_cast<size_t>(4));
 
@@ -782,6 +822,10 @@ TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndR
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
     const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
 
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+
     // We expect 2 dosage time range (loading dose)
     ASSERT_EQ(resp->getAdjustments()[0].getDosageHistory().getDosageTimeRanges().size(), static_cast<size_t>(2));
 
@@ -845,6 +889,10 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibAllFormulationAndRouteBestD
 
     const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
 
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+
     if (resp) {
         // We expect 2 dosage time range (rest period)
         ASSERT_EQ(resp->getAdjustments()[0].getDosageHistory().getDosageTimeRanges().size(), static_cast<size_t>(2));
@@ -902,6 +950,11 @@ TEST(Core_TestComputingComponentAdjusements, GentamicinTwoTargets)
     const ComputedData* responseData = response->getData();
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
     const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
+
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "gentamicin");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+
     ASSERT_GT(resp->getAdjustments().size(), 0);
 
     // Delete all dynamically allocated objects

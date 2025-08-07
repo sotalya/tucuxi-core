@@ -522,10 +522,18 @@ TEST(Core_TestComputingComponentAtTimes, MeasureFar)
         ASSERT_TRUE(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
         const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
+        ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "virtualdrug");
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+
 
         const ComputedData* responseData2 = response2->getData();
         ASSERT_TRUE(dynamic_cast<const SinglePointsData*>(responseData2) != nullptr);
         const SinglePointsData* resp2 = dynamic_cast<const SinglePointsData*>(responseData2);
+
+        ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "virtualdrug");
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         auto data = resp->getData();
         auto data2 = resp2->m_concentrations;
@@ -610,10 +618,18 @@ TEST(Core_TestComputingComponentAtTimes, MeasureFarTimes)
         ASSERT_TRUE(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
         const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
 
+        ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "virtualdrug");
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+
 
         const ComputedData* responseData2 = response2->getData();
         ASSERT_TRUE(dynamic_cast<const SinglePointsData*>(responseData2) != nullptr);
         const SinglePointsData* resp2 = dynamic_cast<const SinglePointsData*>(responseData2);
+
+        ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "virtualdrug");
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         auto data = resp->getData();
         auto data2 = resp2->m_concentrations;

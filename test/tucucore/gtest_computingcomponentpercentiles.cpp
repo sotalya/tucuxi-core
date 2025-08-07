@@ -110,7 +110,10 @@ TEST(Core_TestComputingComponentPercentiles, Imatinib1)
     ASSERT_TRUE(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
     const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
 
-    TMP_UNUSED_PARAMETER(resp);
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
+
     /*
             std::vector<CycleData> data = resp->getData();
             ASSERT_EQ(data.size(), static_cast<size_t>(16));
@@ -210,7 +213,9 @@ TEST(Core_TestComputingComponentPercentiles, ImatinibSteadyState)
     ASSERT_TRUE(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
     const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
 
-    TMP_UNUSED_PARAMETER(resp);
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
     /*
             std::vector<CycleData> data = resp->getData();
             ASSERT_EQ(data.size(), static_cast<size_t>(16));
@@ -348,7 +353,11 @@ TEST(Core_TestComputingComponentPercentiles, AposterioriPercentiles)
 
         const ComputedData* responseData = response->getData();
         ASSERT_TRUE(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-        //            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+        const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
+
+        ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
     }
 
     {
@@ -377,7 +386,10 @@ TEST(Core_TestComputingComponentPercentiles, AposterioriPercentiles)
 
         const ComputedData* responseData = response->getData();
         ASSERT_TRUE(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-        //            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+        const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
+        ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
     }
 
     if (false) {
@@ -406,7 +418,10 @@ TEST(Core_TestComputingComponentPercentiles, AposterioriPercentiles)
 
         const ComputedData* responseData = response->getData();
         ASSERT_TRUE(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-        //            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+        const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
+        ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
     }
 
     {
@@ -435,7 +450,10 @@ TEST(Core_TestComputingComponentPercentiles, AposterioriPercentiles)
 
         const ComputedData* responseData = response->getData();
         ASSERT_TRUE(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-        //            const PercentilesData *resp = dynamic_cast<const PercentilesData*>(responseData);
+        const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
+        ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
+        ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
     }
 
 

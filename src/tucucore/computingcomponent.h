@@ -1,4 +1,4 @@
-/* 
+/*
  * Tucuxi - Tucuxi-core library and command line tool. 
  * This code allows to perform prediction of drug concentration in blood 
  * and to propose dosage adaptations.
@@ -173,6 +173,16 @@ private:
             const ComputingTraitStandard* _traits,
             const ComputingRequest& _request,
             ConcentrationData& _concentrationData);
+
+    static void setCompartmentInfo(
+            const ComputingTraitStandard* _traits, const ComputingRequest& _request, ConcentrationData& _data);
+
+    static void setCompartmentInfo(
+            const ComputingTraitStandard* _traits, const ComputingRequest& _request, PercentilesData& _data);
+
+    static void setCompartmentInfo(
+            const ComputingTraitSinglePoints* _traits, const ComputingRequest& _request, SinglePointsData& _data);
+
 
 
     friend class ComputingTraitSinglePoints;

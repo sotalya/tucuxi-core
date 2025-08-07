@@ -42,33 +42,20 @@ TEST(Core_TestIntakeExtractor, SingleDoseAtTimeList)
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
-    DateTime const dateBefore(date::year_month_day(date::year(2017),
-                                                   date::month(7),
-                                                   date::day(15)),
-                              std::chrono::hours(0));
-    DateTime const dateTime1(date::year_month_day(date::year(2017),
-                                                  date::month(7),
-                                                  date::day(17)),
-                             std::chrono::hours(11));
-    DateTime const dateTime2(date::year_month_day(date::year(2017),
-                                                  date::month(7),
-                                                  date::day(18)),
-                             std::chrono::hours(12));
-    DateTime const dateTime3(date::year_month_day(date::year(2017),
-                                                  date::month(7),
-                                                  date::day(19)),
-                             std::chrono::hours(14));
-    DateTime const dateTime4(date::year_month_day(date::year(2017),
-                                                  date::month(8),
-                                                  date::day(19)),
-                             std::chrono::hours(18));
-    DateTime const dateAfter(date::year_month_day(date::year(2018),
-                                                  date::month(7),
-                                                  date::day(15)),
-                             std::chrono::hours(0));
+    DateTime const dateBefore(
+            date::year_month_day(date::year(2017), date::month(7), date::day(15)), std::chrono::hours(0));
+    DateTime const dateTime1(
+            date::year_month_day(date::year(2017), date::month(7), date::day(17)), std::chrono::hours(11));
+    DateTime const dateTime2(
+            date::year_month_day(date::year(2017), date::month(7), date::day(18)), std::chrono::hours(12));
+    DateTime const dateTime3(
+            date::year_month_day(date::year(2017), date::month(7), date::day(19)), std::chrono::hours(14));
+    DateTime const dateTime4(
+            date::year_month_day(date::year(2017), date::month(8), date::day(19)), std::chrono::hours(18));
+    DateTime const dateAfter(
+            date::year_month_day(date::year(2018), date::month(7), date::day(15)), std::chrono::hours(0));
 
-    FormulationAndRoute const routePerfusion1(Formulation::Test,
-                                              AdministrationRoute::IntravenousDrip);
+    FormulationAndRoute const routePerfusion1(Formulation::Test, AdministrationRoute::IntravenousDrip);
     DoseValue const dose1 = 100.0;
     DoseValue const dose4 = 300.0;
     Duration const infusionTime(std::chrono::minutes(60));
@@ -81,12 +68,12 @@ TEST(Core_TestIntakeExtractor, SingleDoseAtTimeList)
     SingleDoseAtTime sd4(dateTime4, routePerfusion1, infusionTime, dose4, unit1);
 
     Tucuxi::Core::SingleDoseAtTimeList sdl(sd1);
-    ASSERT_NO_THROW (sdl.addDosage(sd2));
-    ASSERT_NO_THROW (sdl.addDosage(sd3));
-    ASSERT_NO_THROW (sdl.addDosage(sd4));
+    ASSERT_NO_THROW(sdl.addDosage(sd2));
+    ASSERT_NO_THROW(sdl.addDosage(sd3));
+    ASSERT_NO_THROW(sdl.addDosage(sd4));
 
-    std::vector< SingleDoseAtTime > doses = sdl.getDosageList(dateBefore);
-    std::vector< Duration > time_steps = sdl.getTimeStepList(dateBefore);
+    std::vector<SingleDoseAtTime> doses = sdl.getDosageList(dateBefore);
+    std::vector<Duration> time_steps = sdl.getTimeStepList(dateBefore);
 
     DosageTimeRange dtr(dateBefore, sdl);
     // Create the dosage history.
@@ -96,28 +83,26 @@ TEST(Core_TestIntakeExtractor, SingleDoseAtTimeList)
     // Expected intake series.
     IntakeSeries expectedIntakes;
     for (std::size_t i = 0; i < doses.size(); ++i) {
-        expectedIntakes.push_back(IntakeEvent(doses.at(i).getDateTime(),
-                                              Duration(),
-                                              doses.at(i).getDoseValue(),
-                                              doses.at(i).getDoseUnit(),
-                                              time_steps.at(i),
-                                              doses.at(i).getFormulationAndRoute(),
-                                              doses.at(i).getInfusionTime(),
-                                              static_cast<int>(time_steps.at(i).toHours()
-                                                               * NB_POINTS_PER_HOUR) + 1));
+        expectedIntakes.push_back(IntakeEvent(
+                doses.at(i).getDateTime(),
+                Duration(),
+                doses.at(i).getDoseValue(),
+                doses.at(i).getDoseUnit(),
+                time_steps.at(i),
+                doses.at(i).getFormulationAndRoute(),
+                doses.at(i).getInfusionTime(),
+                static_cast<int>(time_steps.at(i).toHours() * NB_POINTS_PER_HOUR) + 1));
     }
 
     IntakeSeries iSeries;
     IntakeExtractor extractor;
-    ComputingStatus result =
-            extractor.extract(dh, dateBefore, dateAfter,
-                              NB_POINTS_PER_HOUR, TucuUnit("mg"), iSeries);
-    ASSERT_EQ (result, ComputingStatus::Ok);
+    ComputingStatus result = extractor.extract(dh, dateBefore, dateAfter, NB_POINTS_PER_HOUR, TucuUnit("mg"), iSeries);
+    ASSERT_EQ(result, ComputingStatus::Ok);
 
-    ASSERT_EQ (iSeries.size(), expectedIntakes.size());
+    ASSERT_EQ(iSeries.size(), expectedIntakes.size());
 
     for (std::size_t i = 0; i < iSeries.size(); ++i) {
-        ASSERT_EQ (iSeries[i], expectedIntakes[i]);
+        ASSERT_EQ(iSeries[i], expectedIntakes[i]);
     }
 }
 
@@ -128,33 +113,20 @@ TEST(Core_TestIntakeExtractor, SimpleDoseList)
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
-    DateTime const dateBefore(date::year_month_day(date::year(2017),
-                                                   date::month(7),
-                                                   date::day(15)),
-                              std::chrono::hours(0));
-    DateTime const dateTime1(date::year_month_day(date::year(2017),
-                                                  date::month(7),
-                                                  date::day(17)),
-                             std::chrono::hours(11));
-    DateTime const dateTime2(date::year_month_day(date::year(2017),
-                                                  date::month(7),
-                                                  date::day(18)),
-                             std::chrono::hours(12));
-    DateTime const dateTime3(date::year_month_day(date::year(2017),
-                                                  date::month(7),
-                                                  date::day(19)),
-                             std::chrono::hours(14));
-    DateTime const dateTime4(date::year_month_day(date::year(2017),
-                                                  date::month(8),
-                                                  date::day(19)),
-                             std::chrono::hours(18));
-    DateTime const dateAfter(date::year_month_day(date::year(2018),
-                                                  date::month(7),
-                                                  date::day(15)),
-                             std::chrono::hours(0));
+    DateTime const dateBefore(
+            date::year_month_day(date::year(2017), date::month(7), date::day(15)), std::chrono::hours(0));
+    DateTime const dateTime1(
+            date::year_month_day(date::year(2017), date::month(7), date::day(17)), std::chrono::hours(11));
+    DateTime const dateTime2(
+            date::year_month_day(date::year(2017), date::month(7), date::day(18)), std::chrono::hours(12));
+    DateTime const dateTime3(
+            date::year_month_day(date::year(2017), date::month(7), date::day(19)), std::chrono::hours(14));
+    DateTime const dateTime4(
+            date::year_month_day(date::year(2017), date::month(8), date::day(19)), std::chrono::hours(18));
+    DateTime const dateAfter(
+            date::year_month_day(date::year(2018), date::month(7), date::day(15)), std::chrono::hours(0));
 
-    FormulationAndRoute const routePerfusion1(Formulation::Test,
-                                              AdministrationRoute::IntravenousDrip);
+    FormulationAndRoute const routePerfusion1(Formulation::Test, AdministrationRoute::IntravenousDrip);
     DoseValue const dose1 = 100.0;
     DoseValue const dose4 = 300.0;
     Duration const infusionTime(std::chrono::minutes(60));
@@ -167,12 +139,12 @@ TEST(Core_TestIntakeExtractor, SimpleDoseList)
     SimpleDose sd4(dateTime4, infusionTime, dose4);
 
     Tucuxi::Core::SimpleDoseList sdl(sd1, routePerfusion1, unit1);
-    ASSERT_NO_THROW (sdl.addDosage(sd2));
-    ASSERT_NO_THROW (sdl.addDosage(sd3));
-    ASSERT_NO_THROW (sdl.addDosage(sd4));
+    ASSERT_NO_THROW(sdl.addDosage(sd2));
+    ASSERT_NO_THROW(sdl.addDosage(sd3));
+    ASSERT_NO_THROW(sdl.addDosage(sd4));
 
-    std::vector< SimpleDose > doses = sdl.getDosageList(dateBefore);
-    std::vector< Duration > time_steps = sdl.getTimeStepList(dateBefore);
+    std::vector<SimpleDose> doses = sdl.getDosageList(dateBefore);
+    std::vector<Duration> time_steps = sdl.getTimeStepList(dateBefore);
 
     DosageTimeRange dtr(dateBefore, sdl);
     // Create the dosage history.
@@ -182,28 +154,26 @@ TEST(Core_TestIntakeExtractor, SimpleDoseList)
     // Expected intake series.
     IntakeSeries expectedIntakes;
     for (std::size_t i = 0; i < doses.size(); ++i) {
-        expectedIntakes.push_back(IntakeEvent(doses.at(i).getDateTime(),
-                                              Duration(),
-                                              doses.at(i).getDoseValue(),
-                                              sdl.getDoseUnit(),
-                                              time_steps.at(i),
-                                              sdl.getFormulationAndRoute(),
-                                              doses.at(i).getInfusionTime(),
-                                              static_cast<int>(time_steps.at(i).toHours()
-                                                               * NB_POINTS_PER_HOUR) + 1));
+        expectedIntakes.push_back(IntakeEvent(
+                doses.at(i).getDateTime(),
+                Duration(),
+                doses.at(i).getDoseValue(),
+                sdl.getDoseUnit(),
+                time_steps.at(i),
+                sdl.getFormulationAndRoute(),
+                doses.at(i).getInfusionTime(),
+                static_cast<int>(time_steps.at(i).toHours() * NB_POINTS_PER_HOUR) + 1));
     }
 
     IntakeSeries iSeries;
     IntakeExtractor extractor;
-    ComputingStatus result =
-            extractor.extract(dh, dateBefore, dateAfter,
-                              NB_POINTS_PER_HOUR, TucuUnit("mg"), iSeries);
-    ASSERT_EQ (result, ComputingStatus::Ok);
+    ComputingStatus result = extractor.extract(dh, dateBefore, dateAfter, NB_POINTS_PER_HOUR, TucuUnit("mg"), iSeries);
+    ASSERT_EQ(result, ComputingStatus::Ok);
 
-    ASSERT_EQ (iSeries.size(), expectedIntakes.size());
+    ASSERT_EQ(iSeries.size(), expectedIntakes.size());
 
     for (std::size_t i = 0; i < iSeries.size(); ++i) {
-        ASSERT_EQ (iSeries[i], expectedIntakes[i]);
+        ASSERT_EQ(iSeries[i], expectedIntakes[i]);
     }
 }
 

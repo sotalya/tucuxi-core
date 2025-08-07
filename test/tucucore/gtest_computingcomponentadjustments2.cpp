@@ -200,6 +200,9 @@ TEST(Core_TestComputingComponentAdjusements, ConstantElimination)
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
     const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
 
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
     // The adjustment is at beginning of 4th day, so M==4, then the residual concentration should be 4x200=800
     EXPECT_FALSE(resp->isCurrentInRange());
@@ -315,6 +318,9 @@ TEST(Core_TestComputingComponentAdjusements, ConstantEliminationDaily)
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
     const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
 
+    ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(1));
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
+    ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
     // The adjustment is at beginning of 4th day, so M==4, then the residual concentration should be 4x200=800
     EXPECT_FALSE(resp->isCurrentInRange());

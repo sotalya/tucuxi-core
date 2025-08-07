@@ -234,28 +234,74 @@ ComputingStatus ComputingComponent::recordCycle(
 void ComputingComponent::endRecord(
         const ComputingTraitStandard* _traits, const ComputingRequest& _request, ConcentrationData& _concentrationData)
 {
-    if (_request.getDrugModel().isSingleAnalyte()) {
-        AnalyteId analyteId = _request.getDrugModel().getAnalyteSets()[0]->getAnalytes()[0]->getAnalyteId();
-        _concentrationData.addCompartmentInfo(
-                {CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte, analyteId.toString()});
-    }
-    if (!_request.getDrugModel().isSingleAnalyte()) {
-        for (const auto& activeMoiety : _request.getDrugModel().getActiveMoieties()) {
-            _concentrationData.addCompartmentInfo(
-                    {CompartmentInfo::CompartmentType::ActiveMoiety, activeMoiety->getActiveMoietyId().toString()});
-        }
-
-        for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
-            AnalyteId analyteId = analyteGroup->getAnalytes()[0]->getAnalyteId();
-            _concentrationData.addCompartmentInfo({CompartmentInfo::CompartmentType::Analyte, analyteId.toString()});
-        }
-    }
+    setCompartmentInfo(_traits, _request, _concentrationData);
 
     if (_traits->getComputingOption().retrieveStatistics() == RetrieveStatisticsOption::RetrieveStatistics) {
         CycleStatisticsCalculator c;
         c.calculate(_concentrationData.getModifiableData());
     }
 }
+
+void ComputingComponent::setCompartmentInfo(
+        const ComputingTraitStandard* _traits, const ComputingRequest& _request, ConcentrationData& _data)
+{
+    if (_request.getDrugModel().isSingleAnalyte()) {
+        AnalyteId analyteId = _request.getDrugModel().getAnalyteSets()[0]->getAnalytes()[0]->getAnalyteId();
+        _data.addCompartmentInfo({CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte, analyteId.toString()});
+    }
+    if (!_request.getDrugModel().isSingleAnalyte()) {
+        for (const auto& activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+            _data.addCompartmentInfo(
+                    {CompartmentInfo::CompartmentType::ActiveMoiety, activeMoiety->getActiveMoietyId().toString()});
+        }
+
+        for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+            AnalyteId analyteId = analyteGroup->getAnalytes()[0]->getAnalyteId();
+            _data.addCompartmentInfo({CompartmentInfo::CompartmentType::Analyte, analyteId.toString()});
+        }
+    }
+}
+
+void ComputingComponent::setCompartmentInfo(
+        const ComputingTraitStandard* _traits, const ComputingRequest& _request, PercentilesData& _data)
+{
+    if (_request.getDrugModel().isSingleAnalyte()) {
+        AnalyteId analyteId = _request.getDrugModel().getAnalyteSets()[0]->getAnalytes()[0]->getAnalyteId();
+        _data.addCompartmentInfo({CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte, analyteId.toString()});
+    }
+    if (!_request.getDrugModel().isSingleAnalyte()) {
+        for (const auto& activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+            _data.addCompartmentInfo(
+                    {CompartmentInfo::CompartmentType::ActiveMoiety, activeMoiety->getActiveMoietyId().toString()});
+        }
+
+        for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+            AnalyteId analyteId = analyteGroup->getAnalytes()[0]->getAnalyteId();
+            _data.addCompartmentInfo({CompartmentInfo::CompartmentType::Analyte, analyteId.toString()});
+        }
+    }
+}
+
+void ComputingComponent::setCompartmentInfo(
+        const ComputingTraitSinglePoints* _traits, const ComputingRequest& _request, SinglePointsData& _data)
+{
+    if (_request.getDrugModel().isSingleAnalyte()) {
+        AnalyteId analyteId = _request.getDrugModel().getAnalyteSets()[0]->getAnalytes()[0]->getAnalyteId();
+        _data.addCompartmentInfo({CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte, analyteId.toString()});
+    }
+    if (!_request.getDrugModel().isSingleAnalyte()) {
+        for (const auto& activeMoiety : _request.getDrugModel().getActiveMoieties()) {
+            _data.addCompartmentInfo(
+                    {CompartmentInfo::CompartmentType::ActiveMoiety, activeMoiety->getActiveMoietyId().toString()});
+        }
+
+        for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
+            AnalyteId analyteId = analyteGroup->getAnalytes()[0]->getAnalyteId();
+            _data.addCompartmentInfo({CompartmentInfo::CompartmentType::Analyte, analyteId.toString()});
+        }
+    }
+}
+
 
 
 ComputingStatus ComputingComponent::compute(
@@ -909,6 +955,8 @@ ComputingStatus ComputingComponent::preparePercentilesResponse(
         }
         resp->setRanks(_percentileRanks);
 
+        setCompartmentInfo(_traits, _request, *resp);
+
         _response->addResponse(std::move(resp));
         return ComputingStatus::Ok;
     }
@@ -1125,6 +1173,8 @@ ComputingStatus ComputingComponent::compute(
             }
             resp->m_concentrations.push_back(c);
             resp->m_unit = unit;
+
+            setCompartmentInfo(_traits, _request, *resp);
 
             _response->addResponse(std::move(resp));
         }

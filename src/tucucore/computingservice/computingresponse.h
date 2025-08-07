@@ -169,6 +169,16 @@ public:
         return m_logLikelihood;
     }
 
+    void addCompartmentInfo(const CompartmentInfo& _info)
+    {
+        m_infos.push_back(_info);
+    }
+
+    const std::vector<CompartmentInfo>& getCompartmentInfos() const
+    {
+        return m_infos;
+    }
+
 protected:
     ///
     /// \brief likelihood of the parameters based on the samples, in case of a posteriori predictions
@@ -176,6 +186,8 @@ protected:
     /// This value is 0.0 in case of a priori predictions
     ///
     Value m_logLikelihood{0.0};
+
+    std::vector<CompartmentInfo> m_infos;
 };
 
 
@@ -384,10 +396,21 @@ public:
         return m_nbPointsPerHour;
     }
 
+    void addCompartmentInfo(const CompartmentInfo& _info)
+    {
+        m_infos.push_back(_info);
+    }
+
+    const std::vector<CompartmentInfo>& getCompartmentInfos() const
+    {
+        return m_infos;
+    }
+
 private:
     std::vector<std::vector<CycleData> > m_data;
     PercentileRanks m_ranks;
     double m_nbPointsPerHour{0.0};
+    std::vector<CompartmentInfo> m_infos;
 };
 
 

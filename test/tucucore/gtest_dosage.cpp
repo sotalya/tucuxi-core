@@ -31,201 +31,152 @@ using namespace Tucuxi::Core;
 /// \brief Test the instantiation of a SingleDoseAtTime class.
 TEST(Core_TestDosage, SingleDoseAtTime)
 {
-    DateTime const dateTime(date::year_month_day(date::year(2017),
-                                                 date::month(7),
-                                                 date::day(17)),
-                            std::chrono::seconds(0));
-    FormulationAndRoute const routePerfusion(Formulation::Test,
-                                             AdministrationRoute::IntravenousDrip);
+    DateTime const dateTime(
+            date::year_month_day(date::year(2017), date::month(7), date::day(17)), std::chrono::seconds(0));
+    FormulationAndRoute const routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip);
     DoseValue const validDose = 100.0;
     DoseValue const invalidDose = -100.0;
     Duration const validInfusionTime(std::chrono::minutes(20));
     TucuUnit unit = TucuUnit("mg");
 
-    ASSERT_THROW ({
-            Tucuxi::Core::SingleDoseAtTime sd1(dateTime,
-                                               routePerfusion,
-                                               validInfusionTime,
-                                               invalidDose,
-                                               unit);
-        }, std::invalid_argument);
+    ASSERT_THROW(
+            { Tucuxi::Core::SingleDoseAtTime sd1(dateTime, routePerfusion, validInfusionTime, invalidDose, unit); },
+            std::invalid_argument);
 
-    ASSERT_NO_THROW ({
-            Tucuxi::Core::SingleDoseAtTime sd1(dateTime,
-                                               routePerfusion,
-                                               validInfusionTime,
-                                               validDose,
-                                               unit);
-        });
+    ASSERT_NO_THROW(
+            { Tucuxi::Core::SingleDoseAtTime sd1(dateTime, routePerfusion, validInfusionTime, validDose, unit); });
 
     // Check getters are ok.
-    SingleDoseAtTime sd(dateTime, routePerfusion, validInfusionTime,
-                        validDose, unit);
-    ASSERT_TRUE (sd.getDateTime() == dateTime);
-    ASSERT_TRUE (sd.getFormulationAndRoute() == routePerfusion);
-    ASSERT_TRUE (sd.getInfusionTime() == validInfusionTime);
-    ASSERT_TRUE (sd.getDoseValue() == validDose);
-    ASSERT_TRUE (sd.getDoseUnit() == unit);
+    SingleDoseAtTime sd(dateTime, routePerfusion, validInfusionTime, validDose, unit);
+    ASSERT_TRUE(sd.getDateTime() == dateTime);
+    ASSERT_TRUE(sd.getFormulationAndRoute() == routePerfusion);
+    ASSERT_TRUE(sd.getInfusionTime() == validInfusionTime);
+    ASSERT_TRUE(sd.getDoseValue() == validDose);
+    ASSERT_TRUE(sd.getDoseUnit() == unit);
 
     // Check copy constructor is fine.
     SingleDoseAtTime sd_copy = sd;
-    ASSERT_TRUE (sd_copy.getDateTime() == dateTime);
-    ASSERT_TRUE (sd_copy.getFormulationAndRoute() == routePerfusion);
-    ASSERT_TRUE (sd_copy.getInfusionTime() == validInfusionTime);
-    ASSERT_TRUE (sd_copy.getDoseValue() == validDose);
-    ASSERT_TRUE (sd_copy.getDoseUnit() == unit);
+    ASSERT_TRUE(sd_copy.getDateTime() == dateTime);
+    ASSERT_TRUE(sd_copy.getFormulationAndRoute() == routePerfusion);
+    ASSERT_TRUE(sd_copy.getInfusionTime() == validInfusionTime);
+    ASSERT_TRUE(sd_copy.getDoseValue() == validDose);
+    ASSERT_TRUE(sd_copy.getDoseUnit() == unit);
 
     // Check clone operation is fine.
     SingleDoseAtTime sd_clone = sd.clone();
-    ASSERT_TRUE (sd_clone.getDateTime() == dateTime);
-    ASSERT_TRUE (sd_clone.getFormulationAndRoute() == routePerfusion);
-    ASSERT_TRUE (sd_clone.getInfusionTime() == validInfusionTime);
-    ASSERT_TRUE (sd_clone.getDoseValue() == validDose);
-    ASSERT_TRUE (sd_clone.getDoseUnit() == unit);
+    ASSERT_TRUE(sd_clone.getDateTime() == dateTime);
+    ASSERT_TRUE(sd_clone.getFormulationAndRoute() == routePerfusion);
+    ASSERT_TRUE(sd_clone.getInfusionTime() == validInfusionTime);
+    ASSERT_TRUE(sd_clone.getDoseValue() == validDose);
+    ASSERT_TRUE(sd_clone.getDoseUnit() == unit);
 
     // Check equality/inequality operators.
-    ASSERT_TRUE (sd == sd_copy);
-    ASSERT_FALSE (sd != sd_copy);
+    ASSERT_TRUE(sd == sd_copy);
+    ASSERT_FALSE(sd != sd_copy);
 }
 
 
 /// \brief Test the instantiation of a SingleDoseAtTimeList class.
 TEST(Core_TestDosage, SingleDoseAtTimeList)
 {
-    DateTime const dateTime1(date::year_month_day(date::year(2017),
-                                                  date::month(7),
-                                                  date::day(17)),
-                             std::chrono::hours(12));
-    FormulationAndRoute const routePerfusion1(Formulation::Test,
-                                              AdministrationRoute::IntravenousDrip);
+    DateTime const dateTime1(
+            date::year_month_day(date::year(2017), date::month(7), date::day(17)), std::chrono::hours(12));
+    FormulationAndRoute const routePerfusion1(Formulation::Test, AdministrationRoute::IntravenousDrip);
     Duration const infusionTime(std::chrono::minutes(60));
     DoseValue const dose1 = 100.0;
     TucuUnit unit1 = TucuUnit("mg");
     SingleDoseAtTime sd1(dateTime1, routePerfusion1, infusionTime, dose1, unit1);
 
     // This is identical to (1) --- should just give a warning but be ignored.
-    DateTime const dateTime1_bis(date::year_month_day(date::year(2017),
-                                                  date::month(7),
-                                                  date::day(17)),
-                             std::chrono::hours(12));
-    FormulationAndRoute const routePerfusion1_bis(Formulation::Test,
-                                                  AdministrationRoute::IntravenousDrip);
+    DateTime const dateTime1_bis(
+            date::year_month_day(date::year(2017), date::month(7), date::day(17)), std::chrono::hours(12));
+    FormulationAndRoute const routePerfusion1_bis(Formulation::Test, AdministrationRoute::IntravenousDrip);
     DoseValue const dose1_bis = 100.0;
     TucuUnit unit1_bis = TucuUnit("mg");
-    SingleDoseAtTime sd1_bis(dateTime1_bis, routePerfusion1_bis, infusionTime,
-                             dose1_bis, unit1_bis);
+    SingleDoseAtTime sd1_bis(dateTime1_bis, routePerfusion1_bis, infusionTime, dose1_bis, unit1_bis);
 
     // This is identical to (1) except for the value --- should throw an
     // exception when inserted.
-    DateTime const dateTime1_tris(date::year_month_day(date::year(2017),
-                                                  date::month(7),
-                                                  date::day(17)),
-                             std::chrono::hours(12));
-    FormulationAndRoute const routePerfusion1_tris(Formulation::Test,
-                                                   AdministrationRoute::IntravenousDrip);
+    DateTime const dateTime1_tris(
+            date::year_month_day(date::year(2017), date::month(7), date::day(17)), std::chrono::hours(12));
+    FormulationAndRoute const routePerfusion1_tris(Formulation::Test, AdministrationRoute::IntravenousDrip);
     DoseValue const dose1_tris = 200.0;
     TucuUnit unit1_tris = TucuUnit("mg");
-    SingleDoseAtTime sd1_tris(dateTime1_tris, routePerfusion1_tris, infusionTime,
-                              dose1_tris, unit1_tris);
+    SingleDoseAtTime sd1_tris(dateTime1_tris, routePerfusion1_tris, infusionTime, dose1_tris, unit1_tris);
 
-    DateTime const dateTime2(date::year_month_day(date::year(2017),
-                                                  date::month(7),
-                                                  date::day(7)),
-                             std::chrono::seconds(0));
-    FormulationAndRoute const routePerfusion2(Formulation::Test,
-                                              AdministrationRoute::IntravenousDrip);
+    DateTime const dateTime2(
+            date::year_month_day(date::year(2017), date::month(7), date::day(7)), std::chrono::seconds(0));
+    FormulationAndRoute const routePerfusion2(Formulation::Test, AdministrationRoute::IntravenousDrip);
     DoseValue const dose2 = 112.3;
     TucuUnit unit2 = TucuUnit("kg");
     SingleDoseAtTime sd2(dateTime2, routePerfusion2, infusionTime, dose2, unit2);
 
-    DateTime const dateTime3(date::year_month_day(date::year(2017),
-                                                      date::month(7),
-                                                      date::day(9)),
-                                 std::chrono::seconds(0));
-    FormulationAndRoute const routePerfusion3(Formulation::Test,
-                                              AdministrationRoute::IntravenousDrip);
+    DateTime const dateTime3(
+            date::year_month_day(date::year(2017), date::month(7), date::day(9)), std::chrono::seconds(0));
+    FormulationAndRoute const routePerfusion3(Formulation::Test, AdministrationRoute::IntravenousDrip);
     DoseValue const dose3 = 112.3;
     TucuUnit unit3 = TucuUnit("kg");
-    SingleDoseAtTime sd3(dateTime3, routePerfusion3, infusionTime,
-                             dose3, unit3);
+    SingleDoseAtTime sd3(dateTime3, routePerfusion3, infusionTime, dose3, unit3);
 
-    ASSERT_NO_THROW ({
-            Tucuxi::Core::SingleDoseAtTimeList sdl1(sd1);
-        });
-    ASSERT_NO_THROW ({
-            Tucuxi::Core::SingleDoseAtTimeList sdl1(sd1_bis);
-        });
-    ASSERT_NO_THROW ({
-            Tucuxi::Core::SingleDoseAtTimeList sdl1(sd1_tris);
-        });
-    ASSERT_NO_THROW ({
-            Tucuxi::Core::SingleDoseAtTimeList sdl2(sd2);
-        });
-    ASSERT_NO_THROW ({
-            Tucuxi::Core::SingleDoseAtTimeList sdl3(sd3);
-        });
+    ASSERT_NO_THROW({ Tucuxi::Core::SingleDoseAtTimeList sdl1(sd1); });
+    ASSERT_NO_THROW({ Tucuxi::Core::SingleDoseAtTimeList sdl1(sd1_bis); });
+    ASSERT_NO_THROW({ Tucuxi::Core::SingleDoseAtTimeList sdl1(sd1_tris); });
+    ASSERT_NO_THROW({ Tucuxi::Core::SingleDoseAtTimeList sdl2(sd2); });
+    ASSERT_NO_THROW({ Tucuxi::Core::SingleDoseAtTimeList sdl3(sd3); });
 
     Tucuxi::Core::SingleDoseAtTimeList sdl1(sd1);
     Tucuxi::Core::SingleDoseAtTimeList sdl1_copy = sdl1;
     Tucuxi::Core::SingleDoseAtTimeList sdl1_bis(sd1_bis);
 
-    DateTime const dateTime_before1(date::year_month_day(date::year(2017),
-                                                         date::month(7),
-                                                         date::day(16)),
-                                    std::chrono::seconds(0));
-    DateTime const dateTime_before2(date::year_month_day(date::year(2017),
-                                                         date::month(7),
-                                                         date::day(6)),
-                                    std::chrono::seconds(0));
-    DateTime const dateTime_before3(date::year_month_day(date::year(2017),
-                                                         date::month(7),
-                                                         date::day(8)),
-                                    std::chrono::seconds(0));
+    DateTime const dateTime_before1(
+            date::year_month_day(date::year(2017), date::month(7), date::day(16)), std::chrono::seconds(0));
+    DateTime const dateTime_before2(
+            date::year_month_day(date::year(2017), date::month(7), date::day(6)), std::chrono::seconds(0));
+    DateTime const dateTime_before3(
+            date::year_month_day(date::year(2017), date::month(7), date::day(8)), std::chrono::seconds(0));
 
-    ASSERT_TRUE (sdl1 == sdl1_bis);
-    ASSERT_FALSE (sdl1 != sdl1_bis);
-    ASSERT_NO_THROW (sdl1.addDosage(sd1_bis));
-    ASSERT_TRUE (sdl1 == sdl1_copy);
-    ASSERT_TRUE (sdl1.getFormulationAndRouteList().size() == 1);
-    ASSERT_TRUE (sdl1.getLastFormulationAndRoute() == routePerfusion1);
-    ASSERT_TRUE (sdl1.getTimeStepList(dateTime_before1).size() == 1);
-    ASSERT_TRUE (sdl1.getDosageList(dateTime_before1).size() == 1);
-    ASSERT_THROW (sdl1.addDosage(sd1_tris), std::runtime_error);
-    ASSERT_NO_THROW (sdl1_copy.addDosage(sd2));
-    ASSERT_TRUE (sdl1_copy.getFormulationAndRouteList().size() == 2);
-    ASSERT_TRUE (sdl1_copy.getLastFormulationAndRoute() == routePerfusion2);
-    ASSERT_TRUE (sdl1_copy.getTimeStepList(dateTime_before1).size() == 1);
-    ASSERT_TRUE (sdl1_copy.getDosageList(dateTime_before1).size() == 1);
-    ASSERT_TRUE (sdl1_copy.getTimeStepList(dateTime_before2).size() == 2);
-    ASSERT_TRUE (sdl1_copy.getDosageList(dateTime_before2).size() == 2);
-    ASSERT_NO_THROW (sdl1_copy.addDosage(sd3));
-    ASSERT_TRUE (sdl1_copy.getFormulationAndRouteList().size() == 3);
-    ASSERT_TRUE (sdl1_copy.getTimeStepList(dateTime_before1).size() == 1);
-    ASSERT_TRUE (sdl1_copy.getDosageList(dateTime_before1).size() == 1);
-    ASSERT_TRUE (sdl1_copy.getTimeStepList(dateTime_before2).size() == 3);
-    ASSERT_TRUE (sdl1_copy.getDosageList(dateTime_before2).size() == 3);
-    ASSERT_TRUE (sdl1_copy.getTimeStepList(dateTime_before3).size() == 2);
-    ASSERT_TRUE (sdl1_copy.getDosageList(dateTime_before3).size() == 2);
+    ASSERT_TRUE(sdl1 == sdl1_bis);
+    ASSERT_FALSE(sdl1 != sdl1_bis);
+    ASSERT_NO_THROW(sdl1.addDosage(sd1_bis));
+    ASSERT_TRUE(sdl1 == sdl1_copy);
+    ASSERT_TRUE(sdl1.getFormulationAndRouteList().size() == 1);
+    ASSERT_TRUE(sdl1.getLastFormulationAndRoute() == routePerfusion1);
+    ASSERT_TRUE(sdl1.getTimeStepList(dateTime_before1).size() == 1);
+    ASSERT_TRUE(sdl1.getDosageList(dateTime_before1).size() == 1);
+    ASSERT_THROW(sdl1.addDosage(sd1_tris), std::runtime_error);
+    ASSERT_NO_THROW(sdl1_copy.addDosage(sd2));
+    ASSERT_TRUE(sdl1_copy.getFormulationAndRouteList().size() == 2);
+    ASSERT_TRUE(sdl1_copy.getLastFormulationAndRoute() == routePerfusion2);
+    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before1).size() == 1);
+    ASSERT_TRUE(sdl1_copy.getDosageList(dateTime_before1).size() == 1);
+    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before2).size() == 2);
+    ASSERT_TRUE(sdl1_copy.getDosageList(dateTime_before2).size() == 2);
+    ASSERT_NO_THROW(sdl1_copy.addDosage(sd3));
+    ASSERT_TRUE(sdl1_copy.getFormulationAndRouteList().size() == 3);
+    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before1).size() == 1);
+    ASSERT_TRUE(sdl1_copy.getDosageList(dateTime_before1).size() == 1);
+    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before2).size() == 3);
+    ASSERT_TRUE(sdl1_copy.getDosageList(dateTime_before2).size() == 3);
+    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before3).size() == 2);
+    ASSERT_TRUE(sdl1_copy.getDosageList(dateTime_before3).size() == 2);
 
-    std::vector< SingleDoseAtTime > ret_list =
-        sdl1_copy.getDosageList(dateTime_before2);
+    std::vector<SingleDoseAtTime> ret_list = sdl1_copy.getDosageList(dateTime_before2);
     // Check that they are in the proper order and returned in full.
-    ASSERT_TRUE (ret_list.at(0) == sd2);
-    ASSERT_TRUE (ret_list.at(1) == sd3);
-    ASSERT_TRUE (ret_list.at(2) == sd1);
-    ASSERT_TRUE (ret_list.at(0).getInfusionTime() == infusionTime);
-    ASSERT_TRUE (ret_list.at(1).getInfusionTime() == infusionTime);
-    ASSERT_TRUE (ret_list.at(2).getInfusionTime() == infusionTime);
+    ASSERT_TRUE(ret_list.at(0) == sd2);
+    ASSERT_TRUE(ret_list.at(1) == sd3);
+    ASSERT_TRUE(ret_list.at(2) == sd1);
+    ASSERT_TRUE(ret_list.at(0).getInfusionTime() == infusionTime);
+    ASSERT_TRUE(ret_list.at(1).getInfusionTime() == infusionTime);
+    ASSERT_TRUE(ret_list.at(2).getInfusionTime() == infusionTime);
     // Now check the individual components.
-    std::vector< FormulationAndRoute > far_list =
-        sdl1_copy.getFormulationAndRouteList();
-    ASSERT_TRUE (ret_list.at(0).getFormulationAndRoute() == sd2.getFormulationAndRoute());
-    ASSERT_TRUE (ret_list.at(1).getFormulationAndRoute() == sd3.getFormulationAndRoute());
-    ASSERT_TRUE (ret_list.at(2).getFormulationAndRoute() == sd1.getFormulationAndRoute());
+    std::vector<FormulationAndRoute> far_list = sdl1_copy.getFormulationAndRouteList();
+    ASSERT_TRUE(ret_list.at(0).getFormulationAndRoute() == sd2.getFormulationAndRoute());
+    ASSERT_TRUE(ret_list.at(1).getFormulationAndRoute() == sd3.getFormulationAndRoute());
+    ASSERT_TRUE(ret_list.at(2).getFormulationAndRoute() == sd1.getFormulationAndRoute());
 
-    ASSERT_TRUE (sdl1_copy.getTimeStepList(dateTime_before2).at(0) == Duration(std::chrono::hours(48)));
-    ASSERT_TRUE (sdl1_copy.getTimeStepList(dateTime_before2).at(1) == Duration(std::chrono::hours(204)));
-    ASSERT_TRUE (sdl1_copy.getTimeStepList(dateTime_before2).at(2) == Duration(std::chrono::hours(126)));
+    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before2).at(0) == Duration(std::chrono::hours(48)));
+    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before2).at(1) == Duration(std::chrono::hours(204)));
+    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before2).at(2) == Duration(std::chrono::hours(126)));
 }
 
 
