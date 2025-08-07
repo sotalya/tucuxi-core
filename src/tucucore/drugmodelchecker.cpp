@@ -481,20 +481,20 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
         if (unit.toString() == "h") {
             realHalfLife = Duration(std::chrono::minutes(static_cast<long long int>(halfLife * 60)));
         }
-        if (unit.toString() == "y") {
+        else if (unit.toString() == "min") {
+            realHalfLife = Duration(std::chrono::minutes(static_cast<long long int>(halfLife)));
+        }
+        else if (unit.toString() == "y") {
             realHalfLife = Duration(std::chrono::minutes(static_cast<long long int>(halfLife * 60 * 24 * 365)));
         }
-        if (unit.toString() == "w") {
+        else if (unit.toString() == "w") {
             realHalfLife = Duration(std::chrono::minutes(static_cast<long long int>(halfLife * 60 * 24 * 7)));
         }
         else if (unit.toString() == "d") {
             realHalfLife = Duration(std::chrono::minutes(static_cast<long long int>(halfLife * 60 * 24)));
         }
-        else if (unit.toString() == "min") {
-            realHalfLife = Duration(std::chrono::minutes(static_cast<long long int>(halfLife)));
-        }
         else {
-            return {false, R"(The half life unit should be "h", "d" or "min")"};
+            return {false, R"(The half life unit should be "h", "d", "w", "y" or "min")"};
         }
 
 
