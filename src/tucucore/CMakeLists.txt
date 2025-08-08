@@ -36,7 +36,6 @@ if (TUCU_SINGLETHREADEDPERCENTILESORT)
     add_compile_definitions(TUCU_SINGLETHREADEDPERCENTILESORT)
 endif()
 
-
 option(TUCU_MULTITHREADEDPERCENTILESUBOPTIMALSORT "If run with the multithreaded version of percentiles sort, selects a suboptimal multithreaded version.")
 if (TUCU_MULTITHREADEDPERCENTILESUBOPTIMALSORT)
     add_compile_definitions(TUCU_MULTITHREADEDPERCENTILESUBOPTIMALSORT)
@@ -57,10 +56,6 @@ if (TUCU_CONFIG_OPENMP)
     add_compile_definitions(TUCU_CONFIG_OPENMP)
 endif()
 
-option(TUCU_TIME_DEBUG "Compiles with DateTime object embedding a string representation, to ease debugging")
-if (TUCU_TIME_DEBUG)
-    add_compile_definitions(TUCU_TIME_DEBUG)
-endif()
 
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../)
 
