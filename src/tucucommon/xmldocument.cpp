@@ -1,21 +1,21 @@
-/* 
- * Tucuxi - Tucuxi-core library and command line tool. 
- * This code allows to perform prediction of drug concentration in blood 
+/*
+ * Tucuxi - Tucuxi-core library and command line tool.
+ * This code allows to perform prediction of drug concentration in blood
  * and to propose dosage adaptations.
- * It has been developed by HEIG-VD, in close collaboration with CHUV. 
+ * It has been developed by HEIG-VD, in close collaboration with CHUV.
  * Copyright (C) 2023 HEIG-VD, maintained by Yann Thoma  <yann.thoma@heig-vd.ch>
- * 
- * This program is free software: you can redistribute it and/or modify 
- * it under the terms of the GNU Affero General Public License as 
- * published by the Free Software Foundation, either version 3 of the 
- * License, or any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Affero General Public License for more details. 
- * 
- * You should have received a copy of the GNU Affero General Public License 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
@@ -160,7 +160,7 @@ XmlNode XmlDocument::createNode(EXmlNodeType _type, const std::string& _name, co
             case EXmlNodeType::Comment:     type = rapidxml::node_type::node_comment; break;
             case EXmlNodeType::Declaration: type = rapidxml::node_type::node_declaration; break;
             case EXmlNodeType::Doctype:     type = rapidxml::node_type::node_doctype; break;
-            case EXmlNodeType::Pi:          type = rapidxml::node_type::node_pi; break;            
+            case EXmlNodeType::Pi:          type = rapidxml::node_type::node_pi; break;
             case EXmlNodeType::Undefined:   break;
         }
         // clang-format on
