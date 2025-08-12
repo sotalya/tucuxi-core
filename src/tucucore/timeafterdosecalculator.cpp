@@ -1,3 +1,5 @@
+#include <typeinfo>
+
 #include "timeafterdosecalculator.h"
 
 #include "intakeextractor.h"
@@ -16,6 +18,54 @@ std::vector<Duration> TimeAfterDoseCalculator::calculateDurations(
     std::vector<Duration> durations;
 
     durations.reserve(_samples.size());
+
+    // Sanity check: ensure that all the doses in each time range are within the
+    // time range limits.
+    Tucuxi::Common::LoggerHelper logHelper;
+    auto const& trs = _dosageHistory.getDosageTimeRanges();
+    for (auto const& tr : trs) {
+        Dosage const * const dosage = tr->getDosage();
+        auto startDate = tr->getStartDate();
+        auto endDate = tr->getEndDate();
+        if (typeid(*dosage) == typeid(SimpleDoseList)) {
+            SimpleDoseList const * const dosagePtr =
+                static_cast<SimpleDoseList const * const>(dosage);
+
+            if (startDate > dosagePtr->getFirstDosageDate()) {
+                logHelper.error(std::string("Time range start date is ") +
+                                startDate.str() +
+                                std::string(", but first dosage in the range is at ") +
+                                dosagePtr->getFirstDosageDate().str());
+                throw std::runtime_error("Time range start date error");
+            }
+            if (endDate < dosagePtr->getLastDosageDate()) {
+                logHelper.error(std::string("Time range end date is ") +
+                                endDate.str() +
+                                std::string(", but last dosage in the range is at ") +
+                                dosagePtr->getLastDosageDate().str());
+                throw std::runtime_error("Time range end date error");
+            }
+        }
+        if (typeid(*dosage) == typeid(SingleDoseAtTimeList)) {
+            SingleDoseAtTimeList const * const dosagePtr =
+                static_cast<SingleDoseAtTimeList const * const>(dosage);
+
+            if (startDate > dosagePtr->getFirstDosageDate()) {
+                logHelper.error(std::string("Time range start date is ") +
+                                startDate.str() +
+                                std::string(", but first dosage in the range is at ") +
+                                dosagePtr->getFirstDosageDate().str());
+                throw std::runtime_error("Time range start date error");
+            }
+            if (endDate < dosagePtr->getLastDosageDate()) {
+                logHelper.error(std::string("Time range end date is ") +
+                                endDate.str() +
+                                std::string(", but last dosage in the range is at ") +
+                                dosagePtr->getLastDosageDate().str());
+                throw std::runtime_error("Time range end date error");
+            }
+        }
+    }
 
     DateTime firstDate = _dosageHistory.getDosageTimeRanges().front()->getStartDate();
     DateTime lastDate = _dosageHistory.getDosageTimeRanges().back()->getEndDate();

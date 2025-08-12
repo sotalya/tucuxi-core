@@ -190,8 +190,8 @@ SimpleDoseList::~SimpleDoseList() {}
 std::vector<Duration> SimpleDoseList::getTimeStepList(DateTime const& _intervalStart) const
 {
     std::vector<Duration> timeStepList;
-    if (m_dosage_list.size() == 1) {
-        if (m_dosage_list.at(0)->getDateTime() >= _intervalStart) {
+    if (m_dosageList.size() == 1) {
+        if (m_dosageList.at(0)->getDateTime() >= _intervalStart) {
             // Dosage time is ok, but we have nothing to compare against, so
             // we return the default value.
             timeStepList.emplace_back(SINGLE_DOSE_DEFAULT_TSTEP);
@@ -199,17 +199,17 @@ std::vector<Duration> SimpleDoseList::getTimeStepList(DateTime const& _intervalS
     }
     else {
         int64_t avgVal = 0;
-        for (std::size_t i = 0; i < m_dosage_list.size() - 1; ++i) {
-            const auto& current = m_dosage_list.at(i);
-            const auto& next = m_dosage_list.at(i + 1);
+        for (std::size_t i = 0; i < m_dosageList.size() - 1; ++i) {
+            const auto& current = m_dosageList.at(i);
+            const auto& next = m_dosageList.at(i + 1);
 
-            if (m_dosage_list.at(i)->getDateTime() >= _intervalStart) {
+            if (m_dosageList.at(i)->getDateTime() >= _intervalStart) {
                 timeStepList.emplace_back(next->getDateTime() - current->getDateTime());
             }
             avgVal += (next->getDateTime() - current->getDateTime()).toMilliseconds();
         }
-        avgVal /= (m_dosage_list.size() - 1);
-        if (m_dosage_list.back()->getDateTime() >= _intervalStart) {
+        avgVal /= (m_dosageList.size() - 1);
+        if (m_dosageList.back()->getDateTime() >= _intervalStart) {
             timeStepList.emplace_back(Duration(std::chrono::milliseconds(avgVal)));
         }
     }
@@ -222,8 +222,8 @@ std::vector<SimpleDose> SimpleDoseList::getDosageList() const
 {
     std::vector<SimpleDose> dosageList;
 
-    dosageList.reserve(m_dosage_list.size());
-    for (auto const& dose : m_dosage_list) {
+    dosageList.reserve(m_dosageList.size());
+    for (auto const& dose : m_dosageList) {
         dosageList.emplace_back(dose->clone());
     }
 
@@ -235,7 +235,7 @@ std::vector<SimpleDose> SimpleDoseList::getDosageList(DateTime const& _intervalS
 {
     std::vector<SimpleDose> dosageList;
 
-    for (auto const& dose : m_dosage_list) {
+    for (auto const& dose : m_dosageList) {
         if (dose->getDateTime() >= _intervalStart) {
             dosageList.emplace_back(dose->clone());
         }
@@ -249,26 +249,30 @@ void SimpleDoseList::addDosage(SimpleDose const& _dosage)
 {
     std::unique_ptr<SimpleDose> newDose = std::make_unique<SimpleDose>(_dosage);
     auto it = std::lower_bound(
-            m_dosage_list.begin(),
-            m_dosage_list.end(),
+            m_dosageList.begin(),
+            m_dosageList.end(),
             newDose,
-            [](const std::unique_ptr<SimpleDose>& _a, const std::unique_ptr<SimpleDose>& _b) {
+            [](const std::unique_ptr<SimpleDose>& _a,
+               const std::unique_ptr<SimpleDose>& _b) {
                 return _a->getDateTime() < _b->getDateTime();
             });
 
     // We do not want duplicates --- they are most likely mistakes. If we
     // encounter one, we just warn the user and skip the insertion.
     // Duplicates here means "a dosage administered at the same time".
-    if (it == m_dosage_list.end() || (*it)->getDateTime() != newDose->getDateTime()) {
-        m_dosage_list.insert(it, std::move(newDose));
+    if (it == m_dosageList.end() ||
+        (*it)->getDateTime() != newDose->getDateTime()) {
+        m_dosageList.insert(it, std::move(newDose));
     }
     else {
         if (*(*it) == *newDose) {
-            std::cerr << "WARNING: Duplicate insertion detected (dose at time " << newDose->getDateTime().str()
+            std::cerr << "WARNING: Duplicate insertion detected (dose at time "
+                      << newDose->getDateTime().str()
                       << "), skipped!";
         }
         else {
-            throw std::runtime_error("Conflicting dosage found at time " + newDose->getDateTime().str());
+            throw std::runtime_error("Conflicting dosage found at time " +
+                                     newDose->getDateTime().str());
         }
     }
 }
