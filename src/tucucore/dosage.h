@@ -473,7 +473,8 @@ public:
                        m_dosageList.begin(),
                        m_dosageList.end(),
                        _other.m_dosageList.begin(),
-                       [](const std::unique_ptr<SingleDoseAtTime>& a, const std::unique_ptr<SingleDoseAtTime>& b) {
+                       [](const std::unique_ptr<SingleDoseAtTime>& a,
+                          const std::unique_ptr<SingleDoseAtTime>& b) {
                            return *a == *b;
                        });
     }
@@ -629,6 +630,49 @@ public:
     /// \param _dosage Dosage to add.
     void addDosage(SingleDoseAtTime const& _dosage);
 
+    /// \brief Get the date of the earliest dosage in the list.
+    ///
+    /// \return Date of the earliest dosage in the list.
+    DateTime getFirstDosageDate() const
+    {
+        DateTime earlyDate;
+        if (m_dosageList.size() == 0) {
+            // Return and undefined date/time.
+            return earlyDate;
+        }
+
+        earlyDate = m_dosageList[0]->getDateTime();
+        for (size_t i = 1; i < m_dosageList.size(); ++i) {
+            if (m_dosageList[i]->getDateTime() < earlyDate) {
+                earlyDate = m_dosageList[i]->getDateTime();
+            }
+        }
+
+        return earlyDate;
+    }
+
+    /// \brief Get the date of the last dosage in the list.
+    ///
+    /// \return Date of the last dosage in the list.
+    DateTime getLastDosageDate() const
+    {
+        DateTime latestDate;
+        if (m_dosageList.size() == 0) {
+            // Return and undefined date/time.
+            return latestDate;
+        }
+
+        latestDate = m_dosageList[0]->getDateTime();
+        for (size_t i = 1; i < m_dosageList.size(); ++i) {
+            if (m_dosageList[i]->getDateTime() > latestDate) {
+                latestDate = m_dosageList[i]->getDateTime();
+            }
+        }
+
+        return latestDate;
+    }
+
+
 
 protected:
     /// SORTED list of individual dosages. Sorting is performed at dosage
@@ -764,7 +808,7 @@ public:
             SimpleDose const& _dosage, FormulationAndRoute const& _formulationAndRoute, TucuUnit const& _doseUnit)
         : m_formulationAndRoute{_formulationAndRoute}, m_doseUnit{_doseUnit}
     {
-        m_dosage_list.emplace_back(std::make_unique<SimpleDose>(_dosage));
+        m_dosageList.emplace_back(std::make_unique<SimpleDose>(_dosage));
     }
 
     /// \brief Copy-construct a list of individual doses.
@@ -773,8 +817,8 @@ public:
     SimpleDoseList(SimpleDoseList const& _other)
         : m_formulationAndRoute{_other.m_formulationAndRoute}, m_doseUnit{_other.m_doseUnit}
     {
-        for (auto const& dose : _other.m_dosage_list) {
-            m_dosage_list.emplace_back(std::make_unique<SimpleDose>(*dose));
+        for (auto const& dose : _other.m_dosageList) {
+            m_dosageList.emplace_back(std::make_unique<SimpleDose>(*dose));
         }
     }
 
@@ -788,11 +832,11 @@ public:
     bool operator==(SimpleDoseList const& _other) const
     {
         return m_formulationAndRoute == _other.m_formulationAndRoute && m_doseUnit == _other.m_doseUnit
-               && m_dosage_list.size() == _other.m_dosage_list.size()
+               && m_dosageList.size() == _other.m_dosageList.size()
                && std::equal(
-                       m_dosage_list.begin(),
-                       m_dosage_list.end(),
-                       _other.m_dosage_list.begin(),
+                       m_dosageList.begin(),
+                       m_dosageList.end(),
+                       _other.m_dosageList.begin(),
                        [](const std::unique_ptr<SimpleDose>& a, const std::unique_ptr<SimpleDose>& b) {
                            return *a == *b;
                        });
@@ -844,7 +888,7 @@ public:
     friend std::ostream& operator<<(std::ostream& _output, SimpleDoseList& _sdl)
     {
         // clang-format off
-        for (auto const& dose : _sdl.m_dosage_list) {
+        for (auto const& dose : _sdl.m_dosageList) {
             _output << "Dose at: "
                     << dose->getDateTime().str()
                     << ", value = "
@@ -893,7 +937,7 @@ public:
     std::vector<FormulationAndRoute> getFormulationAndRouteList() const override
     {
         std::vector<FormulationAndRoute> resultList;
-        for (std::size_t i = 0; i < m_dosage_list.size(); ++i) {
+        for (std::size_t i = 0; i < m_dosageList.size(); ++i) {
             resultList.emplace_back(m_formulationAndRoute);
         }
 
@@ -907,7 +951,7 @@ public:
     /// \return Time of the first intake.
     DateTime getFirstIntakeInterval(DateTime const& _intervalStart) const
     {
-        for (auto const& dose : m_dosage_list) {
+        for (auto const& dose : m_dosageList) {
             if (dose->getDateTime() >= _intervalStart) {
                 return dose->getDateTime();
             }
@@ -928,7 +972,7 @@ public:
     ///        with the specified time point (doses before that one are ignored).
     ///
     /// \param _intervalStart Starting point of the interval.
-    //
+    ///
     /// \return List of time steps between adjacent pairs of doses.
     std::vector<Duration> getTimeStepList(DateTime const& _intervalStart) const;
 
@@ -940,9 +984,51 @@ public:
     /// \brief Get the dosages administered past a specified time point.
     ///
     /// \param _intervalStart Starting point of the interval.
-    //
+    ///
     /// \return List of dosages past a specified time point.
     std::vector<SimpleDose> getDosageList(DateTime const& _intervalStart) const;
+
+    /// \brief Get the date of the earliest dosage in the list.
+    ///
+    /// \return Date of the earliest dosage in the list.
+    DateTime getFirstDosageDate() const
+    {
+        DateTime earlyDate;
+        if (m_dosageList.size() == 0) {
+            // Return and undefined date/time.
+            return earlyDate;
+        }
+
+        earlyDate = m_dosageList[0]->getDateTime();
+        for (size_t i = 1; i < m_dosageList.size(); ++i) {
+            if (m_dosageList[i]->getDateTime() < earlyDate) {
+                earlyDate = m_dosageList[i]->getDateTime();
+            }
+        }
+
+        return earlyDate;
+    }
+
+    /// \brief Get the date of the last dosage in the list.
+    ///
+    /// \return Date of the last dosage in the list.
+    DateTime getLastDosageDate() const
+    {
+        DateTime latestDate;
+        if (m_dosageList.size() == 0) {
+            // Return and undefined date/time.
+            return latestDate;
+        }
+
+        latestDate = m_dosageList[0]->getDateTime();
+        for (size_t i = 1; i < m_dosageList.size(); ++i) {
+            if (m_dosageList[i]->getDateTime() > latestDate) {
+                latestDate = m_dosageList[i]->getDateTime();
+            }
+        }
+
+        return latestDate;
+    }
 
     /// \brief Add a given dosage to the list of dosages.
     ///
@@ -968,7 +1054,7 @@ public:
 protected:
     /// SORTED list of individual dosages. Sorting is performed at dosage
     /// insertion. Duplicates are not allowed.
-    std::vector<std::unique_ptr<SimpleDose>> m_dosage_list;
+    std::vector<std::unique_ptr<SimpleDose>> m_dosageList;
     /// Common formulation and route details.
     FormulationAndRoute m_formulationAndRoute;
     /// Common unit of measurement for the doses.
