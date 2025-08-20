@@ -473,8 +473,7 @@ public:
                        m_dosageList.begin(),
                        m_dosageList.end(),
                        _other.m_dosageList.begin(),
-                       [](const std::unique_ptr<SingleDoseAtTime>& a,
-                          const std::unique_ptr<SingleDoseAtTime>& b) {
+                       [](const std::unique_ptr<SingleDoseAtTime>& a, const std::unique_ptr<SingleDoseAtTime>& b) {
                            return *a == *b;
                        });
     }
@@ -613,6 +612,12 @@ public:
     /// \return List of time steps between adjacent pairs of doses.
     std::vector<Duration> getTimeStepList(DateTime const& _intervalStart) const;
 
+    /// \brief Get the last recorded time step. If only one dose is present,
+    ///        return the default value.
+    ///
+    /// \return Last recorded time step.
+    Duration getLastTimeStep() const;
+
     /// \brief Get the dosages administered.
     //
     /// \return List of dosages administered.
@@ -629,49 +634,6 @@ public:
     ///
     /// \param _dosage Dosage to add.
     void addDosage(SingleDoseAtTime const& _dosage);
-
-    /// \brief Get the date of the earliest dosage in the list.
-    ///
-    /// \return Date of the earliest dosage in the list.
-    DateTime getFirstDosageDate() const
-    {
-        DateTime earlyDate;
-        if (m_dosageList.size() == 0) {
-            // Return and undefined date/time.
-            return earlyDate;
-        }
-
-        earlyDate = m_dosageList[0]->getDateTime();
-        for (size_t i = 1; i < m_dosageList.size(); ++i) {
-            if (m_dosageList[i]->getDateTime() < earlyDate) {
-                earlyDate = m_dosageList[i]->getDateTime();
-            }
-        }
-
-        return earlyDate;
-    }
-
-    /// \brief Get the date of the last dosage in the list.
-    ///
-    /// \return Date of the last dosage in the list.
-    DateTime getLastDosageDate() const
-    {
-        DateTime latestDate;
-        if (m_dosageList.size() == 0) {
-            // Return and undefined date/time.
-            return latestDate;
-        }
-
-        latestDate = m_dosageList[0]->getDateTime();
-        for (size_t i = 1; i < m_dosageList.size(); ++i) {
-            if (m_dosageList[i]->getDateTime() > latestDate) {
-                latestDate = m_dosageList[i]->getDateTime();
-            }
-        }
-
-        return latestDate;
-    }
-
 
 
 protected:
@@ -976,6 +938,12 @@ public:
     /// \return List of time steps between adjacent pairs of doses.
     std::vector<Duration> getTimeStepList(DateTime const& _intervalStart) const;
 
+    /// \brief Get the last recorded time step. If only one dose is present,
+    ///        return the default value.
+    ///
+    /// \return Last recorded time step.
+    Duration getLastTimeStep() const;
+
     /// \brief Get the dosages administered.
     //
     /// \return List of dosages administered.
@@ -984,51 +952,9 @@ public:
     /// \brief Get the dosages administered past a specified time point.
     ///
     /// \param _intervalStart Starting point of the interval.
-    ///
+    //
     /// \return List of dosages past a specified time point.
     std::vector<SimpleDose> getDosageList(DateTime const& _intervalStart) const;
-
-    /// \brief Get the date of the earliest dosage in the list.
-    ///
-    /// \return Date of the earliest dosage in the list.
-    DateTime getFirstDosageDate() const
-    {
-        DateTime earlyDate;
-        if (m_dosageList.size() == 0) {
-            // Return and undefined date/time.
-            return earlyDate;
-        }
-
-        earlyDate = m_dosageList[0]->getDateTime();
-        for (size_t i = 1; i < m_dosageList.size(); ++i) {
-            if (m_dosageList[i]->getDateTime() < earlyDate) {
-                earlyDate = m_dosageList[i]->getDateTime();
-            }
-        }
-
-        return earlyDate;
-    }
-
-    /// \brief Get the date of the last dosage in the list.
-    ///
-    /// \return Date of the last dosage in the list.
-    DateTime getLastDosageDate() const
-    {
-        DateTime latestDate;
-        if (m_dosageList.size() == 0) {
-            // Return and undefined date/time.
-            return latestDate;
-        }
-
-        latestDate = m_dosageList[0]->getDateTime();
-        for (size_t i = 1; i < m_dosageList.size(); ++i) {
-            if (m_dosageList[i]->getDateTime() > latestDate) {
-                latestDate = m_dosageList[i]->getDateTime();
-            }
-        }
-
-        return latestDate;
-    }
 
     /// \brief Add a given dosage to the list of dosages.
     ///
