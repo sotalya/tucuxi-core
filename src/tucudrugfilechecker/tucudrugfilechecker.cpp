@@ -59,7 +59,7 @@ cxxopts::ParseResult parse(int _argc, char* _argv[])
         auto result = options.parse(_argc, _argv);
 
         if (result.count("help") > 0) {
-            std::cout << options.help({"", "Group"}) << std::endl;
+            std::cout << options.help({"", "Group"}) << '\n';
             exit(0);
         }
 
@@ -83,8 +83,8 @@ cxxopts::ParseResult parse(int _argc, char* _argv[])
             operationFilePath = result["operationfilepath"].as<std::string>();
         }
         else {
-            std::cout << "The drug file content of path is mandatory" << std::endl << std::endl;
-            std::cout << options.help({"", "Group"}) << std::endl;
+            std::cout << "The drug file content of path is mandatory" << '\n' << '\n';
+            std::cout << options.help({"", "Group"}) << '\n';
             exit(0);
         }
 
@@ -107,13 +107,13 @@ cxxopts::ParseResult parse(int _argc, char* _argv[])
 
             if (drugFileContent.empty()) {
                 if (importer.importFromFile(dModel, drugFilePath) != Tucuxi::Core::DrugModelImport::Status::Ok) {
-                    std::cout << "Can not import the drug file.\n\n" << importer.getErrorMessage() << std::endl;
+                    std::cout << "Can not import the drug file.\n\n" << importer.getErrorMessage() << '\n';
                     exit(3);
                 }
             }
             else {
                 if (importer.importFromString(dModel, drugFileContent) != Tucuxi::Core::DrugModelImport::Status::Ok) {
-                    std::cout << "Can not import the drug file content.\n\n" << importer.getErrorMessage() << std::endl;
+                    std::cout << "Can not import the drug file content.\n\n" << importer.getErrorMessage() << '\n';
                     exit(3);
                 }
             }
@@ -126,18 +126,18 @@ cxxopts::ParseResult parse(int _argc, char* _argv[])
             Tucuxi::Core::PkModelCollection pkCollection;
 
             if (!defaultPopulate(pkCollection)) {
-                std::cout << "Could not populate the Pk models collection. No model will be available" << std::endl;
+                std::cout << "Could not populate the Pk models collection. No model will be available" << '\n';
                 exit(2);
             }
 
             Tucuxi::Core::DrugModelChecker::CheckerResult_t checkerResult =
                     checker.checkDrugModel(dModel.get(), &pkCollection);
             if (!checkerResult.m_ok) {
-                std::cout << checkerResult.m_errorMessage << std::endl;
+                std::cout << checkerResult.m_errorMessage << '\n';
                 exit(4);
             }
             else {
-                std::cout << "The drug file seems valid, and should at least give some results in Tucuxi." << std::endl;
+                std::cout << "The drug file seems valid, and should at least give some results in Tucuxi." << '\n';
             }
         }
         else {
@@ -148,14 +148,14 @@ cxxopts::ParseResult parse(int _argc, char* _argv[])
             if (operationFileContent.empty()) {
                 if (importer.importOperationFromFile(operation, operationFilePath)
                     != Tucuxi::Core::DrugModelImport::Status::Ok) {
-                    std::cout << "Can not import the operation file.\n\n" << importer.getErrorMessage() << std::endl;
+                    std::cout << "Can not import the operation file.\n\n" << importer.getErrorMessage() << '\n';
                     exit(5);
                 }
             }
             else {
                 if (importer.importOperationFromString(operation, operationFileContent)
                     != Tucuxi::Core::DrugModelImport::Status::Ok) {
-                    std::cout << "Can not import the operation content.\n\n" << importer.getErrorMessage() << std::endl;
+                    std::cout << "Can not import the operation content.\n\n" << importer.getErrorMessage() << '\n';
                     exit(5);
                 }
             }
@@ -163,12 +163,11 @@ cxxopts::ParseResult parse(int _argc, char* _argv[])
             Tucuxi::Core::DrugModelChecker checker;
             Tucuxi::Core::DrugModelChecker::CheckerResult_t checkerResult = checker.checkOperation(operation.get());
             if (!checkerResult.m_ok) {
-                std::cout << checkerResult.m_errorMessage << std::endl;
+                std::cout << checkerResult.m_errorMessage << '\n';
                 exit(6);
             }
             else {
-                std::cout << "The operation file seems valid, and should at least give some results in Tucuxi."
-                          << std::endl;
+                std::cout << "The operation file seems valid, and should at least give some results in Tucuxi." << '\n';
             }
         }
 
