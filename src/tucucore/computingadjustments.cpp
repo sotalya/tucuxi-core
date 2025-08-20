@@ -1573,12 +1573,12 @@ ComputingStatus ComputingAdjustments::extractnewHistoryForSteadyState(
         // value and emit a warning.
         Duration timeStep = d->getLastTimeStep();
         std::vector<SimpleDose> doseList = d->getDosageList();
-        std::unique_ptr<LastingDose> ld =
-            std::make_unique<LastingDose>(doseList.back().getDoseValue(),
-                                          d->getDoseUnit(),
-                                          d->getFormulationAndRoute(),
-                                          doseList.back().getInfusionTime(),
-                                          timeStep);
+        std::unique_ptr<LastingDose> ld = std::make_unique<LastingDose>(
+                doseList.back().getDoseValue(),
+                d->getDoseUnit(),
+                d->getFormulationAndRoute(),
+                doseList.back().getInfusionTime(),
+                timeStep);
         _newHistory.addTimeRange(
                 DosageTimeRange(_adjustmentTime, _adjustmentTime + ld->getTimeStep(), DosageLoop(*ld)));
         _newEndTime = _adjustmentTime + ld->getTimeStep();
@@ -1591,12 +1591,12 @@ ComputingStatus ComputingAdjustments::extractnewHistoryForSteadyState(
         // value and emit a warning.
         Duration timeStep = d->getLastTimeStep();
         std::vector<SingleDoseAtTime> doseList = d->getDosageList();
-        std::unique_ptr<LastingDose> ld =
-            std::make_unique<LastingDose>(doseList.back().getDoseValue(),
-                                          doseList.back().getDoseUnit(),
-                                          doseList.back().getFormulationAndRoute(),
-                                          doseList.back().getInfusionTime(),
-                                          timeStep);
+        std::unique_ptr<LastingDose> ld = std::make_unique<LastingDose>(
+                doseList.back().getDoseValue(),
+                doseList.back().getDoseUnit(),
+                doseList.back().getFormulationAndRoute(),
+                doseList.back().getInfusionTime(),
+                timeStep);
         _newHistory.addTimeRange(
                 DosageTimeRange(_adjustmentTime, _adjustmentTime + ld->getTimeStep(), DosageLoop(*ld)));
         _newEndTime = _adjustmentTime + ld->getTimeStep();

@@ -29,12 +29,8 @@
 namespace Tucuxi {
 namespace Core {
 
-OverloadEvaluator::OverloadEvaluator() : OverloadEvaluator(10000, 2000, 10000)
-{
-    // Arbitrary numbers here.
-}
-
-OverloadEvaluator::OverloadEvaluator(int _nbPredictionPoints, int _nbPercentilesPoints, int _nbDosagePossibilities)
+OverloadEvaluator::OverloadEvaluator(
+        CycleSize _nbPredictionPoints, CycleSize _nbPercentilesPoints, int _nbDosagePossibilities)
     : m_nbPredictionPoints(_nbPredictionPoints), m_nbPercentilePoints(_nbPercentilesPoints),
       m_nbDosagePossibilities(_nbDosagePossibilities)
 {
@@ -45,7 +41,8 @@ std::string OverloadEvaluator::getErrorMessage() const
     return m_errorMessage;
 }
 
-void OverloadEvaluator::setValues(int _nbPredictionPoints, int _nbPercentilesPoints, int _nbDosagePossibilities)
+void OverloadEvaluator::setValues(
+        CycleSize _nbPredictionPoints, CycleSize _nbPercentilesPoints, int _nbDosagePossibilities)
 {
     m_nbPredictionPoints = _nbPredictionPoints;
     m_nbPercentilePoints = _nbPercentilesPoints;
