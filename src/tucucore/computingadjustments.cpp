@@ -1566,6 +1566,42 @@ ComputingStatus ComputingAdjustments::extractnewHistoryForSteadyState(
         }
         return ComputingStatus::Ok;
     }
+    else if (const SimpleDoseList* d = dynamic_cast<const SimpleDoseList*>(dosage)) {
+        // To generate a dosage loop from the current simple dose list we need to
+        // have a time step. We get it from the difference between the last two
+        // doses. If only one dose is present, return the default time step
+        // value and emit a warning.
+        Duration timeStep = d->getLastTimeStep();
+        std::vector<SimpleDose> doseList = d->getDosageList();
+        std::unique_ptr<LastingDose> ld =
+            std::make_unique<LastingDose>(doseList.back().getDoseValue(),
+                                          d->getDoseUnit(),
+                                          d->getFormulationAndRoute(),
+                                          doseList.back().getInfusionTime(),
+                                          timeStep);
+        _newHistory.addTimeRange(
+                DosageTimeRange(_adjustmentTime, _adjustmentTime + ld->getTimeStep(), DosageLoop(*ld)));
+        _newEndTime = _adjustmentTime + ld->getTimeStep();
+        return ComputingStatus::Ok;
+    }
+    else if (const SingleDoseAtTimeList* d = dynamic_cast<const SingleDoseAtTimeList*>(dosage)) {
+        // To generate a dosage loop from the current single dose list we need to
+        // have a time step. We get it from the difference between the last two
+        // doses. If only one dose is present, return the default time step
+        // value and emit a warning.
+        Duration timeStep = d->getLastTimeStep();
+        std::vector<SingleDoseAtTime> doseList = d->getDosageList();
+        std::unique_ptr<LastingDose> ld =
+            std::make_unique<LastingDose>(doseList.back().getDoseValue(),
+                                          doseList.back().getDoseUnit(),
+                                          doseList.back().getFormulationAndRoute(),
+                                          doseList.back().getInfusionTime(),
+                                          timeStep);
+        _newHistory.addTimeRange(
+                DosageTimeRange(_adjustmentTime, _adjustmentTime + ld->getTimeStep(), DosageLoop(*ld)));
+        _newEndTime = _adjustmentTime + ld->getTimeStep();
+        return ComputingStatus::Ok;
+    }
     m_logger.warn(
             "The history pattern does not allow to extract a steady state intakes pattern.\nIt is maybe not yet implemented. Please check with the development team.");
     return ComputingStatus::NoSteadyState;

@@ -613,6 +613,12 @@ public:
     /// \return List of time steps between adjacent pairs of doses.
     std::vector<Duration> getTimeStepList(DateTime const& _intervalStart) const;
 
+    /// \brief Get the last recorded time step. If only one dose is present,
+    ///        return the default value.
+    ///
+    /// \return Last recorded time step.
+    Duration getLastTimeStep() const;
+
     /// \brief Get the dosages administered.
     //
     /// \return List of dosages administered.
@@ -975,6 +981,12 @@ public:
     ///
     /// \return List of time steps between adjacent pairs of doses.
     std::vector<Duration> getTimeStepList(DateTime const& _intervalStart) const;
+
+    /// \brief Get the last recorded time step. If only one dose is present,
+    ///        return the default value.
+    ///
+    /// \return Last recorded time step.
+    Duration getLastTimeStep() const;
 
     /// \brief Get the dosages administered.
     //
