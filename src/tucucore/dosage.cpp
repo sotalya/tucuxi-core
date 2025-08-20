@@ -281,27 +281,23 @@ void SimpleDoseList::addDosage(SimpleDose const& _dosage)
             m_dosageList.begin(),
             m_dosageList.end(),
             newDose,
-            [](const std::unique_ptr<SimpleDose>& _a,
-               const std::unique_ptr<SimpleDose>& _b) {
+            [](const std::unique_ptr<SimpleDose>& _a, const std::unique_ptr<SimpleDose>& _b) {
                 return _a->getDateTime() < _b->getDateTime();
             });
 
     // We do not want duplicates --- they are most likely mistakes. If we
     // encounter one, we just warn the user and skip the insertion.
     // Duplicates here means "a dosage administered at the same time".
-    if (it == m_dosageList.end() ||
-        (*it)->getDateTime() != newDose->getDateTime()) {
+    if (it == m_dosageList.end() || (*it)->getDateTime() != newDose->getDateTime()) {
         m_dosageList.insert(it, std::move(newDose));
     }
     else {
         if (*(*it) == *newDose) {
-            std::cerr << "WARNING: Duplicate insertion detected (dose at time "
-                      << newDose->getDateTime().str()
+            std::cerr << "WARNING: Duplicate insertion detected (dose at time " << newDose->getDateTime().str()
                       << "), skipped!";
         }
         else {
-            throw std::runtime_error("Conflicting dosage found at time " +
-                                     newDose->getDateTime().str());
+            throw std::runtime_error("Conflicting dosage found at time " + newDose->getDateTime().str());
         }
     }
 }

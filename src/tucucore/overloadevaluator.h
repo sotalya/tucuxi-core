@@ -40,17 +40,15 @@ class OverloadEvaluator
 {
 public:
     ///
-    /// \brief Empty constructor
-    ///
-    OverloadEvaluator();
-
-    ///
     /// \brief Constructor with values
     /// \param _nbPredictionPoints Maximum number of points for a prediction
     /// \param _nbPercentilesPoints Maximum number of points for percentiles
     /// \param _nbDosagePossibilities Maximum number of dosage possibilities for an adjustment
     ///
-    OverloadEvaluator(int _nbPredictionPoints, int _nbPercentilesPoints, int _nbDosagePossibilities);
+    OverloadEvaluator(
+            CycleSize _nbPredictionPoints = 10000,
+            CycleSize _nbPercentilesPoints = 2000,
+            int _nbDosagePossibilities = 10000);
 
     ///
     /// \brief Indicates if a calculation can be executed or not
@@ -66,7 +64,7 @@ public:
     /// \param _nbPercentilesPoints Maximum number of points for percentiles
     /// \param _nbDosagePossibilities Maximum number of dosage possibilities for an adjustment
     ///
-    void setValues(int _nbPredictionPoints, int _nbPercentilesPoints, int _nbDosagePossibilities);
+    void setValues(CycleSize _nbPredictionPoints, CycleSize _nbPercentilesPoints, int _nbDosagePossibilities);
 
     ///
     /// \brief get the error message if an overload is detected

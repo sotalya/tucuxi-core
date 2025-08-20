@@ -473,8 +473,7 @@ public:
                        m_dosageList.begin(),
                        m_dosageList.end(),
                        _other.m_dosageList.begin(),
-                       [](const std::unique_ptr<SingleDoseAtTime>& a,
-                          const std::unique_ptr<SingleDoseAtTime>& b) {
+                       [](const std::unique_ptr<SingleDoseAtTime>& a, const std::unique_ptr<SingleDoseAtTime>& b) {
                            return *a == *b;
                        });
     }
