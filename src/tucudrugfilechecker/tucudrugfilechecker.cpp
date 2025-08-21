@@ -26,6 +26,7 @@
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugmodelchecker.h"
 #include "tucucore/drugmodelimport.h"
+#include "tucucore/overloadevaluator.h"
 #include "tucucore/pkmodel.h"
 
 #include "cxxopts.hpp"
@@ -34,6 +35,9 @@ cxxopts::ParseResult parse(int _argc, char* _argv[])
 {
     // Get application folder
     std::string appFolder = Tucuxi::Common::Utils::getAppFolder(_argv);
+
+    // These values are identical as the ones used in Tucuxi-gui
+    Tucuxi::Core::SingleOverloadEvaluator::getInstance()->setValues(200000, 10000, 10000);
 
 
     try {
