@@ -1312,6 +1312,8 @@ ComputingStatus ComputingAdjustments::addLoad(
     return ComputingStatus::Ok;
 }
 
+// static bool firstPrediction = false;
+
 ComputingStatus ComputingAdjustments::generatePredictions(
         std::vector<DosageAdjustment>& _dosages,
         const ComputingTraitAdjustment* _traits,
@@ -1322,12 +1324,14 @@ ComputingStatus ComputingAdjustments::generatePredictions(
         GroupsParameterSetSeries& _parameterSeries,
         std::map<AnalyteGroupId, Etas>& _etas)
 {
+//    firstPrediction = true;
     for (auto& dosage : _dosages) {
         ComputingStatus result = generatePrediction(
                 dosage, _traits, _request, _allGroupIds, _calculationStartTime, _pkModel, _parameterSeries, _etas);
         if (result != ComputingStatus::Ok) {
             return result;
         }
+//        firstPrediction = false;
     }
     return ComputingStatus::Ok;
 }
@@ -1377,8 +1381,6 @@ ComputingStatus ComputingAdjustments::generatePrediction(
         return extractionResult;
     }
 
-
-
     for (const auto& analyteGroupId : _allGroupIds) {
         ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
 
@@ -1393,6 +1395,66 @@ ComputingStatus ComputingAdjustments::generatePrediction(
                 _request.getDrugModel().getAnalyteSet(analyteGroupId)->getDoseUnit(),
                 intakeSeriesPerGroup[analyteGroupId],
                 ExtractionOption::EndofDate);
+
+        // From generalextraction.cpp:
+
+        size_t nIntakes = intakeSeriesPerGroup[analyteGroupId].size();
+
+
+        if (nIntakes > 0) {
+
+            // Ensure that time ranges are correctly handled. We set again the interval based on the start of
+            // next intake
+            for (size_t i = 0; i < nIntakes - 1; i++) {
+                Duration interval = intakeSeriesPerGroup[analyteGroupId][i + 1].getEventTime() - intakeSeriesPerGroup[analyteGroupId][i].getEventTime();
+                intakeSeriesPerGroup[analyteGroupId][i].setNbPoints(static_cast<CycleSize>(interval.toHours() * nbPointsPerHour) + 1);
+                intakeSeriesPerGroup[analyteGroupId][i].setInterval(interval);
+            }
+
+            for (size_t i = 0; i < nIntakes; i++) {
+                if (intakeSeriesPerGroup[analyteGroupId][i].getEventTime() + intakeSeriesPerGroup[analyteGroupId][i].getInterval() < _traits->getStart()) {
+                    intakeSeriesPerGroup[analyteGroupId][i].setNbPoints(2);
+                }
+            }
+
+            // const DosageTimeRangeList& timeRanges = _drugTreatment.getDosageHistory().getDosageTimeRanges();
+
+
+            IntakeEvent* lastIntake = &(intakeSeriesPerGroup[analyteGroupId].back());
+
+            // If the treatement end is before the last point we want to get, then we add an empty dose to get points
+
+            //        if (_traits->getEnd() > timeRanges.back()->getEndDate()) {
+            Duration interval = _traits->getEnd() - (lastIntake->getEventTime() + lastIntake->getInterval());
+            if (interval > Duration(std::chrono::hours(0))) {
+
+                DateTime start = lastIntake->getEventTime() + lastIntake->getInterval();
+                Value dose = 0.0;
+                TucuUnit doseUnit = _request.getDrugModel().getAnalyteSets()[0]->getDoseUnit();
+
+                auto absorptionModel = lastIntake->getAbsorptionModel();
+
+                Duration infusionTime;
+                if (absorptionModel == AbsorptionModel::Infusion) {
+                    // We do this because the infusion calculators do not support infusionTime = 0
+                    infusionTime = Duration(std::chrono::hours(1));
+                }
+                // We need at least one point. It could be less if the interval is very very small
+                size_t nbPoints = std::max(size_t{1}, static_cast<size_t>(nbPointsPerHour * interval.toHours()));
+
+                IntakeEvent intake(
+                        start,
+                        Duration(),
+                        dose,
+                        doseUnit,
+                        interval,
+                        lastIntake->getFormulationAndRoute(),
+                        absorptionModel,
+                        infusionTime,
+                        nbPoints);
+                intakeSeriesPerGroup[analyteGroupId].push_back(intake);
+            }
+        }
 
         auto status = m_utils->m_generalExtractor->convertAnalytes(
                 intakeSeriesPerGroup[analyteGroupId],
@@ -1478,8 +1540,6 @@ ComputingStatus ComputingAdjustments::generatePrediction(
         || (recordedIntakes.size() != analytesPredictions[0]->getValues().size())) {
         return ComputingStatus::RecordedIntakesSizeError;
     }
-
-
 
     for (size_t i = 0; i < recordedIntakes.size(); i++) {
         if (i >= analytesPredictions[0]->getTimes().size()) {
