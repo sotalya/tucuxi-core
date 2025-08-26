@@ -55,6 +55,7 @@ file(GLOB TUCUTESTCORE_HEADER_FILES
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/constanteliminationbolus.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/multiconstanteliminationbolus.h
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/pkasymptotic.h
+    ${CMAKE_CURRENT_LIST_DIR}/computingresponsecomparator.h
     ${CMAKE_CURRENT_LIST_DIR}/testutils.h
 )
 
@@ -105,6 +106,7 @@ file(GLOB TUCUTESTCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/gtest_rkmichaelismentenenzyme.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/gtest_rkmichaelismententwocompvmaxamount.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/gtest_twocompartmentextralag.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/computingresponsecomparator.cpp
 )
 
 add_executable(tucutestcore ${TUCUTESTCORE_HEADER_FILES} ${TUCUTESTCORE_SOURCE_FILES})
