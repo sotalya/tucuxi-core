@@ -54,5 +54,25 @@ void selectRecordedIntakes(
 }
 
 
+std::string IntakeEvent::toString() const
+{
+    std::stringstream str;
+    str << "Time: " << m_time << "Dose: " << m_dose << ". Unit: " << m_doseUnit.toString()
+        << ". Offset: " << m_offsetTime.toMinutes() << ". Interval: " << m_interval.toMinutes()
+        << ". Infusion: " << m_infusionTime.toMinutes();
+    // Do not display formulation and route, and absorption model
+    return str.str();
+}
+
+std::string intakeSeriesToString(const IntakeSeries& _intakeSeries)
+{
+    std::stringstream str;
+    str << "Intake series:\n";
+    for (const auto& intake : _intakeSeries) {
+        str << intake.toString() << '\n';
+    }
+    return str.str();
+}
+
 } // namespace Core
 } // namespace Tucuxi

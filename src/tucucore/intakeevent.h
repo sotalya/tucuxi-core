@@ -283,6 +283,8 @@ public:
                 _concentrations, _intakeEvent, _parameters, _inResiduals, _atTime, _isAll, _outResiduals);
     }
 
+    std::string toString() const;
+
 private:
     /// The dose value
     DoseValue m_dose;
@@ -313,6 +315,7 @@ typedef std::vector<IntakeEvent> IntakeSeries;
 
 typedef std::map<AnalyteGroupId, IntakeSeries> GroupsIntakeSeries;
 
+std::string intakeSeriesToString(const IntakeSeries& _intakeSeries);
 
 
 void cloneIntakeSeries(const std::vector<IntakeEvent>& _input, std::vector<IntakeEvent>& _output);
