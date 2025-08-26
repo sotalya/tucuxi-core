@@ -43,8 +43,8 @@ void compareCycleData(const CycleData& _d1, const CycleData& _d2, bool _isPercen
         ASSERT_EQ(c1.size(), c2.size());
         for (size_t c = 0; c < c1.size(); c++) {
             if (_isPercentile) {
-            // TODO : Find a way to have a faire comparison
-            // ASSERT_TRUE(std::abs(c1[c] - c2[c]) < 300); double_fuzzy_compare()
+                // TODO : Find a way to have a fair comparison
+                // ASSERT_TRUE(std::abs(c1[c] - c2[c]) < 300); double_fuzzy_compare()
             }
             else {
                 ASSERT_DOUBLE_EQ(c1[c], c2[c]);
@@ -134,7 +134,7 @@ void compareDosageLoop(const DosageLoop& _d1, const DosageLoop& _d2)
     auto d1 = _d1.getDosage();
     auto d2 = _d2.getDosage();
     if (dynamic_cast<const LastingDose*>(d1) != nullptr) {
-        compareLastingDose(*dynamic_cast<const LastingDose*>(d1),*dynamic_cast<const LastingDose*>(d2));
+        compareLastingDose(*dynamic_cast<const LastingDose*>(d1), *dynamic_cast<const LastingDose*>(d2));
     }
 }
 
@@ -146,9 +146,8 @@ void compareDosageTimeRange(const DosageTimeRange& _d1, const DosageTimeRange& _
     auto d1 = _d1.getDosage();
     auto d2 = _d2.getDosage();
     if (dynamic_cast<const DosageLoop*>(d1) != nullptr) {
-        compareDosageLoop(*dynamic_cast<const DosageLoop*>(d1),*dynamic_cast<const DosageLoop*>(d2));
+        compareDosageLoop(*dynamic_cast<const DosageLoop*>(d1), *dynamic_cast<const DosageLoop*>(d2));
     }
-
 }
 
 void compareDosageHistory(const DosageHistory& _d1, const DosageHistory& _d2)

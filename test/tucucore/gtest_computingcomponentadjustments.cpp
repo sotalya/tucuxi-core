@@ -33,6 +33,7 @@
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
 
+#include "computingresponsecomparator.h"
 #include "drugmodels/buildgentamicinfuchs2014.h"
 #include "drugmodels/buildimatinib.h"
 #include "gtest_core.h"
@@ -956,6 +957,257 @@ TEST(Core_TestComputingComponentAdjusements, GentamicinTwoTargets)
     ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
     ASSERT_GT(resp->getAdjustments().size(), 0);
+
+    // Delete all dynamically allocated objects
+    delete component;
+}
+
+
+///
+/// \brief buildDrugTreatmentStrange
+/// \param _route The formulation and route
+/// \param _startDateTime The treatment start time
+/// \param _option Allows to generate two different histories
+/// \return A drug treatment
+///
+/// This function creates a dosage history where the first intake has a 24h interval, but a
+/// dosage range of 23 or 2 hours, depending on the _option.
+///
+static std::unique_ptr<DrugTreatment> buildDrugTreatmentStrange(
+        const FormulationAndRoute& _route, const DateTime _startDateTime, int _option)
+{
+    auto drugTreatment = std::make_unique<DrugTreatment>();
+
+    DoseValue doseValue(400);
+    auto unit = TucuUnit("mg");
+
+    auto duration = (_option == 0) ? Duration(std::chrono::hours(23)) : Duration(std::chrono::hours(2));
+
+    LastingDose periodicDose(
+            doseValue, unit, _route, Duration(std::chrono::hours(1)), Duration(std::chrono::hours(24)));
+    DosageLoop repeatedDose(periodicDose);
+    auto dosageTimeRange =
+            std::make_unique<Tucuxi::Core::DosageTimeRange>(_startDateTime, _startDateTime + duration, repeatedDose);
+
+    drugTreatment->getModifiableDosageHistory().addTimeRange(*dosageTimeRange);
+
+    {
+        LastingDose periodicDose(
+                doseValue, unit, _route, Duration(std::chrono::hours(0)), Duration(std::chrono::hours(24)));
+        DosageLoop repeatedDose(periodicDose);
+        auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(
+                _startDateTime + 23h, _startDateTime + 23h + 2h, repeatedDose);
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*dosageTimeRange);
+    }
+
+    return drugTreatment;
+}
+
+/// This test compares the adjustments on two different dosage histories.
+/// The difference of the two histories is the first dosage time range.
+/// On one option the time range is 23 hours, and the interval 2 hours,
+/// and on the second option the time range is 2 hours and the interval 2 hours.
+/// A comparator allows to compare the computing responses.
+TEST(Core_TestComputingComponentAdjusements, ImatinibShortInterval)
+{
+    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+    ASSERT_TRUE(component != nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_TRUE(drugModel != nullptr);
+
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
+
+    DateTime startSept2018(
+            date::year_month_day(date::year(2025), date::month(8), date::day(17)),
+            Duration(std::chrono::hours(6), std::chrono::minutes(17), std::chrono::seconds(11)));
+
+    auto drugTreatment1 = buildDrugTreatmentStrange(route, startSept2018, 0);
+    auto drugTreatment2 = buildDrugTreatmentStrange(route, startSept2018, 1);
+
+    // Construct the adjustment traits object
+    RequestResponseId requestResponseId1 = "1";
+    RequestResponseId requestResponseId2 = "1";
+    Tucuxi::Common::DateTime start(2025_y / aug / 16, 8h + 25min + 46s);
+    Tucuxi::Common::DateTime end(2025_y / aug / 24, 5h + 51min + 25s);
+    double nbPointsPerHour = 10.0;
+    ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+    Tucuxi::Common::DateTime adjustmentTime(2025_y / aug / 19, 7h + 17min);
+    BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
+    std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits1 = std::make_unique<ComputingTraitAdjustment>(
+            requestResponseId1,
+            start,
+            end,
+            nbPointsPerHour,
+            computingOption,
+            adjustmentTime,
+            adjustmentOption,
+            LoadingOption::NoLoadingDose,
+            RestPeriodOption::NoRestPeriod,
+            SteadyStateTargetOption::WithinTreatmentTimeRange,
+            TargetExtractionOption::PopulationValues,
+            FormulationAndRouteSelectionOption::LastFormulationAndRoute);
+
+    std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits2 = std::make_unique<ComputingTraitAdjustment>(
+            requestResponseId2,
+            start,
+            end,
+            nbPointsPerHour,
+            computingOption,
+            adjustmentTime,
+            adjustmentOption,
+            LoadingOption::NoLoadingDose,
+            RestPeriodOption::NoRestPeriod,
+            SteadyStateTargetOption::WithinTreatmentTimeRange,
+            TargetExtractionOption::PopulationValues,
+            FormulationAndRouteSelectionOption::LastFormulationAndRoute);
+
+    ComputingRequest request1(requestResponseId1, *drugModel, *drugTreatment1, std::move(adjustmentsTraits1));
+
+    std::unique_ptr<ComputingResponse> response1 = std::make_unique<ComputingResponse>(requestResponseId1);
+
+    ComputingStatus result1;
+    result1 = component->compute(request1, response1);
+
+    ASSERT_EQ(result1, ComputingStatus::Ok);
+
+    const ComputedData* responseData1 = response1->getData();
+    ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData1) != nullptr);
+    const AdjustmentData* resp1 = dynamic_cast<const AdjustmentData*>(responseData1);
+
+
+    ComputingRequest request2(requestResponseId2, *drugModel, *drugTreatment2, std::move(adjustmentsTraits2));
+
+    std::unique_ptr<ComputingResponse> response2 = std::make_unique<ComputingResponse>(requestResponseId2);
+
+    ComputingStatus result2;
+    result2 = component->compute(request2, response2);
+
+    ASSERT_EQ(result2, ComputingStatus::Ok);
+
+    const ComputedData* responseData2 = response2->getData();
+    ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData2) != nullptr);
+    const AdjustmentData* resp2 = dynamic_cast<const AdjustmentData*>(responseData2);
+
+
+    ComputingResponseComparator comparator;
+    comparator.compare(*response1, *response2);
+
+    // Delete all dynamically allocated objects
+    delete component;
+}
+
+
+
+static std::unique_ptr<DrugTreatment> buildDrugTreatmentStrangeConc(
+        const FormulationAndRoute& _route, const DateTime _startDateTime, int _option)
+{
+    auto drugTreatment = std::make_unique<DrugTreatment>();
+
+    DoseValue doseValue(400);
+    auto unit = TucuUnit("mg");
+
+    auto duration = (_option == 0) ? Duration(std::chrono::hours(23)) : Duration(std::chrono::hours(2));
+
+    LastingDose periodicDose(
+            doseValue, unit, _route, Duration(std::chrono::hours(1)), Duration(std::chrono::hours(24)));
+    DosageLoop repeatedDose(periodicDose);
+    auto dosageTimeRange =
+            std::make_unique<Tucuxi::Core::DosageTimeRange>(_startDateTime, _startDateTime + duration, repeatedDose);
+
+    drugTreatment->getModifiableDosageHistory().addTimeRange(*dosageTimeRange);
+
+    {
+        LastingDose periodicDose(
+                doseValue, unit, _route, Duration(std::chrono::hours(0)), Duration(std::chrono::hours(24)));
+        DosageLoop repeatedDose(periodicDose);
+        auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(
+                _startDateTime + 23h, _startDateTime + 23h + 2h, repeatedDose);
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*dosageTimeRange);
+    }
+
+    {
+        LastingDose periodicDose(
+                doseValue, unit, _route, Duration(std::chrono::hours(0)), Duration(std::chrono::hours(24)));
+        DosageLoop repeatedDose(periodicDose);
+        auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(
+                _startDateTime + 23h + 24h, _startDateTime + 23h + 7 * 24h, repeatedDose);
+        drugTreatment->getModifiableDosageHistory().addTimeRange(*dosageTimeRange);
+    }
+
+    return drugTreatment;
+}
+
+
+/// This test is not really an adjustment, as it deals with concentration computation.
+/// It has been added to prove that the previous test displayed issues with the
+/// ComputingAdjustment because of the strange dosage history.
+/// This test could be removed, but it does not hurt to keep it.
+TEST(Core_TestComputingComponentAdjusements, ImatinibShortIntervalConcentration)
+{
+    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+    ASSERT_TRUE(component != nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_TRUE(drugModel != nullptr);
+
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
+
+    DateTime startSept2018(
+            date::year_month_day(date::year(2025), date::month(8), date::day(17)),
+            Duration(std::chrono::hours(6), std::chrono::minutes(17), std::chrono::seconds(11)));
+
+    auto drugTreatment1 = buildDrugTreatmentStrangeConc(route, startSept2018, 0);
+    auto drugTreatment2 = buildDrugTreatmentStrangeConc(route, startSept2018, 1);
+
+    // Construct the adjustment traits object
+    RequestResponseId requestResponseId1 = "1";
+    RequestResponseId requestResponseId2 = "1";
+    Tucuxi::Common::DateTime start(startSept2018 + 23h + 24h);
+    Tucuxi::Common::DateTime end(startSept2018 + 23h + 5 * 24h);
+    double nbPointsPerHour = 10.0;
+    ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+    std::unique_ptr<ComputingTraitConcentration> adjustmentsTraits1 = std::make_unique<ComputingTraitConcentration>(
+            requestResponseId1, start, end, nbPointsPerHour, computingOption);
+
+    std::unique_ptr<ComputingTraitConcentration> adjustmentsTraits2 = std::make_unique<ComputingTraitConcentration>(
+            requestResponseId1, start, end, nbPointsPerHour, computingOption);
+
+
+    ComputingRequest request1(requestResponseId1, *drugModel, *drugTreatment1, std::move(adjustmentsTraits1));
+
+    std::unique_ptr<ComputingResponse> response1 = std::make_unique<ComputingResponse>(requestResponseId1);
+
+    ComputingStatus result1;
+    result1 = component->compute(request1, response1);
+
+    ASSERT_EQ(result1, ComputingStatus::Ok);
+
+    const ComputedData* responseData1 = response1->getData();
+    ASSERT_TRUE(dynamic_cast<const ConcentrationData*>(responseData1) != nullptr);
+    const ConcentrationData* resp1 = dynamic_cast<const ConcentrationData*>(responseData1);
+
+
+    ComputingRequest request2(requestResponseId2, *drugModel, *drugTreatment2, std::move(adjustmentsTraits2));
+
+    std::unique_ptr<ComputingResponse> response2 = std::make_unique<ComputingResponse>(requestResponseId2);
+
+    ComputingStatus result2;
+    result2 = component->compute(request2, response2);
+
+    ASSERT_EQ(result2, ComputingStatus::Ok);
+
+    const ComputedData* responseData2 = response2->getData();
+    ASSERT_TRUE(dynamic_cast<const ConcentrationData*>(responseData2) != nullptr);
+    const ConcentrationData* resp2 = dynamic_cast<const ConcentrationData*>(responseData2);
+
+
+    ComputingResponseComparator comparator;
+    comparator.compare(*response1, *response2);
 
     // Delete all dynamically allocated objects
     delete component;

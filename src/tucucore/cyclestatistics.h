@@ -110,15 +110,21 @@ public:
         return true;
     }
 
-private:
-    Tucuxi::Common::DateTime m_cycleStartDate; // Date and time of the start of the corresponding cycle
-    // CycleStatisticType m_type; // The type of statistic
-
     struct Data
     {
         Tucuxi::Common::Duration m_offset;
         Value m_value{0.0};
     };
+
+    std::vector<Data> getRawData() const
+    {
+        return m_data;
+    }
+
+private:
+    Tucuxi::Common::DateTime m_cycleStartDate; // Date and time of the start of the corresponding cycle
+    // CycleStatisticType m_type; // The type of statistic
+
 
     std::vector<Data> m_data; // The list of values (in case of maximum and minimum, we can have a list)
 };
