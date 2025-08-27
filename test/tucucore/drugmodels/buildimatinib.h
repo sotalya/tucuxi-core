@@ -308,10 +308,10 @@ public:
             fixedIntervals->addValue(12);
             fixedIntervals->addValue(24);
 
-            ValidDurations* validIntervals =
-                    new ValidDurations(TucuUnit("h"), std::make_unique<PopulationValue>("", 24));
+            auto validIntervals =
+                    std::make_unique<ValidDurations>(TucuUnit("h"), std::make_unique<PopulationValue>("", 24));
             validIntervals->addValues(std::move(fixedIntervals));
-            formulationAndRoute->setValidIntervals(std::unique_ptr<ValidDurations>(validIntervals));
+            formulationAndRoute->setValidIntervals(std::move(validIntervals));
 
 
             // This is just here as an example.

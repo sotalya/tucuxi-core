@@ -118,10 +118,6 @@ TEST(Core_TestComputingComponentAdjusements, ConstantElimination)
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-
-    std::unique_ptr<SubTargetDefinition> cMin(new SubTargetDefinition("cMin", 800.0, nullptr));
-    std::unique_ptr<SubTargetDefinition> cMax(new SubTargetDefinition("cMax", 1200.0, nullptr));
-    std::unique_ptr<SubTargetDefinition> cBest(new SubTargetDefinition("cBest", 1000.0, nullptr));
     std::unique_ptr<TargetDefinition> target = std::make_unique<TargetDefinition>(
             TargetType::Residual,
             Unit("mg/l"),
@@ -236,10 +232,6 @@ TEST(Core_TestComputingComponentAdjusements, ConstantEliminationDaily)
     auto drugModel = builder.buildDrugModel();
     ASSERT_TRUE(drugModel != nullptr);
 
-
-    std::unique_ptr<SubTargetDefinition> cMin(new SubTargetDefinition("cMin", 800.0, nullptr));
-    std::unique_ptr<SubTargetDefinition> cMax(new SubTargetDefinition("cMax", 1200.0, nullptr));
-    std::unique_ptr<SubTargetDefinition> cBest(new SubTargetDefinition("cBest", 1000.0, nullptr));
     std::unique_ptr<TargetDefinition> target = std::make_unique<TargetDefinition>(
             TargetType::Residual,
             Unit("mg/l"),
