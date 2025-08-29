@@ -77,6 +77,9 @@ const std::string& CovariateData::getNature() const
 PatientData::PatientData(vector<unique_ptr<Tucuxi::Core::PatientCovariate> >& _covariates)
     : m_covariates(move(_covariates))
 {
+    if (m_covariates.size() == 0) {
+        return;
+    }
     Tucuxi::Common::LoggerHelper logHelper;
     // Validate the covariate data, checking that no two covariates have the same
     // covariate ID and date.
