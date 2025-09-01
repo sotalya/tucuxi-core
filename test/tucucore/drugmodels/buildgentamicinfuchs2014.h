@@ -31,8 +31,6 @@
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugmodelimport.h"
 
-using namespace Tucuxi::Core;
-
 static const std::string gentamicinFuchs2014_tdd = R"(<?xml version="1.0" encoding="UTF-8"?>
 <model version='0.6' xsi:noNamespaceSchemaLocation='drugfile.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
     <history>
@@ -778,12 +776,12 @@ public:
 
     std::unique_ptr<Tucuxi::Core::DrugModel> buildDrugModel()
     {
-        DrugModelImport importer;
+        Tucuxi::Core::DrugModelImport importer;
 
-        std::unique_ptr<DrugModel> drugModel;
+        std::unique_ptr<Tucuxi::Core::DrugModel> drugModel;
 
         auto status = importer.importFromString(drugModel, gentamicinFuchs2014_tdd);
-        EXPECT_EQ(status, DrugModelImport::Status::Ok);
+        EXPECT_EQ(status, Tucuxi::Core::DrugModelImport::Status::Ok);
 
         EXPECT_NE(drugModel, nullptr);
 

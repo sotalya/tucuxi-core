@@ -120,7 +120,7 @@ public:
 
 protected:
     /// Time of peak
-    double m_tPeak;
+    double m_tPeak{};
 };
 
 
@@ -265,11 +265,11 @@ protected:
 
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations);
 
-    Value m_D;               /// Quantity of drug
-    Value m_R;               /// Convergence rate
-    Value m_TPeak;           /// Time to peak
-    Eigen::Index m_nbPoints; /// Number measure points during interval
-    Value m_Int;             /// Interval (hours)
+    Value m_D{};               /// Quantity of drug
+    Value m_R{};               /// Convergence rate
+    Value m_TPeak{};           /// Time to peak
+    Eigen::Index m_nbPoints{}; /// Number measure points during interval
+    Value m_Int{};             /// Interval (hours)
 
 private:
     typedef PkAsymptoticCompartments Compartments;

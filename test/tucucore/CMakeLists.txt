@@ -100,9 +100,9 @@ file(GLOB TUCUTESTCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/gtest_pkmodel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_residualerrormodel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_sampleextractor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/gtest_tadcalculator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_targetevaluator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_targetextractor.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/gtest_tdacalculator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/gtest_rkmichaelismentenenzyme.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/gtest_rkmichaelismententwocompvmaxamount.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/gtest_twocompartmentextralag.cpp

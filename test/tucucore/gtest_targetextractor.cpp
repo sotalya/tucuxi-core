@@ -33,19 +33,19 @@ using namespace Tucuxi::Core;
 class TestTargetExtractor
 {
 public:
-    static Value get_m_valueMin(TargetEvent* targetResult)
+    static Value get_m_valueMin(TargetEvent* _targetResult)
     {
-        return targetResult->m_valueMin;
+        return _targetResult->m_valueMin;
     };
 
-    static Value get_m_valueMax(TargetEvent* targetResult)
+    static Value get_m_valueMax(TargetEvent* _targetResult)
     {
-        return targetResult->m_valueMax;
+        return _targetResult->m_valueMax;
     };
 
-    static Value get_m_valueBest(TargetEvent* targetResult)
+    static Value get_m_valueBest(TargetEvent* _targetResult)
     {
-        return targetResult->m_valueBest;
+        return _targetResult->m_valueBest;
     };
 };
 

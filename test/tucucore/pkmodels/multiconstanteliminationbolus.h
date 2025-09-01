@@ -154,7 +154,8 @@ protected:
             MultiCompConcentrations& _concentrations,
             Residuals& _outResiduals) override
     {
-        Eigen::VectorXd concentrations1, concentrations2;
+        Eigen::VectorXd concentrations1;
+        Eigen::VectorXd concentrations2;
         size_t firstCompartment = static_cast<size_t>(Compartments::First);
         size_t secondCompartment = static_cast<size_t>(Compartments::Second);
 
@@ -187,7 +188,8 @@ protected:
     {
         TMP_UNUSED_PARAMETER(_atTime);
 
-        Eigen::VectorXd concentrations1, concentrations2;
+        Eigen::VectorXd concentrations1;
+        Eigen::VectorXd concentrations2;
         size_t firstCompartment = static_cast<size_t>(Compartments::First);
         size_t secondCompartment = static_cast<size_t>(Compartments::Second);
         Eigen::Index atTime = static_cast<Eigen::Index>(SingleConcentrations::AtTime);
@@ -219,17 +221,17 @@ protected:
 
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations, Eigen::VectorXd& _concentrations2);
 
-    Value m_D;               /// Quantity of drug
-    Value m_S0;              /// Slope of elimination of the concentration nb 0
-    Value m_M0;              /// Multiplicative factor of the concentration nb 0
-    Value m_A0;              /// Additional value to concentration nb 0
-    Value m_R0;              /// Multiplier for the residual of the concentration nb 0
-    Value m_S1;              /// Slope of elimination of the concentration nb 1
-    Value m_M1;              /// Multiplicative factor of the concentration nb 1
-    Value m_A1;              /// Additional value to concentration nb 1
-    Value m_R1;              /// Multiplier for the residual of the concentration nb 1
-    Eigen::Index m_nbPoints; /// Number measure points during interval
-    Value m_Int;             /// Interval (hours)
+    Value m_D{};               /// Quantity of drug
+    Value m_S0{};              /// Slope of elimination of the concentration nb 0
+    Value m_M0{};              /// Multiplicative factor of the concentration nb 0
+    Value m_A0{};              /// Additional value to concentration nb 0
+    Value m_R0{};              /// Multiplier for the residual of the concentration nb 0
+    Value m_S1{};              /// Slope of elimination of the concentration nb 1
+    Value m_M1{};              /// Multiplicative factor of the concentration nb 1
+    Value m_A1{};              /// Additional value to concentration nb 1
+    Value m_R1{};              /// Multiplier for the residual of the concentration nb 1
+    Eigen::Index m_nbPoints{}; /// Number measure points during interval
+    Value m_Int{};             /// Interval (hours)
 
 private:
     typedef MultiConstantEliminationBolusCompartments Compartments;
@@ -239,18 +241,18 @@ inline void MultiConstantEliminationBolus::compute(
         const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
     _concentrations1 = ((m_D + m_R0 * _inResiduals[0]) * exponentials(Exponentials::P0));
-    for (int i = 0; i < _concentrations1.size(); i++) {
-        _concentrations1[i] += m_A0;
-        if (_concentrations1[i] < 0.0) {
-            _concentrations1[i] = 0;
+    for (auto& concentrations1 : _concentrations1) {
+        concentrations1 += m_A0;
+        if (concentrations1 < 0.0) {
+            concentrations1 = 0;
         }
     }
 
     _concentrations2 = ((m_D + m_R1 * _inResiduals[1]) * exponentials(Exponentials::P1));
-    for (int i = 0; i < _concentrations2.size(); i++) {
-        _concentrations2[i] += m_A1;
-        if (_concentrations2[i] < 0.0) {
-            _concentrations2[i] = 0;
+    for (auto& concentration2 : _concentrations2) {
+        concentration2 += m_A1;
+        if (concentration2 < 0.0) {
+            concentration2 = 0;
         }
     }
 }

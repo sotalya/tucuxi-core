@@ -74,15 +74,15 @@ Samples createSamples()
 }
 
 
-TEST(Core_TestTDAExtractor, CalculateDurations)
+TEST(Core_TestTADExtractor, CalculateDurations)
 {
     IntakeExtractor extractor;
-    TimeAfterDoseCalculator tdaCalc;
+    TimeAfterDoseCalculator tadCalc;
 
     std::unique_ptr<DosageHistory> dh = createDosageHistory();
     Samples samples = createSamples();
 
-    std::vector<Duration> durations = tdaCalc.calculateDurations(samples, *dh);
+    std::vector<Duration> durations = tadCalc.calculateDurations(samples, *dh);
 
     ASSERT_EQ(durations.size(), samples.size());
 

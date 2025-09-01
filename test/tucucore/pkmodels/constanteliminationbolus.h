@@ -178,13 +178,13 @@ protected:
 
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations);
 
-    Value m_D;               /// Quantity of drug
-    Value m_S;               /// Slope of elimination
-    Value m_M;               /// Multiplicative factor of the concentration
-    Value m_A;               /// Additional value to concentration
-    Value m_R;               /// Multiplier for the residual
-    Eigen::Index m_nbPoints; /// Number measure points during interval
-    Value m_Int;             /// Interval (hours)
+    Value m_D{};               /// Quantity of drug
+    Value m_S{};               /// Slope of elimination
+    Value m_M{};               /// Multiplicative factor of the concentration
+    Value m_A{};               /// Additional value to concentration
+    Value m_R{};               /// Multiplier for the residual
+    Eigen::Index m_nbPoints{}; /// Number measure points during interval
+    Value m_Int{};             /// Interval (hours)
 
 private:
     typedef ConstantEliminationBolusCompartments Compartments;
@@ -193,10 +193,10 @@ private:
 inline void ConstantEliminationBolus::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations)
 {
     _concentrations = (m_D + m_R * _inResiduals[0]) * exponentials(Exponentials::P);
-    for (int i = 0; i < _concentrations.size(); i++) {
-        _concentrations[i] += m_A;
-        if (_concentrations[i] < 0.0) {
-            _concentrations[i] = 0;
+    for (auto& concentration : _concentrations) {
+        concentration += m_A;
+        if (concentration < 0.0) {
+            concentration = 0;
         }
     }
 }
