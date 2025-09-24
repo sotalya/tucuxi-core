@@ -284,9 +284,11 @@ TucuUnit UnitManager::getWeightFromConcentration(const TucuUnit& _unit)
         {"g/l", "g"},
         {"mg/l", "mg"},
         {"ug/l", "ug"},
+        {"ng/l", "ng"},
         {"g/ml", "g"},
         {"mg/ml", "mg"},
-        {"ug/ml", "ug"}
+        {"ug/ml", "ug"},
+        {"ng/ml", "ng"}
     };
     // clang-format on
 
@@ -294,7 +296,7 @@ TucuUnit UnitManager::getWeightFromConcentration(const TucuUnit& _unit)
     if (sm_conversionMap.count(key) > 0) {
         return TucuUnit(sm_conversionMap.at(key));
     }
-    throw std::invalid_argument("Error in concentration to weight unit conversion");
+    throw std::invalid_argument("Error in concentration to weight unit conversion for unit " + _unit.toString());
 }
 
 
