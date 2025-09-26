@@ -22,7 +22,6 @@
 
 #include "queryimport.h"
 
-#include "tucucommon/loggerhelper.h"
 #include "tucucommon/utils.h"
 #include "tucucommon/xmlattribute.h"
 #include "tucucommon/xmldocument.h"
@@ -143,7 +142,7 @@ QueryImport::Status QueryImport::importDocument(
     }
 
 
-    _query = std::make_unique<QueryData>(queryId, clientId, date, language, move(pParametersData), requests);
+    _query = std::make_unique<QueryData>(queryId, clientId, date, language, std::move(pParametersData), requests);
 
 
     return getStatus();
@@ -175,7 +174,7 @@ unique_ptr<DrugTreatmentData> QueryImport::createDrugTreatmentData(Tucuxi::Commo
         drugsIterator++;
     }
 
-    return make_unique<DrugTreatmentData>(move(pPatient), move(drugs));
+    return make_unique<DrugTreatmentData>(std::move(pPatient), std::move(drugs));
 }
 
 unique_ptr<PatientData> QueryImport::createPatientData(Common::XmlNodeIterator& _patientDataRootIterator)
@@ -305,7 +304,7 @@ unique_ptr<DrugData> QueryImport::createDrugData(Common::XmlNodeIterator& _drugD
         targetsIterator++;
     }
 
-    return make_unique<DrugData>(drugId, activePrinciple, brandName, atc, move(pTreatment), samples, targets);
+    return make_unique<DrugData>(drugId, activePrinciple, brandName, atc, std::move(pTreatment), samples, targets);
 }
 
 unique_ptr<Tucuxi::Core::Target> QueryImport::createTargetData(Common::XmlNodeIterator& _targetDataRootIterator)
@@ -503,7 +502,7 @@ unique_ptr<Treatment> QueryImport::createTreatment(Common::XmlNodeIterator& _tre
         dosageTimeRangeIterator++;
     }
 
-    return make_unique<Treatment>(move(pDosageHistory));
+    return make_unique<Treatment>(std::move(pDosageHistory));
 }
 
 unique_ptr<Core::DosageTimeRange> QueryImport::createDosageTimeRange(
@@ -1029,7 +1028,7 @@ unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeIterat
 
 
 
-    return make_unique<RequestData>(requestId, drugId, drugModelId, move(computingTrait));
+    return make_unique<RequestData>(requestId, drugId, drugModelId, std::move(computingTrait));
 }
 
 Tucuxi::Core::PercentileRanks QueryImport::getChildPercentileRanks(
