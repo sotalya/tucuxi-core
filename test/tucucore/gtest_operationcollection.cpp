@@ -63,6 +63,6 @@ TEST(Core_TestOperationCollection, OperationCollection)
     TEST_GET_OPERATION(eGFR_MDRD);
     TEST_GET_OPERATION(eGFR_CKD_EPI);
     TEST_GET_OPERATION(eGFR_Schwartz);
-    TEST_GET_OPERATION(GFR_Jelliffe);
+    TEST_GET_OPERATION(eGFR_Jelliffe);
     TEST_GET_OPERATION(eGFR_SalazarCorcoran);
 }

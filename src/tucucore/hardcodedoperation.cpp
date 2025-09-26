@@ -399,7 +399,7 @@ void eGFR_Schwartz::fillRequiredInputs()
 }
 
 
-bool GFR_Jelliffe::compute(const OperationInputList& _inputs, double& _result) const
+bool eGFR_Jelliffe::compute(const OperationInputList& _inputs, double& _result) const
 {
     double weight;
     int age;
@@ -436,7 +436,7 @@ bool GFR_Jelliffe::compute(const OperationInputList& _inputs, double& _result) c
 }
 
 
-void GFR_Jelliffe::fillRequiredInputs()
+void eGFR_Jelliffe::fillRequiredInputs()
 {
     OperationInput weight("bodyweight", InputType::DOUBLE);
     OperationInput height("height", InputType::INTEGER);
@@ -583,7 +583,7 @@ bool OperationCollection::populate()
     ADD_OPERATION_TO_COLLECTION(eGFR_MDRD);
     ADD_OPERATION_TO_COLLECTION(eGFR_CKD_EPI);
     ADD_OPERATION_TO_COLLECTION(eGFR_Schwartz);
-    ADD_OPERATION_TO_COLLECTION(GFR_Jelliffe);
+    ADD_OPERATION_TO_COLLECTION(eGFR_Jelliffe);
     ADD_OPERATION_TO_COLLECTION(eGFR_SalazarCorcoran);
     ADD_OPERATION_TO_COLLECTION(direct);
     ADD_OPERATION_TO_COLLECTION(sum2);

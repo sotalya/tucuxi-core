@@ -86,7 +86,7 @@ HARDCODED_OPERATION(eGFR_Schwartz);
 
 /// \ingroup TucuCore
 /// \brief Compute the **GFR** value using the Jelliffe method.
-HARDCODED_OPERATION(GFR_Jelliffe);
+HARDCODED_OPERATION(eGFR_Jelliffe);
 
 /// \ingroup TucuCore
 /// \brief Compute the eGFR value using the Salazar-Corcoran method (obese patients).

@@ -1065,7 +1065,7 @@ TEST(Core_TestOperation, Jelliffe)
     rc = jsJelliffe_GFR.evaluate({eGFR, BSA}, GFR_value);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(58.337855, GFR_value);
-    GFR_Jelliffe hc_Jelliffe;
+    eGFR_Jelliffe hc_Jelliffe;
     double hc_GFR;
     rc = hc_Jelliffe.evaluate({creatinine, age, sex, height, bodyweight}, hc_GFR);
     ASSERT_TRUE(rc);
