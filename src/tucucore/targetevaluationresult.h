@@ -75,15 +75,15 @@ public:
         return m_target;
     }
 
-    void setStats(const CycleStats& _stats)
-    {
-        m_stats = _stats;
-    }
+    // void setStats(const CycleStats& _stats)
+    // {
+    //     m_stats = _stats;
+    // }
 
-    const CycleStats& getStats() const
-    {
-        return m_stats;
-    }
+    // const CycleStats& getStats() const
+    // {
+    //     return m_stats;
+    // }
 
 protected:
     //! Type of target, as there should be only a single one of each type it is sufficient to discriminate
@@ -101,7 +101,7 @@ protected:
     //! The target used for this evaluation
     TargetEvent m_target;
 
-    CycleStats m_stats;
+    // CycleStats m_stats;
 };
 
 
