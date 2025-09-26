@@ -469,6 +469,8 @@ ComputingStatus TargetEvaluator::evaluate(
                 _targetEvent.m_finalUnit);
     }
 
+    //_result.setStats(statisticsCalculator)
+
     if (!bOk) {
         return ComputingStatus::InvalidCandidate;
     }

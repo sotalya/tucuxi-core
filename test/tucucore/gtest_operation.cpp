@@ -445,21 +445,21 @@ TEST(Core_TestOperation, CockcroftGaultGeneral)
     OperationInput bodyweight("bodyweight", InputType::DOUBLE);
     OperationInput age("age", InputType::INTEGER);
     OperationInput creatinine("creatinine", InputType::DOUBLE);
-    OperationInput isMale("isMale", InputType::BOOL);
+    OperationInput sex("sex", InputType::DOUBLE);
     const OperationInput A_male("A_male", 1.23);
     const OperationInput A_female("A_female", 1.04);
 
     JSExpression jsCG_general(
-            "(140 - age) * bodyweight / creatinine * (A_male * isMale + A_female * (!isMale))",
+            "(140 - age) * bodyweight / creatinine * (A_male * (sex >= 0.5) + A_female * (!(sex >= 0.5)))",
             {OperationInput("bodyweight", InputType::DOUBLE),
              OperationInput("age", InputType::INTEGER),
              OperationInput("creatinine", InputType::DOUBLE),
-             OperationInput("isMale", InputType::BOOL),
+             OperationInput("sex", InputType::DOUBLE),
              OperationInput("A_male", InputType::DOUBLE),
              OperationInput("A_female", InputType::DOUBLE)});
 
     // Male, 49 years old, 71.4kg, creatinine 23.4umol/l
-    rc = isMale.setValue(true);
+    rc = sex.setValue(1.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(49);
     ASSERT_TRUE(rc);
@@ -469,18 +469,18 @@ TEST(Core_TestOperation, CockcroftGaultGeneral)
     ASSERT_TRUE(rc);
 
     ASSERT_FALSE(jsCG_general.evaluate({creatinine, bodyweight, age}, eGFR));
-    rc = jsCG_general.evaluate({creatinine, bodyweight, age, isMale, A_male, A_female}, eGFR);
+    rc = jsCG_general.evaluate({creatinine, bodyweight, age, sex, A_male, A_female}, eGFR);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(341.53, eGFR);
 
     eGFR_CockcroftGaultGeneral hc_CG_general;
     double hc_eGFR;
-    rc = hc_CG_general.evaluate({creatinine, bodyweight, age, isMale}, hc_eGFR);
+    rc = hc_CG_general.evaluate({creatinine, bodyweight, age, sex}, hc_eGFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 
     // Female, 53 years old, 51.3kg, creatinine 13.4umol/l
-    rc = isMale.setValue(false);
+    rc = sex.setValue(0.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(53);
     ASSERT_TRUE(rc);
@@ -489,11 +489,11 @@ TEST(Core_TestOperation, CockcroftGaultGeneral)
     rc = creatinine.setValue(13.4);
     ASSERT_TRUE(rc);
 
-    rc = jsCG_general.evaluate({creatinine, bodyweight, age, isMale, A_male, A_female}, eGFR);
+    rc = jsCG_general.evaluate({creatinine, bodyweight, age, sex, A_male, A_female}, eGFR);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(346.389851, eGFR);
 
-    rc = hc_CG_general.evaluate({creatinine, bodyweight, age, isMale}, hc_eGFR);
+    rc = hc_CG_general.evaluate({creatinine, bodyweight, age, sex}, hc_eGFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 }
@@ -509,7 +509,7 @@ TEST(Core_TestOperation, CockcroftGaultIBW)
     OperationInput height("height", InputType::INTEGER);
     OperationInput age("age", InputType::INTEGER);
     OperationInput creatinine("creatinine", InputType::DOUBLE);
-    OperationInput isMale("isMale", InputType::BOOL);
+    OperationInput sex("sex", InputType::DOUBLE);
     const OperationInput A_male("A_male", 1.23);
     const OperationInput A_female("A_female", 1.04);
 
@@ -517,21 +517,21 @@ TEST(Core_TestOperation, CockcroftGaultIBW)
     IdealBodyWeight IBWComputation;
 
     JSExpression jsCG_IBW(
-            "(140 - age) * (bodyweight * (bodyweight < IBW) + IBW * (bodyweight >= IBW)) / creatinine * (A_male * isMale + A_female * (!isMale))",
+            "(140 - age) * (bodyweight * (bodyweight < IBW) + IBW * (bodyweight >= IBW)) / creatinine * (A_male * (sex >= 0.5) + A_female * (!(sex >= 0.5)))",
             {OperationInput("bodyweight", InputType::DOUBLE),
              OperationInput("IBW", InputType::DOUBLE),
              OperationInput("age", InputType::INTEGER),
              OperationInput("creatinine", InputType::DOUBLE),
-             OperationInput("isMale", InputType::BOOL),
+             OperationInput("sex", InputType::DOUBLE),
              OperationInput("A_male", InputType::DOUBLE),
              OperationInput("A_female", InputType::DOUBLE)});
 
     // Male, 49 years old, 71.4kg, creatinine 23.4umol/l, 165cm
-    rc = IBWComputation.evaluate({OperationInput("height", 165), OperationInput("isMale", true)}, IBWvalue);
+    rc = IBWComputation.evaluate({OperationInput("height", 165), OperationInput("sex", 1.0)}, IBWvalue);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(61.25, IBWvalue);
 
-    rc = isMale.setValue(true);
+    rc = sex.setValue(1.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(49);
     ASSERT_TRUE(rc);
@@ -542,22 +542,22 @@ TEST(Core_TestOperation, CockcroftGaultIBW)
     rc = IBW.setValue(IBWvalue);
     ASSERT_TRUE(rc);
 
-    rc = jsCG_IBW.evaluate({creatinine, bodyweight, age, isMale, A_male, A_female, IBW}, eGFR);
+    rc = jsCG_IBW.evaluate({creatinine, bodyweight, age, sex, A_male, A_female, IBW}, eGFR);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(292.979167, eGFR);
 
     eGFR_CockcroftGaultIBW hc_CG_IBW;
     double hc_eGFR;
-    rc = hc_CG_IBW.evaluate({creatinine, bodyweight, age, isMale, OperationInput("height", 165)}, hc_eGFR);
+    rc = hc_CG_IBW.evaluate({creatinine, bodyweight, age, sex, OperationInput("height", 165)}, hc_eGFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 
     // Female, 53 years old, 51.3kg, creatinine 13.4umol/l, 191cm
-    rc = IBWComputation.evaluate({OperationInput("height", 191), OperationInput("isMale", false)}, IBWvalue);
+    rc = IBWComputation.evaluate({OperationInput("height", 191), OperationInput("sex", 0.0)}, IBWvalue);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(74.6, IBWvalue);
 
-    rc = isMale.setValue(false);
+    rc = sex.setValue(0.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(53);
     ASSERT_TRUE(rc);
@@ -566,10 +566,10 @@ TEST(Core_TestOperation, CockcroftGaultIBW)
     rc = creatinine.setValue(13.4);
     ASSERT_TRUE(rc);
 
-    rc = jsCG_IBW.evaluate({creatinine, bodyweight, age, isMale, A_male, A_female, IBW}, eGFR);
+    rc = jsCG_IBW.evaluate({creatinine, bodyweight, age, sex, A_male, A_female, IBW}, eGFR);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(346.389851, eGFR);
-    rc = hc_CG_IBW.evaluate({creatinine, bodyweight, age, isMale, OperationInput("height", 191)}, hc_eGFR);
+    rc = hc_CG_IBW.evaluate({creatinine, bodyweight, age, sex, OperationInput("height", 191)}, hc_eGFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 }
@@ -585,7 +585,7 @@ TEST(Core_TestOperation, CockcroftGaultAdjIBW)
     OperationInput height("height", InputType::INTEGER);
     OperationInput age("age", InputType::INTEGER);
     OperationInput creatinine("creatinine", InputType::DOUBLE);
-    OperationInput isMale("isMale", InputType::BOOL);
+    OperationInput sex("sex", InputType::DOUBLE);
     const OperationInput A_male("A_male", 1.23);
     const OperationInput A_female("A_female", 1.04);
 
@@ -593,21 +593,21 @@ TEST(Core_TestOperation, CockcroftGaultAdjIBW)
     IdealBodyWeight IBWComputation;
 
     JSExpression jsCG_IBW(
-            "(140 - age) * (IBW + 0.4 * (bodyweight - IBW)) / creatinine * (A_male * isMale + A_female * (!isMale))",
+            "(140 - age) * (IBW + 0.4 * (bodyweight - IBW)) / creatinine * (A_male * (sex >= 0.5) + A_female * (!(sex >= 0.5)))",
             {OperationInput("bodyweight", InputType::DOUBLE),
              OperationInput("IBW", InputType::DOUBLE),
              OperationInput("age", InputType::INTEGER),
              OperationInput("creatinine", InputType::DOUBLE),
-             OperationInput("isMale", InputType::BOOL),
+             OperationInput("sex", InputType::DOUBLE),
              OperationInput("A_male", InputType::DOUBLE),
              OperationInput("A_female", InputType::DOUBLE)});
 
     // Male, 49 years old, 71.4kg, creatinine 23.4umol/l, 165cm
-    rc = IBWComputation.evaluate({OperationInput("height", 165), OperationInput("isMale", true)}, IBWvalue);
+    rc = IBWComputation.evaluate({OperationInput("height", 165), OperationInput("sex", 1.0)}, IBWvalue);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(61.25, IBWvalue);
 
-    rc = isMale.setValue(true);
+    rc = sex.setValue(1.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(49);
     ASSERT_TRUE(rc);
@@ -618,21 +618,21 @@ TEST(Core_TestOperation, CockcroftGaultAdjIBW)
     rc = IBW.setValue(IBWvalue);
     ASSERT_TRUE(rc);
 
-    rc = jsCG_IBW.evaluate({creatinine, bodyweight, age, isMale, A_male, A_female, IBW}, eGFR);
+    rc = jsCG_IBW.evaluate({creatinine, bodyweight, age, sex, A_male, A_female, IBW}, eGFR);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(312.3995, eGFR);
     eGFR_CockcroftGaultAdjIBW hc_CG_AdjIBW;
     double hc_eGFR;
-    rc = hc_CG_AdjIBW.evaluate({creatinine, bodyweight, age, isMale, OperationInput("height", 165)}, hc_eGFR);
+    rc = hc_CG_AdjIBW.evaluate({creatinine, bodyweight, age, sex, OperationInput("height", 165)}, hc_eGFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 
     // Female, 53 years old, 51.3kg, creatinine 13.4umol/l, 191cm
-    rc = IBWComputation.evaluate({OperationInput("height", 191), OperationInput("isMale", false)}, IBWvalue);
+    rc = IBWComputation.evaluate({OperationInput("height", 191), OperationInput("sex", 0.0)}, IBWvalue);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(74.6, IBWvalue);
 
-    rc = isMale.setValue(false);
+    rc = sex.setValue(0.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(53);
     ASSERT_TRUE(rc);
@@ -643,10 +643,10 @@ TEST(Core_TestOperation, CockcroftGaultAdjIBW)
     rc = IBW.setValue(IBWvalue);
     ASSERT_TRUE(rc);
 
-    rc = jsCG_IBW.evaluate({creatinine, bodyweight, age, isMale, A_male, A_female, IBW}, eGFR);
+    rc = jsCG_IBW.evaluate({creatinine, bodyweight, age, sex, A_male, A_female, IBW}, eGFR);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(440.786149, eGFR);
-    rc = hc_CG_AdjIBW.evaluate({creatinine, bodyweight, age, isMale, OperationInput("height", 191)}, hc_eGFR);
+    rc = hc_CG_AdjIBW.evaluate({creatinine, bodyweight, age, sex, OperationInput("height", 191)}, hc_eGFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 }
@@ -665,14 +665,14 @@ TEST(Core_TestOperation, MDRD)
     OperationInput height("height", InputType::INTEGER);
     OperationInput age("age", InputType::INTEGER);
     OperationInput creatinine("creatinine", InputType::DOUBLE);
-    OperationInput isMale("isMale", InputType::BOOL);
+    OperationInput sex("sex", InputType::DOUBLE);
     OperationInput isAB("isAB", InputType::BOOL);
 
     JSExpression jsMDRD_eGFR(
-            "175 * Math.pow(0.0113 * creatinine, -1.154) * Math.pow(age, -0.203) * ((1 * (isMale)) + (0.742 * !isMale)) * ((1 * (!isAB)) + (1.212 * isAB))",
+            "175 * Math.pow(0.0113 * creatinine, -1.154) * Math.pow(age, -0.203) * ((1 * ((sex >= 0.5))) + (0.742 * !(sex >= 0.5))) * ((1 * (!isAB)) + (1.212 * isAB))",
             {OperationInput("creatinine", InputType::DOUBLE),
              OperationInput("age", InputType::INTEGER),
-             OperationInput("isMale", InputType::BOOL),
+             OperationInput("sex", InputType::DOUBLE),
              OperationInput("isAB", InputType::BOOL)});
 
     JSExpression jsMDRD_BSA(
@@ -683,7 +683,7 @@ TEST(Core_TestOperation, MDRD)
             "eGFR * BSA / 1.73", {OperationInput("eGFR", InputType::DOUBLE), OperationInput("BSA", InputType::DOUBLE)});
 
     // Male, 49 years old, 71.4kg, creatinine 23.4umol/l, 165cm, Caucasian
-    rc = isMale.setValue(true);
+    rc = sex.setValue(1.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(49);
     ASSERT_TRUE(rc);
@@ -696,7 +696,7 @@ TEST(Core_TestOperation, MDRD)
     rc = isAB.setValue(false);
     ASSERT_TRUE(rc);
 
-    rc = jsMDRD_eGFR.evaluate({creatinine, age, isMale, isAB}, eGFR_value);
+    rc = jsMDRD_eGFR.evaluate({creatinine, age, sex, isAB}, eGFR_value);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(368.638441, eGFR_value);
 
@@ -711,14 +711,14 @@ TEST(Core_TestOperation, MDRD)
     rc = jsMDRD_GFR.evaluate({eGFR, BSA}, GFR_value);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(380.555904, GFR_value);
-    GFR_MDRD hc_MDRD;
+    eGFR_MDRD hc_MDRD;
     double hc_GFR;
-    rc = hc_MDRD.evaluate({creatinine, bodyweight, age, isMale, height, isAB}, hc_GFR);
+    rc = hc_MDRD.evaluate({creatinine, bodyweight, age, sex, height, isAB}, hc_GFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(GFR_value - hc_GFR) < 2e-5);
 
     // Female, 53 years old, 51.3kg, creatinine 13.4umol/l, 191cm, African-Black
-    rc = isMale.setValue(false);
+    rc = sex.setValue(0.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(53);
     ASSERT_TRUE(rc);
@@ -731,7 +731,7 @@ TEST(Core_TestOperation, MDRD)
     rc = isAB.setValue(true);
     ASSERT_TRUE(rc);
 
-    rc = jsMDRD_eGFR.evaluate({creatinine, age, isMale, isAB}, eGFR_value);
+    rc = jsMDRD_eGFR.evaluate({creatinine, age, sex, isAB}, eGFR_value);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(620.847749, eGFR_value);
 
@@ -746,7 +746,7 @@ TEST(Core_TestOperation, MDRD)
     rc = jsMDRD_GFR.evaluate({eGFR, BSA}, GFR_value);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(619.233545, GFR_value);
-    rc = hc_MDRD.evaluate({creatinine, bodyweight, age, isMale, height, isAB}, hc_GFR);
+    rc = hc_MDRD.evaluate({creatinine, bodyweight, age, sex, height, isAB}, hc_GFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(GFR_value - hc_GFR) < 2e-4);
 }
@@ -765,19 +765,19 @@ TEST(Core_TestOperation, CKD_EPI)
     OperationInput height("height", InputType::INTEGER);
     OperationInput age("age", InputType::INTEGER);
     OperationInput creatinine("creatinine", InputType::DOUBLE);
-    OperationInput isMale("isMale", InputType::BOOL);
+    OperationInput sex("sex", InputType::DOUBLE);
     OperationInput isAB("isAB", InputType::BOOL);
 
     JSExpression jsCKD_EPI_eGFR(
             "141 * \
-            Math.pow(Math.min(0.0113 * creatinine / (0.7 * !isMale + 0.9 * isMale), 1), (-0.329 * !isMale - 0.411 * isMale)) * \
-              Math.pow(Math.max(0.0113 * creatinine / (0.7 * !isMale + 0.9 * isMale), 1), (-1.209)) * \
+            Math.pow(Math.min(0.0113 * creatinine / (0.7 * !(sex >= 0.5) + 0.9 * (sex >= 0.5)), 1), (-0.329 * !(sex >= 0.5) - 0.411 * (sex >= 0.5))) * \
+              Math.pow(Math.max(0.0113 * creatinine / (0.7 * !(sex >= 0.5) + 0.9 * (sex >= 0.5)), 1), (-1.209)) * \
               Math.pow(0.993, age) * \
-            (1 + 0.018 * !isMale) * \
+            (1 + 0.018 * !(sex >= 0.5)) * \
             (1 + 0.159 * isAB)",
             {OperationInput("creatinine", InputType::DOUBLE),
              OperationInput("age", InputType::INTEGER),
-             OperationInput("isMale", InputType::BOOL),
+             OperationInput("sex", InputType::DOUBLE),
              OperationInput("isAB", InputType::BOOL)});
 
     JSExpression jsCKD_EPI_BSA(
@@ -788,7 +788,7 @@ TEST(Core_TestOperation, CKD_EPI)
             "eGFR * BSA / 1.73", {OperationInput("eGFR", InputType::DOUBLE), OperationInput("BSA", InputType::DOUBLE)});
 
     // Male, 49 years old, 71.4kg, creatinine 23.4umol/l, 165cm, Caucasian
-    rc = isMale.setValue(true);
+    rc = sex.setValue(1.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(49);
     ASSERT_TRUE(rc);
@@ -801,7 +801,7 @@ TEST(Core_TestOperation, CKD_EPI)
     rc = isAB.setValue(false);
     ASSERT_TRUE(rc);
 
-    rc = jsCKD_EPI_eGFR.evaluate({creatinine, age, isMale, isAB}, eGFR_value);
+    rc = jsCKD_EPI_eGFR.evaluate({creatinine, age, sex, isAB}, eGFR_value);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(165.334316, eGFR_value);
 
@@ -816,14 +816,14 @@ TEST(Core_TestOperation, CKD_EPI)
     rc = jsCKD_EPI_GFR.evaluate({eGFR, BSA}, GFR_value);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(170.679297, GFR_value);
-    GFR_CKD_EPI hc_CKD_EPI;
+    eGFR_CKD_EPI hc_CKD_EPI;
     double hc_GFR;
-    rc = hc_CKD_EPI.evaluate({creatinine, bodyweight, age, isMale, height, isAB}, hc_GFR);
+    rc = hc_CKD_EPI.evaluate({creatinine, bodyweight, age, sex, height, isAB}, hc_GFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(GFR_value - hc_GFR) < 2e-5);
 
     // Female, 53 years old, 51.3kg, creatinine 13.4umol/l, 191cm, African-Black
-    rc = isMale.setValue(false);
+    rc = sex.setValue(0.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(53);
     ASSERT_TRUE(rc);
@@ -836,7 +836,7 @@ TEST(Core_TestOperation, CKD_EPI)
     rc = isAB.setValue(true);
     ASSERT_TRUE(rc);
 
-    rc = jsCKD_EPI_eGFR.evaluate({creatinine, age, isMale, isAB}, eGFR_value);
+    rc = jsCKD_EPI_eGFR.evaluate({creatinine, age, sex, isAB}, eGFR_value);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(189.721900, eGFR_value);
 
@@ -851,7 +851,7 @@ TEST(Core_TestOperation, CKD_EPI)
     rc = jsCKD_EPI_GFR.evaluate({eGFR, BSA}, GFR_value);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(189.228623, GFR_value);
-    rc = hc_CKD_EPI.evaluate({creatinine, bodyweight, age, isMale, height, isAB}, hc_GFR);
+    rc = hc_CKD_EPI.evaluate({creatinine, bodyweight, age, sex, height, isAB}, hc_GFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(GFR_value - hc_GFR) < 2e-4);
 }
@@ -867,21 +867,21 @@ TEST(Core_TestOperation, Schwartz)
     OperationInput height("height", InputType::INTEGER);
     OperationInput age("age", InputType::INTEGER);
     OperationInput creatinine("creatinine", InputType::DOUBLE);
-    OperationInput isMale("isMale", InputType::BOOL);
+    OperationInput sex("sex", InputType::DOUBLE);
 
     /// \warning This equations misses some intervals (e.g., 1 < age <= 2 or age <= 1 && bodyweight <= 2.5 && bornAtTerm) !!!
     JSExpression jsCG_Schwartz(
             "height / creatinine * \n\
             (0.33 * (age <= 1 && bodyweight <= 2.5) + \n\
                                                               0.45 * (age <= 1 && bornAtTerm) + \n\
-                       0.55 * (((age > 2) && (age <= 20) && (!isMale)) || ((age > 2) && (age < 13))) + \n\
-                       0.70 * ((age > 13) && (age <= 20) && (isMale)))",
+                       0.55 * (((age > 2) && (age <= 20) && (!(sex >= 0.5))) || ((age > 2) && (age < 13))) + \n\
+                       0.70 * ((age > 13) && (age <= 20) && ((sex >= 0.5))))",
             {OperationInput("bodyweight", InputType::DOUBLE),
              OperationInput("bornAtTerm", InputType::BOOL),
              OperationInput("age", InputType::INTEGER),
              OperationInput("height", InputType::INTEGER),
              OperationInput("creatinine", InputType::DOUBLE),
-             OperationInput("isMale", InputType::BOOL)});
+             OperationInput("sex", InputType::DOUBLE)});
 
     // TODO : I don't know why it doesn't work with these equations.
     // It is related to the new tests if a JS variable is undefined or not (modifs of the
@@ -890,18 +890,18 @@ TEST(Core_TestOperation, Schwartz)
     /*JSExpression jsCG_Schwartz("height / creatinine * \n\
                                   (0.33 * (age <= 1 && bodyweight <= 2.5) + \n\
                                    0.45 * (age <= 1 && bornAtTerm) + \n\
-                                   0.55 * (age > 2 && (age <= 13 || (age <= 20 && !isMale))) + \n\
-                                   0.70 * (age > 13 && age <= 20 && isMale))",
+                                   0.55 * (age > 2 && (age <= 13 || (age <= 20 && !(sex >= 0.5)))) + \n\
+                                   0.70 * (age > 13 && age <= 20 && (sex >= 0.5)))",
         { OperationInput("bodyweight", InputType::DOUBLE),
           OperationInput("bornAtTerm", InputType::BOOL),
           OperationInput("age", InputType::INTEGER),
           OperationInput("height", InputType::INTEGER),
           OperationInput("creatinine", InputType::DOUBLE),
-          OperationInput("isMale", InputType::BOOL) });*/
+          OperationInput("sex", InputType::DOUBLE) });*/
 
 
     // Male, 4 months old, 2.4kg, creatinine 23.4umol/l, born at term, 80cm
-    rc = isMale.setValue(true);
+    rc = sex.setValue(1.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(0);
     ASSERT_TRUE(rc);
@@ -914,17 +914,17 @@ TEST(Core_TestOperation, Schwartz)
     rc = bornAtTerm.setValue(false);
     ASSERT_TRUE(rc);
 
-    rc = jsCG_Schwartz.evaluate({creatinine, bodyweight, age, isMale, bornAtTerm, height}, eGFR);
+    rc = jsCG_Schwartz.evaluate({creatinine, bodyweight, age, sex, bornAtTerm, height}, eGFR);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(1.128205, eGFR);
     eGFR_Schwartz hc_Schwartz;
     double hc_eGFR;
-    rc = hc_Schwartz.evaluate({creatinine, bodyweight, age, isMale, bornAtTerm, height}, hc_eGFR);
+    rc = hc_Schwartz.evaluate({creatinine, bodyweight, age, sex, bornAtTerm, height}, hc_eGFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 
     // Male, 4 months old, 7.4kg, creatinine 23.4umol/l, born at term, 80cm
-    rc = isMale.setValue(true);
+    rc = sex.setValue(1.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(0);
     ASSERT_TRUE(rc);
@@ -937,15 +937,15 @@ TEST(Core_TestOperation, Schwartz)
     rc = bornAtTerm.setValue(true);
     ASSERT_TRUE(rc);
 
-    rc = jsCG_Schwartz.evaluate({creatinine, bodyweight, age, isMale, bornAtTerm, height}, eGFR);
+    rc = jsCG_Schwartz.evaluate({creatinine, bodyweight, age, sex, bornAtTerm, height}, eGFR);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(1.538462, eGFR);
-    rc = hc_Schwartz.evaluate({creatinine, bodyweight, age, isMale, bornAtTerm, height}, hc_eGFR);
+    rc = hc_Schwartz.evaluate({creatinine, bodyweight, age, sex, bornAtTerm, height}, hc_eGFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 
     // Male, 4 years, creatinine 86.2umol/l, 120cm
-    rc = isMale.setValue(true);
+    rc = sex.setValue(1.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(4);
     ASSERT_TRUE(rc);
@@ -958,15 +958,15 @@ TEST(Core_TestOperation, Schwartz)
     rc = bodyweight.setValue(27.4);
     ASSERT_TRUE(rc);
 
-    rc = jsCG_Schwartz.evaluate({creatinine, bodyweight, age, isMale, bornAtTerm, height}, eGFR);
+    rc = jsCG_Schwartz.evaluate({creatinine, bodyweight, age, sex, bornAtTerm, height}, eGFR);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(0.765661, eGFR);
-    rc = hc_Schwartz.evaluate({creatinine, bodyweight, age, isMale, bornAtTerm, height}, hc_eGFR);
+    rc = hc_Schwartz.evaluate({creatinine, bodyweight, age, sex, bornAtTerm, height}, hc_eGFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 
     // Male, 14 years old, creatinine 86.2umol/l, 140cm
-    rc = isMale.setValue(true);
+    rc = sex.setValue(1.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(14);
     ASSERT_TRUE(rc);
@@ -979,15 +979,15 @@ TEST(Core_TestOperation, Schwartz)
     rc = bodyweight.setValue(47.4);
     ASSERT_TRUE(rc);
 
-    rc = jsCG_Schwartz.evaluate({creatinine, bodyweight, age, isMale, bornAtTerm, height}, eGFR);
+    rc = jsCG_Schwartz.evaluate({creatinine, bodyweight, age, sex, bornAtTerm, height}, eGFR);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(1.136891, eGFR);
-    rc = hc_Schwartz.evaluate({creatinine, bodyweight, age, isMale, bornAtTerm, height}, hc_eGFR);
+    rc = hc_Schwartz.evaluate({creatinine, bodyweight, age, sex, bornAtTerm, height}, hc_eGFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 
     // Female, 14 years old, creatinine 86.2umol/l, 140cm
-    rc = isMale.setValue(false);
+    rc = sex.setValue(0.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(14);
     ASSERT_TRUE(rc);
@@ -1001,10 +1001,10 @@ TEST(Core_TestOperation, Schwartz)
     ASSERT_TRUE(rc);
 
     // TODO : These tests have been removed, for the reason explained above
-    //    rc = jsCG_Schwartz.evaluate({ creatinine, bodyweight, age, isMale, bornAtTerm, height }, eGFR);
+    //    rc = jsCG_Schwartz.evaluate({ creatinine, bodyweight, age, sex, bornAtTerm, height }, eGFR);
     //    ASSERT_TRUE (rc);
     //    ASSERT_DOUBLE_EQ (0.893271, eGFR);
-    rc = hc_Schwartz.evaluate({creatinine, bodyweight, age, isMale, bornAtTerm, height}, hc_eGFR);
+    rc = hc_Schwartz.evaluate({creatinine, bodyweight, age, sex, bornAtTerm, height}, hc_eGFR);
     ASSERT_TRUE(rc);
     //    ASSERT_TRUE (fabs(eGFR - hc_eGFR) < 1e-6);s
 }
@@ -1023,13 +1023,13 @@ TEST(Core_TestOperation, Jelliffe)
     OperationInput height("height", InputType::INTEGER);
     OperationInput age("age", InputType::INTEGER);
     OperationInput creatinine("creatinine", InputType::DOUBLE);
-    OperationInput isMale("isMale", InputType::BOOL);
+    OperationInput sex("sex", InputType::DOUBLE);
 
     JSExpression jsJelliffe_eGFR(
-            "(1 - 0.1 * !isMale) * (98 - (0.8 * age - 20)) / (0.0113 * creatinine)",
+            "(1 - 0.1 * !(sex >= 0.5)) * (98 - (0.8 * age - 20)) / (0.0113 * creatinine)",
             {OperationInput("creatinine", InputType::DOUBLE),
              OperationInput("age", InputType::INTEGER),
-             OperationInput("isMale", InputType::BOOL)});
+             OperationInput("sex", InputType::DOUBLE)});
 
     JSExpression jsJelliffe_BSA(
             "0.007184 * Math.pow(height, 0.725) * Math.pow(bodyweight, 0.425)",
@@ -1039,7 +1039,7 @@ TEST(Core_TestOperation, Jelliffe)
             "eGFR * BSA / 1.73", {OperationInput("eGFR", InputType::DOUBLE), OperationInput("BSA", InputType::DOUBLE)});
 
     // Male, 49 years old, 71.4kg, creatinine 123.4umol/l, 165cm
-    rc = isMale.setValue(true);
+    rc = sex.setValue(1.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(49);
     ASSERT_TRUE(rc);
@@ -1050,7 +1050,7 @@ TEST(Core_TestOperation, Jelliffe)
     rc = height.setValue(165);
     ASSERT_TRUE(rc);
 
-    rc = jsJelliffe_eGFR.evaluate({creatinine, age, isMale}, eGFR_value);
+    rc = jsJelliffe_eGFR.evaluate({creatinine, age, sex}, eGFR_value);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(56.510951, eGFR_value);
 
@@ -1067,12 +1067,12 @@ TEST(Core_TestOperation, Jelliffe)
     ASSERT_DOUBLE_EQ(58.337855, GFR_value);
     GFR_Jelliffe hc_Jelliffe;
     double hc_GFR;
-    rc = hc_Jelliffe.evaluate({creatinine, age, isMale, height, bodyweight}, hc_GFR);
+    rc = hc_Jelliffe.evaluate({creatinine, age, sex, height, bodyweight}, hc_GFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(GFR_value - hc_GFR) < 2e-5);
 
     // Female, 53 years old, 51.3kg, creatinine 313.4umol/l, 191cm
-    rc = isMale.setValue(false);
+    rc = sex.setValue(0.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(53);
     ASSERT_TRUE(rc);
@@ -1083,7 +1083,7 @@ TEST(Core_TestOperation, Jelliffe)
     rc = height.setValue(191);
     ASSERT_TRUE(rc);
 
-    rc = jsJelliffe_eGFR.evaluate({creatinine, age, isMale}, eGFR_value);
+    rc = jsJelliffe_eGFR.evaluate({creatinine, age, sex}, eGFR_value);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(19.212632, eGFR_value);
 
@@ -1098,7 +1098,7 @@ TEST(Core_TestOperation, Jelliffe)
     rc = jsJelliffe_GFR.evaluate({eGFR, BSA}, GFR_value);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(19.162679, GFR_value);
-    rc = hc_Jelliffe.evaluate({creatinine, age, isMale, height, bodyweight}, hc_GFR);
+    rc = hc_Jelliffe.evaluate({creatinine, age, sex, height, bodyweight}, hc_GFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(GFR_value - hc_GFR) < 2e-5);
 }
@@ -1113,20 +1113,20 @@ TEST(Core_TestOperation, SalazarCorcoran)
     OperationInput height("height", InputType::INTEGER);
     OperationInput age("age", InputType::INTEGER);
     OperationInput creatinine("creatinine", InputType::DOUBLE);
-    OperationInput isMale("isMale", InputType::BOOL);
+    OperationInput sex("sex", InputType::DOUBLE);
 
     /// \warning This equations returns huge values!
     JSExpression jsCG_SalazarCorcoran(
-            "isMale * ((137 - age) * (0.285 * bodyweight + 12.1 * height * height) * 0.0113 / (51 * creatinine)) + \
-            !isMale * ((146 - age) * (0.287 * bodyweight + 9.74 * height * height) * 0.0113 / (60 * creatinine))",
+            "(sex >= 0.5) * ((137 - age) * (0.285 * bodyweight + 12.1 * height * height) * 0.0113 / (51 * creatinine)) + \
+            !(sex >= 0.5) * ((146 - age) * (0.287 * bodyweight + 9.74 * height * height) * 0.0113 / (60 * creatinine))",
             {OperationInput("bodyweight", InputType::DOUBLE),
              OperationInput("age", InputType::INTEGER),
              OperationInput("height", InputType::INTEGER),
              OperationInput("creatinine", InputType::DOUBLE),
-             OperationInput("isMale", InputType::BOOL)});
+             OperationInput("sex", InputType::DOUBLE)});
 
     // Male, 49 years old, 122.4kg, creatinine 23.4umol/l, 160cm
-    rc = isMale.setValue(true);
+    rc = sex.setValue(1.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(49);
     ASSERT_TRUE(rc);
@@ -1137,17 +1137,17 @@ TEST(Core_TestOperation, SalazarCorcoran)
     rc = creatinine.setValue(23.4);
     ASSERT_TRUE(rc);
 
-    rc = jsCG_SalazarCorcoran.evaluate({creatinine, bodyweight, age, isMale, height}, eGFR);
+    rc = jsCG_SalazarCorcoran.evaluate({creatinine, bodyweight, age, sex, height}, eGFR);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(258.136444, eGFR);
     eGFR_SalazarCorcoran hc_SalazarCorcoran;
     double hc_eGFR;
-    rc = hc_SalazarCorcoran.evaluate({creatinine, bodyweight, age, isMale, height}, hc_eGFR);
+    rc = hc_SalazarCorcoran.evaluate({creatinine, bodyweight, age, sex, height}, hc_eGFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 
     // Female, 53 years old, 162.4kg, creatinine 123.4umol/l, 170cm
-    rc = isMale.setValue(false);
+    rc = sex.setValue(0.0);
     ASSERT_TRUE(rc);
     rc = age.setValue(53);
     ASSERT_TRUE(rc);
@@ -1158,10 +1158,10 @@ TEST(Core_TestOperation, SalazarCorcoran)
     rc = creatinine.setValue(123.4);
     ASSERT_TRUE(rc);
 
-    rc = jsCG_SalazarCorcoran.evaluate({creatinine, bodyweight, age, isMale, height}, eGFR);
+    rc = jsCG_SalazarCorcoran.evaluate({creatinine, bodyweight, age, sex, height}, eGFR);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(39.959835, eGFR);
-    rc = hc_SalazarCorcoran.evaluate({creatinine, bodyweight, age, isMale, height}, hc_eGFR);
+    rc = hc_SalazarCorcoran.evaluate({creatinine, bodyweight, age, sex, height}, hc_eGFR);
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 }

@@ -23,6 +23,7 @@
 #ifndef TUCUXI_CORE_TARGETEVALUATIONRESULT_H
 #define TUCUXI_CORE_TARGETEVALUATIONRESULT_H
 
+#include "tucucore/cyclestatistics.h"
 #include "tucucore/definitions.h"
 #include "tucucore/drugmodel/targetdefinition.h"
 #include "tucucore/targetevent.h"
@@ -74,6 +75,16 @@ public:
         return m_target;
     }
 
+    void setStats(const CycleStats& _stats)
+    {
+        m_stats = _stats;
+    }
+
+    const CycleStats& getStats() const
+    {
+        return m_stats;
+    }
+
 protected:
     //! Type of target, as there should be only a single one of each type it is sufficient to discriminate
     TargetType m_targetType;
@@ -89,6 +100,8 @@ protected:
 
     //! The target used for this evaluation
     TargetEvent m_target;
+
+    CycleStats m_stats;
 };
 
 

@@ -65,12 +65,6 @@ HARDCODED_OPERATION(BodySurfaceArea);
 HARDCODED_OPERATION(eGFR_CockcroftGaultGeneral);
 
 /// \ingroup TucuCore
-/// \brief Compute the eGFR value using the Cockcroft-Gault general equation.
-HARDCODED_OPERATION(OperationEGFRCockcroftGaultGeneral);
-
-
-
-/// \ingroup TucuCore
 /// \brief Compute the eGFR value using the Cockcroft-Gault equation based on IBW.
 HARDCODED_OPERATION(eGFR_CockcroftGaultIBW);
 
@@ -80,11 +74,11 @@ HARDCODED_OPERATION(eGFR_CockcroftGaultAdjIBW);
 
 /// \ingroup TucuCore
 /// \brief Compute the **GFR** value using the MDRD approach.
-HARDCODED_OPERATION(GFR_MDRD);
+HARDCODED_OPERATION(eGFR_MDRD);
 
 /// \ingroup TucuCore
 /// \brief Compute the **GFR** value using the Chronic Kidney Disease Epidemiology Collaboration method.
-HARDCODED_OPERATION(GFR_CKD_EPI);
+HARDCODED_OPERATION(eGFR_CKD_EPI);
 
 /// \ingroup TucuCore
 /// \brief Compute the eGFR value using the Schwartz (pediatric) method.
