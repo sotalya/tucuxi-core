@@ -459,7 +459,7 @@ public:
         }
     }
 
-    virtual ~SingleDoseAtTimeList() override;
+    ~SingleDoseAtTimeList() override;
 
     /// Comparison operator, used in tests.
     ///
@@ -473,8 +473,8 @@ public:
                        m_dosageList.begin(),
                        m_dosageList.end(),
                        _other.m_dosageList.begin(),
-                       [](const std::unique_ptr<SingleDoseAtTime>& a, const std::unique_ptr<SingleDoseAtTime>& b) {
-                           return *a == *b;
+                       [](const std::unique_ptr<SingleDoseAtTime>& _a, const std::unique_ptr<SingleDoseAtTime>& _b) {
+                           return *_a == *_b;
                        });
     }
 
@@ -585,7 +585,7 @@ public:
     /// \param _intervalStart Starting point of the interval.
     //
     /// \return Time of the first intake.
-    DateTime getFirstIntakeInterval(DateTime const& _intervalStart) const
+    DateTime getFirstIntakeInterval(DateTime const& _intervalStart) const override
     {
         for (auto const& dose : m_dosageList) {
             if (dose->getDateTime() >= _intervalStart) {
@@ -641,7 +641,7 @@ public:
     DateTime getFirstDosageDate() const
     {
         DateTime earlyDate;
-        if (m_dosageList.size() == 0) {
+        if (m_dosageList.empty()) {
             // Return and undefined date/time.
             return earlyDate;
         }
@@ -662,7 +662,7 @@ public:
     DateTime getLastDosageDate() const
     {
         DateTime latestDate;
-        if (m_dosageList.size() == 0) {
+        if (m_dosageList.empty()) {
             // Return and undefined date/time.
             return latestDate;
         }
@@ -827,7 +827,7 @@ public:
         }
     }
 
-    virtual ~SimpleDoseList() override;
+    ~SimpleDoseList() override;
 
     /// Comparison operator, used in tests.
     ///
@@ -842,8 +842,8 @@ public:
                        m_dosageList.begin(),
                        m_dosageList.end(),
                        _other.m_dosageList.begin(),
-                       [](const std::unique_ptr<SimpleDose>& a, const std::unique_ptr<SimpleDose>& b) {
-                           return *a == *b;
+                       [](const std::unique_ptr<SimpleDose>& _a, const std::unique_ptr<SimpleDose>& _b) {
+                           return *_a == *_b;
                        });
     }
 
@@ -954,7 +954,7 @@ public:
     /// \param _intervalStart Starting point of the interval.
     //
     /// \return Time of the first intake.
-    DateTime getFirstIntakeInterval(DateTime const& _intervalStart) const
+    DateTime getFirstIntakeInterval(DateTime const& _intervalStart) const override
     {
         for (auto const& dose : m_dosageList) {
             if (dose->getDateTime() >= _intervalStart) {
@@ -1005,7 +1005,7 @@ public:
     DateTime getFirstDosageDate() const
     {
         DateTime earlyDate;
-        if (m_dosageList.size() == 0) {
+        if (m_dosageList.empty()) {
             // Return and undefined date/time.
             return earlyDate;
         }
@@ -1026,7 +1026,7 @@ public:
     DateTime getLastDosageDate() const
     {
         DateTime latestDate;
-        if (m_dosageList.size() == 0) {
+        if (m_dosageList.empty()) {
             // Return and undefined date/time.
             return latestDate;
         }
