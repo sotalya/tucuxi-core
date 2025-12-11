@@ -212,10 +212,12 @@ Tucuxi::Core::DrugModel* QueryToCoreExtractor::extractDrugModel(
         return nullptr;
     }
 
+    if (drugModelRepository == nullptr) {
+        return nullptr;
+    }
 
     //TODO : MUST FIND A MODEL
     drugModel = drugModelRepository->getDrugModelById(_requestData.getDrugModelID());
-
 
     Tucuxi::Core::TreatmentDrugModelCompatibilityChecker checker;
     if (!checker.checkCompatibility(_drugTreatment, drugModel)) {
