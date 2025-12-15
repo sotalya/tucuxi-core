@@ -67,6 +67,12 @@ if(config_openmp)
     add_compile_definitions(CONFIG_OPENMP)
 endif(config_openmp)
 
+
+option(config_coverage "Builds for coverage")
+if(config_coverage)
+    set(CMAKE_CXX_FLAGS "--coverage -O0 -g")
+endif(config_coverage)
+
 add_definitions(-DUNICODE)
 add_definitions(-D_UNICODE)
 

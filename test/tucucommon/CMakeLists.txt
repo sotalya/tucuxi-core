@@ -41,8 +41,9 @@ file(GLOB TUCUTESTCOMMON_SOURCE_FILES
 
 add_executable(tucutestcommon ${TUCUTESTCOMMON_SOURCE_FILES})
 
+option(config_coverage "Builds for coverage")
 if(config_coverage)
-    target_compile_options(tucutestcommon PRIVATE --coverage -O0)
+    target_compile_options(tucutestcommon PRIVATE --coverage -O0 -g)
     target_link_options(tucutestcommon PRIVATE --coverage)
 endif(config_coverage)
 

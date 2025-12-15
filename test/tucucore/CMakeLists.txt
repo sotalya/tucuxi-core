@@ -111,8 +111,9 @@ file(GLOB TUCUTESTCORE_SOURCE_FILES
 
 add_executable(tucutestcore ${TUCUTESTCORE_HEADER_FILES} ${TUCUTESTCORE_SOURCE_FILES})
 
+option(config_coverage "Builds for coverage")
 if(config_coverage)
-    target_compile_options(tucutestcore PRIVATE --coverage -O0)
+    target_compile_options(tucutestcore PRIVATE --coverage -O0 -g)
     target_link_options(tucutestcore PRIVATE --coverage)
 endif(config_coverage)
 
