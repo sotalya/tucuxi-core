@@ -396,7 +396,7 @@ static const std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8
                                                     <covariateValue>
                                                         <standardValue>70</standardValue>
                                                         <aprioriComputation>
-                                                          <hardFormula>OperationEGFRCockcroftGaultGeneral</hardFormula>
+                                                          <hardFormula>eGFR_CockcroftGaultGeneral</hardFormula>
                                                           <comments/>
                                                         </aprioriComputation>
                                                     </covariateValue>
