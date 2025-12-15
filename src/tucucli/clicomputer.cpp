@@ -19,20 +19,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <fstream>
 
 #include "clicomputer.h"
 
-#include "tucucore/computingcomponent.h"
-#include "tucucore/computingservice/computingrequest.h"
-#include "tucucore/computingservice/icomputingservice.h"
 #include "tucucore/overloadevaluator.h"
 
 #include "tucuquery/computingqueryresponsexmlexport.h"
 #include "tucuquery/computingresponseexport.h"
 #include "tucuquery/querycomputer.h"
-#include "tucuquery/querydata.h"
-#include "tucuquery/queryimport.h"
-#include "tucuquery/querytocoreextractor.h"
 
 using namespace Tucuxi::Core;
 using namespace Tucuxi::Query;
