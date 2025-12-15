@@ -47,21 +47,6 @@ Value ValidValues::getDefaultValue() const
     return m_defaultValue->getValue();
 }
 
-Value ValidValues::getStepValue() const
-{
-    return std::move(m_valueSets[0])->getStepValue();
-}
-
-Value ValidValues::getToValue() const
-{
-    return std::move(m_valueSets[0])->getToValue();
-}
-
-Value ValidValues::getFromValue() const
-{
-    return std::move(m_valueSets[0])->getFromValue();
-}
-
 std::vector<Value> ValidValues::getValues() const
 {
     std::vector<DoseValue> result;
