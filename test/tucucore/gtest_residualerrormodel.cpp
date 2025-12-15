@@ -81,6 +81,21 @@ static Value applyEpsToValue2(
     return value;
 }
 
+static Concentrations applyEpsToArray(
+        ResidualErrorType _errorModelType, double _sigma, const Concentrations& _values, double _eps)
+{
+    Tucuxi::Core::SigmaResidualErrorModel errorModel;
+    errorModel.setErrorModel(_errorModelType);
+    Sigma sigma(1);
+    sigma[0] = _sigma;
+    errorModel.setSigma(sigma);
+    Tucuxi::Core::Deviations eps(1);
+    eps[0] = _eps;
+    Concentrations values = _values;
+    errorModel.applyEpsToArray(values, eps);
+    return values;
+}
+
 
 TEST(Core_TestResidualErrorModel, LogLikelihood)
 {
@@ -172,4 +187,47 @@ TEST(Core_TestResidualErrorModel, ApplyEpsToValue)
     // If epsilon is 0, then the value should not change
     calculated = applyEpsToValue(ResidualErrorType::PROPEXP, 2.0, 10.0, 0.0);
     ASSERT_DOUBLE_EQ(calculated, 10.0);
+
+    // If ResidualErrorType is NONE, then nothing should happen
+    calculated = applyEpsToValue(ResidualErrorType::NONE, 2.0, 10.0, 1.0);
+    ASSERT_DOUBLE_EQ(calculated, 10.0);
+}
+
+
+TEST(Core_TestResidualErrorModel, ApplyEpsToArray)
+{
+    Concentrations calculated;
+    Concentrations concentrations = {10.0, 11.0};
+
+    // If ResidualErrorType is NONE, then nothing should happen
+    calculated = applyEpsToArray(ResidualErrorType::NONE, 2.0, concentrations, 1.0);
+    ASSERT_DOUBLE_EQ(calculated[0], 10.0);
+    ASSERT_DOUBLE_EQ(calculated[1], 11.0);
+}
+
+///
+/// \brief Simple test of the EmptyResidualErrorModel class
+///
+TEST(Core_TestResidualErrorModel, EmptyResidualErrorModel)
+{
+    EmptyResidualErrorModel model;
+
+    ASSERT_TRUE(model.isEmpty());
+
+    Concentration concentration = 4.5;
+    Deviations eps = {1.2, 1.3};
+
+    model.applyEpsToValue(concentration, eps);
+    ASSERT_EQ(concentration, 4.5);
+
+    Concentrations concentrations = {4.5, 7.2};
+
+    model.applyEpsToArray(concentrations, eps);
+
+    ASSERT_EQ(concentrations[0], 4.5);
+    ASSERT_EQ(concentrations[1], 7.2);
+
+    ASSERT_EQ(model.calculateSampleLikelihood(12.1, 13.4), 0.0);
+
+    ASSERT_EQ(model.nbEpsilons(), 0);
 }
