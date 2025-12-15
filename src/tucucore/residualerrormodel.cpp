@@ -47,6 +47,10 @@ bool SigmaResidualErrorModel::isEmpty() const
     return m_sigma.size() == 0;
 }
 
+size_t SigmaResidualErrorModel::nbEpsilons() const
+{
+    return m_nbEpsilons;
+}
 
 void SigmaResidualErrorModel::applyEpsToValue(Concentration& _concentration, const Deviations& _eps) const
 {

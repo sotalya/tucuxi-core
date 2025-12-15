@@ -53,10 +53,7 @@ public:
     ///
     Value calculateSampleLikelihood(Value _expected, Value _observed) const override;
 
-    size_t nbEpsilons() const override
-    {
-        return m_nbEpsilons;
-    }
+    size_t nbEpsilons() const override;
 
 protected:
     /// The Sigma vector
