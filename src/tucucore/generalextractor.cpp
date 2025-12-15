@@ -22,6 +22,8 @@
 
 #include "generalextractor.h"
 
+#include "tucucommon/general.h"
+
 #include "tucucore/aposteriorietascalculator.h"
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/computingservice/icomputingservice.h"

@@ -22,12 +22,32 @@
 
 #include "errormodel.h"
 
+#include "drugdefinitions.h"
+#include "operation.h"
+
 namespace Tucuxi {
 namespace Core {
 
 ErrorModel::ErrorModel() = default;
 
 
+void ErrorModel::setApplyFormula(std::unique_ptr<Operation> _applyFormula)
+{
+    m_applyFormula = std::move(_applyFormula);
+}
+void ErrorModel::setLikelyhoodFormula(std::unique_ptr<Operation> _likelyhoodFormula)
+{
+    m_likelyhoodFormula = std::move(_likelyhoodFormula);
+}
+
+void ErrorModel::addOriginalSigma(std::unique_ptr<PopulationValue> _sigma)
+{
+    m_originalSigmas.push_back(std::move(_sigma));
+}
+void ErrorModel::setErrorModel(ResidualErrorType _errorModel)
+{
+    m_errorModel = _errorModel;
+}
 
 
 } // namespace Core

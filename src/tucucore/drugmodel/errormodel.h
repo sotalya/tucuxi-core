@@ -31,6 +31,8 @@
 namespace Tucuxi {
 namespace Core {
 
+class Operation;
+class PopulationValue;
 class ResidualErrorModelExtractor;
 
 class ErrorModel
@@ -38,23 +40,13 @@ class ErrorModel
 public:
     ErrorModel();
 
-    void setApplyFormula(std::unique_ptr<Operation> _applyFormula)
-    {
-        m_applyFormula = std::move(_applyFormula);
-    }
-    void setLikelyhoodFormula(std::unique_ptr<Operation> _likelyhoodFormula)
-    {
-        m_likelyhoodFormula = std::move(_likelyhoodFormula);
-    }
+    void setApplyFormula(std::unique_ptr<Operation> _applyFormula);
 
-    void addOriginalSigma(std::unique_ptr<PopulationValue> _sigma)
-    {
-        m_originalSigmas.push_back(std::move(_sigma));
-    }
-    void setErrorModel(ResidualErrorType _errorModel)
-    {
-        m_errorModel = _errorModel;
-    }
+    void setLikelyhoodFormula(std::unique_ptr<Operation> _likelyhoodFormula);
+
+    void addOriginalSigma(std::unique_ptr<PopulationValue> _sigma);
+
+    void setErrorModel(ResidualErrorType _errorModel);
 
 
     // No invariants

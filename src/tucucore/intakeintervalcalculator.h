@@ -26,6 +26,8 @@
 #include <map>
 #include <memory>
 
+#include "tucucommon/general.h"
+
 #include "tucucore/cachedexponentials.h"
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/definitions.h"

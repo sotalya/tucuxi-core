@@ -22,6 +22,8 @@
 
 #include "drugdomainconstraintsevaluator.h"
 
+#include "tucucommon/general.h"
+
 #include "tucucore/covariateevent.h"
 #include "tucucore/covariateextractor.h"
 #include "tucucore/dosage.h"

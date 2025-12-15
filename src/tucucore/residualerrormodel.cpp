@@ -182,5 +182,25 @@ Value SigmaResidualErrorModel::calculateSampleLikelihood(Value _expected, Value 
     return -phi;
 }
 
+void SoftCodedResidualErrorModel::setApplyFormula(std::unique_ptr<Operation> _applyFormula)
+{
+    m_applyFormula = std::move(_applyFormula);
+}
+void SoftCodedResidualErrorModel::setLikelyhoodFormula(std::unique_ptr<Operation> _likelyhoodFormula)
+{
+    m_likelyhoodFormula = std::move(_likelyhoodFormula);
+}
+void SoftCodedResidualErrorModel::setSigma(Sigma _sigma)
+{
+    m_sigma = std::move(_sigma);
+}
+
+
+size_t SoftCodedResidualErrorModel::nbEpsilons() const
+{
+    return m_nbEpsilons;
+}
+
+
 } // namespace Core
 } // namespace Tucuxi

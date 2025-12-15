@@ -24,6 +24,8 @@
 
 #include "cachecomputing.h"
 
+#include "tucucommon/general.h"
+
 #include "computingservice/computingrequest.h"
 #include "computingservice/computingresponse.h"
 #include "computingservice/icomputingservice.h"

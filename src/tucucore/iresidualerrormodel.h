@@ -23,11 +23,7 @@
 #ifndef TUCUXI_CORE_IRESIDUALERRORMODEL_H
 #define TUCUXI_CORE_IRESIDUALERRORMODEL_H
 
-
-#include "tucucommon/general.h"
-
 #include "tucucore/definitions.h"
-#include "tucucore/drugdefinitions.h"
 
 namespace Tucuxi {
 namespace Core {

@@ -23,6 +23,8 @@
 #ifndef TUCUXI_CORE_RK4ONECOMPARTMENTEXTRA_H
 #define TUCUXI_CORE_RK4ONECOMPARTMENTEXTRA_H
 
+#include "tucucommon/general.h"
+
 #include "tucucore/intakeintervalcalculatorrk4.h"
 
 namespace Tucuxi {

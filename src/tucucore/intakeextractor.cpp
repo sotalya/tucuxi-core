@@ -22,6 +22,7 @@
 
 #include "tucucore/intakeextractor.h"
 
+#include "tucucommon/general.h"
 #include "tucucommon/unit.h"
 
 #define DBC_VERIFICATION

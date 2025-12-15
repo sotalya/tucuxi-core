@@ -27,10 +27,10 @@
 
 #include "tucucore/definitions.h"
 #include "tucucore/iresidualerrormodel.h"
+#include "tucucore/operation.h"
 
 namespace Tucuxi {
 namespace Core {
-
 
 class SigmaResidualErrorModel : public IResidualErrorModel
 {
@@ -75,28 +75,19 @@ class SoftCodedResidualErrorModel : public IResidualErrorModel
 public:
     SoftCodedResidualErrorModel() : m_nbEpsilons(1) {}
 
-    void setApplyFormula(std::unique_ptr<Operation> _applyFormula)
-    {
-        m_applyFormula = std::move(_applyFormula);
-    }
-    void setLikelyhoodFormula(std::unique_ptr<Operation> _likelyhoodFormula)
-    {
-        m_likelyhoodFormula = std::move(_likelyhoodFormula);
-    }
-    void setSigma(Sigma _sigma)
-    {
-        m_sigma = std::move(_sigma);
-    }
+    void setApplyFormula(std::unique_ptr<Operation> _applyFormula);
+
+    void setLikelyhoodFormula(std::unique_ptr<Operation> _likelyhoodFormula);
+
+    void setSigma(Sigma _sigma);
+
     bool isEmpty() const override;
     void applyEpsToValue(Concentration& _concentration, const Deviations& _eps) const override;
     void applyEpsToArray(Concentrations& _concentrations, const Deviations& _eps) const override;
 
     Value calculateSampleLikelihood(Value _expected, Value _observed) const override;
 
-    size_t nbEpsilons() const override
-    {
-        return m_nbEpsilons;
-    }
+    size_t nbEpsilons() const override;
 
 protected:
     std::unique_ptr<Operation> m_applyFormula;
