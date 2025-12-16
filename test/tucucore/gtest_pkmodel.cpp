@@ -133,6 +133,12 @@ TEST(Core_TestPkModelCollection, NormalBehavior)
     ASSERT_EQ(list[2]->getPkModelId(), "linear.2comp.micro");
     ASSERT_EQ(list[3]->getPkModelId(), "linear.2comp.macro");
 
+    auto idList = collection.getPkModelIdList();
+    ASSERT_EQ(idList[0], "linear.1comp.micro");
+    ASSERT_EQ(idList[1], "linear.1comp.macro");
+    ASSERT_EQ(idList[2], "linear.2comp.micro");
+    ASSERT_EQ(idList[3], "linear.2comp.macro");
+
     ASSERT_EQ(collection.getPkModelFromId("unexisting"), nullptr);
 
     std::shared_ptr<PkModel> newL2CMicro =

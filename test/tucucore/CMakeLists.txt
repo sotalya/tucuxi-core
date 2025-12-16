@@ -109,7 +109,8 @@ file(GLOB TUCUTESTCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/computingresponsecomparator.cpp
 )
 
-add_executable(tucutestcore ${TUCUTESTCORE_HEADER_FILES} ${TUCUTESTCORE_SOURCE_FILES})
+add_executable(tucutestcore ${TUCUTESTCORE_HEADER_FILES} ${TUCUTESTCORE_SOURCE_FILES}
+    gtest_treatmentdrugmodelcompatibilitychecker.cpp)
 
 option(config_coverage "Builds for coverage")
 if(config_coverage)
