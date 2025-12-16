@@ -164,15 +164,6 @@ public:
 
     ~DosageBounded() override {}
 
-    int extract(
-            IntakeExtractor& _extractor,
-            const DateTime& _start,
-            const DateTime& _end,
-            double _nbPointsPerHour,
-            const TucuUnit& _toUnit,
-            IntakeSeries& _series,
-            ExtractionOption _option) const override;
-
     /// \brief Return the instant of the first intake in the given interval.
     /// \param _intervalStart Starting point of the interval.
     /// \return Time of the first intake.

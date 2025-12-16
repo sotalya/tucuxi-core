@@ -47,8 +47,6 @@ namespace Core {
         return _extractor.extract(*this, _start, _end, _nbPointsPerHour, _toUnit, _series, _option); \
     }
 
-
-DOSAGE_UTILS_IMPL(DosageBounded)
 DOSAGE_UTILS_IMPL(SimpleDoseList)
 DOSAGE_UTILS_IMPL(SingleDoseAtTimeList)
 DOSAGE_UTILS_IMPL(DosageLoop)
