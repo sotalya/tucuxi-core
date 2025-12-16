@@ -109,3 +109,36 @@ TEST(Core_TestPkModel, PkModelFunctions)
     CHECK_CALCULATOR_TYPE(l2CMicro, Two, Micro);
     CHECK_CALCULATOR_TYPE(l2CMacro, Two, Macro);
 }
+
+TEST(Core_TestPkModelCollection, NormalBehavior)
+{
+    PkModelCollection collection;
+    std::shared_ptr<PkModel> l1CMicro =
+            std::make_shared<PkModel>("linear.1comp.micro", PkModel::AllowMultipleRoutes::No);
+    std::shared_ptr<PkModel> l1CMacro =
+            std::make_shared<PkModel>("linear.1comp.macro", PkModel::AllowMultipleRoutes::No);
+    std::shared_ptr<PkModel> l2CMicro =
+            std::make_shared<PkModel>("linear.2comp.micro", PkModel::AllowMultipleRoutes::No);
+    std::shared_ptr<PkModel> l2CMacro =
+            std::make_shared<PkModel>("linear.2comp.macro", PkModel::AllowMultipleRoutes::No);
+
+    ASSERT_EQ(collection.addPkModel(l1CMicro), true);
+    ASSERT_EQ(collection.addPkModel(l1CMacro), true);
+    ASSERT_EQ(collection.addPkModel(l2CMicro), true);
+    ASSERT_EQ(collection.addPkModel(l2CMacro), true);
+
+    auto list = collection.getPkModelList();
+    ASSERT_EQ(list[0]->getPkModelId(), "linear.1comp.micro");
+    ASSERT_EQ(list[1]->getPkModelId(), "linear.1comp.macro");
+    ASSERT_EQ(list[2]->getPkModelId(), "linear.2comp.micro");
+    ASSERT_EQ(list[3]->getPkModelId(), "linear.2comp.macro");
+
+    ASSERT_EQ(collection.getPkModelFromId("unexisting"), nullptr);
+
+    std::shared_ptr<PkModel> newL2CMicro =
+            std::make_shared<PkModel>("linear.2comp.micro", PkModel::AllowMultipleRoutes::No);
+
+    ASSERT_EQ(collection.addPkModel(newL2CMicro), false);
+
+    ASSERT_EQ(l2CMicro->getCalculatorForRoute(AbsorptionModel::Infusion), nullptr);
+}
