@@ -176,6 +176,20 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
             }
         },
         {
+            UnitType::IUConcentration,
+            {
+                {"iu/l", 1.0},
+                {"iu/ml", 1000.0},
+                {"miu/l", 0.001},
+                {"IU/l", 1.0},
+                {"IU/ml", 1000.0},
+                {"mIU/l", 0.001},
+                {"IU/L", 1.0},
+                {"IU/mL", 1000.0},
+                {"mIU/L", 0.001}
+            }
+        },
+        {
             UnitType::FlowRate,
             {
                 {"ml/min", 1.0},

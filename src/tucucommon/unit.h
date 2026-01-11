@@ -106,6 +106,7 @@ public:
         Weight = 0,
         Concentration,
         MoleConcentration,
+        IUConcentration,
         Time,
         ConcentrationTime,
         Length,

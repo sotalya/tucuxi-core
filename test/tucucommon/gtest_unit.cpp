@@ -3524,6 +3524,103 @@ TEST(Common_TestUnit, ConcentrationMoleUnit)
             1.0);
 }
 
+
+TEST(Common_TestUnit, ConcentrationIUUnit)
+{
+    // clang-format off
+    vector<string> concentrationIUUnits
+        {
+            "iu/l",
+            "iu/ml",
+            "miu/l",
+            "IU/l",
+            "IU/ml",
+            "mIU/l",
+            "IU/L",
+            "IU/mL",
+            "mIU/L"
+        };
+    // clang-format on
+
+    Tucuxi::Common::UnitManager unitManager;
+
+    Tucuxi::Core::Value value = 2.0;
+
+    for (const auto& unit : concentrationIUUnits) {
+        ASSERT_TRUE(unitManager.isKnown(unit));
+    }
+
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("iu/l"), Tucuxi::Common::TucuUnit("IU/l")),
+            2.0);
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("iu/l"), Tucuxi::Common::TucuUnit("IU/L")),
+            2.0);
+
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("iu/l"), Tucuxi::Common::TucuUnit("iu/ml")),
+            0.002);
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("iu/l"), Tucuxi::Common::TucuUnit("miu/l")),
+            2000.0);
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("iu/l"), Tucuxi::Common::TucuUnit("IU/ml")),
+            0.002);
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("iu/l"), Tucuxi::Common::TucuUnit("mIU/l")),
+            2000.0);
+
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("iu/l"), Tucuxi::Common::TucuUnit("IU/mL")),
+            0.002);
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("iu/l"), Tucuxi::Common::TucuUnit("mIU/L")),
+            2000.0);
+
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("IU/l"), Tucuxi::Common::TucuUnit("iu/l")),
+            2.0);
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("IU/l"), Tucuxi::Common::TucuUnit("iu/l")),
+            2.0);
+
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("iu/ml"), Tucuxi::Common::TucuUnit("iu/l")),
+            2000.0);
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("miu/l"), Tucuxi::Common::TucuUnit("iu/l")),
+            0.002);
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("IU/ml"), Tucuxi::Common::TucuUnit("iu/l")),
+            2000.0);
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("mIU/l"), Tucuxi::Common::TucuUnit("iu/l")),
+            0.002);
+
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("IU/mL"), Tucuxi::Common::TucuUnit("iu/l")),
+            2000.0);
+    ASSERT_DOUBLE_EQ(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::IUConcentration>(
+                    value, Tucuxi::Common::TucuUnit("mIU/L"), Tucuxi::Common::TucuUnit("iu/l")),
+            0.002);
+}
+
 TEST(Common_TestUnit, MolarMassUnit)
 {
     // clang-format off
