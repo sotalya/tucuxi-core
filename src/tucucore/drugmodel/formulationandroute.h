@@ -304,6 +304,10 @@ public:
     {
     }
 
+    bool hasInfusion() const
+    {
+        return m_route == AdministrationRoute::IntravenousDrip;
+    }
 
     Formulation getFormulation() const
     {
