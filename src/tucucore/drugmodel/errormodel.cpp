@@ -22,8 +22,8 @@
 
 #include "errormodel.h"
 
-#include "drugdefinitions.h"
-#include "operation.h"
+#include "tucucore/drugdefinitions.h"
+#include "tucucore/operation.h"
 
 namespace Tucuxi {
 namespace Core {
