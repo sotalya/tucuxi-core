@@ -199,26 +199,11 @@ public:
     {
         return m_route == AdministrationRoute::IntravenousDrip;
     }
-    /*
-    AbsorptionModel getAbsorptionModel() const
+
+    bool isUndefined() const
     {
-        static std::map<AdministrationRoute, AbsorptionModel> map = {
-                {AdministrationRoute::Intramuscular, AbsorptionModel::Extravascular},
-                {AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular},
-                {AdministrationRoute::Nasal, AbsorptionModel::Extravascular},
-                {AdministrationRoute::IntravenousDrip, AbsorptionModel::Infusion},
-                {AdministrationRoute::Oral, AbsorptionModel::Extravascular},
-                {AdministrationRoute::Rectal, AbsorptionModel::Extravascular},
-                {AdministrationRoute::Subcutaneous, AbsorptionModel::Extravascular},
-                {AdministrationRoute::Sublingual, AbsorptionModel::Extravascular},
-                {AdministrationRoute::Transdermal, AbsorptionModel::Extravascular},
-                {AdministrationRoute::Undefined, AbsorptionModel::Undefined}};
-        if (map.end() != map.find(m_route)) {
-            return map[m_route];
-        }
-        return AbsorptionModel::Undefined;
+        return (m_route == AdministrationRoute::Undefined) || (m_formulation == Formulation::Undefined);
     }
-*/
 
     bool operator==(const FormulationAndRoute& _v2) const
     {
