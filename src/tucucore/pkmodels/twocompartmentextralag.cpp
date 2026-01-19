@@ -494,7 +494,14 @@ bool TwoCompartmentExtraLagMicro::computeConcentration(
     // or not we set the number of points for each of these two intervals
     if (_atTime <= m_Tlag) {
         m_nbPoints0 = 1;
-        m_nbPoints1 = 1;
+        if (m_Int > m_Tlag) {
+            m_nbPoints0 = 1;
+            m_nbPoints1 = 1;
+        }
+        else {
+            m_nbPoints0 = 2;
+            m_nbPoints1 = 0;
+        }
     }
     else {
         m_nbPoints0 = 0;
