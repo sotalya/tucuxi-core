@@ -279,8 +279,6 @@ ComputingStatus GeneralExtractor::generalExtractions(
         DateTime& _calculationStartTime,
         const DateTime& _covariateEndTime)
 {
-
-
     const HalfLife& halfLife = _drugModel.getTimeConsiderations().getHalfLife();
 
     Duration fantomDuration = secureStartDuration(halfLife);
@@ -334,9 +332,7 @@ ComputingStatus GeneralExtractor::generalExtractions(
         return ComputingStatus::IntakeExtractionError;
     })
 
-
     size_t nIntakes = intakeSeries.size();
-
 
     if (nIntakes > 0) {
         // Check the fantom start. Set the calculation start time
@@ -361,11 +357,9 @@ ComputingStatus GeneralExtractor::generalExtractions(
 
         // const DosageTimeRangeList& timeRanges = _drugTreatment.getDosageHistory().getDosageTimeRanges();
 
-
         IntakeEvent* lastIntake = &(intakeSeries.back());
 
         // If the treatement end is before the last point we want to get, then we add an empty dose to get points
-
         //        if (_traits->getEnd() > timeRanges.back()->getEndDate()) {
         Duration interval = _traits->getEnd() - (lastIntake->getEventTime() + lastIntake->getInterval());
         if (interval > Duration(std::chrono::hours(0))) {
@@ -462,8 +456,6 @@ ComputingStatus GeneralExtractor::generalExtractions(
     }
 
     for (const auto& analyteSet : _drugModel.getAnalyteSets()) {
-
-
         TreatmentDrugModelCompatibilityChecker checker;
         if (!checker.checkPkModelCompatibility(&_dosageHistory, _pkModel[analyteSet->getId()].get())) {
             return ComputingStatus::NoPkModelError;
@@ -624,17 +616,16 @@ ComputingStatus GeneralExtractor::generalExtractions(
             // for each event.
             parametersExtractionResult =
                     parameterExtractor.buildFullSet(intermediateParameterSeries, _parameterSeries[analyteGroupId]);
+
             if (parametersExtractionResult != ComputingStatus::Ok) {
-                m_logger.error("Can not consolidate parameters");
+                m_logger.error("Cannot consolidate parameters");
                 return parametersExtractionResult;
             }
         }
     }
 
-
     return ComputingStatus::Ok;
 }
-
 
 
 ComputingStatus GeneralExtractor::generalExtractions(

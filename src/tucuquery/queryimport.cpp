@@ -1376,6 +1376,7 @@ Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(
     static const string RETRIEVE_PARAMETERS = "retrieveParameters";
     static const string RETRIEVE_COVARIATES = "retrieveCovariates";
     static const string FORCE_UG_PER_LITER = "forceUgPerLiter";
+    static const string COMPUTE_GOF = "computeGoodnessOfFit";
 
     Common::XmlNodeIterator computingOptionRootIterator = _rootIterator->getChildren(_childName);
     Tucuxi::Core::PredictionParameterType predictionParameterType =
@@ -1386,6 +1387,8 @@ Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(
     Tucuxi::Core::RetrieveParametersOption retrieveParametersOption;
     Tucuxi::Core::RetrieveCovariatesOption retrieveCovariatesOption;
     Tucuxi::Core::ForceUgPerLiterOption forceUgPerLiter = Tucuxi::Core::ForceUgPerLiterOption::Force;
+    Tucuxi::Core::ComputeGoodnessOfFitOption computeGoodnessOfFitOption =
+        Tucuxi::Core::ComputeGoodnessOfFitOption::DoNotComputeGoodnessOfFit;
 
     if (getChildBool(computingOptionRootIterator, RETRIEVE_STATISTICS)) {
         retrieveStatisticsOption = Tucuxi::Core::RetrieveStatisticsOption::RetrieveStatistics;
@@ -1415,6 +1418,12 @@ Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(
         forceUgPerLiter = Tucuxi::Core::ForceUgPerLiterOption::DoNotForce;
     }
 
+    if (getChildBoolOptional(computingOptionRootIterator, COMPUTE_GOF, false)) {
+        computeGoodnessOfFitOption = Tucuxi::Core::ComputeGoodnessOfFitOption::ComputeGoodnessOfFit;
+    }
+    else {
+        computeGoodnessOfFitOption = Tucuxi::Core::ComputeGoodnessOfFitOption::DoNotComputeGoodnessOfFit;
+    }
 
     return Tucuxi::Core::ComputingOption(
             predictionParameterType,
@@ -1422,9 +1431,9 @@ Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(
             retrieveStatisticsOption,
             retrieveParametersOption,
             retrieveCovariatesOption,
-            forceUgPerLiter);
+            forceUgPerLiter,
+            computeGoodnessOfFitOption);
 }
-
 
 
 Tucuxi::Core::CompartmentsOption QueryImport::getChildCompartmentsOptionEnum(

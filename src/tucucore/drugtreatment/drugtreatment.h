@@ -70,7 +70,7 @@ public:
 
     ///
     /// \brief Returns the measures samples
-    /// \return The measures samples as a const reference
+    /// \return The measured samples as a const reference
     ///
     const Samples& getSamples() const;
 

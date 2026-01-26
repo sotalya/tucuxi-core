@@ -58,6 +58,7 @@ HEADERS += \
     $$PWD/../../src/tucucore/pkmodels/twocompartmentextra.h \
     $$PWD/../../src/tucucore/pkmodels/twocompartmentinfusion.h \
     $$PWD/../../src/tucucore/computingcomponent.h \
+    $$PWD/../../src/tucucore/computinggof.h \
     $$PWD/../../src/tucucore/covariateextractor.h \
     $$PWD/../../src/tucucore/idatamodelservices.h \
     $$PWD/../../src/tucucore/parametersextractor.h \
@@ -165,6 +166,7 @@ SOURCES += \
     $$PWD/../../src/tucucore/pkmodels/twocompartmentextralag.cpp \
     $$PWD/../../src/tucucore/pkmodels/twocompartmentinfusion.cpp \
     $$PWD/../../src/tucucore/computingcomponent.cpp \
+    $$PWD/../../src/tucucore/computinggof.cpp \
     $$PWD/../../src/tucucore/covariateextractor.cpp \
     $$PWD/../../src/tucucore/parameter.cpp \
     $$PWD/../../src/tucucore/parametersextractor.cpp \

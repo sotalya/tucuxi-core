@@ -37,14 +37,18 @@ ComputingOption::ComputingOption(
         RetrieveStatisticsOption _retrieveStatistics,
         RetrieveParametersOption _retrieveParameters,
         RetrieveCovariatesOption _retrieveCovariates,
-        ForceUgPerLiterOption _forceUgPerLiter)
+        ForceUgPerLiterOption _forceUgPerLiter,
+        ComputeGoodnessOfFitOption _computeGoodnessOfFit)
     : m_parameterType(_parameterType), m_compartmentsOption(_compartmentsOption),
       m_retrieveStatistics(_retrieveStatistics), m_retrieveParameters(_retrieveParameters),
-      m_retrieveCovariates(_retrieveCovariates), m_forceUgPerLiterOption(_forceUgPerLiter)
+      m_retrieveCovariates(_retrieveCovariates), m_forceUgPerLiterOption(_forceUgPerLiter),
+      m_computeGoodnessOfFit(_computeGoodnessOfFit)
 {
 }
 
+
 ComputingTrait::~ComputingTrait() = default;
+
 
 void ComputingTraits::addTrait(std::unique_ptr<ComputingTrait> _trait)
 {
@@ -52,7 +56,16 @@ void ComputingTraits::addTrait(std::unique_ptr<ComputingTrait> _trait)
 }
 
 
-ComputingTrait::ComputingTrait(RequestResponseId _id) : m_id(std::move(_id)) {}
+ComputingTrait::ComputingTrait(RequestResponseId _id, ComputingOption _computingOption)
+    : m_id(std::move(_id)), m_computingOption(_computingOption)
+{
+}
+
+
+ComputingOption ComputingTrait::getComputingOption() const
+{
+    return m_computingOption;
+}
 
 
 RequestResponseId ComputingTrait::getId() const
@@ -67,18 +80,13 @@ ComputingTraitStandard::ComputingTraitStandard(
         Tucuxi::Common::DateTime _end,
         double _nbPointsPerHour,
         ComputingOption _computingOption)
-    : ComputingTrait(std::move(_id)), m_computingOption(_computingOption), m_start(_start), m_end(_end),
+    : ComputingTrait(std::move(_id), _computingOption), m_start(_start), m_end(_end),
       m_nbPointsPerHour(_nbPointsPerHour)
 {
 }
 
+
 ComputingTraitStandard::~ComputingTraitStandard() = default;
-
-
-ComputingOption ComputingTraitStandard::getComputingOption() const
-{
-    return m_computingOption;
-}
 
 
 const Tucuxi::Common::DateTime& ComputingTraitStandard::getStart() const
@@ -98,24 +106,28 @@ double ComputingTraitStandard::getNbPointsPerHour() const
     return m_nbPointsPerHour;
 }
 
+
 ComputingStatus ComputingTraitStandard::compute(
         ComputingComponent& _computingComponent,
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response) const
 {
-    // A ComputingTraitStandard is not a final class, so this method should not be called
+    // A ComputingTraitStandard is not a final class, so this method should not
+    // be called
     FINAL_UNUSED_PARAMETER(_computingComponent);
     FINAL_UNUSED_PARAMETER(_request);
     FINAL_UNUSED_PARAMETER(_response);
     return ComputingStatus::ComputingTraitStandardShouldNotBeCalled;
 }
 
+
 ComputingStatus ComputingTraitStandard::compute(
         MultiComputingComponent& _computingComponent,
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response) const
 {
-    // A ComputingTraitStandard is not a final class, so this method should not be called
+    // A ComputingTraitStandard is not a final class, so this method should not
+    // be called
     FINAL_UNUSED_PARAMETER(_computingComponent);
     FINAL_UNUSED_PARAMETER(_request);
     FINAL_UNUSED_PARAMETER(_response);
@@ -156,6 +168,7 @@ BestCandidatesOption ComputingTraitAdjustment::getBestCandidatesOption() const
     return m_bestCandidatesOption;
 }
 
+
 FormulationAndRouteSelectionOption ComputingTraitAdjustment::getFormulationAndRouteSelectionOption() const
 {
     return m_formulationAndRouteSelectionOption;
@@ -167,15 +180,18 @@ SteadyStateTargetOption ComputingTraitAdjustment::getSteadyStateTargetOption() c
     return m_steadyStateTargetOption;
 }
 
+
 LoadingOption ComputingTraitAdjustment::getLoadingOption() const
 {
     return m_loadingOption;
 }
 
+
 RestPeriodOption ComputingTraitAdjustment::getRestPeriodOption() const
 {
     return m_restPeriodOption;
 }
+
 
 TargetExtractionOption ComputingTraitAdjustment::getTargetExtractionOption() const
 {
@@ -209,25 +225,15 @@ ComputingTraitPercentiles::ComputingTraitPercentiles(
 
 
 ComputingTraitAtMeasures::ComputingTraitAtMeasures(RequestResponseId _id, ComputingOption _computingOption)
-    : ComputingTrait(std::move(_id)), m_computingOption(_computingOption)
+    : ComputingTrait(std::move(_id), _computingOption)
 {
-}
-
-ComputingOption ComputingTraitAtMeasures::getComputingOption() const
-{
-    return m_computingOption;
 }
 
 
 ComputingTraitSinglePoints::ComputingTraitSinglePoints(
         RequestResponseId _id, std::vector<Tucuxi::Common::DateTime> _times, ComputingOption _computingOption)
-    : ComputingTrait(std::move(_id)), m_times(std::move(_times)), m_computingOption(_computingOption)
+    : ComputingTrait(std::move(_id), _computingOption), m_times(std::move(_times))
 {
-}
-
-ComputingOption ComputingTraitSinglePoints::getComputingOption() const
-{
-    return m_computingOption;
 }
 
 
@@ -325,7 +331,6 @@ ComputingStatus ComputingTraitSinglePoints::compute(
 {
     return _computingComponent.compute(this, _request, _response);
 }
-
 
 
 } // namespace Core

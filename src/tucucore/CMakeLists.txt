@@ -82,6 +82,7 @@ file(GLOB TUCUCORE_HEADERS_FILES
     ${CMAKE_CURRENT_LIST_DIR}/cachedexponentials.h
     ${CMAKE_CURRENT_LIST_DIR}/computingadjustments.h
     ${CMAKE_CURRENT_LIST_DIR}/computingcomponent.h
+    ${CMAKE_CURRENT_LIST_DIR}/computinggof.h
     ${CMAKE_CURRENT_LIST_DIR}/computingrequestxmlexport.h
     ${CMAKE_CURRENT_LIST_DIR}/computingservice/computingaborter.h
     ${CMAKE_CURRENT_LIST_DIR}/computingservice/computingrequest.h
@@ -196,6 +197,7 @@ file(GLOB TUCUCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/cachedexponentials.cpp
     ${CMAKE_CURRENT_LIST_DIR}/computingadjustments.cpp
     ${CMAKE_CURRENT_LIST_DIR}/computingcomponent.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/computinggof.cpp
     ${CMAKE_CURRENT_LIST_DIR}/computingrequestxmlexport.cpp
     ${CMAKE_CURRENT_LIST_DIR}/computingservice/computingaborter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/computingservice/computingrequest.cpp
