@@ -570,8 +570,6 @@ ComputingStatus ComputingAdjustments::compute(
         return ComputingStatus::NoComputingTraits;
     }
 
-
-
     int index = 0;
 
     std::vector<SimpleDosageCandidate> candidates;
@@ -870,7 +868,6 @@ ComputingStatus ComputingAdjustments::compute(
     if (generateResult != ComputingStatus::Ok) {
         return generateResult;
     }
-
 
     // Now we have adjustments, predictions, and target evaluation results, let's build the response
     resp->setAdjustments(finalCandidates);

@@ -400,6 +400,18 @@ bool ComputingQueryResponseXmlExport::exportSinglePrediction(
         addNode(analyteIds, "analyteId", comp.getId());
     }
 
+    // Retrieve Goodness-of-Fit statistics and export them.
+    auto gof = _prediction->getGof();
+    if (gof) {
+        Tucuxi::Common::XmlNode gofNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "goodnessOfFit");
+        _rootNode.addChild(gofNode);
+        addNode(gofNode, "mae", gof->getMae());
+        addNode(gofNode, "mape", gof->getMape());
+        addNode(gofNode, "mse", gof->getMse());
+        addNode(gofNode, "rmse", gof->getRmse());
+        addNode(gofNode, "rsquared", gof->getRSquared());
+    }
+
     return exportCycleDatas(_prediction->getData(), _rootNode);
 }
 
@@ -426,7 +438,6 @@ std::string timeToString(const Tucuxi::Common::TimeOfDay& _timeOfDay)
 }
 
 
-
 bool ComputingQueryResponseXmlExport::exportSinglePoints(
         const Tucuxi::Core::SinglePointsData* _prediction, Tucuxi::Common::XmlNode& _rootNode)
 {
@@ -444,6 +455,18 @@ bool ComputingQueryResponseXmlExport::exportSinglePoints(
 
         addNode(point, "time", dateTimeToString(_prediction->m_times[i]));
         addNode(point, "value", std::to_string(_prediction->m_concentrations[0][i]));
+    }
+
+    // Retrieve Goodness-of-Fit statistics and export them.
+    auto gof = _prediction->getGof();
+    if (gof) {
+        Tucuxi::Common::XmlNode gofNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "goodnessOfFit");
+        _rootNode.addChild(gofNode);
+        addNode(gofNode, "mae", gof->getMae());
+        addNode(gofNode, "mape", gof->getMape());
+        addNode(gofNode, "mse", gof->getMse());
+        addNode(gofNode, "rmse", gof->getRmse());
+        addNode(gofNode, "rsquared", gof->getRSquared());
     }
 
     return true;

@@ -31,6 +31,7 @@
 #include "tucucore/computingservice/computingresponse.h"
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
+#include "tucucore/montecarlopercentilecalculator.h"
 
 #include "drugmodels/buildconstantelimination.h"
 #include "drugmodels/buildimatinib.h"
@@ -310,7 +311,6 @@ TEST(Core_TestComputingComponentConcentration, SampleBeforeTreatmentStart)
 
     ASSERT_EQ(resultC, ComputingStatus::SampleBeforeTreatmentStart);
 
-
     auto traitsM = std::make_unique<ComputingTraitAtMeasures>(requestResponseId, computingOption);
     ComputingRequest requestM(requestResponseId, *drugModel, *drugTreatment, std::move(traitsM));
 
@@ -321,5 +321,100 @@ TEST(Core_TestComputingComponentConcentration, SampleBeforeTreatmentStart)
 
     ASSERT_EQ(resultM, ComputingStatus::SampleBeforeTreatmentStart);
 
+    delete component;
+}
+
+TEST(Core_TestComputingComponentConcentration, Gof)
+{
+    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+    BuildConstantElimination builder;
+    auto drugModel = builder.buildDrugModel(
+            ResidualErrorType::ADDITIVE,
+            std::vector<Value>({100.0}),
+            ParameterVariabilityType::Additive,
+            ParameterVariabilityType::None,
+            ParameterVariabilityType::None,
+            ParameterVariabilityType::None,
+            10.0,
+            0.0,
+            0.0,
+            0.0);
+
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
+
+
+    DateTime startTreatment(
+            date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+            Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+    Duration interval(std::chrono::hours(6));
+    Duration treatmentDuration(std::chrono::hours(24 * 6));
+
+    auto drugTreatment = buildSimpleDrugTreatment(route, startTreatment, interval, treatmentDuration);
+    drugTreatment->addSample(std::make_unique<Sample>(
+            startTreatment + Duration(std::chrono::hours(3)), AnalyteId("analyte"),
+            1.0, TucuUnit("mg/l")));
+
+
+    drugTreatment->addSample(std::make_unique<Sample>(
+                                                      startTreatment + Duration(std::chrono::hours(27)),
+                                                      AnalyteId("analyte"),
+                                                      4.0, TucuUnit("mg/l")));
+
+    drugTreatment->addSample(std::make_unique<Sample>(
+                                                      startTreatment + Duration(std::chrono::minutes(80 * 60 + 15)),
+                                                      AnalyteId("analyte"),
+                                                      1.0, TucuUnit("mg/l")));
+
+
+    RequestResponseId requestResponseId = "1";
+    Tucuxi::Common::DateTime start = startTreatment;
+    Tucuxi::Common::DateTime end = startTreatment + Duration(std::chrono::hours(130));
+    PercentileRanks percentileRanks({5, 25, 50, 75, 95});
+    double nbPointsPerHour = 10.0;
+    Tucuxi::Common::DateTime adjustmentTime(date::year_month_day(date::year(2018),
+                                                                 date::month(9),
+                                                                 date::day(3)),
+                                            Duration(std::chrono::hours(8),
+                                                     std::chrono::minutes(0),
+                                                     std::chrono::seconds(0)));
+    BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
+    ComputingOption computingOption(PredictionParameterType::Aposteriori,
+                                    CompartmentsOption::MainCompartment,
+                                    RetrieveStatisticsOption::DoNotRetrieveStatistics,
+                                    RetrieveParametersOption::DoNotRetrieveParameters,
+                                    RetrieveCovariatesOption::DoNotRetrieveCovariates,
+                                    ForceUgPerLiterOption::Force,
+                                    ComputeGoodnessOfFitOption::ComputeGoodnessOfFit);
+
+    std::unique_ptr<ComputingTraitConcentration> traitsC = std::make_unique<ComputingTraitConcentration>(
+            requestResponseId, start, end, nbPointsPerHour, computingOption);
+    ComputingRequest requestC(requestResponseId, *drugModel, *drugTreatment, std::move(traitsC));
+
+    std::unique_ptr<ComputingResponse> responseC =
+        std::make_unique<ComputingResponse>(requestResponseId);
+
+    ComputingStatus resultC = component->compute(requestC, responseC);
+    auto cGof = responseC->getData()->getGof();
+    std::cerr << "MAE: " << cGof->getMae() << "\n";
+    std::cerr << "MAPE: " << cGof->getMape() << "\n";
+    std::cerr << "MSE: " << cGof->getMse() << "\n";
+    std::cerr << "RMSE: " << cGof->getRmse() << "\n";
+    std::cerr << "R-SQUARED: " << cGof->getRSquared() << "\n";
+
+    auto traitsM = std::make_unique<ComputingTraitAtMeasures>(requestResponseId, computingOption);
+    ComputingRequest requestM(requestResponseId, *drugModel, *drugTreatment, std::move(traitsM));
+
+    std::unique_ptr<ComputingResponse> responseM = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ComputingStatus resultM = component->compute(requestM, responseM);
+    auto mGof = responseM->getData()->getGof();
+    std::cerr << "MAE: " << mGof->getMae() << "\n";
+    std::cerr << "MAPE: " << mGof->getMape() << "\n";
+    std::cerr << "MSE: " << mGof->getMse() << "\n";
+    std::cerr << "RMSE: " << mGof->getRmse() << "\n";
+    std::cerr << "R-SQUARED: " << mGof->getRSquared() << "\n";
+
+    // Delete all dynamically allocated objects
     delete component;
 }

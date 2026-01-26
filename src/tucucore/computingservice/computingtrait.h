@@ -92,13 +92,24 @@ enum class RetrieveCovariatesOption
 
 
 ///
-/// \brief The RetrieveCovariatesOption enum
-/// This enum allows to define if covariates shall be retrieved or not
+/// \brief The ForceUgPerLiterOption enum
+/// This enum allows to define if the output has to be forced to ug/l.
 enum class ForceUgPerLiterOption
 {
     Force = 0, //!< Force the output to be in ug/l
     DoNotForce //!< Please, respect the drug model
 };
+
+
+///
+/// \brief The ComputeGoodnessOfFitOption enum
+/// This enum allows to request the computation of Goodness-Of-Fit statistics.
+enum class ComputeGoodnessOfFitOption
+{
+    ComputeGoodnessOfFit = 0, //!< Perform GoF computations
+    DoNotComputeGoodnessOfFit //!< Do not perform GoF computations
+};
+
 
 ///
 /// \brief The ComputingOption class.
@@ -117,6 +128,7 @@ public:
     /// \param _retrieveParameters Indicates if parameter values have to be retrieved
     /// \param _retrieveCovariates Indicates if covariate values have to be retrieved
     /// \param _forceUgPerLiter Indicates if the results should be forced in ug/l
+    /// \param _computeGoodnessOfFit Indicates whether GoF statistics should be computed
     ///
     ComputingOption(
             PredictionParameterType _parameterType,
@@ -124,7 +136,8 @@ public:
             RetrieveStatisticsOption _retrieveStatistics = RetrieveStatisticsOption::DoNotRetrieveStatistics,
             RetrieveParametersOption _retrieveParameters = RetrieveParametersOption::DoNotRetrieveParameters,
             RetrieveCovariatesOption _retrieveCovariates = RetrieveCovariatesOption::DoNotRetrieveCovariates,
-            ForceUgPerLiterOption _forceUgPerLiter = ForceUgPerLiterOption::Force);
+            ForceUgPerLiterOption _forceUgPerLiter = ForceUgPerLiterOption::Force,
+            ComputeGoodnessOfFitOption _computeGoodnessOfFit = ComputeGoodnessOfFitOption::DoNotComputeGoodnessOfFit);
 
     ///
     /// \brief getParametersType Gets the type of parameters
@@ -173,11 +186,20 @@ public:
 
     ///
     /// \brief forceUgPerLiter Indicates if the results shall be in ug/l
-    /// \return ForceUgPerLiterOption::Foce if it should be forced
+    /// \return ForceUgPerLiterOption::Force if it should be forced
     ///
     ForceUgPerLiterOption forceUgPerLiter() const
     {
         return m_forceUgPerLiterOption;
+    }
+
+    ///
+    /// \brief computeGoodnessOfFit Indicates if the GoF statistics should be computed or not
+    /// \return ComputeGoodnessOfFitOption::ComputeGoodnessOfFit if it should be computed
+    ///
+    ComputeGoodnessOfFitOption computeGoodnessOfFit() const
+    {
+        return m_computeGoodnessOfFit;
     }
 
 protected:
@@ -198,6 +220,9 @@ protected:
 
     //! Shall the results be in ug/l or shall they respect the drug model
     ForceUgPerLiterOption m_forceUgPerLiterOption;
+
+    //! Shall compute the Goodness-of-Fit statistics.
+    ComputeGoodnessOfFitOption m_computeGoodnessOfFit;
 };
 
 
@@ -221,14 +246,25 @@ public:
     ///
     virtual ~ComputingTrait();
 
+    ///
+    /// \brief getComputingOption Get the computing options.
+    /// \return The computing options
+    ///
+    ComputingOption getComputingOption() const;
+
 protected:
     ///
     /// \brief ComputingTrait constructor.
     /// \param _id Id of the ComputingTrait
-    /// The constructor is protected, as this class shall not be instanciated.
+    /// \param _computingOption Some processing options (type of parameters, which
+    ///        compartments, ...)
+    /// The constructor is protected, as this class shall not be instantiated.
     /// Only subclasses are relevant.
     ///
-    ComputingTrait(RequestResponseId _id);
+    ComputingTrait(RequestResponseId _id, ComputingOption _computingOption);
+
+    //! Some processing options (type of parameters, which compartments)
+    ComputingOption m_computingOption;
 
     //! Id of the request
     RequestResponseId m_id;
@@ -273,12 +309,6 @@ class ComputingTraitStandard : public ComputingTrait
 public:
     //! Emtpy destructor
     ~ComputingTraitStandard() override;
-
-    ///
-    /// \brief getComputingOption Get the computing options.
-    /// \return The computing options
-    ///
-    ComputingOption getComputingOption() const;
 
     ///
     /// \brief getStart Get the start time of the range of interest.
@@ -329,15 +359,11 @@ public:
             ComputingOption _computingOption);
 
 private:
-    //! Some processing options (type of parameters, what compartments)
-    ComputingOption m_computingOption;
-
     //! Start date of prediction calculation
     Tucuxi::Common::DateTime m_start;
 
     //! End date of prediction calculation
     Tucuxi::Common::DateTime m_end;
-
 
     //! _nbPointsPerHour Requested number of points per hour
     double m_nbPointsPerHour;
@@ -362,18 +388,9 @@ public:
 
     const std::vector<Tucuxi::Common::DateTime>& getTimes() const;
 
-    ///
-    /// \brief getComputingOption Get the computing options
-    /// \return The computing options
-    ///
-    ComputingOption getComputingOption() const;
-
 protected:
     //! Vector of the times of interest
     std::vector<Tucuxi::Common::DateTime> m_times;
-
-    //! Some processing options (type of parameters, what compartments)
-    ComputingOption m_computingOption;
 
 private:
     ///
@@ -411,16 +428,6 @@ public:
     /// \param _computingOption Computing options (parameters type, compartments)
     ///
     ComputingTraitAtMeasures(RequestResponseId _id, ComputingOption _computingOption);
-
-    ///
-    /// \brief getComputingOption Get the computing options
-    /// \return The computing options
-    ///
-    ComputingOption getComputingOption() const;
-
-protected:
-    //! Some processing options (type of parameters, what compartments)
-    ComputingOption m_computingOption;
 
 private:
     ///

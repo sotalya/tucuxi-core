@@ -26,8 +26,8 @@
 
 #include "tucucommon/general.h"
 
-#include "tucucore/aposteriorietascalculator.h"
 #include "tucucore/computingcomponent.h"
+#include "tucucore/computinggof.h"
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/computingservice/computingresponse.h"
 #include "tucucore/computingservice/computingtrait.h"
@@ -35,7 +35,6 @@
 #include "tucucore/concentrationcalculator.h"
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
-#include "tucucore/intaketocalculatorassociator.h"
 #include "tucucore/montecarlopercentilecalculator.h"
 #include "tucucore/multimontecarlopercentilecalculator.h"
 #include "tucucore/percentilesprediction.h"
@@ -65,10 +64,12 @@ Tucuxi::Common::Interface* ComputingComponent::createComponent()
     return dynamic_cast<IComputingService*>(cmp);
 }
 
+
 Tucuxi::Common::Interface* ComputingComponent::getInterface(const std::string& _name)
 {
     return Tucuxi::Common::Component::getInterfaceImpl(_name);
 }
+
 
 ComputingComponent::ComputingComponent()
 {
@@ -89,6 +90,7 @@ bool ComputingComponent::initialize()
     return true;
 }
 
+
 void ComputingComponent::setPkModelCollection(std::shared_ptr<PkModelCollection> _collection)
 {
     m_utils->m_models = std::move(_collection);
@@ -99,6 +101,7 @@ std::string ComputingComponent::getErrorString() const
 {
     return "Error message function not yet implemented";
 }
+
 
 ComputingStatus ComputingComponent::compute(
         const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
@@ -130,8 +133,8 @@ ComputingStatus ComputingComponent::compute(
             return ComputingStatus::IncompatibleTreatmentModel;
         }
 
-        // A simple iteration on the ComputingTraits. Each one is responsible to fill the _response object with
-        // a new computing response
+        // A simple iteration on the ComputingTraits. Each one is responsible to
+        // fill the _response object with a new computing response
         auto it = _request.getComputingTraits().begin();
         ComputingStatus result = ComputingStatus::Ok;
         while (it != _request.getComputingTraits().end()) {
@@ -139,7 +142,7 @@ ComputingStatus ComputingComponent::compute(
             if (internalResult != ComputingStatus::Ok) {
                 result = internalResult;
             }
-            it++;
+            ++it;
         }
 
         // Record end time
@@ -147,7 +150,9 @@ ComputingStatus ComputingComponent::compute(
         // Store the computing time in the response
         _response->setComputingTimeInSeconds(finish - start);
 
-        // std::cout << "Request \t" << _request.getId() << "\tComputing time (ms): \t" << 1000.0 * _response->getComputingTimeInSeconds().count() << '\n';
+        // std::cout << "Request \t" << _request.getId()
+        // << "\tComputing time (ms): \t"
+        // << 1000.0 * _response->getComputingTimeInSeconds().count() << '\n';
 
         _response->setComputingStatus(result);
         return result;
@@ -231,6 +236,7 @@ ComputingStatus ComputingComponent::recordCycle(
     return ComputingStatus::Ok;
 }
 
+
 void ComputingComponent::endRecord(
         const ComputingTraitStandard* _traits, const ComputingRequest& _request, ConcentrationData& _concentrationData)
 {
@@ -241,6 +247,7 @@ void ComputingComponent::endRecord(
         c.calculate(_concentrationData.getModifiableData());
     }
 }
+
 
 void ComputingComponent::setCompartmentInfo(
         const ComputingTraitStandard* _traits, const ComputingRequest& _request, ConcentrationData& _data)
@@ -262,6 +269,7 @@ void ComputingComponent::setCompartmentInfo(
     }
 }
 
+
 void ComputingComponent::setCompartmentInfo(
         const ComputingTraitStandard* _traits, const ComputingRequest& _request, PercentilesData& _data)
 {
@@ -281,6 +289,7 @@ void ComputingComponent::setCompartmentInfo(
         }
     }
 }
+
 
 void ComputingComponent::setCompartmentInfo(
         const ComputingTraitSinglePoints* _traits, const ComputingRequest& _request, SinglePointsData& _data)
@@ -303,13 +312,11 @@ void ComputingComponent::setCompartmentInfo(
 }
 
 
-
 ComputingStatus ComputingComponent::compute(
         const ComputingTraitConcentration* _traits,
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response)
 {
-
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
         return ComputingStatus::NoComputingTraits;
@@ -379,7 +386,6 @@ ComputingStatus ComputingComponent::compute(
 
         allEtas[analyteGroupId] = etas;
 
-
         Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
         computingResult = concentrationCalculator.computeConcentrations(
                 pPrediction,
@@ -389,7 +395,6 @@ ComputingStatus ComputingComponent::compute(
                 intakeSeries[analyteGroupId],
                 parameterSeries[analyteGroupId],
                 etas);
-
 
         if (computingResult == ComputingStatus::Ok) {
             analytesPredictions.push_back(std::move(pPrediction));
@@ -401,7 +406,6 @@ ComputingStatus ComputingComponent::compute(
     std::vector<ConcentrationPredictionPtr> activeMoietiesPredictions;
 
     if (!_request.getDrugModel().isSingleAnalyte()) {
-
         for (const auto& activeMoiety : _request.getDrugModel().getActiveMoieties()) {
             ConcentrationPredictionPtr activeMoietyPrediction = std::make_unique<ConcentrationPrediction>();
             ComputingStatus activeMoietyComputingResult =
@@ -463,6 +467,15 @@ ComputingStatus ComputingComponent::compute(
 
     endRecord(_traits, _request, *resp);
 
+    // We have successfully performed our computations. If requested,
+    // We can compute the Goodness-of-Fit to evaluate the results.
+    if (_traits->getComputingOption().computeGoodnessOfFit() == ComputeGoodnessOfFitOption::ComputeGoodnessOfFit) {
+        ComputingGof gofComputer;
+        std::optional<GofData> gofData;
+        gofComputer.compute(_request, *resp, gofData);
+        resp->setGof(gofData.value());
+    }
+
     _response->addResponse(std::move(resp));
     return ComputingStatus::Ok;
 }
@@ -487,6 +500,7 @@ ComputingStatus ComputingComponent::compute(
     }
     return computePercentilesSimple(_traits, _request, _response);
 }
+
 
 ComputingStatus ComputingComponent::computePercentilesMulti(
         const ComputingTraitPercentiles* _traits,
@@ -532,7 +546,6 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
 
     // Now ready to do the real computing with all the extracted values
 
-
     Tucuxi::Core::PercentilesPrediction percentiles;
 
     Tucuxi::Core::PercentileRanks percentileRanks;
@@ -540,7 +553,6 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
     Tucuxi::Core::ComputingAborter* aborter = _traits->getAborter();
 
     percentileRanks = _traits->getRanks();
-
 
     ResidualErrorModelExtractor errorModelExtractor;
     std::map<AnalyteGroupId, std::unique_ptr<IResidualErrorModel> > residualErrorModel;
@@ -563,7 +575,6 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
         }
     }
 
-
     for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
         AnalyteGroupId analyteGroupId = analyteGroup->getId();
         std::vector<const FullFormulationAndRoute*> fullFormulationAndRoutes =
@@ -577,12 +588,8 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
         }
     }
 
-
     std::map<AnalyteGroupId, Etas> etas;
-
-
     Tucuxi::Core::ComputingStatus computingResult;
-
     Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
 
     if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
@@ -607,13 +614,11 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
             }
         }
 
-
         // This extraction is already done in extractAposterioriEtas... Could be optimized
         std::map<AnalyteGroupId, SampleSeries> sampleSeries;
 
         for (const auto& analyteGroup : _request.getDrugModel().getAnalyteSets()) {
             AnalyteGroupId analyteGroupId = analyteGroup->getId();
-
 
             SampleExtractor sampleExtractor;
             ComputingStatus sampleExtractionResult = sampleExtractor.extract(
@@ -695,6 +700,7 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
             _traits, _request, _response, intakeSeries, pPrediction, percentiles, percentileRanks);
 }
 
+
 ComputingStatus ComputingComponent::computePercentilesSimple(
         const ComputingTraitPercentiles* _traits,
         const ComputingRequest& _request,
@@ -739,11 +745,8 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
 
     // Now ready to do the real computing with all the extracted values
 
-
-
     // TODO : Change this analyte group
     AnalyteGroupId analyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
-
 
     Tucuxi::Core::PercentilesPrediction percentiles;
 
@@ -752,7 +755,6 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
     Tucuxi::Core::ComputingAborter* aborter = _traits->getAborter();
 
     percentileRanks = _traits->getRanks();
-
 
     ResidualErrorModelExtractor errorModelExtractor;
     std::unique_ptr<IResidualErrorModel> residualErrorModel;
@@ -776,12 +778,9 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
         return omegaComputingResult;
     }
 
-
     // Set initial etas to 0 for all variable parameters
     Tucuxi::Core::Etas etas(static_cast<size_t>(omega.cols()), 0.0);
-
     Tucuxi::Core::ComputingStatus computingResult;
-
     Tucuxi::Core::ConcentrationCalculator concentrationCalculator;
 
     if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
@@ -883,6 +882,7 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
             _traits, _request, _response, intakeSeries, pPrediction, percentiles, percentileRanks);
 }
 
+
 ComputingStatus ComputingComponent::preparePercentilesResponse(
         const ComputingTraitPercentiles* _traits,
         const ComputingRequest& _request,
@@ -892,7 +892,6 @@ ComputingStatus ComputingComponent::preparePercentilesResponse(
         const Tucuxi::Core::PercentilesPrediction& _percentiles,
         const Tucuxi::Core::PercentileRanks& _percentileRanks)
 {
-
     auto defaultAnalyteGroupId = _request.getDrugModel().getAnalyteSets()[0]->getId();
     IntakeSeries selectedIntakes;
     selectRecordedIntakes(
@@ -969,7 +968,6 @@ ComputingStatus ComputingComponent::compute(
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response)
 {
-
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
         return ComputingStatus::NoComputingTraits;
@@ -986,7 +984,6 @@ ComputingStatus ComputingComponent::compute(
     ComputingAdjustments computer(m_utils.get());
     return computer.compute(_traits, _request, _response);
 }
-
 
 
 ComputingStatus ComputingComponent::compute(
@@ -1012,15 +1009,17 @@ ComputingStatus ComputingComponent::compute(
     ComputingTraitSinglePoints traits(_request.getId(), sampleTimes, _traits->getComputingOption());
 
     // And start the calculation
-    return compute(&traits, _request, _response);
+    ComputingStatus cs = compute(&traits, _request, _response);
+
+    return cs;
 }
+
 
 ComputingStatus ComputingComponent::compute(
         const ComputingTraitSinglePoints* _traits,
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response)
 {
-
     if (_traits == nullptr) {
         m_logger.error("The computing traits sent for computation are nullptr");
         return ComputingStatus::NoComputingTraits;
@@ -1097,11 +1096,8 @@ ComputingStatus ComputingComponent::compute(
         AnalyteGroupId analyteGroupId = analyteGroup->getId();
 
         // Now ready to do the real computing with all the extracted values
-
         ConcentrationPredictionPtr pPrediction = std::make_unique<ConcentrationPrediction>();
-
         ComputingStatus computingResult;
-
         Etas etas;
 
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Aposteriori) {
@@ -1122,7 +1118,6 @@ ComputingStatus ComputingComponent::compute(
         }
 
         Concentrations concentrations;
-
         SampleSeries timesSeries;
 
         for (const auto& times : _traits->getTimes()) {
@@ -1144,7 +1139,6 @@ ComputingStatus ComputingComponent::compute(
                 etas,
                 true);
 
-
         if (computingResult == ComputingStatus::Ok) {
             std::unique_ptr<SinglePointsData> resp = std::make_unique<SinglePointsData>(_request.getId());
 
@@ -1156,7 +1150,6 @@ ComputingStatus ComputingComponent::compute(
                 return ComputingStatus::ConcentrationSizeError;
             }
 
-
             // The final unit depends on the computing options
             TucuUnit unit("ug/l");
             if (_traits->getComputingOption().forceUgPerLiter() == ForceUgPerLiterOption::DoNotForce) {
@@ -1165,6 +1158,7 @@ ComputingStatus ComputingComponent::compute(
 
             size_t nbTimes = concentrations.size();
             Concentrations c;
+
             for (size_t i = 0; i < nbTimes; i++) {
                 c.push_back(Tucuxi::Common::UnitManager::convertToUnit<
                             Tucuxi::Common::UnitManager::UnitType::Concentration>(
@@ -1176,12 +1170,23 @@ ComputingStatus ComputingComponent::compute(
 
             setCompartmentInfo(_traits, _request, *resp);
 
+            // We have successfully performed our computations. If requested,
+            // We can compute the Goodness-of-Fit to evaluate the results.
+            if (_traits->getComputingOption().computeGoodnessOfFit()
+                == ComputeGoodnessOfFitOption::ComputeGoodnessOfFit) {
+                ComputingGof gofComputer;
+                std::optional<GofData> gofData;
+                gofComputer.compute(_request, *resp, gofData);
+                resp->setGof(gofData.value());
+            }
+
             _response->addResponse(std::move(resp));
         }
         else {
             return computingResult;
         }
     }
+
     return ComputingStatus::Ok;
 }
 
