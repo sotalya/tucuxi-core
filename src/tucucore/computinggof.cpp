@@ -54,11 +54,11 @@ void ComputingGof::compute(
         // Enqueue the value computed according to the model.
         computedValues.push_back(
                 Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
-                        computedValue.value(), modelUnit, compUnit));
+                        computedValue.value(), compUnit, modelUnit));
         // Enqueue the sample value in the appropriate unit.
         measuredValues.push_back(
                 Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
-                        requestSample->getValue(), modelUnit, requestSample->getUnit()));
+                        requestSample->getValue(), requestSample->getUnit(), modelUnit));
     }
     computeGofStatistics(computedValues, measuredValues, _gofData);
 }
@@ -86,11 +86,11 @@ void ComputingGof::compute(
         // Enqueue the value computed according to the model.
         computedValues.push_back(
                 Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
-                        _pointsData.m_concentrations[0][i], modelUnit, _pointsData.m_unit));
+                        _pointsData.m_concentrations[0][i], _pointsData.m_unit, modelUnit));
         // Enqueue the sample value in the appropriate unit.
         measuredValues.push_back(
                 Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
-                        requestSamples.at(i)->getValue(), modelUnit, requestSamples.at(i)->getUnit()));
+                        requestSamples.at(i)->getValue(), requestSamples.at(i)->getUnit(), modelUnit));
     }
     computeGofStatistics(computedValues, measuredValues, _gofData);
 }
@@ -196,7 +196,7 @@ Value ComputingGof::computeMape(std::vector<Value> const& _computedValues, std::
     size_t const n = _computedValues.size();
     Value mape = 0;
     bool const tinyValueFound = std::any_of(
-            _measuredValues.begin(), _measuredValues.end(), [](Value x) { return std::abs(x) < 1000 * m_valueEps; });
+            _measuredValues.begin(), _measuredValues.end(), [](Value _x) { return std::abs(_x) < 1000 * m_valueEps; });
 
     if (tinyValueFound) {
         mape = m_plusInf;
