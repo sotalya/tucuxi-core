@@ -417,10 +417,13 @@ bool ComputingQueryResponseXmlExport::exportSinglePrediction(
         gofNode.addChild(predErrorsNode);
         auto predErrors = gof->getPredErrors();
         for (auto const& pe : predErrors) {
-            addNode(predErrorsNode, "measure", pe.getMeasure());
-            addNode(predErrorsNode, "prediction", pe.getPrediction());
-            addNode(predErrorsNode, "predictionError", pe.getPredictionError());
-            addNode(predErrorsNode, "absPredictionErrorPct", pe.getAbsPredErrorPct());
+            Tucuxi::Common::XmlNode measureNode =
+            m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "measure");
+            predErrorsNode.addChild(measureNode);
+            addNode(measureNode, "value", pe.getMeasure());
+            addNode(measureNode, "prediction", pe.getPrediction());
+            addNode(measureNode, "predictionError", pe.getPredictionError());
+            addNode(measureNode, "absPredictionErrorPct", pe.getAbsPredErrorPct());
         }
     }
 
@@ -486,10 +489,13 @@ bool ComputingQueryResponseXmlExport::exportSinglePoints(
         gofNode.addChild(predErrorsNode);
         auto predErrors = gof->getPredErrors();
         for (auto const& pe : predErrors) {
-            addNode(predErrorsNode, "measure", pe.getMeasure());
-            addNode(predErrorsNode, "prediction", pe.getPrediction());
-            addNode(predErrorsNode, "predictionError", pe.getPredictionError());
-            addNode(predErrorsNode, "absPredictionErrorPct", pe.getAbsPredErrorPct());
+            Tucuxi::Common::XmlNode measureNode =
+            m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "measure");
+            predErrorsNode.addChild(measureNode);
+            addNode(measureNode, "value", pe.getMeasure());
+            addNode(measureNode, "prediction", pe.getPrediction());
+            addNode(measureNode, "predictionError", pe.getPredictionError());
+            addNode(measureNode, "absPredictionErrorPct", pe.getAbsPredErrorPct());
         }
     }
 
