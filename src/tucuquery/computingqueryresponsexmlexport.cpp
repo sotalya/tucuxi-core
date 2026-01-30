@@ -410,6 +410,18 @@ bool ComputingQueryResponseXmlExport::exportSinglePrediction(
         addNode(gofNode, "mse", gof->getMse());
         addNode(gofNode, "rmse", gof->getRmse());
         addNode(gofNode, "rsquared", gof->getRSquared());
+        addNode(gofNode, "meanPredictionError", gof->getMeanPredictionError());
+        addNode(gofNode, "meanAbsolutePredictionError", gof->getMeanAbsolutePredictionError());
+        Tucuxi::Common::XmlNode predErrorsNode =
+            m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "predictionErrors");
+        gofNode.addChild(predErrorsNode);
+        auto predErrors = gof->getPredErrors();
+        for (auto const& pe : predErrors) {
+            addNode(predErrorsNode, "measure", pe.getMeasure());
+            addNode(predErrorsNode, "prediction", pe.getPrediction());
+            addNode(predErrorsNode, "predictionError", pe.getPredictionError());
+            addNode(predErrorsNode, "absPredictionErrorPct", pe.getAbsPredErrorPct());
+        }
     }
 
     return exportCycleDatas(_prediction->getData(), _rootNode);
@@ -467,6 +479,18 @@ bool ComputingQueryResponseXmlExport::exportSinglePoints(
         addNode(gofNode, "mse", gof->getMse());
         addNode(gofNode, "rmse", gof->getRmse());
         addNode(gofNode, "rsquared", gof->getRSquared());
+        addNode(gofNode, "meanPredictionError", gof->getMeanPredictionError());
+        addNode(gofNode, "meanAbsolutePredictionError", gof->getMeanAbsolutePredictionError());
+        Tucuxi::Common::XmlNode predErrorsNode =
+            m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "predictionErrors");
+        gofNode.addChild(predErrorsNode);
+        auto predErrors = gof->getPredErrors();
+        for (auto const& pe : predErrors) {
+            addNode(predErrorsNode, "measure", pe.getMeasure());
+            addNode(predErrorsNode, "prediction", pe.getPrediction());
+            addNode(predErrorsNode, "predictionError", pe.getPredictionError());
+            addNode(predErrorsNode, "absPredictionErrorPct", pe.getAbsPredErrorPct());
+        }
     }
 
     return true;
