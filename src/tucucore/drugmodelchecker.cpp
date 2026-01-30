@@ -458,7 +458,10 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkHalfLife(const DrugMode
     auto dose = defaultFormulationAndRoute->getValidDoses()->getDefaultValue();
     auto doseUnit = defaultFormulationAndRoute->getValidDoses()->getUnit();
     auto interval = defaultFormulationAndRoute->getValidIntervals()->getDefaultDuration();
-    auto infusionTime = defaultFormulationAndRoute->getValidInfusionTimes()->getDefaultDuration();
+    auto infusionTime = Duration();
+    if (defaultFormulationAndRoute->getValidInfusionTimes() != nullptr) {
+        infusionTime = defaultFormulationAndRoute->getValidInfusionTimes()->getDefaultDuration();
+    }
     //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
     // Add a treatment intake every ten days in June
     // 200mg via a intravascular at 08h30, starting the 01.06
