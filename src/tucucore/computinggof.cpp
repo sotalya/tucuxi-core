@@ -108,8 +108,14 @@ void ComputingGof::computeGofStatistics(
     Value const mse = computeMse(_computedValues, _measuredValues);
     Value const rmse = computeRmse(_computedValues, _measuredValues);
     Value const rSquared = computeRSquared(_computedValues, _measuredValues);
+    Value meanPredictionError;
+    Value meanAbsolutePredictionError;
+    std::vector<MeasurePredError> const predErrors = computeMeasurePredErrors(_computedValues, _measuredValues,
+                                                                              meanPredictionError,
+                                                                              meanAbsolutePredictionError);
 
-    _gofData.emplace(mae, mape, mse, rmse, rSquared);
+    _gofData.emplace(mae, mape, mse, rmse, rSquared, std::move(predErrors), meanPredictionError,
+                     meanAbsolutePredictionError);
 }
 
 
@@ -270,6 +276,37 @@ Value ComputingGof::computeRSquared(
 
     return rSquared;
 }
+
+
+std::vector<MeasurePredError> ComputingGof::computeMeasurePredErrors(std::vector<Value> const& _computedValues,
+                                                                     std::vector<Value> const& _measuredValues,
+                                                                     Value& _meanPredictionError,
+                                                                     Value& _meanAbsolutePredictionError)
+{
+    std::vector<MeasurePredError> predErrors;
+    size_t const n = _computedValues.size();
+
+    _meanPredictionError = 0;
+    _meanAbsolutePredictionError = 0;
+    for (size_t i = 0; i < n; ++i) {
+        Value const predError = _measuredValues[i] - _computedValues[i];
+        _meanPredictionError += predError;
+        Value const absPredErrorPct =
+            std::abs(_computedValues[i]) > 1e3 * m_valueEps ?
+            std::abs(predError / _computedValues[i]) * 100 :
+            m_plusInf;
+        _meanAbsolutePredictionError += absPredErrorPct;
+
+        MeasurePredError mpe(_measuredValues[i], _computedValues[i], predError, absPredErrorPct);
+        predErrors.push_back(mpe);
+    }
+
+    _meanPredictionError /= static_cast<Value>(n);;
+    _meanAbsolutePredictionError /= static_cast<Value>(n);;
+
+    return predErrors;
+}
+
 
 } // namespace Core
 } // namespace Tucuxi

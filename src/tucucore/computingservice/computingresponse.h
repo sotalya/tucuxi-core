@@ -124,6 +124,64 @@ class AdjustmentData;
 class PercentilesData;
 
 
+// \brief Measurement prediction error --- used to estimate the Mean Prediction
+//        Error and the Mean Absolute Prediction Error.
+class MeasurePredError
+{
+public:
+    ///
+    /// \brief Initialize the Measurement prediction error.
+    /// \param _measure Actual measure
+    /// \param _prediction Prediction from the model
+    /// \param _predError Prediction error
+    /// \param _absPredErrorPct Absolute prediction error (percentage)
+    ///
+    MeasurePredError(Value const& _measure, Value const& _prediction, Value const& _predError,
+                     Value const& _absPredErrorPct)
+        : m_measure{_measure}, m_prediction{_prediction}, m_predError{_predError}, m_absPredErrorPct{_absPredErrorPct}
+    {
+    }
+
+    ///
+    /// \brief Return the measure.
+    /// \return Current measure.
+    Value getMeasure() const
+    {
+        return m_measure;
+    }
+
+    ///
+    /// \brief Return the prediction.
+    /// \return Current prediction.
+    Value getPrediction() const
+    {
+        return m_prediction;
+    }
+
+    ///
+    /// \brief Return the prediction error.
+    /// \return Current prediction error.
+    Value getPredictionError() const
+    {
+        return m_predError;
+    }
+
+    ///
+    /// \brief Return the absolute prediction error (in percentage).
+    /// \return Current absolute prediction error (in percentage).
+    Value getAbsPredErrorPct() const
+    {
+        return m_absPredErrorPct;
+    }
+
+protected:
+    Value m_measure;
+    Value m_prediction;
+    Value m_predError;
+    Value m_absPredErrorPct;
+};
+
+
 /// \brief Goodness-of-Fit values for the performed computations.
 class GofData
 {
@@ -135,9 +193,16 @@ public:
     /// \param _mse MSE evaluation metric
     /// \param _rmse RMSE evaluation metric
     /// \param _rSquared R-squared evaluation metric
+    /// \param _predErrors Measurement prediction errors
+    /// \param _meanPredictionError Mean prediction error
+    /// \param _meanAbsolutePredictionError Mean absolute prediction error
     ///
-    GofData(Value const& _mae, Value const& _mape, Value const& _mse, Value const& _rmse, Value const& _rSquared)
-        : m_mae{_mae}, m_mape{_mape}, m_mse{_mse}, m_rmse{_rmse}, m_rSquared{_rSquared}
+    GofData(Value const& _mae, Value const& _mape, Value const& _mse, Value const& _rmse, Value const& _rSquared,
+            std::vector<MeasurePredError> _predErrors, Value const& _meanPredictionError,
+            Value const& _meanAbsolutePredictionError)
+        : m_mae{_mae}, m_mape{_mape}, m_mse{_mse}, m_rmse{_rmse}, m_rSquared{_rSquared},
+          m_predErrors{std::move(_predErrors)}, m_meanPredictionError{_meanPredictionError},
+          m_meanAbsolutePredictionError{_meanAbsolutePredictionError}
     {
     }
 
@@ -181,6 +246,31 @@ public:
         return m_rSquared;
     }
 
+    ///
+    /// \brief Return the measurement prediction errors.
+    /// \return Measurement prediction errors.
+    std::vector<MeasurePredError> getPredErrors() const
+    {
+        return m_predErrors;
+    }
+
+    ///
+    /// \brief Return the mean prediction error.
+    /// \return Computed value of mean prediction error.
+    Value getMeanPredictionError() const
+    {
+        return m_meanPredictionError;
+    }
+
+    ///
+    /// \brief Return the mean absolute prediction error.
+    /// \return Computed value of mean absolute prediction error.
+    Value getMeanAbsolutePredictionError() const
+    {
+        return m_meanAbsolutePredictionError;
+    }
+
+
 protected:
     /// MAE evaluation metric.
     Value m_mae;
@@ -192,6 +282,12 @@ protected:
     Value m_rmse;
     /// R-squared evaluation metric.
     Value m_rSquared;
+    /// Measurement prediction errors.
+    std::vector<MeasurePredError> m_predErrors;
+    /// Mean prediction error.
+    Value m_meanPredictionError;
+    /// Mean absolute prediction error.
+    Value m_meanAbsolutePredictionError;
 };
 
 
