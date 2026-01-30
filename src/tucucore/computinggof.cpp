@@ -242,19 +242,16 @@ Value ComputingGof::computeRSquared(
     size_t const n = _computedValues.size();
     Value rSquared = 0;
     Value measuredValsMean = 0;
-    Value diffMeasuredComputed = 0;
+    Value diffMeasuredComputedSq = 0;
     for (size_t i = 0; i < n; ++i) {
-        diffMeasuredComputed += _measuredValues[i] - _computedValues[i];
+        diffMeasuredComputedSq += (_measuredValues[i] - _computedValues[i]) * (_measuredValues[i] - _computedValues[i]);
         measuredValsMean += _measuredValues[i];
     }
     measuredValsMean /= static_cast<Value>(n);
-    Value diffWithMean = 0;
+    Value diffWithMeanSq = 0;
     for (size_t i = 0; i < n; ++i) {
-        diffWithMean += _measuredValues[i] - measuredValsMean;
+        diffWithMeanSq += (_measuredValues[i] - measuredValsMean) * (_measuredValues[i] - measuredValsMean);
     }
-
-    Value const diffMeasuredComputedSq = diffMeasuredComputed * diffMeasuredComputed;
-    Value const diffWithMeanSq = diffWithMean * diffWithMean;
 
     if (diffWithMeanSq < 1000 * m_valueEps) {
         if (diffMeasuredComputedSq < 1000 * m_valueEps) {
