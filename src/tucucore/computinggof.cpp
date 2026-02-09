@@ -298,8 +298,8 @@ std::vector<MeasurePredError> ComputingGof::computeMeasurePredErrors(std::vector
         predErrors.push_back(mpe);
     }
 
-    _meanPredictionError /= static_cast<Value>(n);;
-    _meanAbsolutePredictionError /= static_cast<Value>(n);;
+    _meanPredictionError /= static_cast<Value>(n);
+    _meanAbsolutePredictionError /= static_cast<Value>(n);
 
     return predErrors;
 }
