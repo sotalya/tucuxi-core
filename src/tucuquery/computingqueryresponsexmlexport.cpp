@@ -410,6 +410,21 @@ bool ComputingQueryResponseXmlExport::exportSinglePrediction(
         addNode(gofNode, "mse", gof->getMse());
         addNode(gofNode, "rmse", gof->getRmse());
         addNode(gofNode, "rsquared", gof->getRSquared());
+        addNode(gofNode, "meanPredictionError", gof->getMeanPredictionError());
+        addNode(gofNode, "meanAbsolutePredictionError", gof->getMeanAbsolutePredictionError());
+        Tucuxi::Common::XmlNode predErrorsNode =
+            m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "predictionErrors");
+        gofNode.addChild(predErrorsNode);
+        auto predErrors = gof->getPredErrors();
+        for (auto const& pe : predErrors) {
+            Tucuxi::Common::XmlNode measureNode =
+            m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "measure");
+            predErrorsNode.addChild(measureNode);
+            addNode(measureNode, "value", pe.getMeasure());
+            addNode(measureNode, "prediction", pe.getPrediction());
+            addNode(measureNode, "predictionError", pe.getPredictionError());
+            addNode(measureNode, "absPredictionErrorPct", pe.getAbsPredErrorPct());
+        }
     }
 
     return exportCycleDatas(_prediction->getData(), _rootNode);
@@ -467,6 +482,21 @@ bool ComputingQueryResponseXmlExport::exportSinglePoints(
         addNode(gofNode, "mse", gof->getMse());
         addNode(gofNode, "rmse", gof->getRmse());
         addNode(gofNode, "rsquared", gof->getRSquared());
+        addNode(gofNode, "meanPredictionError", gof->getMeanPredictionError());
+        addNode(gofNode, "meanAbsolutePredictionError", gof->getMeanAbsolutePredictionError());
+        Tucuxi::Common::XmlNode predErrorsNode =
+            m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "predictionErrors");
+        gofNode.addChild(predErrorsNode);
+        auto predErrors = gof->getPredErrors();
+        for (auto const& pe : predErrors) {
+            Tucuxi::Common::XmlNode measureNode =
+            m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "measure");
+            predErrorsNode.addChild(measureNode);
+            addNode(measureNode, "value", pe.getMeasure());
+            addNode(measureNode, "prediction", pe.getPrediction());
+            addNode(measureNode, "predictionError", pe.getPredictionError());
+            addNode(measureNode, "absPredictionErrorPct", pe.getAbsPredErrorPct());
+        }
     }
 
     return true;

@@ -401,6 +401,17 @@ TEST(Core_TestComputingComponentConcentration, Gof)
     std::cerr << "MSE: " << cGof->getMse() << "\n";
     std::cerr << "RMSE: " << cGof->getRmse() << "\n";
     std::cerr << "R-SQUARED: " << cGof->getRSquared() << "\n";
+    auto cPredErrors = cGof->getPredErrors();
+    std::cerr << "------------------------------------------------\n";
+    for (auto const& pe : cPredErrors) {
+        std::cerr << "-----------------\nMeasure: " << pe.getMeasure() << "\n";
+        std::cerr << "Prediction: " << pe.getPrediction() << "\n";
+        std::cerr << "PredictionError: " << pe.getPredictionError() << "\n";
+        std::cerr << "AbsPredErrorPct: " << pe.getAbsPredErrorPct() << "\n";
+    }
+    std::cerr << "------------------------------------------------\n";
+    std::cerr << "Mean prediction error: " << cGof->getMeanPredictionError() << "\n";
+    std::cerr << "Mean absolute prediction error: " << cGof->getMeanAbsolutePredictionError() << "\n";
 
     auto traitsM = std::make_unique<ComputingTraitAtMeasures>(requestResponseId, computingOption);
     ComputingRequest requestM(requestResponseId, *drugModel, *drugTreatment, std::move(traitsM));
@@ -414,6 +425,17 @@ TEST(Core_TestComputingComponentConcentration, Gof)
     std::cerr << "MSE: " << mGof->getMse() << "\n";
     std::cerr << "RMSE: " << mGof->getRmse() << "\n";
     std::cerr << "R-SQUARED: " << mGof->getRSquared() << "\n";
+    auto mPredErrors = mGof->getPredErrors();
+    std::cerr << "------------------------------------------------\n";
+    for (auto const& pe : mPredErrors) {
+        std::cerr << "-----------------\nMeasure: " << pe.getMeasure() << "\n";
+        std::cerr << "Prediction: " << pe.getPrediction() << "\n";
+        std::cerr << "PredictionError: " << pe.getPredictionError() << "\n";
+        std::cerr << "AbsPredErrorPct: " << pe.getAbsPredErrorPct() << "\n";
+    }
+    std::cerr << "------------------------------------------------\n";
+    std::cerr << "Mean prediction error: " << mGof->getMeanPredictionError() << "\n";
+    std::cerr << "Mean absolute prediction error: " << mGof->getMeanAbsolutePredictionError() << "\n";
 
     // Delete all dynamically allocated objects
     delete component;
