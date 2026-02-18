@@ -352,19 +352,17 @@ TEST(Core_TestComputingComponentConcentration, Gof)
 
     auto drugTreatment = buildSimpleDrugTreatment(route, startTreatment, interval, treatmentDuration);
     drugTreatment->addSample(std::make_unique<Sample>(
-            startTreatment + Duration(std::chrono::hours(3)), AnalyteId("analyte"),
-            1.0, TucuUnit("mg/l")));
+            startTreatment + Duration(std::chrono::hours(3)), AnalyteId("analyte"), 1.0, TucuUnit("mg/l")));
 
 
     drugTreatment->addSample(std::make_unique<Sample>(
-                                                      startTreatment + Duration(std::chrono::hours(27)),
-                                                      AnalyteId("analyte"),
-                                                      4.0, TucuUnit("mg/l")));
+            startTreatment + Duration(std::chrono::hours(27)), AnalyteId("analyte"), 4.0, TucuUnit("mg/l")));
 
     drugTreatment->addSample(std::make_unique<Sample>(
-                                                      startTreatment + Duration(std::chrono::minutes(80 * 60 + 15)),
-                                                      AnalyteId("analyte"),
-                                                      1.0, TucuUnit("mg/l")));
+            startTreatment + Duration(std::chrono::minutes(80 * 60 + 15)),
+            AnalyteId("analyte"),
+            1.0,
+            TucuUnit("mg/l")));
 
 
     RequestResponseId requestResponseId = "1";
@@ -372,27 +370,24 @@ TEST(Core_TestComputingComponentConcentration, Gof)
     Tucuxi::Common::DateTime end = startTreatment + Duration(std::chrono::hours(130));
     PercentileRanks percentileRanks({5, 25, 50, 75, 95});
     double nbPointsPerHour = 10.0;
-    Tucuxi::Common::DateTime adjustmentTime(date::year_month_day(date::year(2018),
-                                                                 date::month(9),
-                                                                 date::day(3)),
-                                            Duration(std::chrono::hours(8),
-                                                     std::chrono::minutes(0),
-                                                     std::chrono::seconds(0)));
+    Tucuxi::Common::DateTime adjustmentTime(
+            date::year_month_day(date::year(2018), date::month(9), date::day(3)),
+            Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
     BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
-    ComputingOption computingOption(PredictionParameterType::Aposteriori,
-                                    CompartmentsOption::MainCompartment,
-                                    RetrieveStatisticsOption::DoNotRetrieveStatistics,
-                                    RetrieveParametersOption::DoNotRetrieveParameters,
-                                    RetrieveCovariatesOption::DoNotRetrieveCovariates,
-                                    ForceUgPerLiterOption::Force,
-                                    ComputeGoodnessOfFitOption::ComputeGoodnessOfFit);
+    ComputingOption computingOption(
+            PredictionParameterType::Aposteriori,
+            CompartmentsOption::MainCompartment,
+            RetrieveStatisticsOption::DoNotRetrieveStatistics,
+            RetrieveParametersOption::DoNotRetrieveParameters,
+            RetrieveCovariatesOption::DoNotRetrieveCovariates,
+            ForceUgPerLiterOption::Force,
+            ComputeGoodnessOfFitOption::ComputeGoodnessOfFit);
 
     std::unique_ptr<ComputingTraitConcentration> traitsC = std::make_unique<ComputingTraitConcentration>(
             requestResponseId, start, end, nbPointsPerHour, computingOption);
     ComputingRequest requestC(requestResponseId, *drugModel, *drugTreatment, std::move(traitsC));
 
-    std::unique_ptr<ComputingResponse> responseC =
-        std::make_unique<ComputingResponse>(requestResponseId);
+    std::unique_ptr<ComputingResponse> responseC = std::make_unique<ComputingResponse>(requestResponseId);
 
     ComputingStatus resultC = component->compute(requestC, responseC);
     auto cGof = responseC->getData()->getGof();
@@ -400,6 +395,7 @@ TEST(Core_TestComputingComponentConcentration, Gof)
     std::cerr << "MAPE: " << cGof->getMape() << "\n";
     std::cerr << "MSE: " << cGof->getMse() << "\n";
     std::cerr << "RMSE: " << cGof->getRmse() << "\n";
+    std::cerr << "RMSLE: " << cGof->getRmsle() << "\n";
     std::cerr << "R-SQUARED: " << cGof->getRSquared() << "\n";
     auto cPredErrors = cGof->getPredErrors();
     std::cerr << "------------------------------------------------\n";
@@ -424,6 +420,7 @@ TEST(Core_TestComputingComponentConcentration, Gof)
     std::cerr << "MAPE: " << mGof->getMape() << "\n";
     std::cerr << "MSE: " << mGof->getMse() << "\n";
     std::cerr << "RMSE: " << mGof->getRmse() << "\n";
+    std::cerr << "RMSLE: " << mGof->getRmsle() << "\n";
     std::cerr << "R-SQUARED: " << mGof->getRSquared() << "\n";
     auto mPredErrors = mGof->getPredErrors();
     std::cerr << "------------------------------------------------\n";

@@ -91,10 +91,10 @@ public:
     }
 };
 
-std::string normalizeXML(const std::string& xml) {
+std::string normalizeXML(const std::string& xml)
+{
     std::string result;
-    std::copy_if(xml.begin(), xml.end(), std::back_inserter(result),
-                 [](unsigned char c) { return !std::isspace(c); });
+    std::copy_if(xml.begin(), xml.end(), std::back_inserter(result), [](unsigned char c) { return !std::isspace(c); });
     return result;
 }
 

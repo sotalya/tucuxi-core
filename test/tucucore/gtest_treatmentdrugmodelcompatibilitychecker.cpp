@@ -31,9 +31,9 @@
 #include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/treatmentdrugmodelcompatibilitychecker.h"
 
-#include "testutils.h"
-#include "gtest_core.h"
 #include "drugmodels/buildimatinib.h"
+#include "gtest_core.h"
+#include "testutils.h"
 
 using namespace Tucuxi::Core;
 using namespace Tucuxi::Common::Utils;
@@ -57,5 +57,4 @@ TEST(Core_TestTreatmentDrugModelCompatibilityChecker, BadInputs)
     drugModel = builder.buildDrugModel();
 
     ASSERT_FALSE(checker.checkCompatibility(treatment.get(), drugModel.get()));
-
 }

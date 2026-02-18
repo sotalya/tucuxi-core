@@ -120,6 +120,13 @@ protected:
     static Value computeRmse(std::vector<Value> const& _computedValues, std::vector<Value> const& _measuredValues);
 
     ///
+    /// \brief Compute the Root Mean Squared Logarithmic Error (RMSLE) evaluation metric.
+    /// \param _computedValues Values computed by the model.
+    /// \param _measuredValues Corresponding samples.
+    /// \returns Computed RMSLE statistic, or +infinity if any value is negative.
+    static Value computeRmsle(std::vector<Value> const& _computedValues, std::vector<Value> const& _measuredValues);
+
+    ///
     /// \brief Compute the R-squared evaluation metric.
     /// \param _computedValues Values computed by the model.
     /// \param _measuredValues Corresponding samples.
@@ -133,10 +140,11 @@ protected:
     /// \param _meanPredictionError Mean prediction error computed by the function.
     /// \param _meanAbsolutePredictionError Mean absolute prediction error computed by the function.
     /// \returns Computed measurement prediction error.
-    static std::vector<MeasurePredError> computeMeasurePredErrors(std::vector<Value> const& _computedValues,
-                                                                  std::vector<Value> const& _measuredValues,
-                                                                  Value& _meanPredictionError,
-                                                                  Value& _meanAbsolutePredictionError);
+    static std::vector<MeasurePredError> computeMeasurePredErrors(
+            std::vector<Value> const& _computedValues,
+            std::vector<Value> const& _measuredValues,
+            Value& _meanPredictionError,
+            Value& _meanAbsolutePredictionError);
 
     /// Machine-epsilon for the Value type.
     inline static constexpr Value m_valueEps = std::numeric_limits<Value>::epsilon();

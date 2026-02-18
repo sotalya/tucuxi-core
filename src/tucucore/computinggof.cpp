@@ -107,15 +107,23 @@ void ComputingGof::computeGofStatistics(
     Value const mape = computeMape(_computedValues, _measuredValues);
     Value const mse = computeMse(_computedValues, _measuredValues);
     Value const rmse = computeRmse(_computedValues, _measuredValues);
+    Value const rmsle = computeRmsle(_computedValues, _measuredValues);
     Value const rSquared = computeRSquared(_computedValues, _measuredValues);
     Value meanPredictionError;
     Value meanAbsolutePredictionError;
-    std::vector<MeasurePredError> const predErrors = computeMeasurePredErrors(_computedValues, _measuredValues,
-                                                                              meanPredictionError,
-                                                                              meanAbsolutePredictionError);
+    std::vector<MeasurePredError> const predErrors = computeMeasurePredErrors(
+            _computedValues, _measuredValues, meanPredictionError, meanAbsolutePredictionError);
 
-    _gofData.emplace(mae, mape, mse, rmse, rSquared, std::move(predErrors), meanPredictionError,
-                     meanAbsolutePredictionError);
+    _gofData.emplace(
+            mae,
+            mape,
+            mse,
+            rmse,
+            rmsle,
+            rSquared,
+            std::move(predErrors),
+            meanPredictionError,
+            meanAbsolutePredictionError);
 }
 
 
@@ -242,6 +250,31 @@ Value ComputingGof::computeRmse(std::vector<Value> const& _computedValues, std::
 }
 
 
+Value ComputingGof::computeRmsle(std::vector<Value> const& _computedValues, std::vector<Value> const& _measuredValues)
+{
+    // RMSLE is undefined when any value is negative (log of a non-positive number).
+    bool const hasNegativeValue =
+            std::any_of(_computedValues.begin(), _computedValues.end(), [](Value _x) { return _x < -m_valueEps; })
+            || std::any_of(_measuredValues.begin(), _measuredValues.end(), [](Value _x) { return _x < -m_valueEps; });
+
+    if (hasNegativeValue) {
+        return m_plusInf;
+    }
+
+    size_t const n = _computedValues.size();
+    Value rmsle = 0;
+    for (size_t i = 0; i < n; ++i) {
+        Value const logDiff = std::log(_computedValues[i] + 1.0) - std::log(_measuredValues[i] + 1.0);
+        rmsle += logDiff * logDiff;
+    }
+    if (n > 0) {
+        rmsle = std::sqrt(rmsle / static_cast<Value>(n));
+    }
+
+    return rmsle;
+}
+
+
 Value ComputingGof::computeRSquared(
         std::vector<Value> const& _computedValues, std::vector<Value> const& _measuredValues)
 {
@@ -275,10 +308,11 @@ Value ComputingGof::computeRSquared(
 }
 
 
-std::vector<MeasurePredError> ComputingGof::computeMeasurePredErrors(std::vector<Value> const& _computedValues,
-                                                                     std::vector<Value> const& _measuredValues,
-                                                                     Value& _meanPredictionError,
-                                                                     Value& _meanAbsolutePredictionError)
+std::vector<MeasurePredError> ComputingGof::computeMeasurePredErrors(
+        std::vector<Value> const& _computedValues,
+        std::vector<Value> const& _measuredValues,
+        Value& _meanPredictionError,
+        Value& _meanAbsolutePredictionError)
 {
     std::vector<MeasurePredError> predErrors;
     size_t const n = _computedValues.size();
@@ -288,10 +322,9 @@ std::vector<MeasurePredError> ComputingGof::computeMeasurePredErrors(std::vector
     for (size_t i = 0; i < n; ++i) {
         Value const predError = _measuredValues[i] - _computedValues[i];
         _meanPredictionError += predError;
-        Value const absPredErrorPct =
-            std::abs(_computedValues[i]) > 1e3 * m_valueEps ?
-            std::abs(predError / _computedValues[i]) * 100 :
-            m_plusInf;
+        Value const absPredErrorPct = std::abs(_computedValues[i]) > 1e3 * m_valueEps
+                                              ? std::abs(predError / _computedValues[i]) * 100
+                                              : m_plusInf;
         _meanAbsolutePredictionError += absPredErrorPct;
 
         MeasurePredError mpe(_measuredValues[i], _computedValues[i], predError, absPredErrorPct);

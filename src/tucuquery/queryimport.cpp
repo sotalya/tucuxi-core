@@ -1388,7 +1388,7 @@ Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(
     Tucuxi::Core::RetrieveCovariatesOption retrieveCovariatesOption;
     Tucuxi::Core::ForceUgPerLiterOption forceUgPerLiter = Tucuxi::Core::ForceUgPerLiterOption::Force;
     Tucuxi::Core::ComputeGoodnessOfFitOption computeGoodnessOfFitOption =
-        Tucuxi::Core::ComputeGoodnessOfFitOption::DoNotComputeGoodnessOfFit;
+            Tucuxi::Core::ComputeGoodnessOfFitOption::DoNotComputeGoodnessOfFit;
 
     if (getChildBool(computingOptionRootIterator, RETRIEVE_STATISTICS)) {
         retrieveStatisticsOption = Tucuxi::Core::RetrieveStatisticsOption::RetrieveStatistics;

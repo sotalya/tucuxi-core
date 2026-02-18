@@ -409,16 +409,16 @@ bool ComputingQueryResponseXmlExport::exportSinglePrediction(
         addNode(gofNode, "mape", gof->getMape());
         addNode(gofNode, "mse", gof->getMse());
         addNode(gofNode, "rmse", gof->getRmse());
+        addNode(gofNode, "rmsle", gof->getRmsle());
         addNode(gofNode, "rsquared", gof->getRSquared());
         addNode(gofNode, "meanPredictionError", gof->getMeanPredictionError());
         addNode(gofNode, "meanAbsolutePredictionError", gof->getMeanAbsolutePredictionError());
         Tucuxi::Common::XmlNode predErrorsNode =
-            m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "predictionErrors");
+                m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "predictionErrors");
         gofNode.addChild(predErrorsNode);
         auto predErrors = gof->getPredErrors();
         for (auto const& pe : predErrors) {
-            Tucuxi::Common::XmlNode measureNode =
-            m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "measure");
+            Tucuxi::Common::XmlNode measureNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "measure");
             predErrorsNode.addChild(measureNode);
             addNode(measureNode, "value", pe.getMeasure());
             addNode(measureNode, "prediction", pe.getPrediction());
@@ -481,16 +481,16 @@ bool ComputingQueryResponseXmlExport::exportSinglePoints(
         addNode(gofNode, "mape", gof->getMape());
         addNode(gofNode, "mse", gof->getMse());
         addNode(gofNode, "rmse", gof->getRmse());
+        addNode(gofNode, "rmsle", gof->getRmsle());
         addNode(gofNode, "rsquared", gof->getRSquared());
         addNode(gofNode, "meanPredictionError", gof->getMeanPredictionError());
         addNode(gofNode, "meanAbsolutePredictionError", gof->getMeanAbsolutePredictionError());
         Tucuxi::Common::XmlNode predErrorsNode =
-            m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "predictionErrors");
+                m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "predictionErrors");
         gofNode.addChild(predErrorsNode);
         auto predErrors = gof->getPredErrors();
         for (auto const& pe : predErrors) {
-            Tucuxi::Common::XmlNode measureNode =
-            m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "measure");
+            Tucuxi::Common::XmlNode measureNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "measure");
             predErrorsNode.addChild(measureNode);
             addNode(measureNode, "value", pe.getMeasure());
             addNode(measureNode, "prediction", pe.getPrediction());
