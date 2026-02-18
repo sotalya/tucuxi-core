@@ -33,6 +33,7 @@
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/computingservice/icomputingservice.h"
+#include "tucucore/computingutils.h"
 #include "tucucore/concentrationprediction.h"
 #include "tucucore/definitions.h"
 #include "tucucore/dosage.h"
@@ -191,6 +192,7 @@ private:
     friend class ComputingTraitConcentration;
     friend class ComputingTraitPercentiles;
     friend class ComputingAdjustments;
+    friend class ComputingComponentTestHelper;
 };
 
 } // namespace Core
