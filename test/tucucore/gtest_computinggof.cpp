@@ -46,6 +46,7 @@ public:
     using ComputingGof::computeMse;
     using ComputingGof::computeRmse;
     using ComputingGof::computeRmsle;
+    using ComputingGof::computeRrmse;
     using ComputingGof::computeRSquared;
     using ComputingGof::findValueAt;
 };
@@ -260,6 +261,63 @@ TEST(Core_TestComputingGof, RmsleNegativeMeasuredValue)
 
 
 // ============================================================
+// computeRrmse
+// ============================================================
+
+TEST(Core_TestComputingGof, RrmseIdenticalValues)
+{
+    // When predicted == measured, RMSE = 0, so RRMSE = 0.
+    std::vector<Value> computed = {1.0, 2.0, 3.0};
+    std::vector<Value> measured = {1.0, 2.0, 3.0};
+    EXPECT_DOUBLE_EQ(ComputingGofExposer::computeRrmse(computed, measured), 0.0);
+}
+
+TEST(Core_TestComputingGof, RrmseKnownValues)
+{
+    // computed = {1, 5}, measured = {3, 1}
+    // RMSE = sqrt(10), mean(|measured|) = 2, RRMSE = sqrt(10) / 2
+    std::vector<Value> computed = {1.0, 5.0};
+    std::vector<Value> measured = {3.0, 1.0};
+    Value const expected = std::sqrt(10.0) / 2.0;
+    EXPECT_NEAR(ComputingGofExposer::computeRrmse(computed, measured), expected, 1e-12);
+}
+
+TEST(Core_TestComputingGof, RrmseEmpty)
+{
+    // Empty vectors: returns 0 (no data).
+    std::vector<Value> computed;
+    std::vector<Value> measured;
+    EXPECT_DOUBLE_EQ(ComputingGofExposer::computeRrmse(computed, measured), 0.0);
+}
+
+TEST(Core_TestComputingGof, RrmseZeroMeanMeasured)
+{
+    // mean(|measured|) ≈ 0: RRMSE must return +infinity.
+    std::vector<Value> computed = {1.0};
+    std::vector<Value> measured = {0.0};
+    Value const rrmse = ComputingGofExposer::computeRrmse(computed, measured);
+    EXPECT_TRUE(std::isinf(rrmse) && rrmse > 0.0);
+}
+
+TEST(Core_TestComputingGof, RrmsePerfectFitNonZeroMean)
+{
+    // Perfect fit: RRMSE = 0 regardless of the mean.
+    std::vector<Value> computed = {2.0, 4.0, 6.0};
+    std::vector<Value> measured = {2.0, 4.0, 6.0};
+    EXPECT_DOUBLE_EQ(ComputingGofExposer::computeRrmse(computed, measured), 0.0);
+}
+
+TEST(Core_TestComputingGof, RrmseSinglePair)
+{
+    // computed = {4}, measured = {2}
+    // RMSE = |4-2| = 2, mean(|measured|) = 2, RRMSE = 2 / 2 = 1.0
+    std::vector<Value> computed = {4.0};
+    std::vector<Value> measured = {2.0};
+    EXPECT_NEAR(ComputingGofExposer::computeRrmse(computed, measured), 1.0, 1e-12);
+}
+
+
+// ============================================================
 // computeRSquared
 // ============================================================
 
@@ -389,6 +447,7 @@ TEST(Core_TestComputingGof, GofStatisticsKnownValues)
     EXPECT_DOUBLE_EQ(gofData->getMse(), 1.0);
     EXPECT_DOUBLE_EQ(gofData->getRmse(), 1.0);
     EXPECT_GE(gofData->getRmsle(), 0.0);
+    EXPECT_GE(gofData->getRrmse(), 0.0);
     EXPECT_NEAR(gofData->getRSquared(), 0.0, 1e-12);
     ASSERT_EQ(gofData->getPredErrors().size(), 2u);
     EXPECT_NEAR(gofData->getMeanPredictionError(), 1.0, 1e-12);
@@ -407,6 +466,7 @@ TEST(Core_TestComputingGof, GofStatisticsPerfectFit)
     EXPECT_DOUBLE_EQ(gofData->getMse(), 0.0);
     EXPECT_DOUBLE_EQ(gofData->getRmse(), 0.0);
     EXPECT_DOUBLE_EQ(gofData->getRmsle(), 0.0);
+    EXPECT_DOUBLE_EQ(gofData->getRrmse(), 0.0);
     EXPECT_DOUBLE_EQ(gofData->getRSquared(), 1.0);
     EXPECT_NEAR(gofData->getMeanPredictionError(), 0.0, 1e-12);
 }

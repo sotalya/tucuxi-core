@@ -127,6 +127,15 @@ protected:
     static Value computeRmsle(std::vector<Value> const& _computedValues, std::vector<Value> const& _measuredValues);
 
     ///
+    /// \brief Compute the Relative Root Mean Squared Error (RRMSE) evaluation metric.
+    ///        RRMSE = RMSE / mean(|measured values|). Returns +infinity when the
+    ///        mean of the measured values is zero (undefined normalisation).
+    /// \param _computedValues Values computed by the model.
+    /// \param _measuredValues Corresponding samples.
+    /// \returns Computed RRMSE statistic, or +infinity when mean(measured) ≈ 0.
+    static Value computeRrmse(std::vector<Value> const& _computedValues, std::vector<Value> const& _measuredValues);
+
+    ///
     /// \brief Compute the R-squared evaluation metric.
     /// \param _computedValues Values computed by the model.
     /// \param _measuredValues Corresponding samples.

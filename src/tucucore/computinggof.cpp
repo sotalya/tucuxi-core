@@ -108,6 +108,7 @@ void ComputingGof::computeGofStatistics(
     Value const mse = computeMse(_computedValues, _measuredValues);
     Value const rmse = computeRmse(_computedValues, _measuredValues);
     Value const rmsle = computeRmsle(_computedValues, _measuredValues);
+    Value const rrmse = computeRrmse(_computedValues, _measuredValues);
     Value const rSquared = computeRSquared(_computedValues, _measuredValues);
     Value meanPredictionError;
     Value meanAbsolutePredictionError;
@@ -120,6 +121,7 @@ void ComputingGof::computeGofStatistics(
             mse,
             rmse,
             rmsle,
+            rrmse,
             rSquared,
             std::move(predErrors),
             meanPredictionError,
@@ -272,6 +274,27 @@ Value ComputingGof::computeRmsle(std::vector<Value> const& _computedValues, std:
     }
 
     return rmsle;
+}
+
+
+Value ComputingGof::computeRrmse(std::vector<Value> const& _computedValues, std::vector<Value> const& _measuredValues)
+{
+    size_t const n = _measuredValues.size();
+    if (n == 0) {
+        return 0;
+    }
+
+    Value meanMeasured = 0;
+    for (size_t i = 0; i < n; ++i) {
+        meanMeasured += std::abs(_measuredValues[i]);
+    }
+    meanMeasured /= static_cast<Value>(n);
+
+    if (meanMeasured < 1000 * m_valueEps) {
+        return m_plusInf;
+    }
+
+    return computeRmse(_computedValues, _measuredValues) / meanMeasured;
 }
 
 

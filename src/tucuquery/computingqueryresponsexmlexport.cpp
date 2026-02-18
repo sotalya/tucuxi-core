@@ -410,6 +410,7 @@ bool ComputingQueryResponseXmlExport::exportSinglePrediction(
         addNode(gofNode, "mse", gof->getMse());
         addNode(gofNode, "rmse", gof->getRmse());
         addNode(gofNode, "rmsle", gof->getRmsle());
+        addNode(gofNode, "rrmse", gof->getRrmse());
         addNode(gofNode, "rsquared", gof->getRSquared());
         addNode(gofNode, "meanPredictionError", gof->getMeanPredictionError());
         addNode(gofNode, "meanAbsolutePredictionError", gof->getMeanAbsolutePredictionError());
@@ -482,6 +483,7 @@ bool ComputingQueryResponseXmlExport::exportSinglePoints(
         addNode(gofNode, "mse", gof->getMse());
         addNode(gofNode, "rmse", gof->getRmse());
         addNode(gofNode, "rmsle", gof->getRmsle());
+        addNode(gofNode, "rrmse", gof->getRrmse());
         addNode(gofNode, "rsquared", gof->getRSquared());
         addNode(gofNode, "meanPredictionError", gof->getMeanPredictionError());
         addNode(gofNode, "meanAbsolutePredictionError", gof->getMeanAbsolutePredictionError());

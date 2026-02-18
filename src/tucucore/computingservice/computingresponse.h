@@ -193,6 +193,7 @@ public:
     /// \param _mse MSE evaluation metric
     /// \param _rmse RMSE evaluation metric
     /// \param _rmsle RMSLE evaluation metric
+    /// \param _rrmse RRMSE evaluation metric
     /// \param _rSquared R-squared evaluation metric
     /// \param _predErrors Measurement prediction errors
     /// \param _meanPredictionError Mean prediction error
@@ -203,12 +204,13 @@ public:
             Value const& _mse,
             Value const& _rmse,
             Value const& _rmsle,
+            Value const& _rrmse,
             Value const& _rSquared,
             std::vector<MeasurePredError> _predErrors,
             Value const& _meanPredictionError,
             Value const& _meanAbsolutePredictionError)
-        : m_mae{_mae}, m_mape{_mape}, m_mse{_mse}, m_rmse{_rmse}, m_rmsle{_rmsle}, m_rSquared{_rSquared},
-          m_predErrors{std::move(_predErrors)}, m_meanPredictionError{_meanPredictionError},
+        : m_mae{_mae}, m_mape{_mape}, m_mse{_mse}, m_rmse{_rmse}, m_rmsle{_rmsle}, m_rrmse{_rrmse},
+          m_rSquared{_rSquared}, m_predErrors{std::move(_predErrors)}, m_meanPredictionError{_meanPredictionError},
           m_meanAbsolutePredictionError{_meanAbsolutePredictionError}
     {
     }
@@ -251,6 +253,14 @@ public:
     Value getRmsle() const
     {
         return m_rmsle;
+    }
+
+    ///
+    /// \brief Return the value of the RRMSE statistic.
+    /// \return Computed value of the RRMSE statistic.
+    Value getRrmse() const
+    {
+        return m_rrmse;
     }
 
     ///
@@ -297,6 +307,8 @@ protected:
     Value m_rmse;
     /// RMSLE evaluation metric.
     Value m_rmsle;
+    /// RRMSE evaluation metric.
+    Value m_rrmse;
     /// R-squared evaluation metric.
     Value m_rSquared;
     /// Measurement prediction errors.
