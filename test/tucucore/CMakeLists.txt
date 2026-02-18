@@ -78,6 +78,7 @@ file(GLOB TUCUTESTCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computingcomponentpercentiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computinggof.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_drugtreatment.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/gtest_patientvariate.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_concentrationcalculator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_covariateextractor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_cyclestatistics.cpp
