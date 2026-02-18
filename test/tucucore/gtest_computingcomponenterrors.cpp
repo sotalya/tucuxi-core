@@ -46,10 +46,12 @@ namespace Tucuxi {
 namespace Core {
 
 ///
-/// \brief Helper class granting test access to ComputingComponent's private constructor.
+/// \brief Helper class granting test access to ComputingComponent's private constructor
+/// and private compute() overloads.
 ///
-/// This allows tests to create an uninitialized ComputingComponent (m_utils == nullptr)
-/// in order to cover the early-exit error path in ComputingComponent::compute().
+/// This allows tests to create an uninitialized ComputingComponent and to call private
+/// compute() overloads directly with null traits, in order to cover the early-exit
+/// null-check branches that cannot be reached through the normal dispatch path.
 ///
 class ComputingComponentTestHelper
 {
@@ -57,6 +59,51 @@ public:
     static ComputingComponent* createUninitialized()
     {
         return new ComputingComponent();
+    }
+
+    ///
+    /// \brief Calls compute(TraitConcentration) with a null trait pointer.
+    ///
+    /// Covers the nullptr guard at the top of compute(ComputingTraitConcentration*,...).
+    ///
+    static ComputingStatus computeNullConcentrationTraits(
+            ComputingComponent* _cc, const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
+    {
+        return _cc->compute(static_cast<const ComputingTraitConcentration*>(nullptr), _request, _response);
+    }
+
+    ///
+    /// \brief Calls computePercentilesSimple() with a null trait pointer.
+    ///
+    /// Covers the nullptr guard at the top of computePercentilesSimple().
+    ///
+    static ComputingStatus computeNullPercentilesSimpleTraits(
+            ComputingComponent* _cc, const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
+    {
+        return _cc->computePercentilesSimple(
+                static_cast<const ComputingTraitPercentiles*>(nullptr), _request, _response);
+    }
+
+    ///
+    /// \brief Calls compute(TraitAdjustment) with a null trait pointer.
+    ///
+    /// Covers the nullptr guard at the top of compute(ComputingTraitAdjustment*,...).
+    ///
+    static ComputingStatus computeNullAdjustmentTraits(
+            ComputingComponent* _cc, const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
+    {
+        return _cc->compute(static_cast<const ComputingTraitAdjustment*>(nullptr), _request, _response);
+    }
+
+    ///
+    /// \brief Calls compute(TraitSinglePoints) with a null trait pointer.
+    ///
+    /// Covers the nullptr guard at the top of compute(ComputingTraitSinglePoints*,...).
+    ///
+    static ComputingStatus computeNullSinglePointsTraits(
+            ComputingComponent* _cc, const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
+    {
+        return _cc->compute(static_cast<const ComputingTraitSinglePoints*>(nullptr), _request, _response);
     }
 };
 
@@ -92,6 +139,25 @@ private:
 
 } // namespace Core
 } // namespace Tucuxi
+
+
+/// \brief Builds an imatinib treatment with four daily oral doses starting 2018-09-01.
+///
+/// Used by tests that need a real drug treatment to reach computation branches
+/// that come after the early-exit guards (e.g. statistics, parameters, covariates).
+///
+static std::unique_ptr<DrugTreatment> buildImatinibTreatment()
+{
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
+    const DateTime startTime(
+            date::year_month_day(date::year(2018), date::month(9), date::day(1)), Duration(std::chrono::hours(8)));
+    auto drugTreatment = std::make_unique<DrugTreatment>();
+    LastingDose dose(DoseValue(200.0), TucuUnit("mg"), route, Duration(), Duration(std::chrono::hours(24)));
+    DosageRepeat repeatedDose(dose, 4);
+    auto timeRange = std::make_unique<DosageTimeRange>(startTime, repeatedDose);
+    drugTreatment->getModifiableDosageHistory().addTimeRange(*timeRange);
+    return drugTreatment;
+}
 
 
 /// \brief Builds a standard ComputingRequest and calls compute(), returning the status.
@@ -233,6 +299,268 @@ TEST(Core_TestComputingComponentErrors, ExceptionInTrait)
     ComputingStatus result = component->compute(request, response);
 
     ASSERT_EQ(result, ComputingStatus::ComputingComponentExceptionError);
+
+    delete component;
+}
+
+/// \brief Test that compute(TraitConcentration) returns NoComputingTraits when
+/// called directly with a null trait pointer, covering the nullptr guard.
+TEST(Core_TestComputingComponentErrors, NullTraitsConcentration)
+{
+    auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
+    IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
+    ASSERT_NE(component, nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_NE(drugModel, nullptr);
+
+    auto drugTreatment = std::make_unique<DrugTreatment>();
+
+    const RequestResponseId requestResponseId = "1";
+    const Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+    const Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+    ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+    // The request's embedded trait is irrelevant; the null check fires before any dispatch.
+    auto reqTrait = std::make_unique<ComputingTraitConcentration>(requestResponseId, start, end, 10.0, computingOption);
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(reqTrait));
+    std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ASSERT_EQ(
+            ComputingComponentTestHelper::computeNullConcentrationTraits(rawComponent, request, response),
+            ComputingStatus::NoComputingTraits);
+
+    delete component;
+}
+
+/// \brief Test that computePercentilesSimple() returns NoComputingTraits when
+/// called directly with a null trait pointer, covering the nullptr guard.
+TEST(Core_TestComputingComponentErrors, NullTraitsPercentilesSimple)
+{
+    auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
+    IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
+    ASSERT_NE(component, nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_NE(drugModel, nullptr);
+
+    auto drugTreatment = std::make_unique<DrugTreatment>();
+
+    const RequestResponseId requestResponseId = "1";
+    const Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+    const Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+    ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+    auto reqTrait = std::make_unique<ComputingTraitConcentration>(requestResponseId, start, end, 10.0, computingOption);
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(reqTrait));
+    std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ASSERT_EQ(
+            ComputingComponentTestHelper::computeNullPercentilesSimpleTraits(rawComponent, request, response),
+            ComputingStatus::NoComputingTraits);
+
+    delete component;
+}
+
+/// \brief Test that compute(TraitAdjustment) returns NoComputingTraits when
+/// called directly with a null trait pointer, covering the nullptr guard.
+TEST(Core_TestComputingComponentErrors, NullTraitsAdjustment)
+{
+    auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
+    IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
+    ASSERT_NE(component, nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_NE(drugModel, nullptr);
+
+    auto drugTreatment = std::make_unique<DrugTreatment>();
+
+    const RequestResponseId requestResponseId = "1";
+    const Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+    const Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+    ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+    auto reqTrait = std::make_unique<ComputingTraitConcentration>(requestResponseId, start, end, 10.0, computingOption);
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(reqTrait));
+    std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ASSERT_EQ(
+            ComputingComponentTestHelper::computeNullAdjustmentTraits(rawComponent, request, response),
+            ComputingStatus::NoComputingTraits);
+
+    delete component;
+}
+
+/// \brief Test that compute(TraitSinglePoints) returns NoComputingTraits when
+/// called directly with a null trait pointer, covering the nullptr guard.
+TEST(Core_TestComputingComponentErrors, NullTraitsSinglePoints)
+{
+    auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
+    IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
+    ASSERT_NE(component, nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_NE(drugModel, nullptr);
+
+    auto drugTreatment = std::make_unique<DrugTreatment>();
+
+    const RequestResponseId requestResponseId = "1";
+    const Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+    const Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+    ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+    auto reqTrait = std::make_unique<ComputingTraitConcentration>(requestResponseId, start, end, 10.0, computingOption);
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(reqTrait));
+    std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ASSERT_EQ(
+            ComputingComponentTestHelper::computeNullSinglePointsTraits(rawComponent, request, response),
+            ComputingStatus::NoComputingTraits);
+
+    delete component;
+}
+
+/// \brief Test that compute() returns OutOfBoundsPercentileRank when a percentile rank
+/// exceeds PERCENTILE_RANK_MAX (100), covering the bounds check in compute(TraitPercentiles).
+TEST(Core_TestComputingComponentErrors, OutOfBoundsPercentileRank)
+{
+    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    ASSERT_NE(component, nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_NE(drugModel, nullptr);
+
+    auto drugTreatment = std::make_unique<DrugTreatment>();
+
+    const RequestResponseId requestResponseId = "1";
+    const Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+    const Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+    PercentileRanks outOfBoundsRanks({150.0}); // 150 > PERCENTILE_RANK_MAX (100)
+    ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+    auto traits = std::make_unique<ComputingTraitPercentiles>(
+            requestResponseId, start, end, outOfBoundsRanks, 10.0, computingOption);
+
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+    std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ASSERT_EQ(component->compute(request, response), ComputingStatus::OutOfBoundsPercentileRank);
+
+    delete component;
+}
+
+/// \brief Test that compute() returns Ok with an empty response when the
+/// ComputingTraitSinglePoints has no requested times, covering the early-return branch.
+TEST(Core_TestComputingComponentErrors, EmptySinglePointsTimes)
+{
+    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    ASSERT_NE(component, nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_NE(drugModel, nullptr);
+
+    auto drugTreatment = std::make_unique<DrugTreatment>();
+
+    const RequestResponseId requestResponseId = "1";
+    ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+    std::vector<Tucuxi::Common::DateTime> emptyTimes;
+    auto traits = std::make_unique<ComputingTraitSinglePoints>(requestResponseId, emptyTimes, computingOption);
+
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+    std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ASSERT_EQ(component->compute(request, response), ComputingStatus::Ok);
+
+    delete component;
+}
+
+/// \brief Test concentration with RetrieveStatistics, covering the statistics branch in endRecord().
+TEST(Core_TestComputingComponentErrors, ConcentrationRetrieveStatistics)
+{
+    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    ASSERT_NE(component, nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_NE(drugModel, nullptr);
+
+    auto drugTreatment = buildImatinibTreatment();
+
+    const RequestResponseId requestResponseId = "1";
+    const Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+    const Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+    ComputingOption computingOption(
+            PredictionParameterType::Population,
+            CompartmentsOption::MainCompartment,
+            RetrieveStatisticsOption::RetrieveStatistics);
+    auto traits = std::make_unique<ComputingTraitConcentration>(requestResponseId, start, end, 10.0, computingOption);
+
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+    std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ASSERT_EQ(component->compute(request, response), ComputingStatus::Ok);
+
+    delete component;
+}
+
+/// \brief Test concentration with RetrieveParameters, covering the parameters branch in recordCycle().
+TEST(Core_TestComputingComponentErrors, ConcentrationRetrieveParameters)
+{
+    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    ASSERT_NE(component, nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_NE(drugModel, nullptr);
+
+    auto drugTreatment = buildImatinibTreatment();
+
+    const RequestResponseId requestResponseId = "1";
+    const Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+    const Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+    ComputingOption computingOption(
+            PredictionParameterType::Population,
+            CompartmentsOption::MainCompartment,
+            RetrieveStatisticsOption::DoNotRetrieveStatistics,
+            RetrieveParametersOption::RetrieveParameters);
+    auto traits = std::make_unique<ComputingTraitConcentration>(requestResponseId, start, end, 10.0, computingOption);
+
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+    std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ASSERT_EQ(component->compute(request, response), ComputingStatus::Ok);
+
+    delete component;
+}
+
+/// \brief Test concentration with RetrieveCovariates, covering the covariates branch in recordCycle().
+TEST(Core_TestComputingComponentErrors, ConcentrationRetrieveCovariates)
+{
+    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    ASSERT_NE(component, nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_NE(drugModel, nullptr);
+
+    auto drugTreatment = buildImatinibTreatment();
+
+    const RequestResponseId requestResponseId = "1";
+    const Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+    const Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+    ComputingOption computingOption(
+            PredictionParameterType::Population,
+            CompartmentsOption::MainCompartment,
+            RetrieveStatisticsOption::DoNotRetrieveStatistics,
+            RetrieveParametersOption::DoNotRetrieveParameters,
+            RetrieveCovariatesOption::RetrieveCovariates);
+    auto traits = std::make_unique<ComputingTraitConcentration>(requestResponseId, start, end, 10.0, computingOption);
+
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+    std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ASSERT_EQ(component->compute(request, response), ComputingStatus::Ok);
 
     delete component;
 }
