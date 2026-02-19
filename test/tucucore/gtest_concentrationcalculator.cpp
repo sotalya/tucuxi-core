@@ -294,8 +294,7 @@ static ParameterSetSeries buildConstantEliminationParams(const DateTime& _time, 
 // ===========================================================================
 TEST(Core_TestConcentrationCalculator, UndefinedRecordFrom)
 {
-    Tucuxi::Common::MockLogger mockLogger;
-    mockLogger.install();
+    Tucuxi::Common::ScopedMockLogger mockLogger;
 
     DateTime now = DateTime::now();
     auto params = buildConstantEliminationParams(now);
@@ -308,8 +307,6 @@ TEST(Core_TestConcentrationCalculator, UndefinedRecordFrom)
     // The function logs an error but continues; computation still succeeds.
     EXPECT_EQ(status, ComputingStatus::Ok);
     EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "Invalid record from"));
-
-    mockLogger.uninstall();
 }
 
 
@@ -318,8 +315,7 @@ TEST(Core_TestConcentrationCalculator, UndefinedRecordFrom)
 // ===========================================================================
 TEST(Core_TestConcentrationCalculator, UndefinedRecordTo)
 {
-    Tucuxi::Common::MockLogger mockLogger;
-    mockLogger.install();
+    Tucuxi::Common::ScopedMockLogger mockLogger;
 
     DateTime now = DateTime::now();
     auto params = buildConstantEliminationParams(now);
@@ -331,8 +327,6 @@ TEST(Core_TestConcentrationCalculator, UndefinedRecordTo)
     // The function logs an error but continues; computation still succeeds.
     EXPECT_EQ(status, ComputingStatus::Ok);
     EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "Invalid record to"));
-
-    mockLogger.uninstall();
 }
 
 
@@ -341,8 +335,7 @@ TEST(Core_TestConcentrationCalculator, UndefinedRecordTo)
 // ===========================================================================
 TEST(Core_TestConcentrationCalculator, NoParametersComputeConcentrations)
 {
-    Tucuxi::Common::MockLogger mockLogger;
-    mockLogger.install();
+    Tucuxi::Common::ScopedMockLogger mockLogger;
 
     DateTime now = DateTime::now();
     ParameterSetSeries emptyParams;
@@ -354,8 +347,6 @@ TEST(Core_TestConcentrationCalculator, NoParametersComputeConcentrations)
             prediction, false, now, now + Tucuxi::Common::Duration(12h), intakes, emptyParams);
     EXPECT_EQ(status, ComputingStatus::ConcentrationCalculatorNoParameters);
     EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "No parameters found"));
-
-    mockLogger.uninstall();
 }
 
 
@@ -364,8 +355,7 @@ TEST(Core_TestConcentrationCalculator, NoParametersComputeConcentrations)
 // ===========================================================================
 TEST(Core_TestConcentrationCalculator, UndefinedRecordFromSteadyState)
 {
-    Tucuxi::Common::MockLogger mockLogger;
-    mockLogger.install();
+    Tucuxi::Common::ScopedMockLogger mockLogger;
 
     DateTime now = DateTime::now();
     auto params = buildConstantEliminationParams(now);
@@ -377,8 +367,6 @@ TEST(Core_TestConcentrationCalculator, UndefinedRecordFromSteadyState)
             prediction, false, DateTime(), now + Tucuxi::Common::Duration(12h), intakes, params);
     EXPECT_EQ(status, ComputingStatus::Ok);
     EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "Invalid record from"));
-
-    mockLogger.uninstall();
 }
 
 
@@ -387,8 +375,7 @@ TEST(Core_TestConcentrationCalculator, UndefinedRecordFromSteadyState)
 // ===========================================================================
 TEST(Core_TestConcentrationCalculator, UndefinedRecordToSteadyState)
 {
-    Tucuxi::Common::MockLogger mockLogger;
-    mockLogger.install();
+    Tucuxi::Common::ScopedMockLogger mockLogger;
 
     DateTime now = DateTime::now();
     auto params = buildConstantEliminationParams(now);
@@ -399,8 +386,6 @@ TEST(Core_TestConcentrationCalculator, UndefinedRecordToSteadyState)
     auto status = calc.computeConcentrationsAtSteadyState(prediction, false, now, DateTime(), intakes, params);
     EXPECT_EQ(status, ComputingStatus::Ok);
     EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "Invalid record to"));
-
-    mockLogger.uninstall();
 }
 
 
@@ -409,8 +394,7 @@ TEST(Core_TestConcentrationCalculator, UndefinedRecordToSteadyState)
 // ===========================================================================
 TEST(Core_TestConcentrationCalculator, NoParametersSteadyState)
 {
-    Tucuxi::Common::MockLogger mockLogger;
-    mockLogger.install();
+    Tucuxi::Common::ScopedMockLogger mockLogger;
 
     DateTime now = DateTime::now();
     ParameterSetSeries emptyParams;
@@ -422,8 +406,6 @@ TEST(Core_TestConcentrationCalculator, NoParametersSteadyState)
             prediction, false, now, now + Tucuxi::Common::Duration(12h), intakes, emptyParams);
     EXPECT_EQ(status, ComputingStatus::ConcentrationCalculatorNoParameters);
     EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "No parameters found"));
-
-    mockLogger.uninstall();
 }
 
 

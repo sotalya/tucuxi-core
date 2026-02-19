@@ -204,6 +204,35 @@ private:
     ILogger* m_previousLogger{nullptr};
 };
 
+/// \brief RAII wrapper around MockLogger.
+/// Calls install() in the constructor and uninstall() in the destructor,
+/// ensuring the previous logger is always restored even if the test throws.
+///
+/// Usage:
+/// \code
+///     {
+///         ScopedMockLogger logger;
+///         // ... run code that logs ...
+///         EXPECT_TRUE(logger.hasEntry(LogLevel::Error, "something went wrong"));
+///     } // uninstall() called automatically
+/// \endcode
+class ScopedMockLogger : public MockLogger
+{
+public:
+    ScopedMockLogger()
+    {
+        install();
+    }
+
+    ~ScopedMockLogger() override
+    {
+        uninstall();
+    }
+
+    ScopedMockLogger(const ScopedMockLogger&) = delete;
+    ScopedMockLogger& operator=(const ScopedMockLogger&) = delete;
+};
+
 } // namespace Common
 } // namespace Tucuxi
 
