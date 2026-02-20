@@ -342,7 +342,8 @@ TEST(Core_TestComputingComponentErrors, NullTraitsConcentration)
     ASSERT_EQ(
             ComputingComponentTestHelper::computeNullConcentrationTraits(rawComponent, request, response),
             ComputingStatus::NoComputingTraits);
-    EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
+    EXPECT_TRUE(
+            mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
 
     delete component;
 }
@@ -374,7 +375,8 @@ TEST(Core_TestComputingComponentErrors, NullTraitsPercentilesSimple)
     ASSERT_EQ(
             ComputingComponentTestHelper::computeNullPercentilesSimpleTraits(rawComponent, request, response),
             ComputingStatus::NoComputingTraits);
-    EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
+    EXPECT_TRUE(
+            mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
 
     delete component;
 }
@@ -406,7 +408,8 @@ TEST(Core_TestComputingComponentErrors, NullTraitsAdjustment)
     ASSERT_EQ(
             ComputingComponentTestHelper::computeNullAdjustmentTraits(rawComponent, request, response),
             ComputingStatus::NoComputingTraits);
-    EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
+    EXPECT_TRUE(
+            mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
 
     delete component;
 }
@@ -438,7 +441,8 @@ TEST(Core_TestComputingComponentErrors, NullTraitsSinglePoints)
     ASSERT_EQ(
             ComputingComponentTestHelper::computeNullSinglePointsTraits(rawComponent, request, response),
             ComputingStatus::NoComputingTraits);
-    EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
+    EXPECT_TRUE(
+            mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
 
     delete component;
 }
