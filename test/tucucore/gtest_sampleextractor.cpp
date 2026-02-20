@@ -25,10 +25,9 @@
 #include <date/date.h>
 #include <gtest/gtest.h>
 
-#include "tucucommon/loggerhelper.h"
-
 #include "tucucore/sampleextractor.h"
 
+#include "mocklogger.h"
 #include "testutils.h"
 
 using namespace Tucuxi::Common::Utils;
@@ -113,9 +112,8 @@ TEST(Core_TestSampleExtractor, Standard)
 
         AnalyteId analyteId("theAnalyte");
 
-        // First disable the logger
-        Tucuxi::Common::LoggerHelper logHelper;
-        logHelper.disable();
+        // Use a mock logger to capture error messages instead of printing them
+        Tucuxi::Common::ScopedMockLogger mockLogger;
 
         samples.push_back(
                 std::make_unique<Sample>(DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), analyteId, 12.0, TucuUnit("test")));
@@ -124,6 +122,9 @@ TEST(Core_TestSampleExtractor, Standard)
 
         ASSERT_EQ(result, ComputingStatus::SampleExtractionError);
         ASSERT_EQ(series.size(), static_cast<size_t>(0));
+        ASSERT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "Sample unit not handled"));
+
+        mockLogger.clear();
 
         Samples samples2;
 
@@ -134,6 +135,9 @@ TEST(Core_TestSampleExtractor, Standard)
 
         ASSERT_EQ(result, ComputingStatus::SampleExtractionError);
         ASSERT_EQ(series.size(), static_cast<size_t>(0));
+        ASSERT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "Sample unit not handled"));
+
+        mockLogger.clear();
 
         Samples samples3;
 
@@ -144,8 +148,6 @@ TEST(Core_TestSampleExtractor, Standard)
 
         ASSERT_EQ(result, ComputingStatus::SampleExtractionError);
         ASSERT_EQ(series.size(), static_cast<size_t>(0));
-
-        // Enable the logger
-        logHelper.enable();
+        ASSERT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "Sample unit not handled"));
     }
 }

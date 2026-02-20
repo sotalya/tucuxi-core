@@ -36,6 +36,7 @@
 #include "tucucore/pkmodel.h"
 
 #include "drugmodels/buildimatinib.h"
+#include "mocklogger.h"
 
 using namespace Tucuxi::Core;
 
@@ -184,6 +185,9 @@ static ComputingStatus computeWithStandardRequest(
 /// has not been initialized (m_utils == nullptr), covering the early-exit branch.
 TEST(Core_TestComputingComponentErrors, NotInitialized)
 {
+    // Install MockLogger before creating the component so its m_logger picks it up
+    Tucuxi::Common::ScopedMockLogger mockLogger;
+
     // Create a ComputingComponent without calling initialize(), so m_utils remains nullptr
     ComputingComponent* rawComponent = ComputingComponentTestHelper::createUninitialized();
     IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
@@ -198,6 +202,7 @@ TEST(Core_TestComputingComponentErrors, NotInitialized)
     ASSERT_EQ(
             computeWithStandardRequest(component, *drugModel, *drugTreatment),
             ComputingStatus::ComputingComponentNotInitialized);
+    EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "has not been initialized"));
 
     delete component;
 }
@@ -206,6 +211,8 @@ TEST(Core_TestComputingComponentErrors, NotInitialized)
 /// (m_utils->m_models == nullptr).
 TEST(Core_TestComputingComponentErrors, NullPkModelCollection)
 {
+    Tucuxi::Common::ScopedMockLogger mockLogger;
+
     auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
     IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
     ASSERT_NE(component, nullptr);
@@ -220,6 +227,7 @@ TEST(Core_TestComputingComponentErrors, NullPkModelCollection)
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
     ASSERT_EQ(computeWithStandardRequest(component, *drugModel, *drugTreatment), ComputingStatus::NoPkModels);
+    EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "No Pk Model loaded"));
 
     delete component;
 }
@@ -228,6 +236,8 @@ TEST(Core_TestComputingComponentErrors, NullPkModelCollection)
 /// (getPkModelList().empty()).
 TEST(Core_TestComputingComponentErrors, EmptyPkModelCollection)
 {
+    Tucuxi::Common::ScopedMockLogger mockLogger;
+
     auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
     IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
     ASSERT_NE(component, nullptr);
@@ -242,6 +252,7 @@ TEST(Core_TestComputingComponentErrors, EmptyPkModelCollection)
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
     ASSERT_EQ(computeWithStandardRequest(component, *drugModel, *drugTreatment), ComputingStatus::NoPkModels);
+    EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "No Pk Model loaded"));
 
     delete component;
 }
@@ -307,6 +318,8 @@ TEST(Core_TestComputingComponentErrors, ExceptionInTrait)
 /// called directly with a null trait pointer, covering the nullptr guard.
 TEST(Core_TestComputingComponentErrors, NullTraitsConcentration)
 {
+    Tucuxi::Common::ScopedMockLogger mockLogger;
+
     auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
     IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
     ASSERT_NE(component, nullptr);
@@ -329,6 +342,7 @@ TEST(Core_TestComputingComponentErrors, NullTraitsConcentration)
     ASSERT_EQ(
             ComputingComponentTestHelper::computeNullConcentrationTraits(rawComponent, request, response),
             ComputingStatus::NoComputingTraits);
+    EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
 
     delete component;
 }
@@ -337,6 +351,8 @@ TEST(Core_TestComputingComponentErrors, NullTraitsConcentration)
 /// called directly with a null trait pointer, covering the nullptr guard.
 TEST(Core_TestComputingComponentErrors, NullTraitsPercentilesSimple)
 {
+    Tucuxi::Common::ScopedMockLogger mockLogger;
+
     auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
     IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
     ASSERT_NE(component, nullptr);
@@ -358,6 +374,7 @@ TEST(Core_TestComputingComponentErrors, NullTraitsPercentilesSimple)
     ASSERT_EQ(
             ComputingComponentTestHelper::computeNullPercentilesSimpleTraits(rawComponent, request, response),
             ComputingStatus::NoComputingTraits);
+    EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
 
     delete component;
 }
@@ -366,6 +383,8 @@ TEST(Core_TestComputingComponentErrors, NullTraitsPercentilesSimple)
 /// called directly with a null trait pointer, covering the nullptr guard.
 TEST(Core_TestComputingComponentErrors, NullTraitsAdjustment)
 {
+    Tucuxi::Common::ScopedMockLogger mockLogger;
+
     auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
     IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
     ASSERT_NE(component, nullptr);
@@ -387,6 +406,7 @@ TEST(Core_TestComputingComponentErrors, NullTraitsAdjustment)
     ASSERT_EQ(
             ComputingComponentTestHelper::computeNullAdjustmentTraits(rawComponent, request, response),
             ComputingStatus::NoComputingTraits);
+    EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
 
     delete component;
 }
@@ -395,6 +415,8 @@ TEST(Core_TestComputingComponentErrors, NullTraitsAdjustment)
 /// called directly with a null trait pointer, covering the nullptr guard.
 TEST(Core_TestComputingComponentErrors, NullTraitsSinglePoints)
 {
+    Tucuxi::Common::ScopedMockLogger mockLogger;
+
     auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
     IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
     ASSERT_NE(component, nullptr);
@@ -416,6 +438,7 @@ TEST(Core_TestComputingComponentErrors, NullTraitsSinglePoints)
     ASSERT_EQ(
             ComputingComponentTestHelper::computeNullSinglePointsTraits(rawComponent, request, response),
             ComputingStatus::NoComputingTraits);
+    EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
 
     delete component;
 }

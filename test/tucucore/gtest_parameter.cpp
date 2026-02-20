@@ -25,6 +25,8 @@
 #include "tucucore/drugmodel/parameterdefinition.h"
 #include "tucucore/parameter.h"
 
+#include "mocklogger.h"
+
 using namespace Tucuxi::Core;
 
 TEST(Core_TestParameter, ApplyEta)
@@ -77,14 +79,13 @@ TEST(Core_TestParameter, ApplyEta)
     {
         // Test logit variability with wrong parameter value
 
-        Tucuxi::Common::LoggerHelper logHelper;
-        logHelper.disable();
+        Tucuxi::Common::ScopedMockLogger mockLogger;
         ParameterDefinition pDef(
                 "pid", 0.5, std::make_unique<ParameterVariability>(ParameterVariabilityType::Logit, 1.0));
         Parameter p(pDef, 1.6);
         bool valid = p.applyEta(2.0);
         ASSERT_FALSE(valid);
-        logHelper.enable();
+        ASSERT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Warn, "makes it not a number"));
     }
 }
 
