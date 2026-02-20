@@ -85,10 +85,12 @@ protected:
     /// \brief Compute the set of GoF statistics.
     /// \param _computedValues Values computed by the model.
     /// \param _measuredValues Corresponding samples.
+    /// \param _unit Unit of the computed/measured values
     /// \param _gofData Resulting GoF statistics
     static void computeGofStatistics(
             std::vector<Value> const& _computedValues,
             std::vector<Value> const& _measuredValues,
+            const TucuUnit& _unit,
             std::optional<GofData>& _gofData);
 
     ///

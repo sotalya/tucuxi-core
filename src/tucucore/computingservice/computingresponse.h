@@ -198,6 +198,7 @@ public:
     /// \param _predErrors Measurement prediction errors
     /// \param _meanPredictionError Mean prediction error
     /// \param _meanAbsolutePredictionError Mean absolute prediction error
+    /// \param _unit Unit of the concentrations used for the GoF computations
     ///
     GofData(Value const& _mae,
             Value const& _mape,
@@ -208,10 +209,11 @@ public:
             Value const& _rSquared,
             std::vector<MeasurePredError> _predErrors,
             Value const& _meanPredictionError,
-            Value const& _meanAbsolutePredictionError)
+            Value const& _meanAbsolutePredictionError,
+            TucuUnit _unit)
         : m_mae{_mae}, m_mape{_mape}, m_mse{_mse}, m_rmse{_rmse}, m_rmsle{_rmsle}, m_rrmse{_rrmse},
           m_rSquared{_rSquared}, m_predErrors{std::move(_predErrors)}, m_meanPredictionError{_meanPredictionError},
-          m_meanAbsolutePredictionError{_meanAbsolutePredictionError}
+          m_meanAbsolutePredictionError{_meanAbsolutePredictionError}, m_unit{std::move(_unit)}
     {
     }
 
@@ -295,6 +297,14 @@ public:
         return m_meanAbsolutePredictionError;
     }
 
+    ///
+    /// \brief Return the unit used for the GoF computations.
+    /// \return Unit.
+    TucuUnit getUnit() const
+    {
+        return m_unit;
+    }
+
 
 protected:
     /// MAE evaluation metric.
@@ -317,6 +327,8 @@ protected:
     Value m_meanPredictionError;
     /// Mean absolute prediction error.
     Value m_meanAbsolutePredictionError;
+    /// Unit used for the GoF computations.
+    TucuUnit m_unit;
 };
 
 

@@ -60,7 +60,7 @@ void ComputingGof::compute(
                 Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
                         requestSample->getValue(), requestSample->getUnit(), modelUnit));
     }
-    computeGofStatistics(computedValues, measuredValues, _gofData);
+    computeGofStatistics(computedValues, measuredValues, modelUnit, _gofData);
 }
 
 
@@ -92,13 +92,14 @@ void ComputingGof::compute(
                 Tucuxi::Common::UnitManager::convertToUnit<Tucuxi::Common::UnitManager::UnitType::Concentration>(
                         requestSamples.at(i)->getValue(), requestSamples.at(i)->getUnit(), modelUnit));
     }
-    computeGofStatistics(computedValues, measuredValues, _gofData);
+    computeGofStatistics(computedValues, measuredValues, modelUnit, _gofData);
 }
 
 
 void ComputingGof::computeGofStatistics(
         std::vector<Value> const& _computedValues,
         std::vector<Value> const& _measuredValues,
+        const TucuUnit& _unit,
         std::optional<GofData>& _gofData)
 {
     assert(_computedValues.size() == _measuredValues.size());
@@ -125,7 +126,8 @@ void ComputingGof::computeGofStatistics(
             rSquared,
             std::move(predErrors),
             meanPredictionError,
-            meanAbsolutePredictionError);
+            meanAbsolutePredictionError,
+            _unit);
 }
 
 

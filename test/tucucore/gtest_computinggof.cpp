@@ -426,8 +426,9 @@ TEST(Core_TestComputingGof, GofStatisticsPopulatesOptional)
     std::vector<Value> computed = {1.0, 3.0};
     std::vector<Value> measured = {2.0, 4.0};
     std::optional<GofData> gofData;
-    ComputingGofExposer::computeGofStatistics(computed, measured, gofData);
+    ComputingGofExposer::computeGofStatistics(computed, measured, TucuUnit("ug/l"), gofData);
     EXPECT_TRUE(gofData.has_value());
+    EXPECT_EQ(gofData->getUnit(), TucuUnit("ug/l"));
 }
 
 TEST(Core_TestComputingGof, GofStatisticsKnownValues)
@@ -439,9 +440,10 @@ TEST(Core_TestComputingGof, GofStatisticsKnownValues)
     std::vector<Value> computed = {1.0, 3.0};
     std::vector<Value> measured = {2.0, 4.0};
     std::optional<GofData> gofData;
-    ComputingGofExposer::computeGofStatistics(computed, measured, gofData);
+    ComputingGofExposer::computeGofStatistics(computed, measured, TucuUnit("mg/l"), gofData);
 
     ASSERT_TRUE(gofData.has_value());
+    EXPECT_EQ(gofData->getUnit(), TucuUnit("mg/l"));
     EXPECT_DOUBLE_EQ(gofData->getMae(), 1.0);
     EXPECT_DOUBLE_EQ(gofData->getMape(), 0.375);
     EXPECT_DOUBLE_EQ(gofData->getMse(), 1.0);
@@ -459,9 +461,10 @@ TEST(Core_TestComputingGof, GofStatisticsPerfectFit)
     std::vector<Value> computed = {1.0, 2.0, 3.0};
     std::vector<Value> measured = {1.0, 2.0, 3.0};
     std::optional<GofData> gofData;
-    ComputingGofExposer::computeGofStatistics(computed, measured, gofData);
+    ComputingGofExposer::computeGofStatistics(computed, measured, TucuUnit("ug/l"), gofData);
 
     ASSERT_TRUE(gofData.has_value());
+    EXPECT_EQ(gofData->getUnit(), TucuUnit("ug/l"));
     EXPECT_DOUBLE_EQ(gofData->getMae(), 0.0);
     EXPECT_DOUBLE_EQ(gofData->getMse(), 0.0);
     EXPECT_DOUBLE_EQ(gofData->getRmse(), 0.0);

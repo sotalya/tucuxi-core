@@ -405,6 +405,7 @@ bool ComputingQueryResponseXmlExport::exportSinglePrediction(
     if (gof) {
         Tucuxi::Common::XmlNode gofNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "goodnessOfFit");
         _rootNode.addChild(gofNode);
+        addNode(gofNode, "unit", gof->getUnit().toString());
         addNode(gofNode, "mae", gof->getMae());
         addNode(gofNode, "mape", gof->getMape());
         addNode(gofNode, "mse", gof->getMse());
@@ -478,6 +479,7 @@ bool ComputingQueryResponseXmlExport::exportSinglePoints(
     if (gof) {
         Tucuxi::Common::XmlNode gofNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "goodnessOfFit");
         _rootNode.addChild(gofNode);
+        addNode(gofNode, "unit", gof->getUnit().toString());
         addNode(gofNode, "mae", gof->getMae());
         addNode(gofNode, "mape", gof->getMape());
         addNode(gofNode, "mse", gof->getMse());
