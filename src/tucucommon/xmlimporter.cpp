@@ -20,6 +20,7 @@
  */
 
 
+#include <algorithm>
 #include <regex>
 
 #include "xmlimporter.h"
@@ -64,7 +65,9 @@ void XMLImporter::setStatus(Status _status, const string& _errorMessage)
 #else
     m_status = _status;
 #endif // TUCU_EASY_DEBUG
-    m_errorMessage += _errorMessage + "\n";
+    if (!_errorMessage.empty()) {
+        m_errorMessage += _errorMessage + "\n";
+    }
 }
 
 IImport::Status XMLImporter::getStatus() const
@@ -113,13 +116,13 @@ double XMLImporter::extractDouble(Tucuxi::Common::XmlNodeIterator _rootIterator)
 
 bool XMLImporter::extractBool(Tucuxi::Common::XmlNodeIterator _rootIterator)
 {
+    string nodeValue = _rootIterator->getValue();
+    std::transform(nodeValue.begin(), nodeValue.end(), nodeValue.begin(), ::tolower);
 
-    const string nodeValue = _rootIterator->getValue();
-
-    if ((nodeValue == "true") || (nodeValue == "True") || (nodeValue == "1")) {
+    if (nodeValue == "true" || nodeValue == "yes" || nodeValue == "1") {
         return true;
     }
-    if ((nodeValue == "false") || (nodeValue == "False") || (nodeValue == "0")) {
+    if (nodeValue == "false" || nodeValue == "no" || nodeValue == "0") {
         return false;
     }
 
@@ -135,6 +138,28 @@ int XMLImporter::extractInt(Common::XmlNodeIterator _rootIterator)
         if (pos != _rootIterator->getValue().size()) {
             setNodeError(_rootIterator);
             result = 0;
+        }
+        return result;
+    }
+    catch (...) {
+        setNodeError(_rootIterator);
+        return 0;
+    }
+}
+
+size_t XMLImporter::extractSizeT(Common::XmlNodeIterator _rootIterator)
+{
+    try {
+        std::size_t pos = 0;
+        std::string value = _rootIterator->getValue();
+        if (!value.empty() && value[0] == '-') {
+            setNodeError(_rootIterator);
+            return 0;
+        }
+        size_t result = std::stoull(value, &pos);
+        if (pos != value.size()) {
+            setNodeError(_rootIterator);
+            return 0;
         }
         return result;
     }
@@ -168,7 +193,9 @@ Duration XMLImporter::extractDuration(Common::XmlNodeIterator _rootIterator)
 
     std::vector<int> values;
 
-    if (regex_match(s, regex("(([0-9]{1,}:)([0-9]{1,2}:)([0-9]{1,2}))"))) {
+    static const std::regex durationRegex("(([0-9]{1,}:)([0-9]{1,2}:)([0-9]{1,2}))");
+
+    if (regex_match(s, durationRegex)) {
         std::string delimiter = ":";
 
         size_t pos = 0;
@@ -265,6 +292,17 @@ int XMLImporter::getChildInt(Common::XmlNodeIterator _rootIterator, const std::s
         return 0;
     }
     return extractInt(child);
+}
+
+size_t XMLImporter::getChildSizeT(Common::XmlNodeIterator _rootIterator, const std::string& _childName)
+{
+    auto child = _rootIterator->getChildren(_childName);
+
+    if (checkNodeIterator(child, _childName).empty()) {
+        setNodeError(child);
+        return 0;
+    }
+    return extractSizeT(child);
 }
 
 DateTime XMLImporter::getChildDateTime(
