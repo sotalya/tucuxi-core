@@ -115,8 +115,19 @@ protected:
     //Extract data from XML file
     TucuUnit extractUnit(Common::XmlNodeIterator _rootIterator, CheckUnit _checkUnit = CheckUnit::DoNotCheck);
     double extractDouble(Common::XmlNodeIterator _rootIterator);
+    /// \brief Extract a boolean value from an XML node.
+    ///        Accepted values (case-insensitive): "true", "yes", "1" for true,
+    ///        "false", "no", "0" for false. Sets a node error if the value
+    ///        does not match any of these.
+    /// \param _rootIterator Iterator pointing to the XML node containing the value.
+    /// \return The extracted boolean value, or false if the value is invalid.
     bool extractBool(Common::XmlNodeIterator _rootIterator);
     int extractInt(Common::XmlNodeIterator _rootIterator);
+    /// \brief Extract an unsigned integer (size_t) value from an XML node.
+    ///        Rejects negative values. Sets a node error if the value is invalid.
+    /// \param _rootIterator Iterator pointing to the XML node containing the value.
+    /// \return The extracted size_t value, or 0 if the value is invalid.
+    size_t extractSizeT(Common::XmlNodeIterator _rootIterator);
     DateTime extractDateTime(Common::XmlNodeIterator _rootIterator);
     Duration extractDuration(Common::XmlNodeIterator _rootIterator);
     std::string extractString(Common::XmlNodeIterator _rootIterator);
@@ -132,6 +143,7 @@ protected:
     bool getChildBool(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     bool getChildBoolOptional(Common::XmlNodeIterator _rootIterator, const std::string& _childName, bool _defaultValue);
     int getChildInt(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
+    size_t getChildSizeT(Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     DateTime getChildDateTime(
             Common::XmlNodeIterator _rootIterator,
             const std::string& _childName,
