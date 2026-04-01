@@ -35,7 +35,7 @@ std::string toString(TargetType _type)
             {TargetType::Mean, "mean"},
             {TargetType::Auc, "auc"},
             {TargetType::Auc24, "auc24"},
-            {TargetType::CumulativeAuc, "CumulativeAuc"},
+            {TargetType::CumulativeAuc, "cumulativeAuc"},
             {TargetType::AucOverMic, "aucOverMic"},
             {TargetType::Auc24OverMic, "auc24OverMic"},
             {TargetType::TimeOverMic, "timeOverMic"},
