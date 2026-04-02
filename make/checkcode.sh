@@ -17,7 +17,7 @@ clang-tidy \
                               cppcoreguidelines-narrowing-conversions, \
                               bugprone-multiple-statement-macro, \
                               bugprone-integer-division, \
-                              readability-inconsistent-declaration-parameter-name,bugprone-*,cppcoreguidelines-avoid-goto,cppcoreguidelines-avoid-non-const-global-variables,cppcoreguidelines-avoid-c-arrays,cppcoreguidelines-c-copy-assignment-signature,cppcoreguidelines-interfaces-global-init,cppcoreguidelines-macro-usage,cppcoreguidelines-narrowing-conversions,cppcoreguidelines-no-malloc,cppcoreguidelines-pro-*,cppcoreguidelines-slicing,performance-*,readability-avoid-const-params-in-decls,readability-const-return-type,readability-container-size-empty,readability-delete-null-pointer,readability-deleted-default,readability-else-after-return,readability-function-size,readability-identifier-naming,readability-inconsistent-declaration-parameter-name,readability-isolate-declaration,readability-misleading-indentation,readability-misplaced-array-index,readability-non-const-parameter,readability-redundant-*,readability-simplify-*,readability-static-*,readability-string-compare', \
+                              readability-inconsistent-declaration-parameter-name,bugprone-*,cppcoreguidelines-avoid-goto,cppcoreguidelines-avoid-non-const-global-variables,cppcoreguidelines-avoid-c-arrays,cppcoreguidelines-c-copy-assignment-signature,cppcoreguidelines-interfaces-global-init,cppcoreguidelines-macro-usage,cppcoreguidelines-narrowing-conversions,cppcoreguidelines-no-malloc,cppcoreguidelines-pro-*,cppcoreguidelines-slicing,performance-*,readability-avoid-const-params-in-decls,readability-const-return-type,readability-container-size-empty,readability-delete-null-pointer,readability-deleted-default,readability-else-after-return,readability-function-size,readability-identifier-naming,readability-inconsistent-declaration-parameter-name,readability-isolate-declaration,readability-misleading-indentation,readability-misplaced-array-index,readability-non-const-parameter,readability-redundant-*,readability-simplify-*,readability-static-*,readability-string-compare,cppcoreguidelines-virtual-class-destructor', \
 		CheckOptions: [ \
 			{ key: readability-identifier-naming.ClassCase,           value: CamelCase }, \
 			{ key: readability-identifier-naming.MemberPrefix,        value: m_        }, \
@@ -44,16 +44,16 @@ clang-tidy \
 	../src/tucuvalidator/*.cpp \
 	-- \
 	-I../src \
-	-I../libs/cxxopts \
-	-I../libs/rapidjson-master-20190220/include \
-	-I../libs/eigen-3.3.2 \
-	-I../libs/boost-1.63.0 \
+	-I../libs/cxxopts/include \
+	-I../libs/rapidjson/include \
+	-I../libs/eigen \
+	-I../libs/boost \
 	-I../libs/date/include \
-	-I../libs/spdlog-master-20170622/include \
-    -I../libs/botan-2.1.0/build/include \
-    -I../libs/tiny-js-master-20170629 \
-    -I../libs/rapidxml-1.13 \
-	-std=c++14 \
+	-I../libs/spdlog/include \
+    -I../libs/botan/build/include \
+    -I../libs/tiny-js \
+    -I../libs/rapidxml \
+	-std=c++20 \
 > clang-warnings.txt
 
 
