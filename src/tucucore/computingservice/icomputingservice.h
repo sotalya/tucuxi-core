@@ -44,8 +44,6 @@ class PkModelCollection;
 class IComputingService : public Tucuxi::Common::Interface
 {
 public:
-    virtual ~IComputingService() = default;
-
     ///
     /// \brief computes
     /// \param _request The request containing all information required for the computation

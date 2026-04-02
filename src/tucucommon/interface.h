@@ -50,6 +50,8 @@ public:
         return nullptr;
     }
 
+    virtual ~Interface() = default; // LCOV_EXCL_LINE
+
 protected:
     /// \brief Abstract method allowing the templated version of getInterface to access other interfaces of the same component.
     /// \param _name The name of the interface as returned by typeid.

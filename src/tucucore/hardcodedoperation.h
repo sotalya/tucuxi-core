@@ -125,6 +125,8 @@ public:
     /// This method shall be called at the beginning of the execution.
     virtual bool populate();
 
+    virtual ~OperationCollection() = default; // LCOV_EXCL_LINE
+
 protected:
     std::map<std::string, std::shared_ptr<Operation>> m_collection;
 };

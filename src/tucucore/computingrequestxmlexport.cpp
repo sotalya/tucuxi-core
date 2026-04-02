@@ -20,14 +20,11 @@
  */
 
 #include <fstream>
-#include <iomanip>
 #include <iostream>
 #include <mutex>
-#include <sstream>
 
 #include "computingrequestxmlexport.h"
 
-#include "tucucommon/general.h"
 #include "tucucommon/loggerhelper.h"
 #include "tucucommon/xmlattribute.h"
 #include "tucucommon/xmldocument.h"

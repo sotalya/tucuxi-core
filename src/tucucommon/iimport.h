@@ -42,6 +42,8 @@ public:
     // clang-format on
 
     virtual std::string getErrorMessage() const = 0;
+
+    virtual ~IImport() = default; // LCOV_EXCL_LINE
 };
 
 std::ostream& operator<<(std::ostream& _stream, const IImport::Status& _e);

@@ -202,6 +202,7 @@ private:
         /// This gets chained, performing automagically all the operations needed to get the required value.
         double getValue() const;
 
+        virtual ~OperableComputeNode() = default;
 
     private:
         /// \brief Shared pointer to the operable.
@@ -233,7 +234,7 @@ class IOperableInput
 {
 public:
     /// \brief Default virtual destructor, required for proper object's destruction.
-    virtual ~IOperableInput() = default;
+    virtual ~IOperableInput() = default; // LCOV_EXCL_LINE
 
     /// \brief Retrieve the value stored in the input node.
     /// \return Value of the input node (evaluated, if the real node behind is an Operable one).

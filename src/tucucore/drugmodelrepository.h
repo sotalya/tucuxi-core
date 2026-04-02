@@ -36,8 +36,6 @@ class DrugModel;
 class IDrugModelRepository : public Tucuxi::Common::Interface
 {
 public:
-    virtual ~IDrugModelRepository() = default;
-
     virtual DrugModel* getDrugModelById(std::string _drugModelId) = 0;
 
     virtual std::vector<DrugModel*> getDrugModelsByDrugId(std::string _drugId) = 0;
