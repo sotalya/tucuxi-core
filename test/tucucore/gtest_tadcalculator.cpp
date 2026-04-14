@@ -131,7 +131,7 @@ TEST_F(Core_TestTADCalculator, CalculateDurations)
     EXPECT_EQ(durations[0].toHours(), -5.5);
     EXPECT_EQ(durations[1].toHours(), 48.0);
     EXPECT_EQ(durations[2].toHours(), 121.5);
-    EXPECT_EQ(durations[3].toHours(), 0.0);
+    EXPECT_EQ(durations[3].toHours(), 195.0);
     EXPECT_EQ(durations[4].toHours(), 0.5);
 }
 
@@ -315,6 +315,33 @@ TEST_F(Core_TestTADCalculator, SampleAtSecondDoseTime1Range)
 
     ASSERT_EQ(durations.size(), 1u);
     EXPECT_EQ(durations[0], Duration(std::chrono::hours(12)));
+}
+
+
+/// A sample at the exact boundary of the second dose should yield the interval.
+TEST_F(Core_TestTADCalculator, SampleAtFirstDose)
+{
+    // Two time ranges to produce intakes at 08:00 and 20:00
+    DosageHistory history;
+    Unit unit{"mg"};
+    FormulationAndRoute formulationAndRoute;
+    Duration infusionTime;
+    Duration interval{std::chrono::hours(12)};
+
+    LastingDose dose{100, unit, formulationAndRoute, infusionTime, interval};
+
+    DosageTimeRange range1{makeDateTime(2024, 1, 1, 8, 0, 0), makeDateTime(2024, 1, 2, 8, 0, 0), dose};
+
+    history.addTimeRange(range1);
+
+    // Sample at 20:00 (the second dose time)
+    Samples samples = createSamples({makeDateTime(2024, 1, 1, 8, 0, 0)});
+
+    TimeAfterDoseCalculator calculator;
+    std::vector<Duration> durations = calculator.calculateDurations(samples, history);
+
+    ASSERT_EQ(durations.size(), 1u);
+    EXPECT_EQ(durations[0], Duration(std::chrono::hours(0)));
 }
 
 
