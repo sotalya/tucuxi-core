@@ -23,8 +23,10 @@
 #ifndef TRANSLATABLESTRING_H
 #define TRANSLATABLESTRING_H
 
+#include <array>
 #include <map>
 #include <string>
+#include <vector>
 
 namespace Tucuxi {
 namespace Common {
@@ -91,6 +93,12 @@ public:
     /// \return The string corresponding to the default language
     ///
     std::string getString() const;
+
+    ///
+    /// \brief getLanguages Gets the list of available languages
+    /// \return The list of available languages
+    ///
+    std::vector<std::string> getLanguages() const;
 
 protected:
     /// A map of <language, text> to store a string for each language
