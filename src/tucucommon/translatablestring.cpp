@@ -21,6 +21,7 @@
 
 
 #include <utility>
+#include <vector>
 
 #include "translatablestring.h"
 
@@ -69,4 +70,15 @@ std::string TranslatableString::getString(const std::string& _language) const
 std::string TranslatableString::getString() const
 {
     return getString(sm_language);
+}
+
+std::vector<std::string> TranslatableString::getLanguages() const
+{
+    std::vector<std::string> languages;
+    languages.reserve(m_map.size());
+    
+    for (const auto& pair : m_map) {
+        languages.push_back(pair.first);
+    }
+    return languages;
 }
