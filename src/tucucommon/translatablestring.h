@@ -23,7 +23,6 @@
 #ifndef TRANSLATABLESTRING_H
 #define TRANSLATABLESTRING_H
 
-#include <array>
 #include <map>
 #include <string>
 #include <vector>
