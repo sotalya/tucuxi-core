@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+# Path to the commit message file (provided by Git).
+COMMIT_MSG_FILE=$1
+
+# Ignore automatic commit messages containing ' into ' or 'Merge'.
+if grep --quiet --extended-regexp " into |^Merge " "$COMMIT_MSG_FILE"; then
+    exit 0
+fi
+
+# Read the commit message from the file.
+MSG=$(cat "$COMMIT_MSG_FILE")
+
+
+
+# Allowed types (adjust as needed)
+TYPES="build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test"
+
+
+# Regex for header:
+# - type: one of TYPES
+# - optional scope: (scope)
+# - optional ! for breaking change
+# - colon + space
+# - subject: at least one non-space char, no trailing period
+
+HEADER_REGEX="^($(echo "$TYPES"))(\([a-z0-9._/-]+\))?(!)?: [^[:space:]].*[^.[:space:]]$"
+
+printf "%s" "$MSG" 
+# Validate header
+if ! printf "%s" "$MSG" | grep -Eq "$HEADER_REGEX"; then
+  echo "✖ Invalid commit message header:"
+  echo "  \"$MSG\""
+  echo
+  echo "Expected format:"
+  echo "  type(scope)?: subject"
+  echo
+  echo "Examples:"
+  echo "  feat(parser): add ability to parse arrays"
+  echo "  fix!: drop support for Node 14"
+  echo "  docs: update API usage in README"
+  echo
+  echo "Rules:"
+  echo "  - type: $TYPES"
+  echo "  - optional scope: (scope) with [a-z0-9._/-]"
+  echo "  - optional ! for breaking change"
+  echo "  - subject: no trailing period"
+  exit 1
+fi
+
+# If header includes '!' or footer includes 'BREAKING CHANGE', ensure footer is present & formatted
+if echo "$MSG" | grep -q "!:" || grep -Eq '^BREAKING CHANGE: ' "$COMMIT_MSG_FILE"; then
+  # If '!' in header, require a BREAKING CHANGE footer or a detailed body
+  if echo "$MSG" | grep -q "!:" && ! grep -Eq '^BREAKING CHANGE: ' "$COMMIT_MSG_FILE"; then
+    echo "✖ Commit indicates a breaking change ('!') but lacks a 'BREAKING CHANGE: ...' footer."
+    echo "  Add a footer like:"
+    echo "  BREAKING CHANGE: describe what breaks and migration steps"
+    exit 1
+  fi
+fi
+
+# Optional additional checks
+# Enforce max header length
+MAX_HEADER=100
+if [ "${#MSG}" -gt "$MAX_HEADER" ]; then
+  echo "✖ Header too long (${#MSG} > $MAX_HEADER). Keep it concise."
+  exit 1
+fi
+
+# Disallow capitalized first word in subject (common convention)
+SUBJECT="$(echo "$MSG" | sed -E 's/^([a-z]+(\([^)]+\))?(!)?: )//')"
+if echo "$SUBJECT" | grep -Eq '^[A-Z]'; then
+  echo "✖ Subject should be in sentence case (start lowercase)."
+  exit 1
+fi
+
+exit 0

@@ -1,0 +1,21 @@
+#!/bin/sh
+# This hook checks if the files formating is valid.
+# If not, it displays the warnings as errors and refuses the commit
+echo ">>> REAL PRE-COMMIT HOOK RUNNING: $(pwd)"
+OK=true
+for FILE in $(git diff --cached --name-only | grep -E '\.(c|cpp|h|hpp)$')
+do
+if clang-format --dry-run -Werror -i $FILE; then
+	:
+else
+	OK=false
+fi
+done
+
+if $OK; then
+	echo "clang-format successful"
+	exit 0
+else
+	echo "clang-format errors. Please modifiy your code to meet the requirements"
+	exit 1
+fi

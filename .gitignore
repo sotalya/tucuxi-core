@@ -27,6 +27,7 @@ test/build*
 src/*/build
 
 build-*
+build/
 
 #botan-related files/folders
 libs/botan/Makefile

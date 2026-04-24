@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
+echo "==> Repo root: $REPO_ROOT"
+echo "==> Script dir: $SCRIPT_DIR"
+
+# shellcheck source=/dev/null
+source "$SCRIPT_DIR/common/common.sh"
+# shellcheck source=/dev/null
+source "$SCRIPT_DIR/common/cmake.sh"
+# shellcheck source=/dev/null
+source "$SCRIPT_DIR/common/python.sh"
+
+cmd="${1:-help}"
+shift || true
+parse_global_opts "$@"
+
+dispatch() {
+  case "$cmd" in
+    help|-h|--help) usage ;;
+    build)          source "$SCRIPT_DIR/commands/build.sh" ;;
+    build-unittest) source "$SCRIPT_DIR/commands/unittest.sh"; cmd_build_unittest "$@" ;;
+    run-unittest)   source "$SCRIPT_DIR/commands/unittest.sh"; cmd_run_unittest "$@" ;;
+    py-env)         source "$SCRIPT_DIR/commands/python_deps.sh"; cmd_py_env "$@" ;;
+    py-deps)        source "$SCRIPT_DIR/commands/python_deps.sh"; cmd_py_deps "$@" ;;
+    setup)          source "$SCRIPT_DIR/commands/setup.sh"; cmd_setup "$@" ;;
+    fuzz)           source "$SCRIPT_DIR/commands/fuzz.sh"; cmd_fuzz "$@" ;;
+    imatinib)       source "$SCRIPT_DIR/commands/imatinib.sh"; cmd_imatinib "$@" ;;
+    cb-driver)      source "$SCRIPT_DIR/commands/cb_driver.sh"; cmd_cb_driver "$@" ;;
+    coverage)       source "$SCRIPT_DIR/commands/coverage.sh"; cmd_coverage "$@" ;;
+    doc)            source "$SCRIPT_DIR/commands/doc.sh"; cmd_doc "$@" ;;
+    scan-build)     source "$SCRIPT_DIR/commands/scan_build.sh"; cmd_scan_build "$@" ;;
+    codechecker)    source "$SCRIPT_DIR/commands/codechecker.sh"; cmd_codechecker "$@" ;;
+    format)         source "$SCRIPT_DIR/commands/format.sh" ;;
+    tidy)           source "$SCRIPT_DIR/commands/tidy.sh" ;;
+    clean)          source "$SCRIPT_DIR/commands/clean.sh" ;;
+    *) die "Unknown command: $cmd" 2 ;;
+  esac
+}
+
+dispatch "$@"
