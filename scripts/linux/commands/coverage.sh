@@ -9,12 +9,14 @@ cmd_coverage() {
   local -a MODULES=(core common query)
 
   local COVERAGE_ROOT="$REPO_ROOT/build/coverage"
+  local BUILD_DIR="$COVERAGE_ROOT/gtest"
   local MERGED_INFO="$COVERAGE_ROOT/lcov/coverage.raw.info"
   local FILTERED_INFO="$COVERAGE_ROOT/lcov/coverage.info"
   local HTML_DIR="$COVERAGE_ROOT/html"
 
   # ---- options coverage (locales) ----
   local RUN_GTEST=1
+  local RUN_FUZZ=0
 
   coverage_usage() {
     cat <<'EOF'
@@ -25,7 +27,9 @@ Default:
   Runs all test modules (tucucore, tucucommon, tucuquery) and merges coverage.
 
 Options:
+  --unittest           Run unittests (default ON unless --only is used)
   --no-unittest        Do not run unittests
+  --fuzz               Add fuzz system tests
 
   -h, --help    Show this help
 
@@ -37,14 +41,31 @@ EOF
   # Parse args
   while [[ $# -gt 0 ]]; do
     case "$1" in
+      -h|--help)
+        echo "$BUILD_DIR"
+        coverage_usage
+        return 0
+        ;;
+      --unittest)
+        RUN_GTEST=1
+        shift
+        ;;
       --no-unittest)
         RUN_GTEST=0
         shift
         ;;
-      -h|--help) coverage_usage; return 0 ;;
+      --fuzz)
+        RUN_FUZZ=1
+        shift
+        ;;
       *) die "Unknown coverage option: $1 (try: ./scripts/linux/run coverage --help)" 2 ;;
     esac
   done
+
+  if [[ $RUN_GTEST -eq 0 && $RUN_FUZZ -eq 0 ]]; then
+    die "Nothing to run. Use --unittest and/or --fuzz/--imatinib/--cb-driver (or --all)." 2
+  fi
+
 
   echo "==> Coverage: prerequisites"
   require_cmd cmake
@@ -81,7 +102,7 @@ EOF
   local -a ADD_TRACEFILES=()
 
   for MODULE in "${MODULES[@]}"; do
-    local MOD_BUILD_DIR="$COVERAGE_ROOT/tucu$MODULE"
+    local MOD_BUILD_DIR="$BUILD_DIR/tucu$MODULE"
     local MOD_SRC_DIR="$REPO_ROOT/test/tucu$MODULE"
     local MOD_INFO="$COVERAGE_ROOT/lcov/tucu$MODULE.info"
     local MOD_BIN="$MOD_BUILD_DIR/tucutest${MODULE}"
@@ -125,6 +146,18 @@ EOF
 
     ADD_TRACEFILES+=(--add-tracefile "$MOD_INFO")
   done
+
+  set +e
+  if [[ $RUN_FUZZ -eq 1 ]]; then
+    echo "==> Coverage: run fuzz system tests (python) using coverage build"
+    "$REPO_ROOT/scripts/linux/run" fuzz --coverage
+    FUZZ_RC=$?
+  fi
+  set -e
+
+  if [[ $RUN_FUZZ -eq 1 && $FUZZ_RC -ne 0 ]]; then
+    echo "==> WARN: fuzz returned non-zero ($FUZZ_RC)."
+  fi
 
   echo "==> Coverage: merging reports"
   lcov "${ADD_TRACEFILES[@]}" --output-file "$MERGED_INFO" >/dev/null

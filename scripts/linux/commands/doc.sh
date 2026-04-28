@@ -12,10 +12,10 @@ cmd_doc() {
   mkdir -p "$DOC_BUILD_DIR"
 
   case "$format" in
-    html|pdf|"")
+    html)
       echo "==> Building documentation with Doxygen"
-      (cd "$REPO_ROOT/src" && doxygen doxyfile)
-      echo "==> Docs generated. Check output configured in src/doxyfile."
+      (cd "$REPO_ROOT/src" && TUCUXI_ROOT="$REPO_ROOT" DOC_OUTPUT_DIR="$DOC_BUILD_DIR" doxygen doxyfile)
+      echo "==> Docs generated: $DOC_BUILD_DIR/html/index.html"
       ;;
     -h|--help|help)
       cat <<'EOF'

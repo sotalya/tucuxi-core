@@ -7,18 +7,17 @@ echo "==> Running clang-tidy"
 require_cmd clang-tidy
 require_cmd run-clang-tidy
 
-REPORT_FILE="$BUILD_ROOT/tidy-report.txt"
+echo "==> Building project ensuring compile_commands.json exists"
+source "$REPO_ROOT/scripts/linux/commands/build.sh"
 
-echo "==> Ensuring compile_commands.json exists"
-cmake -S "$REPO_ROOT/make/cmake" -B "$MAIN_BUILD_DIR" \
-  -DCMAKE_BUILD_TYPE="$(cmake_build_type)" \
-  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+for MODULE in tucucommon tucucore tucuquery tucucli tucudrugfilechecker
+do
+  REPORT_FILE="$BUILD_ROOT/$MODULE-tidy-report.txt"
 
-echo "==> Running analysis (output -> $REPORT_FILE)"
-run-clang-tidy -quiet -p "$MAIN_BUILD_DIR" \
-  "$REPO_ROOT/src/tucucore" \
-  "$REPO_ROOT/src/tucucommon" \
-  "$REPO_ROOT/src/tucuquery" \
-  2>&1 | sed '/^clang-tidy/d; /warnings generated\.$/d' | sed $'s/\x1B\[[0-9;]*[A-Za-z]//g' > "$REPORT_FILE"
+  echo "==> Running analysis for $MODULE (output -> $REPORT_FILE)"
+  run-clang-tidy -quiet -p "$MAIN_BUILD_DIR/$MODULE" \
+    "$REPO_ROOT/src/$MODULE" \
+    2>&1 | sed '/^clang-tidy/d; /warnings generated\.$/d' | sed $'s/\x1B\[[0-9;]*[A-Za-z]//g' > "$REPORT_FILE"
+done
 
 echo "==> Tidy complete"

@@ -33,36 +33,43 @@ cmd_codechecker() {
 
   write_codechecker_skipfile
 
-  echo "==> Configuring main project for CodeChecker ($CONFIG)"
-  cmake -S "$REPO_ROOT/make/cmake" -B "$MAIN_BUILD_DIR" \
-    -DCMAKE_BUILD_TYPE="$(cmake_build_type)" \
-    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+  for MODULE in tucucommon tucucore tucuquery tucucli tucudrugfilechecker
+  do
+    mkdir -p "$MAIN_BUILD_DIR/$MODULE"
+    mkdir -p "$CODECHECKER_REPORT_DIR/$MODULE"
+    mkdir -p "$CODECHECKER_HTML_DIR/$MODULE"
 
-  rm -f "$CODECHECKER_LOG"
-  rm -rf "$CODECHECKER_REPORT_DIR" "$CODECHECKER_HTML_DIR"
-  mkdir -p "$CODECHECKER_REPORT_DIR" "$CODECHECKER_HTML_DIR"
+    echo "==> Configuring $MODULE project for CodeChecker ($CONFIG)"
+    cmake -S "$REPO_ROOT/src/$MODULE" -B "$MAIN_BUILD_DIR/$MODULE" \
+      -DCMAKE_BUILD_TYPE="$(cmake_build_type)" \
+      -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
-  echo "==> Recording build commands"
-  "$CODECHECKER_BIN" log \
-    -o "$CODECHECKER_LOG" \
-    -b "cmake --build \"$MAIN_BUILD_DIR\" --clean-first -j$(portable_nproc)"
+    rm -f "$CODECHECKER_LOG"
+    rm -rf "$CODECHECKER_REPORT_DIR/$MODULE" "$CODECHECKER_HTML_DIR/$MODULE"
+    mkdir -p "$CODECHECKER_REPORT_DIR/$MODULE" "$CODECHECKER_HTML_DIR/$MODULE"
 
-  echo "==> Running analysis"
-  "$CODECHECKER_BIN" analyze \
-    "$CODECHECKER_LOG" \
-    --analyzers clangsa \
-    --skip "$ANALYSIS_SKIP_FILE" \
-    -o "$CODECHECKER_REPORT_DIR"
+    echo "==> Recording build commands"
+    "$CODECHECKER_BIN" log \
+      -o "$CODECHECKER_LOG" \
+      -b "cmake --build \"$MAIN_BUILD_DIR/$MODULE\" --clean-first -j$(portable_nproc)"
 
-  echo "==> Generating HTML report"
-  "$CODECHECKER_BIN" parse \
-    -e html \
-    "$CODECHECKER_REPORT_DIR" \
-    -o "$CODECHECKER_HTML_DIR"
+    echo "==> Running analysis"
+    "$CODECHECKER_BIN" analyze \
+      "$CODECHECKER_LOG" \
+      --analyzers clangsa \
+      --skip "$ANALYSIS_SKIP_FILE" \
+      -o "$CODECHECKER_REPORT_DIR/$MODULE"
 
-  if [[ -f "$CODECHECKER_HTML_DIR/index.html" ]]; then
-    echo "==> CodeChecker report: $CODECHECKER_HTML_DIR/index.html"
-  else
-    echo "==> CodeChecker finished. Check $CODECHECKER_HTML_DIR"
-  fi
+    echo "==> Generating HTML report"
+    "$CODECHECKER_BIN" parse \
+      -e html \
+      "$CODECHECKER_REPORT_DIR/$MODULE" \
+      -o "$CODECHECKER_HTML_DIR/$MODULE"
+
+    if [[ -f "$CODECHECKER_HTML_DIR/$MODULE/index.html" ]]; then
+      echo "==> CodeChecker report: $CODECHECKER_HTML_DIR/$MODULE/index.html"
+    else
+      echo "==> CodeChecker finished. Check $CODECHECKER_HTML_DIR/$MODULE"
+    fi
+  done
 }

@@ -20,7 +20,7 @@ cmd_fuzz() {
   pushd "$REPO_ROOT/test/system/fuzzing" >/dev/null
 
   "$PYTHON_BIN" fuzzing.py \
-    --tucucli_path "$CDSS_CLI" \
+    --tucucli_path "$TUCU_CLI" \
     --drug_files_dir "$REPO_ROOT/test/system/drugfiles" \
     --original_input "$REPO_ROOT/test/system/fuzzing/imatinib.tqf" \
     --out_dir_path "$OUT_DIR/output" \

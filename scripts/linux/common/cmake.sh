@@ -13,8 +13,8 @@ cmake_build_type() {
 }
 
 ensure_cli_built() {
-  if [[ ! -x "$CDSS_CLI" ]]; then
-    echo "==> CDSS CLI not found, building first..."
+  if [[ ! -x "$TUCU_CLI" ]]; then
+    echo "==> TUCU CLI not found, building first..."
 
     local -a extra=()
     local build_type
@@ -25,12 +25,12 @@ ensure_cli_built() {
       extra+=(-Dconfig_coverage=ON)
     fi
 
-    cmake -S "$REPO_ROOT/make/cmake" -B "$MAIN_BUILD_DIR" \
+    cmake -S "$REPO_ROOT/src/tucucli" -B "$MAIN_BUILD_DIR/tucucli" \
       -DCMAKE_BUILD_TYPE="$build_type" \
       -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
       "${extra[@]}"
 
-    cmake --build "$MAIN_BUILD_DIR" -j"$(portable_nproc)"
+    cmake --build "$MAIN_BUILD_DIR/tucucli" -j"$(portable_nproc)"
   fi
 }
 

@@ -12,6 +12,11 @@ ADD_DEFINITIONS(-D_UNICODE)
 
 include(${CMAKE_CURRENT_LIST_DIR}/../../libs/tucuxi-core_libs)
 
+option(config_coverage "Builds for coverage")
+if(config_coverage)
+    set(CMAKE_CXX_FLAGS "--coverage -O0 -g")
+endif(config_coverage)
+
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../tucucommon tucucommon)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../tucucore tucucore)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../tucuquery tucuquery)

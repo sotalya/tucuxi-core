@@ -69,11 +69,11 @@ EOF
 recompute_paths() {
   if [[ "${COVERAGE_MODE:-0}" == "1" ]]; then
     BUILD_ROOT="$REPO_ROOT/build/coverage"
-    MAIN_BUILD_DIR="$BUILD_ROOT/main"
+    MAIN_BUILD_DIR="$BUILD_ROOT"
     GTEST_BUILD_DIR="$BUILD_ROOT/gtest"
   else
     BUILD_ROOT="$REPO_ROOT/build"
-    MAIN_BUILD_DIR="$BUILD_ROOT/$CONFIG/main"
+    MAIN_BUILD_DIR="$BUILD_ROOT/$CONFIG"
     GTEST_BUILD_DIR="$BUILD_ROOT/$CONFIG/gtest"
   fi
 
@@ -85,6 +85,8 @@ recompute_paths() {
   CODECHECKER_REPORT_DIR="$CODECHECKER_DIR/reports"
   CODECHECKER_HTML_DIR="$CODECHECKER_DIR/html"
   ANALYSIS_SKIP_FILE="$ANALYSIS_BUILD_DIR/project.skip"
+
+  TUCU_CLI="$MAIN_BUILD_DIR/tucucli/tucucli"
 }
 
 parse_global_opts() {

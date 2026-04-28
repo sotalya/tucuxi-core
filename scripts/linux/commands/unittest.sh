@@ -6,13 +6,22 @@ source "$REPO_ROOT/scripts/linux/common/cmake.sh"
 cmd_build_unittest() {
   echo "==> Building unittests ($CONFIG)"
 
+  local -a extra=()
+  local build_type
+  build_type="$(cmake_build_type)"
+  if [[ "${COVERAGE_MODE:-0}" == "1" ]]; then
+    build_type="Debug"
+    extra+=(-Dconfig_coverage=ON)
+  fi
+
   for MODULE in tucucommon tucucore tucuquery
   do
     GTEST_MODULE_BUILD_DIR="$GTEST_BUILD_DIR/$MODULE/"
     echo "==> Building tests for $MODULE ($CONFIG)"
     cmake -S "$REPO_ROOT/test/$MODULE" -B "$GTEST_MODULE_BUILD_DIR" \
-      -DCMAKE_BUILD_TYPE="$(cmake_build_type)"
-    cmake --build "$GTEST_MODULE_BUILD_DIR" -j"$(portable_nproc)"
+      -DCMAKE_BUILD_TYPE="$build_type" \
+      "${extra[@]}"
+    cmake --build "$GTEST_MODULE_BUILD_DIR" -j10
   done
 }
 

@@ -2,6 +2,7 @@
 *~
 *.o
 *.swp
+.venv
 
 #Build 
 doc
