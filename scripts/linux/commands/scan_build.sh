@@ -4,6 +4,8 @@ set -euo pipefail
 source "$REPO_ROOT/scripts/linux/common/common.sh"
 source "$REPO_ROOT/scripts/linux/common/cmake.sh"
 
+MODULES=(tucucommon tucucore tucuquery tucucli tucudrugfilechecker)
+
 cmd_scan_build() {
   require_cmd cmake
   require_cmd scan-build
@@ -19,7 +21,7 @@ cmd_scan_build() {
     -o "$SCAN_BUILD_DIR" \
     --exclude "$REPO_ROOT/libs" \
     --exclude "$REPO_ROOT/third_party" \
-    cmake -S "$REPO_ROOT/make/cmake" -B "$MAIN_BUILD_DIR" \
+    cmake -S "$REPO_ROOT/src/tucucli" -B "$MAIN_BUILD_DIR/tucucli" \
       -DCMAKE_BUILD_TYPE="$(cmake_build_type)" \
       -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
@@ -30,5 +32,5 @@ cmd_scan_build() {
     -o "$SCAN_BUILD_DIR" \
     --exclude "$REPO_ROOT/libs" \
     --exclude "$REPO_ROOT/third_party" \
-    cmake --build "$MAIN_BUILD_DIR" --clean-first -j"$(portable_nproc)"
+    cmake --build "$MAIN_BUILD_DIR/tucucli" --clean-first -j"$(portable_nproc)"
 }

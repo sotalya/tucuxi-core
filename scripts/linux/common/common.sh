@@ -63,7 +63,6 @@ Commands:
   setup           Copy git hooks to .git/hooks
   fuzz            Run fuzzing
   imatinib        Run imatinib system tests
-  cb-driver       Run covariate boundaries driver
 
   help
 

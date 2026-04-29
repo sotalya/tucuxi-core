@@ -28,7 +28,6 @@ dispatch() {
     setup)          source "$SCRIPT_DIR/commands/setup.sh"; cmd_setup "$@" ;;
     fuzz)           source "$SCRIPT_DIR/commands/fuzz.sh"; cmd_fuzz "$@" ;;
     imatinib)       source "$SCRIPT_DIR/commands/imatinib.sh"; cmd_imatinib "$@" ;;
-    cb-driver)      source "$SCRIPT_DIR/commands/cb_driver.sh"; cmd_cb_driver "$@" ;;
     coverage)       source "$SCRIPT_DIR/commands/coverage.sh"; cmd_coverage "$@" ;;
     doc)            source "$SCRIPT_DIR/commands/doc.sh"; cmd_doc "$@" ;;
     scan-build)     source "$SCRIPT_DIR/commands/scan_build.sh"; cmd_scan_build "$@" ;;

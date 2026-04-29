@@ -9,4 +9,8 @@ find "$REPO_ROOT/src" \
   \( -name '*.cpp' -o -name '*.hpp' -o -name '*.h' \) \
   -print0 | xargs -0 clang-format -i
 
+find "$REPO_ROOT/test" \
+  \( -name '*.cpp' -o -name '*.hpp' -o -name '*.h' \) \
+  -print0 | xargs -0 clang-format -i
+
 echo "==> Format complete"

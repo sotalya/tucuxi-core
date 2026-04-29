@@ -3,7 +3,11 @@ set -euo pipefail
 source "$REPO_ROOT/scripts/linux/common/common.sh"
 source "$REPO_ROOT/scripts/linux/common/cmake.sh"
 
-local -a MODULES=(tucucommon tucucore tucuquery tucucli tucudrugfilechecker)
+if [[ -v MODULES ]]; then
+  echo "==> Building specified modules: ${MODULES[*]}"
+else
+  local -a MODULES=(tucucli tucudrugfilechecker)
+fi
 
 for MODULE in "${MODULES[@]}"
 do

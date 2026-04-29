@@ -19,7 +19,6 @@ cmd_coverage() {
   local RUN_GTEST=1
   local RUN_FUZZ=0
   local RUN_IMATINIB=0
-  local RUN_CBDRIVER=0
 
   coverage_usage() {
     cat <<'EOF'
@@ -32,13 +31,12 @@ Default:
 Options:
   --unittest           Run unittests (default ON unless --only is used)
   --no-unittest        Do not run unittests
-  --fuzz               Add fMODULEuzz system tests
+  --fuzz               Add fuzz system tests
   --imatinib           Add imatinib system tests
-  --cb-driver          Add covariate boundaries driver system tests
   --system             Shortcut for --fuzz --imatinib --cb-driver
   --all                Shortcut for --unittest --system
   --only <what>        Run only one target (no unittests):
-                       <what> = unittest | fuzz | imatinib | cb-driver | system
+                       <what> = unittest | fuzz | imatinib | system
   -h, --help    Show this help
 
 Modules built separately and merged:
@@ -70,10 +68,6 @@ EOF
         RUN_IMATINIB=1
         shift
         ;;
-      --cb-driver)
-        RUN_CBDRIVER=1
-        shift
-        ;;
       --system)
         RUN_FUZZ=1
         RUN_IMATINIB=1
@@ -93,14 +87,12 @@ EOF
           die "--only requires an argument (unittest|fuzz|imatinib|cb-driver|system)" 2
         fi
         RUN_GTEST=0
-        RUN_FUZZ=0MODULE
+        RUN_FUZZ=0
         RUN_IMATINIB=0
-        RUN_CBDRIVER=0
         case "$1" in
           unittest) RUN_GTEST=1 ;;
           fuzz) RUN_FUZZ=1 ;;
           imatinib) RUN_IMATINIB=1 ;;
-          cb-driver) RUN_CBDRIVER=1 ;;
           system)
             RUN_FUZZ=1
             RUN_IMATINIB=1
@@ -114,10 +106,9 @@ EOF
     esac
   done
 
-  if [[ $RUN_GTEST -eq 0 && $RUN_FUZZ -eq 0 && $RUN_IMATINIB -eq 0 && $RUN_CBDRIVER -eq 0 ]]; then
+  if [[ $RUN_GTEST -eq 0 && $RUN_FUZZ -eq 0 && $RUN_IMATINIB -eq 0 ]]; then
     die "Nothing to run. Use --unittest and/or --fuzz/--imatinib/--cb-driver (or --all)." 2
   fi
-
 
   echo "==> Coverage: prerequisites"
   require_cmd cmake
@@ -143,7 +134,7 @@ EOF
 
   lcov_version() {
     lcov --version | grep -Eo '([0-9]+\.[0-9]+(\.[0-9]+)?)' | head -n1
-  }MODULE
+  }
 
   version_ge_115() {
     local v="$1"
@@ -229,12 +220,6 @@ EOF
     "$REPO_ROOT/scripts/linux/run" imatinib --coverage
     IMATINIB_RC=$?
   fi
-
-  if [[ $RUN_CBDRIVER -eq 1 ]]; then
-    echo "==> Coverage: run cb-driver system tests (python) using coverage build"
-    "$REPO_ROOT/scripts/linux/run" cb-driver --coverage
-    CBDRIVER_RC=$?
-  fi
   set -e
 
   if [[ $RUN_FUZZ -eq 1 && $FUZZ_RC -ne 0 ]]; then
@@ -242,9 +227,6 @@ EOF
   fi
   if [[ $RUN_IMATINIB -eq 1 && $IMATINIB_RC -ne 0 ]]; then
     echo "==> WARN: imatinib returned non-zero ($IMATINIB_RC)."
-  fi
-  if [[ $RUN_CBDRIVER -eq 1 && $CBDRIVER_RC -ne 0 ]]; then
-    echo "==> WARN: cb-driver returned non-zero ($CBDRIVER_RC)."
   fi
 
   echo "==> Coverage: merging reports"
