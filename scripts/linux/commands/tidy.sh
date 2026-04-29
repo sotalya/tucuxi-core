@@ -10,7 +10,9 @@ require_cmd run-clang-tidy
 echo "==> Building project ensuring compile_commands.json exists"
 source "$REPO_ROOT/scripts/linux/commands/build.sh"
 
-for MODULE in tucucommon tucucore tucuquery tucucli tucudrugfilechecker
+local -a MODULES=(tucucommon tucucore tucuquery tucucli tucudrugfilechecker)
+
+for MODULE in "${MODULES[@]}"
 do
   REPORT_FILE="$BUILD_ROOT/$MODULE-tidy-report.txt"
 

@@ -4,6 +4,8 @@ set -euo pipefail
 source "$REPO_ROOT/scripts/linux/common/common.sh"
 source "$REPO_ROOT/scripts/linux/common/cmake.sh"
 
+local -a MODULES=(tucucommon tucucore tucuquery tucucli tucudrugfilechecker)
+
 write_codechecker_skipfile() {
   mkdir -p "$ANALYSIS_BUILD_DIR"
 
@@ -33,7 +35,7 @@ cmd_codechecker() {
 
   write_codechecker_skipfile
 
-  for MODULE in tucucommon tucucore tucuquery tucucli tucudrugfilechecker
+  for MODULE in "${MODULES[@]}"
   do
     mkdir -p "$MAIN_BUILD_DIR/$MODULE"
     mkdir -p "$CODECHECKER_REPORT_DIR/$MODULE"

@@ -3,7 +3,9 @@ set -euo pipefail
 source "$REPO_ROOT/scripts/linux/common/common.sh"
 source "$REPO_ROOT/scripts/linux/common/cmake.sh"
 
-for MODULE in tucucommon tucucore tucuquery tucucli tucudrugfilechecker
+local -a MODULES=(tucucommon tucucore tucuquery tucucli tucudrugfilechecker)
+
+for MODULE in "${MODULES[@]}"
 do
   MODULE_BUILD_DIR="$BUILD_ROOT/$CONFIG/$MODULE/"
   echo "==> Building $MODULE ($CONFIG)"

@@ -7,6 +7,7 @@ set -euo pipefail
 : "${COVERAGE_MODE:=0}"
 : "${BUILD_ROOT:=$REPO_ROOT/build}"
 : "${PYTHON_BIN:=python3}"
+: "${NPROC:=0}"
 
 SCRIPT_DIR="$REPO_ROOT/scripts/linux/"
 
@@ -21,7 +22,9 @@ require_cmd() {
 }
 
 portable_nproc() {
-  if command -v nproc >/dev/null 2>&1; then
+  if [[ $NPROC -gt 0 ]]; then
+    echo "$NPROC"
+  elif command -v nproc >/dev/null 2>&1; then
     nproc
   elif sysctl -n hw.ncpu >/dev/null 2>&1; then
     sysctl -n hw.ncpu
@@ -63,6 +66,12 @@ Commands:
   cb-driver       Run covariate boundaries driver
 
   help
+
+Options:
+  --debug         Build in debug mode (default)
+  --release       Build in release mode
+  --coverage      Build with coverage flags (implies debug)
+  -j <n>          Use n parallel jobs for build (default: auto-detect)
 EOF
 }
 
@@ -95,7 +104,11 @@ parse_global_opts() {
       --debug)    CONFIG="debug"; shift ;;
       --release)  CONFIG="release"; shift ;;
       --coverage) COVERAGE_MODE=1; shift ;;
-      *) break ;;
+      -j)
+        shift
+        NPROC=$1
+        shift ;;
+      *) die "Unknown global option: $1" ;;
     esac
   done
   recompute_paths

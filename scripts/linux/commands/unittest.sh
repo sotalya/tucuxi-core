@@ -3,6 +3,9 @@ set -euo pipefail
 source "$REPO_ROOT/scripts/linux/common/common.sh"
 source "$REPO_ROOT/scripts/linux/common/cmake.sh"
 
+local -a MODULES=(tucucommon tucucore tucuquery)
+local -a TEST_BINARIES=(tucutestcommon tucutestcore tucutestquery)
+
 cmd_build_unittest() {
   echo "==> Building unittests ($CONFIG)"
 
@@ -14,14 +17,14 @@ cmd_build_unittest() {
     extra+=(-Dconfig_coverage=ON)
   fi
 
-  for MODULE in tucucommon tucucore tucuquery
+  for MODULE in "${MODULES[@]}"
   do
-    GTEST_MODULE_BUILD_DIR="$GTEST_BUILD_DIR/$MODULE/"
+    local GTEST_MODULE_BUILD_DIR="$GTEST_BUILD_DIR/$MODULE/"
     echo "==> Building tests for $MODULE ($CONFIG)"
     cmake -S "$REPO_ROOT/test/$MODULE" -B "$GTEST_MODULE_BUILD_DIR" \
       -DCMAKE_BUILD_TYPE="$build_type" \
       "${extra[@]}"
-    cmake --build "$GTEST_MODULE_BUILD_DIR" -j10
+    cmake --build "$GTEST_MODULE_BUILD_DIR" -j"$(portable_nproc)"
   done
 }
 
@@ -29,10 +32,15 @@ cmd_run_unittest() {
   echo "==> Running unittestss ($CONFIG)"
   cmd_build_unittest
 
-  for MODULE in common core query
+  local i=0
+  for MODULE in "${MODULES[@]}"
   do
-    GTEST_MODULE_BUILD_DIR="$GTEST_BUILD_DIR/tucu$MODULE/"
+    local GTEST_MODULE_BUILD_DIR="$GTEST_BUILD_DIR/$MODULE/"
     echo "==> Running tests for $MODULE ($CONFIG)"
-    "$GTEST_MODULE_BUILD_DIR/tucutest$MODULE" || true
+
+    pushd "$GTEST_MODULE_BUILD_DIR" >/dev/null
+    "$GTEST_MODULE_BUILD_DIR/${TEST_BINARIES[$i]}" || true
+    popd >/dev/null
+    i=$((i + 1))
   done
 }
