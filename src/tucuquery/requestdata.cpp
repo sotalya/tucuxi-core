@@ -19,11 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-#include "querydata.h"
-
-using namespace std;
-using namespace Tucuxi;
+#include "requestdata.h"
 
 namespace Tucuxi {
 namespace Query {
@@ -44,8 +40,8 @@ Tucuxi::Common::DateTime DateInterval::getEnd() const
 
 // GraphData class
 
-GraphData::GraphData(unique_ptr<DateInterval> _pDateInterval, vector<unsigned short> _percentiles)
-    : m_pDateInterval(move(_pDateInterval)), m_percentiles(move(_percentiles))
+GraphData::GraphData(std::unique_ptr<DateInterval> _pDateInterval, std::vector<unsigned short> _percentiles)
+    : m_pDateInterval(std::move(_pDateInterval)), m_percentiles(std::move(_percentiles))
 {
 }
 
@@ -54,15 +50,15 @@ const DateInterval& GraphData::getpDateInterval() const
     return *m_pDateInterval;
 }
 
-vector<unsigned short> GraphData::getPercentiles() const
+std::vector<unsigned short> GraphData::getPercentiles() const
 {
     return m_percentiles;
 }
 
 //// Backextrapolation class
 
-//Backextrapolation::Backextrapolation(unique_ptr<SampleData> _pSample, unique_ptr<Core::Dosage> _pDosage)
-//    : m_pSample(move(_pSample)), m_pDosage(move(_pDosage))
+//Backextrapolation::Backextrapolation(std::unique_ptr<SampleData> _pSample, std::unique_ptr<Core::Dosage> _pDosage)
+//    : m_pSample(std::move(_pSample)), m_pDosage(std::move(_pDosage))
 //{}
 
 //const SampleData& Backextrapolation::getpSample() const
@@ -78,12 +74,16 @@ vector<unsigned short> GraphData::getPercentiles() const
 // RequestData class
 
 RequestData::RequestData(
-        string& _requestID, string& _drugID, string& _drugModelID, unique_ptr<Core::ComputingTrait> _pComputingTrait)
-    : m_pComputingTrait(move(_pComputingTrait)), m_requestID(_requestID), m_drugID(_drugID), m_drugModelID(_drugModelID)
+        std::string& _requestID,
+        std::string& _drugID,
+        std::string& _drugModelID,
+        std::unique_ptr<Core::ComputingTrait> _pComputingTrait)
+    : m_pComputingTrait(std::move(_pComputingTrait)), m_requestID(_requestID), m_drugID(_drugID),
+      m_drugModelID(_drugModelID)
 {
 }
 
-string RequestData::getRequestID() const
+std::string RequestData::getRequestID() const
 {
     return m_requestID;
 }
@@ -93,7 +93,7 @@ std::string RequestData::getDrugID() const
     return m_drugID;
 }
 
-string RequestData::getDrugModelID() const
+std::string RequestData::getDrugModelID() const
 {
     return m_drugModelID;
 }
