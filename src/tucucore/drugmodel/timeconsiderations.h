@@ -55,7 +55,11 @@ public:
     }
 
     INVARIANTS(INVARIANT(Invariants::INV_HALFLIFE_0001, (m_multiplier > 0.0), "A half life has a negative multiplier");
-               INVARIANT(Invariants::INV_HALFLIFE_0002, (this->m_value > 0.0), "A half life has a negative value");)
+               INVARIANT(Invariants::INV_HALFLIFE_0002, (this->m_value > 0.0), "A half life has a negative value");
+               INVARIANT(
+                       Invariants::INV_HALFLIFE_0003,
+                       (Common::UnitManager::isOfType<Common::UnitManager::UnitType::Time>(m_unit)),
+                       "A half life unit has to be a time unit");)
 
 private:
     double m_multiplier;

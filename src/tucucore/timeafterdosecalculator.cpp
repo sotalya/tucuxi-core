@@ -84,7 +84,7 @@ std::vector<Duration> TimeAfterDoseCalculator::calculateDurations(
 
         for (const auto& intake : intakes) {
             DateTime intakeTime = intake.getEventTime();
-            if (intakeTime <= sampleTime) {
+            if (intakeTime < sampleTime) {
                 closestIntake = intakeTime;
                 found = true;
             }
@@ -96,7 +96,8 @@ std::vector<Duration> TimeAfterDoseCalculator::calculateDurations(
         if (found) { // If found we subtract
             diff = sampleTime - closestIntake;
         }
-        else { // This case should be triggerd if the sample time is before all intakeTime. So we can use the first intakeTime.
+        else { // This case should be triggered if the sample time is before all intakeTime. So we can use the first intakeTime.
+            // It also triggers if the sample time is on the first dose time.
             diff = sampleTime - intakes.front().getEventTime();
         }
 

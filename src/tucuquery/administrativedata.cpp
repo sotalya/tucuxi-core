@@ -20,23 +20,20 @@
  */
 
 
-#include "querydata.h"
-
-using namespace std;
-using namespace Tucuxi;
+#include "administrativedata.h"
 
 namespace Tucuxi {
 namespace Query {
 
 // Address class
 
-Address::Address(string _street, int _postCode, string _city, string _state, string _country)
+Address::Address(std::string _street, int _postCode, std::string _city, std::string _state, std::string _country)
     : m_street(std::move(_street)), m_postCode(_postCode), m_city(std::move(_city)), m_state(std::move(_state)),
       m_country(std::move(_country))
 {
 }
 
-const string& Address::getStreet() const
+const std::string& Address::getStreet() const
 {
     return m_street;
 }
@@ -46,45 +43,45 @@ int Address::getPostCode() const
     return m_postCode;
 }
 
-const string& Address::getCity() const
+const std::string& Address::getCity() const
 {
     return m_city;
 }
 
-const string& Address::getState() const
+const std::string& Address::getState() const
 {
     return m_state;
 }
 
-const string& Address::getCountry() const
+const std::string& Address::getCountry() const
 {
     return m_country;
 }
 
 // Phone class
 
-Phone::Phone(string& _number, string& _type) : m_number(_number), m_type(_type) {}
+Phone::Phone(std::string& _number, std::string& _type) : m_number(_number), m_type(_type) {}
 
-const string& Phone::getNumber() const
+const std::string& Phone::getNumber() const
 {
     return m_number;
 }
 
-const string& Phone::getType() const
+const std::string& Phone::getType() const
 {
     return m_type;
 }
 
 // Email class
 
-Email::Email(string& _address, string& _type) : m_address(_address), m_type(_type) {}
+Email::Email(std::string& _address, std::string& _type) : m_address(_address), m_type(_type) {}
 
-const string& Email::getAddress() const
+const std::string& Email::getAddress() const
 {
     return m_address;
 }
 
-const string& Email::getType() const
+const std::string& Email::getType() const
 {
     return m_type;
 }
@@ -92,34 +89,34 @@ const string& Email::getType() const
 // PersonnalContact class
 
 PersonalContact::PersonalContact(
-        string& _id,
-        string& _title,
-        string& _firstName,
-        string& _lastName,
-        unique_ptr<Address> _pAddress,
-        unique_ptr<Phone> _pPhone,
-        unique_ptr<Email> _pEmail)
-    : m_id(_id), m_title(_title), m_firstName(_firstName), m_lastName(_lastName), m_pAddress(move(_pAddress)),
-      m_pPhone(move(_pPhone)), m_pEmail(move(_pEmail))
+        std::string& _id,
+        std::string& _title,
+        std::string& _firstName,
+        std::string& _lastName,
+        std::unique_ptr<Address> _pAddress,
+        std::unique_ptr<Phone> _pPhone,
+        std::unique_ptr<Email> _pEmail)
+    : m_id(_id), m_title(_title), m_firstName(_firstName), m_lastName(_lastName), m_pAddress(std::move(_pAddress)),
+      m_pPhone(std::move(_pPhone)), m_pEmail(std::move(_pEmail))
 {
 }
 
-const string& PersonalContact::getId() const
+const std::string& PersonalContact::getId() const
 {
     return m_id;
 }
 
-const string& PersonalContact::getTitle() const
+const std::string& PersonalContact::getTitle() const
 {
     return m_title;
 }
 
-const string& PersonalContact::getFirstName() const
+const std::string& PersonalContact::getFirstName() const
 {
     return m_firstName;
 }
 
-const string& PersonalContact::getLastName() const
+const std::string& PersonalContact::getLastName() const
 {
     return m_lastName;
 }
@@ -142,12 +139,17 @@ const Email& PersonalContact::getpEmail() const
 // InstituteContact class
 
 InstituteContact::InstituteContact(
-        string& _id, string& _name, unique_ptr<Address> _pAddress, unique_ptr<Phone> _pPhone, unique_ptr<Email> _pEmail)
-    : m_id(_id), m_name(_name), m_pAddress(move(_pAddress)), m_pPhone(move(_pPhone)), m_pEmail(move(_pEmail))
+        std::string& _id,
+        std::string& _name,
+        std::unique_ptr<Address> _pAddress,
+        std::unique_ptr<Phone> _pPhone,
+        std::unique_ptr<Email> _pEmail)
+    : m_id(_id), m_name(_name), m_pAddress(std::move(_pAddress)), m_pPhone(std::move(_pPhone)),
+      m_pEmail(std::move(_pEmail))
 {
 }
 
-const string& InstituteContact::getId() const
+const std::string& InstituteContact::getId() const
 {
     return m_id;
 }
@@ -175,7 +177,7 @@ const Email& InstituteContact::getpEmail() const
 // Person class
 
 Person::Person(std::unique_ptr<PersonalContact> _pPerson, std::unique_ptr<InstituteContact> _pInstitute)
-    : m_pPerson(move(_pPerson)), m_pInstitute(move(_pInstitute))
+    : m_pPerson(std::move(_pPerson)), m_pInstitute(std::move(_pInstitute))
 {
 }
 
@@ -201,8 +203,10 @@ const std::map<std::string, std::string>& ClinicalData::getData() const
 // AdministrativeData class
 
 AdministrativeData::AdministrativeData(
-        unique_ptr<Person> _pMandator, unique_ptr<Person> _pPatient, unique_ptr<ClinicalData> _pClinicalData)
-    : m_pMandator(move(_pMandator)), m_pPatient(move(_pPatient)), m_pClinicalData(move(_pClinicalData))
+        std::unique_ptr<Person> _pMandator,
+        std::unique_ptr<Person> _pPatient,
+        std::unique_ptr<ClinicalData> _pClinicalData)
+    : m_pMandator(std::move(_pMandator)), m_pPatient(std::move(_pPatient)), m_pClinicalData(std::move(_pClinicalData))
 {
 }
 

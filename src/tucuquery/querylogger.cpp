@@ -51,7 +51,6 @@ void MKDIR(T _x)
 //#define MKDIR(x) mkdir(x, 0755)
 #endif
 
-using namespace std;
 
 namespace Tucuxi {
 namespace Query {
@@ -94,14 +93,14 @@ void QueryLogger::saveQuery(const std::string& _queryString, const std::string& 
     struct tm* timeinfo = localtime(&rawtime);
 
     strftime(buffer.data(), sizeof(buffer), "%Y-%m-%d", timeinfo);
-    std::string directoryPath = getFolderPath() + PATH_SEPARATOR + string(buffer.data());
+    std::string directoryPath = getFolderPath() + PATH_SEPARATOR + std::string(buffer.data());
 
     strftime(buffer.data(), sizeof(buffer), "%Y-%m-%dT%H-%M-%S", timeinfo);
-    std::string fileName = string(buffer.data()) + "_" + _queryID + ".tqf";
+    std::string fileName = std::string(buffer.data()) + "_" + _queryID + ".tqf";
 
     MKDIR(directoryPath.c_str());
 
-    ofstream queryFile;
+    std::ofstream queryFile;
     queryFile.open(directoryPath + PATH_SEPARATOR + fileName);
     queryFile << _queryString;
     queryFile.close();

@@ -29,7 +29,6 @@
 
 #include "tucucommon/datetime.h"
 
-#include "administrativedata.h"
 #include "parametersdata.h"
 #include "requestdata.h"
 

@@ -20,10 +20,7 @@
  */
 
 
-#include "querydata.h"
-
-using namespace std;
-using namespace Tucuxi;
+#include "parametersdata.h"
 
 namespace Tucuxi {
 namespace Query {
@@ -31,18 +28,18 @@ namespace Query {
 // CovariateData class
 
 CovariateData::CovariateData(
-        string& _covariateId,
+        std::string& _covariateId,
         Common::DateTime& _pDate,
-        string& _value,
-        string& _unit,
+        std::string& _value,
+        std::string& _unit,
         Core::DataType _datatype,
-        string& _nature)
+        std::string& _nature)
     : m_covariateId(_covariateId), m_pDate(_pDate), m_value(_value), m_unit(_unit), m_datatype(_datatype),
       m_nature(_nature)
 {
 }
 
-const string& CovariateData::getCovariateId() const
+const std::string& CovariateData::getCovariateId() const
 {
     return m_covariateId;
 }
@@ -52,12 +49,12 @@ const Common::DateTime& CovariateData::getpDate() const
     return m_pDate;
 }
 
-const string& CovariateData::getValue() const
+const std::string& CovariateData::getValue() const
 {
     return m_value;
 }
 
-const string& CovariateData::getUnit() const
+const std::string& CovariateData::getUnit() const
 {
     return m_unit;
 }
@@ -74,8 +71,8 @@ const std::string& CovariateData::getNature() const
 
 // PatientData class
 
-PatientData::PatientData(vector<unique_ptr<Tucuxi::Core::PatientCovariate> >& _covariates)
-    : m_covariates(move(_covariates))
+PatientData::PatientData(std::vector<std::unique_ptr<Tucuxi::Core::PatientCovariate> >& _covariates)
+    : m_covariates(std::move(_covariates))
 {
     if (m_covariates.size() == 0) {
         return;
@@ -95,14 +92,17 @@ PatientData::PatientData(vector<unique_ptr<Tucuxi::Core::PatientCovariate> >& _c
     }
 }
 
-const vector<unique_ptr<Tucuxi::Core::PatientCovariate> >& PatientData::getCovariates() const
+const std::vector<std::unique_ptr<Tucuxi::Core::PatientCovariate> >& PatientData::getCovariates() const
 {
     return m_covariates;
 }
 
 // Treatment class
 
-Treatment::Treatment(unique_ptr<Core::DosageHistory> _pDosageHistory) : m_pDosageHistory(move(_pDosageHistory)) {}
+Treatment::Treatment(std::unique_ptr<Core::DosageHistory> _pDosageHistory)
+    : m_pDosageHistory(std::move(_pDosageHistory))
+{
+}
 
 const Core::DosageHistory& Treatment::getpDosageHistory() const
 {
@@ -111,11 +111,11 @@ const Core::DosageHistory& Treatment::getpDosageHistory() const
 
 // ConcentrationData class
 
-//ConcentrationData::ConcentrationData(string _analyteID, double _value, string _unit)
+//ConcentrationData::ConcentrationData(std::string _analyteID, double _value, std::string _unit)
 //    : m_analyteID(_analyteID), m_value(_value), m_unit(_unit)
 //{}
 
-//string ConcentrationData::getAnalyteID() const
+//std::string ConcentrationData::getAnalyteID() const
 //{
 //    return m_analyteID;
 //}
@@ -125,7 +125,7 @@ const Core::DosageHistory& Treatment::getpDosageHistory() const
 //    return m_value;
 //}
 
-//string ConcentrationData::getUnit() const
+//std::string ConcentrationData::getUnit() const
 //{
 //    return m_unit;
 //}
@@ -133,14 +133,14 @@ const Core::DosageHistory& Treatment::getpDosageHistory() const
 //// SampleData class
 
 //SampleData::SampleData(
-//        string& _sampleID,
+//        std::string& _sampleID,
 //        Common::DateTime& _pSampleDate,
-//        vector<unique_ptr<ConcentrationData> >& _concentrations
+//        std::vector<std::unique_ptr<ConcentrationData> >& _concentrations
 //) : m_sampleID(_sampleID), m_pSampleDate(_pSampleDate),
-//    m_concentrations(move(_concentrations))
+//    m_concentrations(std::move(_concentrations))
 //{}
 
-//string SampleData::getSampleID() const
+//std::string SampleData::getSampleID() const
 //{
 //    return m_sampleID;
 //}
@@ -150,7 +150,7 @@ const Core::DosageHistory& Treatment::getpDosageHistory() const
 //    return m_pSampleDate;
 //}
 
-//const vector<unique_ptr<ConcentrationData> >& SampleData::getConcentrations() const
+//const std::vector<std::unique_ptr<ConcentrationData> >& SampleData::getConcentrations() const
 //{
 //    return m_concentrations;
 //}
@@ -159,15 +159,15 @@ const Core::DosageHistory& Treatment::getpDosageHistory() const
 //// TargetData class
 
 //TargetData::TargetData(
-//        string& _activeMoietyID,
-//        string& _targetType,
-//        string& _unit,
+//        std::string& _activeMoietyID,
+//        std::string& _targetType,
+//        std::string& _unit,
 //        double _inefficacyAlarm,
 //        double _min,
 //        double _best,
 //        double _max,
 //        double _toxicityAlarm,
-//        string& _micUnit,
+//        std::string& _micUnit,
 //        double _micValue
 //) : m_activeMoietyID(_activeMoietyID), m_unit(_unit),
 //    m_inefficacyAlarm(_inefficacyAlarm), m_min(_min), m_best(_best),
@@ -195,7 +195,7 @@ const Core::DosageHistory& Treatment::getpDosageHistory() const
 //    }
 //}
 
-//string TargetData::getActiveMoietyID() const
+//std::string TargetData::getActiveMoietyID() const
 //{
 //    return m_activeMoietyID;
 //}
@@ -205,7 +205,7 @@ const Core::DosageHistory& Treatment::getpDosageHistory() const
 //    return m_targetType;
 //}
 
-//string TargetData::getUnit() const
+//std::string TargetData::getUnit() const
 //{
 //    return m_unit;
 //}
@@ -235,7 +235,7 @@ const Core::DosageHistory& Treatment::getpDosageHistory() const
 //    return m_toxicityAlarm;
 //}
 
-//string TargetData::getMicUnit() const
+//std::string TargetData::getMicUnit() const
 //{
 //    return m_micUnit;
 //}
@@ -248,34 +248,34 @@ const Core::DosageHistory& Treatment::getpDosageHistory() const
 // DrugData class
 
 DrugData::DrugData(
-        string& _drugID,
-        string& _activePrinciple,
-        string& _brandName,
-        string& _atc,
-        unique_ptr<Treatment> _pTreatment,
-        vector<unique_ptr<Tucuxi::Query::FullSample> >& _samples,
-        vector<unique_ptr<Tucuxi::Core::Target> >& _targets)
+        std::string& _drugID,
+        std::string& _activePrinciple,
+        std::string& _brandName,
+        std::string& _atc,
+        std::unique_ptr<Treatment> _pTreatment,
+        std::vector<std::unique_ptr<Tucuxi::Query::FullSample> >& _samples,
+        std::vector<std::unique_ptr<Tucuxi::Core::Target> >& _targets)
     : m_drugID(_drugID), m_activePrinciple(_activePrinciple), m_brandName(_brandName), m_atc(_atc),
-      m_pTreatment(move(_pTreatment)), m_samples(move(_samples)), m_targets(move(_targets))
+      m_pTreatment(std::move(_pTreatment)), m_samples(std::move(_samples)), m_targets(std::move(_targets))
 {
 }
 
-const string& DrugData::getDrugID() const
+const std::string& DrugData::getDrugID() const
 {
     return m_drugID;
 }
 
-const string& DrugData::getActivePrinciple() const
+const std::string& DrugData::getActivePrinciple() const
 {
     return m_activePrinciple;
 }
 
-const string& DrugData::getBrandName() const
+const std::string& DrugData::getBrandName() const
 {
     return m_brandName;
 }
 
-const string& DrugData::getAtc() const
+const std::string& DrugData::getAtc() const
 {
     return m_atc;
 }
@@ -285,20 +285,21 @@ const Treatment& DrugData::getpTreatment() const
     return *m_pTreatment;
 }
 
-const vector<unique_ptr<Tucuxi::Query::FullSample> >& DrugData::getSamples() const
+const std::vector<std::unique_ptr<Tucuxi::Query::FullSample> >& DrugData::getSamples() const
 {
     return m_samples;
 }
 
-const vector<unique_ptr<Tucuxi::Core::Target> >& DrugData::getTargets() const
+const std::vector<std::unique_ptr<Tucuxi::Core::Target> >& DrugData::getTargets() const
 {
     return m_targets;
 }
 
 // ParametersData class
 
-DrugTreatmentData::DrugTreatmentData(unique_ptr<PatientData> _pPatient, vector<unique_ptr<DrugData> > _drugs)
-    : m_pPatient(move(_pPatient)), m_drugs(move(_drugs))
+DrugTreatmentData::DrugTreatmentData(
+        std::unique_ptr<PatientData> _pPatient, std::vector<std::unique_ptr<DrugData> > _drugs)
+    : m_pPatient(std::move(_pPatient)), m_drugs(std::move(_drugs))
 {
 }
 
@@ -307,7 +308,7 @@ const PatientData& DrugTreatmentData::getpPatient() const
     return *m_pPatient;
 }
 
-const vector<unique_ptr<DrugData> >& DrugTreatmentData::getDrugs() const
+const std::vector<std::unique_ptr<DrugData> >& DrugTreatmentData::getDrugs() const
 {
     return m_drugs;
 }
