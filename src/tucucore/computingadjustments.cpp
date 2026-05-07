@@ -155,6 +155,13 @@ ComputingStatus ComputingAdjustments::buildCandidates(
                          doseUnit,
                          interval,
                          infusion});
+#if 0
+                std::string mess;
+                mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)
+                        + " , Interval: \t" + std::to_string((interval).toHours()) + " hours. "
+                        + " , Infusion: \t" + std::to_string((infusion).toMinutes()) + " minutes";
+                m_logger.info(mess);
+#endif // 0
             }
         }
     }
