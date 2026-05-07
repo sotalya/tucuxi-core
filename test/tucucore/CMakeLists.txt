@@ -26,6 +26,11 @@ if (TUCU_COMPILE_CHECK_TYPES)
     add_compile_definitions(TUCU_COMPILE_CHECK_TYPES)
 endif()
 
+option(TUCU_COMPILE_MULTI "Compiles with multi-analytes support" OFF)
+if (TUCU_COMPILE_MULTI)
+    add_compile_definitions(TUCU_COMPILE_MULTI)
+endif()
+
 # We need the test drugmodels
 add_compile_definitions(TUCU_DRUGMODELTESTS)
 
