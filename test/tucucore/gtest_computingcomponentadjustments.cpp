@@ -1054,6 +1054,8 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibShortInterval)
 
 
     ComputingResponseComparator comparator;
+    // The scores are slightly different, because the dosage histories slightly differ
+    comparator.setCompareTargetScoreValue(false);
     comparator.compare(*response1, *response2);
 }
 

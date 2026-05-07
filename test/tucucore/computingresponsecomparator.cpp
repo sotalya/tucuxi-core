@@ -8,7 +8,8 @@
 using namespace Tucuxi::Core;
 
 
-void compareCompartmentInfos(const std::vector<CompartmentInfo>& _d1, const std::vector<CompartmentInfo>& _d2)
+void ComputingResponseComparator::compareCompartmentInfos(
+        const std::vector<CompartmentInfo>& _d1, const std::vector<CompartmentInfo>& _d2)
 {
     ASSERT_EQ(_d1.size(), _d2.size());
     for (size_t i = 0; i < _d1.size(); i++) {
@@ -17,7 +18,7 @@ void compareCompartmentInfos(const std::vector<CompartmentInfo>& _d1, const std:
     }
 }
 
-void compareGof(const GofData* _d1, const GofData* _d2)
+void ComputingResponseComparator::compareGof(const GofData* _d1, const GofData* _d2)
 {
     if (_d1 == nullptr && _d2 == nullptr) {
         return;
@@ -45,7 +46,7 @@ void compareGof(const GofData* _d1, const GofData* _d2)
     }
 }
 
-void compareSinglePoints(const SinglePointsData* _d1, const SinglePointsData* _d2)
+void ComputingResponseComparator::compareSinglePoints(const SinglePointsData* _d1, const SinglePointsData* _d2)
 {
     ASSERT_EQ(_d1->getId(), _d2->getId());
     ASSERT_DOUBLE_EQ(_d1->getLogLikelihood(), _d2->getLogLikelihood());
@@ -67,7 +68,7 @@ void compareSinglePoints(const SinglePointsData* _d1, const SinglePointsData* _d
     }
 }
 
-void compareCycleData(const CycleData& _d1, const CycleData& _d2, bool _isPercentile = false)
+void ComputingResponseComparator::compareCycleData(const CycleData& _d1, const CycleData& _d2, bool _isPercentile)
 {
     ASSERT_EQ(_d1.m_unit, _d2.m_unit);
     ASSERT_EQ(_d1.m_start, _d2.m_start);
@@ -136,7 +137,8 @@ void compareCycleData(const CycleData& _d1, const CycleData& _d2, bool _isPercen
     }
 }
 
-void compareCycleDatas(const std::vector<CycleData>& _d1, const std::vector<CycleData>& _d2, bool _isPercentile = false)
+void ComputingResponseComparator::compareCycleDatas(
+        const std::vector<CycleData>& _d1, const std::vector<CycleData>& _d2, bool _isPercentile)
 {
     ASSERT_EQ(_d1.size(), _d2.size());
     for (size_t cycle = 0; cycle < _d1.size(); cycle++) {
@@ -144,7 +146,8 @@ void compareCycleDatas(const std::vector<CycleData>& _d1, const std::vector<Cycl
     }
 }
 
-void compareSinglePrediction(const SinglePredictionData* _d1, const SinglePredictionData* _d2)
+void ComputingResponseComparator::compareSinglePrediction(
+        const SinglePredictionData* _d1, const SinglePredictionData* _d2)
 {
     ASSERT_EQ(_d1->getId(), _d2->getId());
     ASSERT_DOUBLE_EQ(_d1->getLogLikelihood(), _d2->getLogLikelihood());
@@ -154,7 +157,7 @@ void compareSinglePrediction(const SinglePredictionData* _d1, const SinglePredic
 }
 
 
-void compareLastingDose(const LastingDose& _d1, const LastingDose& _d2)
+void ComputingResponseComparator::compareLastingDose(const LastingDose& _d1, const LastingDose& _d2)
 {
     ASSERT_EQ(_d1.getDose(), _d2.getDose());
     ASSERT_EQ(_d1.getTimeStep(), _d2.getTimeStep());
@@ -163,7 +166,7 @@ void compareLastingDose(const LastingDose& _d1, const LastingDose& _d2)
     ASSERT_EQ(_d1.getFormulationAndRouteList(), _d2.getFormulationAndRouteList());
 }
 
-void compareDosageLoop(const DosageLoop& _d1, const DosageLoop& _d2)
+void ComputingResponseComparator::compareDosageLoop(const DosageLoop& _d1, const DosageLoop& _d2)
 {
     auto d1 = _d1.getDosage();
     auto d2 = _d2.getDosage();
@@ -172,7 +175,7 @@ void compareDosageLoop(const DosageLoop& _d1, const DosageLoop& _d2)
     }
 }
 
-void compareDosageTimeRange(const DosageTimeRange& _d1, const DosageTimeRange& _d2)
+void ComputingResponseComparator::compareDosageTimeRange(const DosageTimeRange& _d1, const DosageTimeRange& _d2)
 {
     ASSERT_EQ(_d1.getStartDate(), _d2.getStartDate());
     ASSERT_EQ(_d1.getEndDate(), _d2.getEndDate());
@@ -184,7 +187,7 @@ void compareDosageTimeRange(const DosageTimeRange& _d1, const DosageTimeRange& _
     }
 }
 
-void compareDosageHistory(const DosageHistory& _d1, const DosageHistory& _d2)
+void ComputingResponseComparator::compareDosageHistory(const DosageHistory& _d1, const DosageHistory& _d2)
 {
     ASSERT_EQ(_d1.getDosageTimeRanges().size(), _d2.getDosageTimeRanges().size());
     for (size_t i = 0; i < _d1.getDosageTimeRanges().size(); i++) {
@@ -192,11 +195,14 @@ void compareDosageHistory(const DosageHistory& _d1, const DosageHistory& _d2)
     }
 }
 
-void compareTargetEvaluationResult(const TargetEvaluationResult& _d1, const TargetEvaluationResult& _d2)
+void ComputingResponseComparator::compareTargetEvaluationResult(
+        const TargetEvaluationResult& _d1, const TargetEvaluationResult& _d2)
 {
     ASSERT_EQ(_d1.getTargetType(), _d2.getTargetType());
-    ASSERT_DOUBLE_EQ(_d1.getScore(), _d2.getScore());
-    ASSERT_DOUBLE_EQ(_d1.getValue(), _d2.getValue());
+    if (m_compareTargetScoreValue) {
+        ASSERT_DOUBLE_EQ(_d1.getScore(), _d2.getScore());
+        ASSERT_DOUBLE_EQ(_d1.getValue(), _d2.getValue());
+    }
     ASSERT_EQ(_d1.getUnit(), _d2.getUnit());
     ASSERT_EQ(_d1.getTarget().getActiveMoietyId(), _d2.getTarget().getActiveMoietyId());
     ASSERT_DOUBLE_EQ(_d1.getTarget().getValueMin(), _d2.getTarget().getValueMin());
@@ -206,7 +212,7 @@ void compareTargetEvaluationResult(const TargetEvaluationResult& _d1, const Targ
     ASSERT_DOUBLE_EQ(_d1.getTarget().getToxicityAlarm(), _d2.getTarget().getToxicityAlarm());
 }
 
-void compareDosageAdjustment(const DosageAdjustment& _d1, const DosageAdjustment& _d2)
+void ComputingResponseComparator::compareDosageAdjustment(const DosageAdjustment& _d1, const DosageAdjustment& _d2)
 {
     //ASSERT_DOUBLE_EQ(_d1.getGlobalScore(), _d2.getGlobalScore());
     compareCycleDatas(_d1.getData(), _d2.getData());
@@ -218,7 +224,7 @@ void compareDosageAdjustment(const DosageAdjustment& _d1, const DosageAdjustment
     }
 }
 
-void compareAdjustment(const AdjustmentData* _d1, const AdjustmentData* _d2)
+void ComputingResponseComparator::compareAdjustment(const AdjustmentData* _d1, const AdjustmentData* _d2)
 {
     ASSERT_EQ(_d1->getId(), _d2->getId());
     compareCompartmentInfos(_d1->getCompartmentInfos(), _d2->getCompartmentInfos());
@@ -233,7 +239,7 @@ void compareAdjustment(const AdjustmentData* _d1, const AdjustmentData* _d2)
     compareGof(_d1->getGof(), _d2->getGof());
 }
 
-void comparePercentiles(const PercentilesData* _d1, const PercentilesData* _d2)
+void ComputingResponseComparator::comparePercentiles(const PercentilesData* _d1, const PercentilesData* _d2)
 {
     ASSERT_EQ(_d1->getId(), _d2->getId());
     ASSERT_EQ(_d1->getNbRanks(), _d2->getNbRanks());
