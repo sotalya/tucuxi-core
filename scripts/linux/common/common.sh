@@ -105,9 +105,12 @@ parse_global_opts() {
       --coverage) COVERAGE_MODE=1; shift ;;
       -j)
         shift
+        if [[ $# -lt 1 ]]; then
+          die "--j requires an argument (number of parallel jobs)" 2
+        fi
         NPROC=$1
         shift ;;
-      *) die "Unknown global option: $1" ;;
+      *) shift ;;
     esac
   done
   recompute_paths

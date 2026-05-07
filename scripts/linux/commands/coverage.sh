@@ -102,6 +102,9 @@ EOF
         esac
         shift
         ;;
+      -j)
+        shift 2
+        ;;
       *) die "Unknown coverage option: $1 (try: ./scripts/linux/run coverage --help)" 2 ;;
     esac
   done
