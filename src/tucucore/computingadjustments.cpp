@@ -98,22 +98,17 @@ std::unique_ptr<DosageTimeRange> ComputingAdjustments::createSteadyStateDosage(
 
 ComputingStatus ComputingAdjustments::buildCandidates(
         const FullFormulationAndRoute* _formulationAndRoute,
-        std::vector<ComputingAdjustments::SimpleDosageCandidate>& _candidates)
+        std::vector<ComputingAdjustments::SimpleDosageCandidate>& _candidates,
+        const Duration& _forceInterval)
 {
     std::vector<Value> doseValues;
     TucuUnit doseUnit;
-    std::vector<Duration> intervalValues;
     std::vector<Duration> infusionTimes;
 
     const ValidDoses* doses = _formulationAndRoute->getValidDoses();
     if (doses != nullptr) {
         doseValues = doses->getValues();
         doseUnit = doses->getUnit();
-    }
-
-    const ValidDurations* intervals = _formulationAndRoute->getValidIntervals();
-    if (intervals != nullptr) {
-        intervalValues = intervals->getDurations();
     }
 
     const ValidDurations* infusions = _formulationAndRoute->getValidInfusionTimes();
@@ -126,9 +121,20 @@ ComputingStatus ComputingAdjustments::buildCandidates(
         return ComputingStatus::NoAvailableDose;
     }
 
-    if (intervalValues.empty()) {
-        m_logger.error("No available interval");
-        return ComputingStatus::NoAvailableInterval;
+    // Build the interval list: either use the forced interval, or extract from the formulation
+    std::vector<Duration> intervalValues;
+    if (!_forceInterval.isEmpty()) {
+        intervalValues.push_back(_forceInterval);
+    }
+    else {
+        const ValidDurations* intervals = _formulationAndRoute->getValidIntervals();
+        if (intervals != nullptr) {
+            intervalValues = intervals->getDurations();
+        }
+        if (intervalValues.empty()) {
+            m_logger.error("No available interval");
+            return ComputingStatus::NoAvailableInterval;
+        }
     }
 
     if (infusionTimes.empty()) {
@@ -138,7 +144,6 @@ ComputingStatus ComputingAdjustments::buildCandidates(
         }
         infusionTimes.emplace_back(0h);
     }
-
 
     // Creation of all candidates
     for (auto dose : doseValues) {
@@ -150,72 +155,9 @@ ComputingStatus ComputingAdjustments::buildCandidates(
                          doseUnit,
                          interval,
                          infusion});
-#if 0
-                std::string mess;
-                mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)
-                        + " , Interval: \t" + std::to_string((interval).toHours()) + " hours. "
-                        + " , Infusion: \t" + std::to_string((infusion).toMinutes()) + " minutes";
-                m_logger.info(mess);
-#endif // 0
             }
         }
     }
-    return ComputingStatus::Ok;
-}
-
-ComputingStatus ComputingAdjustments::buildCandidatesForInterval(
-        const FullFormulationAndRoute* _formulationAndRoute,
-        const Duration& _interval,
-        std::vector<ComputingAdjustments::SimpleDosageCandidate>& _candidates)
-{
-    std::vector<Value> doseValues;
-    TucuUnit doseUnit;
-    std::vector<Duration> infusionTimes;
-
-    const ValidDoses* doses = _formulationAndRoute->getValidDoses();
-    if (doses != nullptr) {
-        doseValues = doses->getValues();
-        doseUnit = doses->getUnit();
-    }
-
-    const ValidDurations* infusions = _formulationAndRoute->getValidInfusionTimes();
-    if (infusions != nullptr) {
-        infusionTimes = infusions->getDurations();
-    }
-
-    if (doseValues.empty()) {
-        m_logger.error("No available potential dose");
-        return ComputingStatus::NoAvailableDose;
-    }
-
-    if (infusionTimes.empty()) {
-        if (_formulationAndRoute->getFormulationAndRoute().getAbsorptionModel() == AbsorptionModel::Infusion) {
-            m_logger.error("Infusion selected, but no potential infusion time");
-            return ComputingStatus::NoAvailableInfusionTime;
-        }
-        infusionTimes.emplace_back(0h);
-    }
-
-
-    // Creation of all candidates
-    for (auto dose : doseValues) {
-        for (const auto& infusion : infusionTimes) {
-            _candidates.push_back(
-                    {_formulationAndRoute->getFormulationAndRoute().getTreatmentFormulationAndRoute(),
-                     dose,
-                     doseUnit,
-                     _interval,
-                     infusion});
-#if 0
-            std::string mess;
-            mess = "Potential adjustment. Dose :  \t" + std::to_string(dose)
-                    + " , Interval: \t" + std::to_string((interval).toHours()) + " hours. "
-                    + " , Infusion: \t" + std::to_string((infusion).toMinutes()) + " minutes";
-            m_logger.info(mess);
-#endif // 0
-        }
-    }
-
     return ComputingStatus::Ok;
 }
 
@@ -1175,7 +1117,7 @@ ComputingStatus ComputingAdjustments::addLoad(
             _request.getDrugModel().getFormulationAndRoutes().getDefault();
     std::vector<ComputingAdjustments::SimpleDosageCandidate> candidates;
     // Add candidates in order to increase dosage
-    ComputingStatus buildResult = buildCandidatesForInterval(fullFormulationAndRoute, interval, candidates);
+    ComputingStatus buildResult = buildCandidates(fullFormulationAndRoute, candidates, interval);
     if (buildResult != ComputingStatus::Ok) {
         return buildResult;
     }
