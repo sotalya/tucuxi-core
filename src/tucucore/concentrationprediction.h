@@ -68,7 +68,7 @@ public:
         return true;
     }
 
-    void appendConcentrations(TimeOffsets& _times, Concentrations& _values)
+    void appendConcentrations(const TimeOffsets& _times, const Concentrations& _values)
     {
         m_times.push_back(_times);
         m_values.push_back(_values);

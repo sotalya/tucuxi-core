@@ -111,21 +111,21 @@ Tucuxi::Core::AbsorptionModel getExtraAbsorptionModel()
 */
 std::unique_ptr<DrugTreatment> buildDrugTreatment(
         const FormulationAndRoute& _route,
-        const DateTime startDateTime,
+        const DateTime _startDateTime,
         DoseValue _doseValue,
         TucuUnit _unit,
-        int interval,
-        unsigned int nbrDoses,
-        Duration infusionTime)
+        int _interval,
+        unsigned int _nbrDoses,
+        Duration _infusionTime)
 {
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
-    LastingDose periodicDose(_doseValue, _unit, _route, infusionTime, Duration(std::chrono::hours(interval)));
-    DosageRepeat repeatedDose(periodicDose, nbrDoses);
-    auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(startDateTime, repeatedDose);
+    LastingDose periodicDose(_doseValue, _unit, _route, _infusionTime, Duration(std::chrono::hours(_interval)));
+    DosageRepeat repeatedDose(periodicDose, _nbrDoses);
+    auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(_startDateTime, repeatedDose);
 
     drugTreatment->getModifiableDosageHistory().addTimeRange(*dosageTimeRange);
 
@@ -135,29 +135,34 @@ std::unique_ptr<DrugTreatment> buildDrugTreatment(
 
 std::unique_ptr<DosageTimeRange> buildDosageTimeRange(
         const FormulationAndRoute& _route,
-        const DateTime startDateTime,
+        const DateTime _startDateTime,
         DoseValue _doseValue,
-        TucuUnit _unit,
-        int interval,
-        unsigned int nbrDoses)
+        const TucuUnit& _unit,
+        int _interval,
+        unsigned int _nbrDoses)
 {
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
-    LastingDose periodicDose(_doseValue, _unit, _route, Duration(), Duration(std::chrono::hours(interval)));
-    DosageRepeat repeatedDose(periodicDose, nbrDoses);
-    auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(startDateTime, repeatedDose);
+    LastingDose periodicDose(_doseValue, _unit, _route, Duration(), Duration(std::chrono::hours(_interval)));
+    DosageRepeat repeatedDose(periodicDose, _nbrDoses);
+    auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(_startDateTime, repeatedDose);
     return dosageTimeRange;
 }
 
 
 
-
+#include "computingcomponentfactory.h"
 
 int main(int argc, char** argv)
 {
+#ifdef TUCU_COMPILE_MULTI
+    ComputingComponentFactory::setMode(ComputingComponentFactory::CreationMode::Comparator);
+#else
+    ComputingComponentFactory::setMode(ComputingComponentFactory::CreationMode::Single);
+#endif // TUCU_COMPILE_MULTI
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

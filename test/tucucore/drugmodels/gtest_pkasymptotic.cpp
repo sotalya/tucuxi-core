@@ -39,6 +39,7 @@
 #include "../pkmodels/pkasymptotic.h"
 #include "../testutils.h"
 #include "buildpkasymptotic.h"
+#include "computingcomponentfactory.h"
 
 using namespace std::chrono_literals;
 using namespace date;
@@ -78,11 +79,11 @@ TEST(Core_TestPkAsymptotic, test0)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -182,9 +183,6 @@ TEST(Core_TestPkAsymptotic, test0)
             residual = residual + ((dose - residual) * rate);
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestPkAsymptotic, Adjustments)
@@ -237,11 +235,11 @@ TEST(Core_TestPkAsymptotic, Adjustments)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -322,9 +320,6 @@ TEST(Core_TestPkAsymptotic, Adjustments)
             }
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestPkAsymptotic, AdjustmentsSlowRate)
@@ -377,11 +372,11 @@ TEST(Core_TestPkAsymptotic, AdjustmentsSlowRate)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -462,9 +457,6 @@ TEST(Core_TestPkAsymptotic, AdjustmentsSlowRate)
             }
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestPkAsymptotic, AdjustmentsLoadingDose)
@@ -517,11 +509,11 @@ TEST(Core_TestPkAsymptotic, AdjustmentsLoadingDose)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -624,9 +616,6 @@ TEST(Core_TestPkAsymptotic, AdjustmentsLoadingDose)
             ASSERT_PRED4(double_le_rel_abs, dosage->getDose(), 1500.0, 0.01, 0.01);
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestPkAsymptotic, AdjustmentsFirstDose)
@@ -679,11 +668,11 @@ TEST(Core_TestPkAsymptotic, AdjustmentsFirstDose)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -763,9 +752,6 @@ TEST(Core_TestPkAsymptotic, AdjustmentsFirstDose)
             }
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestPkAsymptotic, AdjustmentsLoadingDoseFirstDose)
@@ -818,11 +804,11 @@ TEST(Core_TestPkAsymptotic, AdjustmentsLoadingDoseFirstDose)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -925,7 +911,4 @@ TEST(Core_TestPkAsymptotic, AdjustmentsLoadingDoseFirstDose)
             ASSERT_PRED4(double_le_rel_abs, dosage->getDose(), 1500.0, 0.01, 0.01);
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }

@@ -38,6 +38,7 @@
 #include "../pkmodels/constanteliminationbolus.h"
 #include "../testutils.h"
 #include "buildconstantelimination.h"
+#include "computingcomponentfactory.h"
 
 using namespace std::chrono_literals;
 using namespace date;
@@ -89,11 +90,11 @@ TEST(Core_TestConstantEliminationBolus, Test0)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    static_cast<ComputingComponent*>(component.get())->setPkModelCollection(collection);
 
 
     {
@@ -217,9 +218,6 @@ TEST(Core_TestConstantEliminationBolus, Test0)
             ASSERT_DOUBLE_EQ(statValue, 200000.0);
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestConstantEliminationBolus, Test1)
@@ -256,11 +254,11 @@ TEST(Core_TestConstantEliminationBolus, Test1)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -383,9 +381,6 @@ TEST(Core_TestConstantEliminationBolus, Test1)
             ASSERT_DOUBLE_EQ(statValue, 200001.0);
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestConstantEliminationBolus, ResidualErrorModelAdditive)
@@ -421,11 +416,11 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelAdditive)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -485,9 +480,6 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelAdditive)
             ASSERT_PRED4(double_eq_rel_abs, statValue - 200000.0, expectedValue, 0.02, 10.0 * 10.0 * 1000.0 * 0.06);
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestConstantEliminationBolus, ResidualErrorModelExponential)
@@ -522,11 +514,11 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelExponential)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -585,9 +577,6 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelExponential)
             ASSERT_PRED4(double_eq_rel_abs, statValue, expectedValue, 0.05, 0.0);
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestConstantEliminationBolus, ResidualErrorModelProportional)
@@ -622,11 +611,11 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelProportional)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
     {
         const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
@@ -684,9 +673,6 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelProportional)
             ASSERT_PRED4(double_eq_rel_abs, statValue, expectedValue, 0.05, 0.0);
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestConstantEliminationBolus, ResidualErrorModelMixed)
@@ -721,11 +707,11 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelMixed)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -784,9 +770,6 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelMixed)
             ASSERT_PRED4(double_eq_rel_abs, statValue, expectedValue, 0.04, 0.0);
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestConstantEliminationBolus, ParamAdditive)
@@ -831,11 +814,11 @@ TEST(Core_TestConstantEliminationBolus, ParamAdditive)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -894,9 +877,6 @@ TEST(Core_TestConstantEliminationBolus, ParamAdditive)
             ASSERT_PRED4(double_eq_rel_abs, statValue, expectedValue, .02, 0.02);
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestConstantEliminationBolus, ParamAdditiveResidualErrorModelAdditive)
@@ -941,11 +921,11 @@ TEST(Core_TestConstantEliminationBolus, ParamAdditiveResidualErrorModelAdditive)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -1005,9 +985,6 @@ TEST(Core_TestConstantEliminationBolus, ParamAdditiveResidualErrorModelAdditive)
             ASSERT_PRED4(double_eq_rel_abs, statValue, expectedValue, .01, 0.01);
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestConstantEliminationBolus, ParamExponentialResidualErrorModelExponential)
@@ -1052,11 +1029,11 @@ TEST(Core_TestConstantEliminationBolus, ParamExponentialResidualErrorModelExpone
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -1117,9 +1094,6 @@ TEST(Core_TestConstantEliminationBolus, ParamExponentialResidualErrorModelExpone
             ASSERT_PRED4(double_eq_rel_abs, statValue, expectedValue, 0.05, 0.0);
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestConstantEliminationBolus, ParamProportionalResidualErrorModelProportional)
@@ -1164,11 +1138,11 @@ TEST(Core_TestConstantEliminationBolus, ParamProportionalResidualErrorModelPropo
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -1238,9 +1212,6 @@ TEST(Core_TestConstantEliminationBolus, ParamProportionalResidualErrorModelPropo
             //ASSERT_PRED4(double_eq_rel_abs, statValue, expectedValue, 0.02, 0.0);
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestConstantEliminationBolus, Adjustments)
@@ -1293,11 +1264,11 @@ TEST(Core_TestConstantEliminationBolus, Adjustments)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -1380,9 +1351,6 @@ TEST(Core_TestConstantEliminationBolus, Adjustments)
             }
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestConstantEliminationBolus, Adjustments2)
@@ -1435,11 +1403,11 @@ TEST(Core_TestConstantEliminationBolus, Adjustments2)
     // Now the drug model is ready to be used
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    component->setPkModelCollection(collection);
 
 
     {
@@ -1523,7 +1491,4 @@ TEST(Core_TestConstantEliminationBolus, Adjustments2)
             }
         }
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }

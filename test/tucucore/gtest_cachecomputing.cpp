@@ -35,6 +35,7 @@
 #include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/montecarlopercentilecalculator.h"
 
+#include "computingcomponentfactory.h"
 #include "drugmodels/buildimatinib.h"
 #include "gtest_core.h"
 
@@ -90,11 +91,11 @@ TEST(Core_TestCacheComputing, ImatinibSplitInterval)
     // We reduce the number of patients to speed up the tests
     MonteCarloPercentileCalculatorBase::setStaticNumberPatients(10);
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    m_cache = std::make_unique<CacheComputing>(component);
+    m_cache = std::make_unique<CacheComputing>(component.get());
 
     BuildImatinib builder;
     auto drugModel = builder.buildDrugModel();
@@ -134,7 +135,6 @@ TEST(Core_TestCacheComputing, ImatinibSplitInterval)
     compute(drugTreatment.get(), drugModel.get(), start3, end3, nbPointsPerHour, true);
 
     // Delete all dynamically allocated objects
-    delete component;
     m_cache.reset();
 }
 
@@ -143,11 +143,11 @@ TEST(Core_TestCacheComputing, ImatinibFullInterval)
     // We reduce the number of patients to speed up the tests
     MonteCarloPercentileCalculatorBase::setStaticNumberPatients(10);
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
-    m_cache = std::make_unique<CacheComputing>(component);
+    m_cache = std::make_unique<CacheComputing>(component.get());
 
     BuildImatinib builder;
     auto drugModel = builder.buildDrugModel();
@@ -194,6 +194,5 @@ TEST(Core_TestCacheComputing, ImatinibFullInterval)
     compute(drugTreatment.get(), drugModel.get(), start2, end2, nbPointsPerHour * 1.1, true);
 
     // Delete all dynamically allocated objects
-    delete component;
     m_cache.reset();
 }

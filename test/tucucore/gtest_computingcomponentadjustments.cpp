@@ -33,6 +33,7 @@
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
 
+#include "computingcomponentfactory.h"
 #include "computingresponsecomparator.h"
 #include "drugmodels/buildgentamicinfuchs2014.h"
 #include "drugmodels/buildimatinib.h"
@@ -45,7 +46,7 @@ using namespace date;
 
 TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllDosages)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -113,14 +114,11 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllD
     ASSERT_EQ(resp->getCurrentDosageWithScore().m_targetsEvaluation.size(), 1);
     ASSERT_LT(resp->getCurrentDosageWithScore().m_targetsEvaluation[0].getValue(), 2064);
     ASSERT_GT(resp->getCurrentDosageWithScore().m_targetsEvaluation[0].getValue(), 2000);
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRouteAllDosages)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -187,16 +185,13 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRouteA
                         ->getFormulationAndRoute()
                         .getTreatmentFormulationAndRoute());
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndRouteAllDosages)
 {
     // TODO : Check this test. It does not work anymore because of multiple routes not supported by the PK model
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -255,14 +250,11 @@ TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndR
 
     // We expect 7 valid adjustment candidates
     ASSERT_EQ(resp->getAdjustments().size(), static_cast<size_t>(7));
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteBestDosage)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -324,14 +316,11 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteBest
     for (auto const& adj : resp->getAdjustments()) {
         ASSERT_TRUE(adj.m_history.getLastFormulationAndRoute().isCompatible(route));
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRouteBestDosage)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -398,16 +387,13 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRouteB
                         ->getFormulationAndRoute()
                         .getTreatmentFormulationAndRoute());
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndRouteBestDosage)
 {
     // TODO : Check this test. It does not work anymore because of multiple routes not supported by the PK model
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -465,14 +451,11 @@ TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndR
 
     // We expect 1 valid adjustment candidate
     ASSERT_EQ(resp->getAdjustments().size(), static_cast<size_t>(1));
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestComputingComponentAdjusements, ImatinibEmptyTreatmentDefaultFormulationAndRouteAllDosages)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -528,14 +511,11 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibEmptyTreatmentDefaultFormul
     //            for (auto const & adj : resp->getAdjustments()) {
     //              ASSERT_EQ(adj.m_history.getLastFormulationAndRoute(), drugModel->getFormulationAndRoutes().getDefault()->getFormulationAndRoute());
     //        }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestComputingComponentAdjusements, ImatinibSteadyStateLastFormulationAndRouteAllDosages)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -606,14 +586,10 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibSteadyStateLastFormulationA
     ASSERT_GT(resp->getCurrentDosageWithScore().m_targetsEvaluation[0].getValue(), 2063);
 
 
-    // Delete all dynamically allocated objects
-    delete component;
-
-
     // Tests with only a candidate per interval
     {
 
-        IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+        auto component = ComputingComponentFactory::createComputingService();
 
         ASSERT_TRUE(component != nullptr);
 
@@ -676,15 +652,12 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibSteadyStateLastFormulationA
         for (auto const& adj : resp->getAdjustments()) {
             ASSERT_TRUE(adj.m_history.getLastFormulationAndRoute().isCompatible(route));
         }
-
-        // Delete all dynamically allocated objects
-        delete component;
     }
 }
 
 TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllDosagesAtSteadyState)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -762,16 +735,13 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllD
         ASSERT_EQ(adj.m_history.getDosageTimeRanges()[0]->getStartDate(), adjustmentTime);
         ASSERT_TRUE(adj.m_history.getLastFormulationAndRoute().isCompatible(route));
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndRouteBestDosageLoadingDose)
 {
     // TODO : Check this test. It does not work anymore because of multiple routes not supported by the PK model
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -829,14 +799,11 @@ TEST(Core_TestComputingComponentAdjusements, DISABLED_ImatinibAllFormulationAndR
 
     // We expect 2 dosage time range (loading dose)
     ASSERT_EQ(resp->getAdjustments()[0].getDosageHistory().getDosageTimeRanges().size(), static_cast<size_t>(2));
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestComputingComponentAdjusements, ImatinibAllFormulationAndRouteBestDosageRestPeriod)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -898,9 +865,6 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibAllFormulationAndRouteBestD
         // We expect 2 dosage time range (rest period)
         ASSERT_EQ(resp->getAdjustments()[0].getDosageHistory().getDosageTimeRanges().size(), static_cast<size_t>(2));
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 
@@ -957,9 +921,6 @@ TEST(Core_TestComputingComponentAdjusements, GentamicinTwoTargets)
     ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
     ASSERT_GT(resp->getAdjustments().size(), 0);
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 
@@ -1010,7 +971,7 @@ static std::unique_ptr<DrugTreatment> buildDrugTreatmentStrange(
 /// A comparator allows to compare the computing responses.
 TEST(Core_TestComputingComponentAdjusements, ImatinibShortInterval)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -1094,9 +1055,6 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibShortInterval)
 
     ComputingResponseComparator comparator;
     comparator.compare(*response1, *response2);
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 
@@ -1147,7 +1105,7 @@ static std::unique_ptr<DrugTreatment> buildDrugTreatmentStrangeConc(
 /// This test could be removed, but it does not hurt to keep it.
 TEST(Core_TestComputingComponentAdjusements, ImatinibShortIntervalConcentration)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -1208,7 +1166,4 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibShortIntervalConcentration)
 
     ComputingResponseComparator comparator;
     comparator.compare(*response1, *response2);
-
-    // Delete all dynamically allocated objects
-    delete component;
 }

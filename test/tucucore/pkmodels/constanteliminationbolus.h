@@ -131,7 +131,7 @@ protected:
         // Compute concentrations
         compute(_inResiduals, concentrations);
 
-        // Return finla residual
+        // Return final residual
         _outResiduals[firstCompartment] = concentrations[m_nbPoints - 1];
 
         // Return concentraions of first compartment

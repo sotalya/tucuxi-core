@@ -43,6 +43,7 @@ add_definitions(-DUNICODE)
 add_definitions(-D_UNICODE)
 
 file(GLOB TUCUTESTCORE_HEADER_FILES
+    ${CMAKE_CURRENT_LIST_DIR}/computingcomponentfactory.h
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/buildmultianalytessingleactivemoiety.h
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/buildconstantelimination.h
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/buildgentamicinfuchs2014.h
@@ -60,6 +61,7 @@ file(GLOB TUCUTESTCORE_HEADER_FILES
 )
 
 file(GLOB TUCUTESTCORE_SOURCE_FILES
+    ${CMAKE_CURRENT_LIST_DIR}/computingcomponentfactory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/gtest_constanteliminationbolus.cpp
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/gtest_drug_tobramycin.cpp
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/gtest_drug_vancomycin.cpp
@@ -109,14 +111,14 @@ file(GLOB TUCUTESTCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/gtest_target.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_targetevaluator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_targetextractor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/gtest_treatmentdrugmodelcompatibilitychecker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/gtest_rkmichaelismentenenzyme.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/gtest_rkmichaelismententwocompvmaxamount.cpp
     ${CMAKE_CURRENT_LIST_DIR}/pkmodels/gtest_twocompartmentextralag.cpp
     ${CMAKE_CURRENT_LIST_DIR}/computingresponsecomparator.cpp
 )
 
-add_executable(tucutestcore ${TUCUTESTCORE_HEADER_FILES} ${TUCUTESTCORE_SOURCE_FILES}
-    gtest_treatmentdrugmodelcompatibilitychecker.cpp)
+add_executable(tucutestcore ${TUCUTESTCORE_HEADER_FILES} ${TUCUTESTCORE_SOURCE_FILES})
 
 option(config_coverage "Builds for coverage")
 if(config_coverage)

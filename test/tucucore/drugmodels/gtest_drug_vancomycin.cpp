@@ -36,6 +36,7 @@
 #include "tucucore/drugmodelimport.h"
 
 #include "../gtest_core.h"
+#include "computingcomponentfactory.h"
 
 using namespace std::chrono_literals;
 using namespace date;
@@ -757,7 +758,7 @@ TEST(Core_TestDrugVancomycin, Vancomycin)
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -837,10 +838,6 @@ TEST(Core_TestDrugVancomycin, Vancomycin)
         //for (auto parameter : resp->getData()[0].m_parameters) {
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}
-    }
-
-    if (component != nullptr) {
-        delete component;
     }
 }
 
@@ -938,9 +935,5 @@ TEST(Core_TestDrugVancomycin, VancomycinInfusionTime0)
         //for (auto parameter : resp->getData()[0].m_parameters) {
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}
-    }
-
-    if (component != nullptr) {
-        delete component;
     }
 }
