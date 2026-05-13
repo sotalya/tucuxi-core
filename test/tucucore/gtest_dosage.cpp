@@ -21,6 +21,7 @@
 
 
 #include <memory>
+#include <sstream>
 
 #include <gtest/gtest.h>
 
@@ -137,8 +138,17 @@ TEST(Core_TestDosage, SingleDoseAtTimeList)
 
     ASSERT_TRUE(sdl1 == sdl1_bis);
     ASSERT_FALSE(sdl1 != sdl1_bis);
-    ASSERT_NO_THROW(sdl1.addDosage(sd1_bis));
-    ASSERT_TRUE(sdl1 == sdl1_copy);
+    // Duplicate insertion prints a warning to stderr. Capture it so it does not
+    // pollute test output, and verify the message is actually emitted.
+    {
+        std::streambuf* origBuf = std::cerr.rdbuf();
+        std::ostringstream sink;
+        std::cerr.rdbuf(sink.rdbuf());
+        ASSERT_NO_THROW (sdl1.addDosage(sd1_bis));
+        std::cerr.rdbuf(origBuf);
+        EXPECT_NE (sink.str().find("Duplicate insertion detected"), std::string::npos);
+    }
+    ASSERT_TRUE (sdl1 == sdl1_copy);
     ASSERT_TRUE(sdl1.getFormulationAndRouteList().size() == 1);
     ASSERT_TRUE(sdl1.getLastFormulationAndRoute() == routePerfusion1);
     ASSERT_TRUE(sdl1.getTimeStepList(dateTime_before1).size() == 1);

@@ -633,6 +633,18 @@ ComputingStatus ComputingAdjustments::compute(
                 _traits, _request, *resp, pkModel, allGroupIds, etas, targetSeries, calculationStartTime);
     }
 
+    if (_traits->getAdjustmentWithCurrentDosageOption() 
+        == AdjustmentWithCurrentDosageOption::DontAdjustIfCurrentInRange
+        && resp->isCurrentInRange()) {
+        std::vector<DosageAdjustment> currentAsAdjustment;
+        currentAsAdjustment.push_back(resp->getCurrentDosageWithScore());
+        resp->setAdjustments(currentAsAdjustment);
+
+        ComputingComponent::setCompartmentInfo(_traits, _request, *resp);
+        _response->addResponse(std::move(resp));
+        return ComputingStatus::Ok;
+    }
+
     std::vector<DosageAdjustment> dosageCandidates;
 
     // A vector of vector because each adjustment candidate can have various targets

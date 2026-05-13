@@ -20,7 +20,10 @@
  */
 
 
+#include <cstdio>
+#include <fcntl.h>
 #include <memory>
+#include <unistd.h>
 
 #include <gtest/gtest.h>
 
@@ -267,19 +270,31 @@ TEST(Core_TestOperation, JSOperationIfEqual)
             return theta_4;
             )",
             {OperationInput("flu", InputType::INTEGER), OperationInput("gsta1", InputType::INTEGER)});
-    // Operation ok ?
+    // The JS expressions below use = instead of == in conditions, which causes
+    // tiny-js to print "Trying to assign to an un-named type" via its TRACE
+    // macro (printf). Suppress stdout to keep test output clean.
+    std::fflush(stdout);
+    int savedStdout = dup(fileno(stdout));
+    int devNull = open("/dev/null", O_WRONLY);
+    dup2(devNull, fileno(stdout));
+    close(devNull);
+
     rc = jsOp2.evaluate({OperationInput("flu", 0), OperationInput("gsta1", 1)}, res);
-    ASSERT_TRUE(rc);
-    ASSERT_DOUBLE_EQ(1, res);
+    ASSERT_TRUE (rc);
+    ASSERT_DOUBLE_EQ (1, res);
 
     rc = jsOp2.evaluate({OperationInput("flu", 1), OperationInput("gsta1", 1)}, res);
-    ASSERT_TRUE(rc);
-    ASSERT_DOUBLE_EQ(0.92, res);
+    ASSERT_TRUE (rc);
+    ASSERT_DOUBLE_EQ (0.92, res);
 
     // Unfortunately
     rc = jsOp2.evaluate({OperationInput("flu", 1), OperationInput("gsta1", 3)}, res);
-    ASSERT_TRUE(rc);
-    ASSERT_DOUBLE_EQ(0.92, res);
+    ASSERT_TRUE (rc);
+    ASSERT_DOUBLE_EQ (0.92, res);
+
+    std::fflush(stdout);
+    dup2(savedStdout, fileno(stdout));
+    close(savedStdout);
 }
 
 TEST(Core_TestOperation, DynamicOperation)

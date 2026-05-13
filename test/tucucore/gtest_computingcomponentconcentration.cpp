@@ -386,24 +386,36 @@ TEST(Core_TestComputingComponentConcentration, Gof)
     std::unique_ptr<ComputingResponse> responseC = std::make_unique<ComputingResponse>(requestResponseId);
 
     ComputingStatus resultC = component->compute(requestC, responseC);
+    ASSERT_EQ (resultC, ComputingStatus::Ok);
+
     auto cGof = responseC->getData()->getGof();
-    std::cerr << "MAE: " << cGof->getMae() << "\n";
-    std::cerr << "MAPE: " << cGof->getMape() << "\n";
-    std::cerr << "MSE: " << cGof->getMse() << "\n";
-    std::cerr << "RMSE: " << cGof->getRmse() << "\n";
-    std::cerr << "RMSLE: " << cGof->getRmsle() << "\n";
-    std::cerr << "R-SQUARED: " << cGof->getRSquared() << "\n";
+    ASSERT_TRUE (cGof != nullptr);
+    EXPECT_NEAR (cGof->getMae(), 192233, 1.0);
+    EXPECT_NEAR (cGof->getMape(), 144.675, 0.001);
+    EXPECT_NEAR (cGof->getMse(), 3.69555e+10, 1e+7);
+    EXPECT_NEAR (cGof->getRmse(), 192238, 1.0);
+    EXPECT_NEAR (cGof->getRmsle(), 4.85039, 0.001);
+    EXPECT_NEAR (cGof->getRSquared(), -18476.8, 0.1);
+    EXPECT_NEAR (cGof->getMeanPredictionError(), -192233, 1.0);
+    EXPECT_NEAR (cGof->getMeanAbsolutePredictionError(), 98.9703, 0.001);
+
     auto cPredErrors = cGof->getPredErrors();
-    std::cerr << "------------------------------------------------\n";
-    for (auto const& pe : cPredErrors) {
-        std::cerr << "-----------------\nMeasure: " << pe.getMeasure() << "\n";
-        std::cerr << "Prediction: " << pe.getPrediction() << "\n";
-        std::cerr << "PredictionError: " << pe.getPredictionError() << "\n";
-        std::cerr << "AbsPredErrorPct: " << pe.getAbsPredErrorPct() << "\n";
-    }
-    std::cerr << "------------------------------------------------\n";
-    std::cerr << "Mean prediction error: " << cGof->getMeanPredictionError() << "\n";
-    std::cerr << "Mean absolute prediction error: " << cGof->getMeanAbsolutePredictionError() << "\n";
+    ASSERT_EQ (cPredErrors.size(), static_cast<size_t>(3));
+
+    EXPECT_NEAR (cPredErrors[0].getMeasure(), 1000, 1.0);
+    EXPECT_NEAR (cPredErrors[0].getPrediction(), 194233, 1.0);
+    EXPECT_NEAR (cPredErrors[0].getPredictionError(), -193233, 1.0);
+    EXPECT_NEAR (cPredErrors[0].getAbsPredErrorPct(), 99.4852, 0.001);
+
+    EXPECT_NEAR (cPredErrors[1].getMeasure(), 4000, 1.0);
+    EXPECT_NEAR (cPredErrors[1].getPrediction(), 194233, 1.0);
+    EXPECT_NEAR (cPredErrors[1].getPredictionError(), -190233, 1.0);
+    EXPECT_NEAR (cPredErrors[1].getAbsPredErrorPct(), 97.9406, 0.001);
+
+    EXPECT_NEAR (cPredErrors[2].getMeasure(), 1000, 1.0);
+    EXPECT_NEAR (cPredErrors[2].getPrediction(), 194233, 1.0);
+    EXPECT_NEAR (cPredErrors[2].getPredictionError(), -193233, 1.0);
+    EXPECT_NEAR (cPredErrors[2].getAbsPredErrorPct(), 99.4852, 0.001);
 
     auto traitsM = std::make_unique<ComputingTraitAtMeasures>(requestResponseId, computingOption);
     ComputingRequest requestM(requestResponseId, *drugModel, *drugTreatment, std::move(traitsM));
@@ -411,24 +423,36 @@ TEST(Core_TestComputingComponentConcentration, Gof)
     std::unique_ptr<ComputingResponse> responseM = std::make_unique<ComputingResponse>(requestResponseId);
 
     ComputingStatus resultM = component->compute(requestM, responseM);
+    ASSERT_EQ (resultM, ComputingStatus::Ok);
+
     auto mGof = responseM->getData()->getGof();
-    std::cerr << "MAE: " << mGof->getMae() << "\n";
-    std::cerr << "MAPE: " << mGof->getMape() << "\n";
-    std::cerr << "MSE: " << mGof->getMse() << "\n";
-    std::cerr << "RMSE: " << mGof->getRmse() << "\n";
-    std::cerr << "RMSLE: " << mGof->getRmsle() << "\n";
-    std::cerr << "R-SQUARED: " << mGof->getRSquared() << "\n";
+    ASSERT_TRUE (mGof != nullptr);
+    EXPECT_NEAR (mGof->getMae(), 192233, 1.0);
+    EXPECT_NEAR (mGof->getMape(), 144.675, 0.001);
+    EXPECT_NEAR (mGof->getMse(), 3.69555e+10, 1e+7);
+    EXPECT_NEAR (mGof->getRmse(), 192238, 1.0);
+    EXPECT_NEAR (mGof->getRmsle(), 4.85039, 0.001);
+    EXPECT_NEAR (mGof->getRSquared(), -18476.8, 0.1);
+    EXPECT_NEAR (mGof->getMeanPredictionError(), -192233, 1.0);
+    EXPECT_NEAR (mGof->getMeanAbsolutePredictionError(), 98.9703, 0.001);
+
     auto mPredErrors = mGof->getPredErrors();
-    std::cerr << "------------------------------------------------\n";
-    for (auto const& pe : mPredErrors) {
-        std::cerr << "-----------------\nMeasure: " << pe.getMeasure() << "\n";
-        std::cerr << "Prediction: " << pe.getPrediction() << "\n";
-        std::cerr << "PredictionError: " << pe.getPredictionError() << "\n";
-        std::cerr << "AbsPredErrorPct: " << pe.getAbsPredErrorPct() << "\n";
-    }
-    std::cerr << "------------------------------------------------\n";
-    std::cerr << "Mean prediction error: " << mGof->getMeanPredictionError() << "\n";
-    std::cerr << "Mean absolute prediction error: " << mGof->getMeanAbsolutePredictionError() << "\n";
+    ASSERT_EQ (mPredErrors.size(), static_cast<size_t>(3));
+
+    EXPECT_NEAR (mPredErrors[0].getMeasure(), 1000, 1.0);
+    EXPECT_NEAR (mPredErrors[0].getPrediction(), 194233, 1.0);
+    EXPECT_NEAR (mPredErrors[0].getPredictionError(), -193233, 1.0);
+    EXPECT_NEAR (mPredErrors[0].getAbsPredErrorPct(), 99.4852, 0.001);
+
+    EXPECT_NEAR (mPredErrors[1].getMeasure(), 4000, 1.0);
+    EXPECT_NEAR (mPredErrors[1].getPrediction(), 194233, 1.0);
+    EXPECT_NEAR (mPredErrors[1].getPredictionError(), -190233, 1.0);
+    EXPECT_NEAR (mPredErrors[1].getAbsPredErrorPct(), 97.9406, 0.001);
+
+    EXPECT_NEAR (mPredErrors[2].getMeasure(), 1000, 1.0);
+    EXPECT_NEAR (mPredErrors[2].getPrediction(), 194233, 1.0);
+    EXPECT_NEAR (mPredErrors[2].getPredictionError(), -193233, 1.0);
+    EXPECT_NEAR (mPredErrors[2].getAbsPredErrorPct(), 99.4852, 0.001);
 
     // Delete all dynamically allocated objects
     delete component;
