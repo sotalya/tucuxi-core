@@ -148,6 +148,8 @@ protected:
             Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     Tucuxi::Core::FormulationAndRouteSelectionOption getChildFormulationAndRouteSelectionOptionEnum(
             Common::XmlNodeIterator _rootIterator, const std::string& _childName);
+    Tucuxi::Core::AdjustmentWithCurrentDosageOption getChildAdjustmentWithCurrentDosageOptionEnum(
+            Common::XmlNodeIterator _rootIterator, const std::string& _childName);
 
 private:
     friend GTestTucuQuery;

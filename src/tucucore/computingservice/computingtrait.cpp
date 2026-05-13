@@ -147,12 +147,14 @@ ComputingTraitAdjustment::ComputingTraitAdjustment(
         RestPeriodOption _restPeriodOption,
         SteadyStateTargetOption _steadyStateTargetOption,
         TargetExtractionOption _targetExtractionOption,
-        FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption)
+        FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption,
+        AdjustmentWithCurrentDosageOption _adjustmentWithCurrentDosageOption)
     : ComputingTraitStandard(std::move(_id), _start, _end, _nbPointsPerHour, _computingOption),
       m_adjustmentTime(_adjustmentTime), m_bestCandidatesOption(_candidatesOption), m_loadingOption(_loadingOption),
       m_restPeriodOption(_restPeriodOption), m_steadyStateTargetOption(_steadyStateTargetOption),
       m_targetExtractionOption(_targetExtractionOption),
-      m_formulationAndRouteSelectionOption(_formulationAndRouteSelectionOption)
+      m_formulationAndRouteSelectionOption(_formulationAndRouteSelectionOption),
+      m_adjustmentWithCurrentDosageOption(_adjustmentWithCurrentDosageOption)
 {
 }
 
@@ -196,6 +198,12 @@ RestPeriodOption ComputingTraitAdjustment::getRestPeriodOption() const
 TargetExtractionOption ComputingTraitAdjustment::getTargetExtractionOption() const
 {
     return m_targetExtractionOption;
+}
+
+
+AdjustmentWithCurrentDosageOption ComputingTraitAdjustment::getAdjustmentWithCurrentDosageOption() const
+{
+    return m_adjustmentWithCurrentDosageOption;
 }
 
 

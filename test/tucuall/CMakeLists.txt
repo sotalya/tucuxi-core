@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 project (tucutestall LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../)
@@ -25,6 +25,7 @@ add_definitions(-D_UNICODE)
 
 file(GLOB TUCUTESTALL_HEADER_FILES
     # tucutestcore
+    ${CMAKE_CURRENT_LIST_DIR}/../tucucore/computingcomponentfactory.h
     ${CMAKE_CURRENT_LIST_DIR}/../tucucore/drugmodels/buildmultianalytessingleactivemoiety.h
     ${CMAKE_CURRENT_LIST_DIR}/../tucucore/drugmodels/buildconstantelimination.h
     ${CMAKE_CURRENT_LIST_DIR}/../tucucore/drugmodels/buildimatinib.h
@@ -53,6 +54,7 @@ file(GLOB TUCUTESTALL_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/../tucucommon/gtest_xml.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tucucommon/gtest_xmlimporter.cpp
     # tucutestcore
+    ${CMAKE_CURRENT_LIST_DIR}/../tucucore/computingcomponentfactory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tucucore/drugmodels/gtest_constanteliminationbolus.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tucucore/drugmodels/gtest_drug_tobramycin.cpp
     ${CMAKE_CURRENT_LIST_DIR}/../tucucore/drugmodels/gtest_drug_vancomycin.cpp
