@@ -21,9 +21,12 @@
 
 
 #include <cstdio>
-#include <fcntl.h>
 #include <memory>
+
+#ifdef __linux__
+#include <fcntl.h>
 #include <unistd.h>
+#endif // __linux__
 
 #include <gtest/gtest.h>
 
@@ -273,11 +276,13 @@ TEST(Core_TestOperation, JSOperationIfEqual)
     // The JS expressions below use = instead of == in conditions, which causes
     // tiny-js to print "Trying to assign to an un-named type" via its TRACE
     // macro (printf). Suppress stdout to keep test output clean.
+#ifdef __linux__
     std::fflush(stdout);
     int savedStdout = dup(fileno(stdout));
     int devNull = open("/dev/null", O_WRONLY);
     dup2(devNull, fileno(stdout));
     close(devNull);
+#endif // __linux__
 
     rc = jsOp2.evaluate({OperationInput("flu", 0), OperationInput("gsta1", 1)}, res);
     ASSERT_TRUE (rc);
@@ -292,9 +297,11 @@ TEST(Core_TestOperation, JSOperationIfEqual)
     ASSERT_TRUE (rc);
     ASSERT_DOUBLE_EQ (0.92, res);
 
+#ifdef __linux__
     std::fflush(stdout);
     dup2(savedStdout, fileno(stdout));
     close(savedStdout);
+#endif // __linux__
 }
 
 TEST(Core_TestOperation, DynamicOperation)
