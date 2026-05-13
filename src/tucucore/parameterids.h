@@ -89,6 +89,7 @@ public:
     {
         static const std::map<std::string, Enum> PARAM_IDS = {
                 // NOLINT(readability-identifier-naming)
+                // LCOV_EXCL_START
                 {"V", ParameterId::V},           {"V1", ParameterId::V1},         {"V2", ParameterId::V2},
                 {"V3", ParameterId::V3},         {"CL", ParameterId::CL},         {"Ka", ParameterId::Ka},
                 {"Ke", ParameterId::Ke},         {"K12", ParameterId::K12},       {"K21", ParameterId::K21},
@@ -104,7 +105,10 @@ public:
                 {"ECmid", ParameterId::ECmid},   {"EDmid", ParameterId::EDmid},   {"DoseMid", ParameterId::DoseMid},
                 {"Fmax", ParameterId::Fmax},     {"NN", ParameterId::NN},         {"MTT", ParameterId::MTT},
                 {"AllmCL", ParameterId::AllmCL}, {"RQCL", ParameterId::RQCL},     {"RV2V1", ParameterId::RV2V1},
-                {"T50", ParameterId::T50},       {"Tfs", ParameterId::Tfs}};
+                {"T50", ParameterId::T50},       {"Tfs", ParameterId::Tfs}
+                // LCOV_EXCL_STOP
+        };
+
         std::map<std::string, Enum>::const_iterator it = PARAM_IDS.find(_id);
         if (it != PARAM_IDS.end()) {
             return it->second;
