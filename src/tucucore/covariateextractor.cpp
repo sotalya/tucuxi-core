@@ -520,7 +520,9 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
     for (const auto& cdv : m_cdValued) {
         Duration refreshInterval;
         refreshInterval = (*(cdv.second))->getRefreshPeriod();
-        if (((*(cdv.second))->getInterpolationType() != InterpolationType::Direct) && (!refreshInterval.isEmpty())) {
+        if (((*(cdv.second))->getInterpolationType() != InterpolationType::Direct
+             && (*(cdv.second))->getInterpolationType() != InterpolationType::Backward)
+            && (!refreshInterval.isEmpty())) {
             // When we have a refresh interval set, use it and ignore the patient variates.
             for (DateTime t = m_start; t <= m_end; t += refreshInterval) {
                 if (_refreshMap.find(t) == _refreshMap.end()) {
@@ -680,7 +682,8 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
     // values, and if the values is interpolated, so be it. This should have no impact on the computations performed,
     // since in any case we would have to redo the computations for the given time instant.
     for (const auto& cv : m_cdValued) {
-        if ((*(cv.second))->getInterpolationType() != InterpolationType::Direct) {
+        if ((*(cv.second))->getInterpolationType() != InterpolationType::Direct
+            && (*(cv.second))->getInterpolationType() != InterpolationType::Backward) {
             for (auto& t : _refreshMap) {
                 if (std::find(t.second.begin(), t.second.end(), cv.first) == t.second.end()) {
                     t.second.push_back(cv.first);
@@ -735,6 +738,10 @@ bool CovariateExtractor::interpolateValues(
             // Extend _val2 past _date2.
             _valRes = _val2;
         }
+        break;
+    case InterpolationType::Backward:
+        // Use the value of the next measurement (look forward, not backward).
+        _valRes = _val2;
         break;
     case InterpolationType::Linear: {
         // Angular coefficient.
