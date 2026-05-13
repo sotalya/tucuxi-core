@@ -59,7 +59,7 @@ public:
     ///
     QueryImport();
 
-    virtual ~QueryImport();
+    ~QueryImport() override;
 
     ///
     /// \brief importFromFile

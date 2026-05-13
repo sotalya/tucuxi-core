@@ -30,13 +30,12 @@ namespace Query {
 
 FullSample::FullSample(
         std::string _id,
-        Common::DateTime _date,
+        const Common::DateTime& _date,
         Core::AnalyteId _analyteId,
         Core::Value _value,
         Common::TucuUnit _unit,
         Core::Value _weight)
-    : Core::Sample(std::move(_date), std::move(_analyteId), _value, std::move(_unit), _weight),
-      m_sampleID(std::move(_id))
+    : Core::Sample(_date, std::move(_analyteId), _value, std::move(_unit), _weight), m_sampleID(std::move(_id))
 {
 }
 

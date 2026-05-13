@@ -63,7 +63,7 @@ public:
     QueryData(
             std::string _queryID,
             std::string _clientID,
-            Tucuxi::Common::DateTime _pQueryDate,
+            const DateTime& _pQueryDate,
             std::string _language,
             std::unique_ptr<DrugTreatmentData> _pParameters,
             std::vector<std::unique_ptr<RequestData> >& _requests);

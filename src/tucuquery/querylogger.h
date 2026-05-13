@@ -33,7 +33,7 @@ namespace Query {
 class IQueryLogger : public Tucuxi::Common::Interface
 {
 public:
-    virtual ~IQueryLogger() = default;
+    ~IQueryLogger() override = default;
 
     virtual std::string getFolderPath(void) = 0;
 

@@ -46,7 +46,7 @@ public:
     ///
     FullSample(
             std::string _id,
-            Common::DateTime _date,
+            const DateTime& _date,
             Core::AnalyteId _analyteId,
             Core::Value _value,
             TucuUnit _unit,

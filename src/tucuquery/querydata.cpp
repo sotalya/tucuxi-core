@@ -32,11 +32,11 @@ namespace Query {
 QueryData::QueryData(
         std::string _queryID,
         std::string _clientID,
-        Common::DateTime _pQueryDate,
+        const Common::DateTime& _pQueryDate,
         std::string _language,
         std::unique_ptr<DrugTreatmentData> _pParameters,
         std::vector<std::unique_ptr<RequestData> >& _requests)
-    : m_queryID(std::move(_queryID)), m_clientID(std::move(_clientID)), m_pQueryDate(std::move(_pQueryDate)),
+    : m_queryID(std::move(_queryID)), m_clientID(std::move(_clientID)), m_pQueryDate(_pQueryDate),
       m_language(std::move(_language)), m_pParameters(std::move(_pParameters)), m_requests(std::move(_requests))
 {
 }
