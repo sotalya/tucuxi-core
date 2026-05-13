@@ -33,3 +33,25 @@ TEST(Common_TestIterator, Basic)
     std::vector<int>::iterator end = lst.end();
     Tucuxi::Common::StandaloneSTLIterator<std::vector<int>::iterator, int> it(begin, end);
 }
+
+TEST(Common_TestIterator, Empty)
+{
+    std::vector<int> lst;
+    std::vector<int>::iterator begin = lst.begin();
+    std::vector<int>::iterator end = lst.end();
+    Tucuxi::Common::StandaloneSTLIterator<std::vector<int>::iterator, int> it(begin, end);
+    ASSERT_TRUE(it.isDone());
+}
+
+TEST(Common_TestIterator, NotEmpty)
+{
+    std::vector<int> lst = {1, 2};
+    std::vector<int>::iterator begin = lst.begin();
+    std::vector<int>::iterator end = lst.end();
+    Tucuxi::Common::StandaloneSTLIterator<std::vector<int>::iterator, int> it(begin, end);
+
+    ASSERT_FALSE(it.isDone());
+    it.next();
+    it.next();
+    ASSERT_TRUE(it.isDone());
+}

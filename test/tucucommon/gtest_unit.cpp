@@ -3931,3 +3931,37 @@ TEST(Common_TestUnit, NoUnit)
     ASSERT_DOUBLE_EQ(
             unitManager.convertToUnit(value, Tucuxi::Common::TucuUnit("-"), Tucuxi::Common::TucuUnit("-")), 1.0);
 }
+
+TEST(Common_TestUnit, UnknownUnit)
+{
+    Tucuxi::Common::UnitManager unitManager;
+
+    Tucuxi::Core::Value value = 1.0;
+    ASSERT_FALSE(unitManager.isKnown(Tucuxi::Common::TucuUnit("unknown_unit")));
+}
+
+TEST(Common_TestUnit, InvalidConversion)
+{
+    Tucuxi::Common::UnitManager unitManager;
+
+    ASSERT_THROW(
+            unitManager.convertToUnit<Tucuxi::Common::UnitManager::UnitType::MoleConcentration>(
+                    1.0, Tucuxi::Common::TucuUnit("g/mol"), Tucuxi::Common::TucuUnit("ml/min")),
+            std::invalid_argument);
+}
+
+TEST(Common_TestUnit, CompatibleUnits)
+{
+    Tucuxi::Common::UnitManager unitManager;
+
+    ASSERT_TRUE(unitManager.isCompatible(Tucuxi::Common::TucuUnit("g/mol"), Tucuxi::Common::TucuUnit("kg/mol")));
+    ASSERT_TRUE(unitManager.isCompatible(Tucuxi::Common::TucuUnit("g/mol"), Tucuxi::Common::TucuUnit("g/umol")));
+}
+
+TEST(Common_TestUnit, IncompatibleUnits)
+{
+    Tucuxi::Common::UnitManager unitManager;
+
+    ASSERT_FALSE(unitManager.isCompatible(Tucuxi::Common::TucuUnit("g/mol"), Tucuxi::Common::TucuUnit("ml/min")));
+    ASSERT_FALSE(unitManager.isCompatible(Tucuxi::Common::TucuUnit("g/mol"), Tucuxi::Common::TucuUnit("celsius")));
+}

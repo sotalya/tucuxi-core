@@ -75,6 +75,7 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
     // clang-format off
     static const std::map<UnitType, std::map<std::string, double>> sm_conversionMap = // NOLINT(readability-identifier-naming)
     {
+        // LCOV_EXCL_START
         {
             UnitType::Weight,
             {
@@ -235,6 +236,7 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
                 {"", 1.0}
             }
         }
+        // LCOV_EXCL_STOP
     };
     // clang-format on
 
