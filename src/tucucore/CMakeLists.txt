@@ -135,6 +135,7 @@ file(GLOB TUCUCORE_HEADERS_FILES
     ${CMAKE_CURRENT_LIST_DIR}/invariants.h
     ${CMAKE_CURRENT_LIST_DIR}/iresidualerrormodel.h
     ${CMAKE_CURRENT_LIST_DIR}/likelihood.h
+    ${CMAKE_CURRENT_LIST_DIR}/metacomputingcomponent.h
     ${CMAKE_CURRENT_LIST_DIR}/minimize.h
     ${CMAKE_CURRENT_LIST_DIR}/montecarlopercentilecalculator.h
     ${CMAKE_CURRENT_LIST_DIR}/multicomputingadjustments.h
@@ -241,6 +242,7 @@ file(GLOB TUCUCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/intakeintervalcalculatorrk4.cpp
     ${CMAKE_CURRENT_LIST_DIR}/intaketocalculatorassociator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/likelihood.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/metacomputingcomponent.cpp
     ${CMAKE_CURRENT_LIST_DIR}/montecarlopercentilecalculator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/multicomputingadjustments.cpp
     ${CMAKE_CURRENT_LIST_DIR}/multicomputingcomponent.cpp

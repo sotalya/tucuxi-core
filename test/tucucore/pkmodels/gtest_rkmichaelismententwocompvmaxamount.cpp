@@ -38,6 +38,7 @@
 #include "tucucore/drugtreatment/drugtreatment.h"
 
 #include "../gtest_core.h"
+#include "computingcomponentfactory.h"
 
 using namespace std::chrono_literals;
 using namespace date;
@@ -992,7 +993,7 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountBolus)
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -1072,10 +1073,6 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountBolus)
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}
     }
-
-    if (component != nullptr) {
-        delete component;
-    }
 }
 
 /// \brief Check that objects are correctly constructed by the constructor.
@@ -1091,7 +1088,7 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountInfu)
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -1171,10 +1168,6 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountInfu)
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}
     }
-
-    if (component != nullptr) {
-        delete component;
-    }
 }
 
 /// \brief Check that objects are correctly constructed by the constructor.
@@ -1190,7 +1183,7 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountExtra)
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -1270,10 +1263,6 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountExtra)
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}
     }
-
-    if (component != nullptr) {
-        delete component;
-    }
 }
 
 TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix)
@@ -1288,7 +1277,7 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix)
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -1427,10 +1416,5 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix)
         //for (auto parameter : resp->getData()[0].m_parameters) {
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}
-    }
-
-
-    if (component != nullptr) {
-        delete component;
     }
 }

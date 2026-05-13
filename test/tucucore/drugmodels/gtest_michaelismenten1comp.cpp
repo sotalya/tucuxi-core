@@ -36,6 +36,7 @@
 #include "tucucore/drugmodelimport.h"
 
 #include "../gtest_core.h"
+#include "computingcomponentfactory.h"
 
 
 using namespace std::chrono_literals;
@@ -478,7 +479,7 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1comp)
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    auto* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -553,10 +554,6 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1comp)
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}
     }
-
-    if (component != nullptr) {
-        delete component;
-    }
 }
 
 
@@ -572,7 +569,7 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes)
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    auto* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -642,9 +639,5 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes)
         //for (auto parameter : resp->getData()[0].m_parameters) {
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}
-    }
-
-    if (component != nullptr) {
-        delete component;
     }
 }

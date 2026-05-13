@@ -34,6 +34,7 @@
 #include "tucucore/drugmodelimport.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
 
+#include "computingcomponentfactory.h"
 
 using namespace Tucuxi::Core;
 
@@ -453,7 +454,7 @@ static std::unique_ptr<DrugTreatment> buildSimpleDrugTreatment(
 
 TEST(Core_TestComputingComponentAtTimes, MeasureFar)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -540,15 +541,11 @@ TEST(Core_TestComputingComponentAtTimes, MeasureFar)
         ASSERT_DOUBLE_EQ(data[0].getConcentrations()[0][12], data2[0][0]);
         ASSERT_DOUBLE_EQ(data[0].getConcentrations()[0][24], data2[0][1]);
     }
-
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestComputingComponentAtTimes, MeasureFarTimes)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -695,7 +692,4 @@ TEST(Core_TestComputingComponentAtTimes, MeasureFarTimes)
 
         }
 */
-
-    // Delete all dynamically allocated objects
-    delete component;
 }

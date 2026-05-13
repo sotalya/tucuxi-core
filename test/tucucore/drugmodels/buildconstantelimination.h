@@ -237,7 +237,7 @@ public:
 
 
         Tucuxi::Common::TranslatableString activeMoietyName;
-        activeMoietyName.setString("Active moiety name");
+        activeMoietyName.setString("Test ConstantElimination Active moiety");
         activeMoiety->setName(activeMoietyName);
 
         model->addActiveMoiety(std::move(activeMoiety));

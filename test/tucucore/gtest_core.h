@@ -348,18 +348,18 @@ static void testCalculator(
 
 std::unique_ptr<DrugTreatment> buildDrugTreatment(
         const FormulationAndRoute& _route,
-        const DateTime startDateTime,
+        const DateTime _startDateTime,
         DoseValue _doseValue = DoseValue(200),
         TucuUnit _unit = TucuUnit("mg"),
-        int interval = 6,
-        unsigned int nbrDoses = 16,
-        Duration infusionTime = Duration());
+        int _interval = 6,
+        unsigned int _nbrDoses = 16,
+        Duration _infusionTime = Duration());
 
 std::unique_ptr<DosageTimeRange> buildDosageTimeRange(
         const FormulationAndRoute& _route,
-        const DateTime startDateTime,
+        const DateTime _startDateTime,
         DoseValue _doseValue = DoseValue(200),
-        TucuUnit _unit = TucuUnit("mg"),
-        int interval = 6,
-        unsigned int nbrDoses = 16);
+        const TucuUnit& _unit = TucuUnit("mg"),
+        int _interval = 6,
+        unsigned int _nbrDoses = 16);
 #endif // GTEST_CORE_H

@@ -83,12 +83,9 @@ protected:
 
 
     [[nodiscard]] ComputingStatus buildCandidates(
-            const FullFormulationAndRoute* _formulationAndRoute, std::vector<SimpleDosageCandidate>& _candidates);
-
-    [[nodiscard]] ComputingStatus buildCandidatesForInterval(
             const FullFormulationAndRoute* _formulationAndRoute,
-            const Common::Duration& _interval,
-            std::vector<ComputingAdjustments::SimpleDosageCandidate>& _candidates);
+            std::vector<SimpleDosageCandidate>& _candidates,
+            const Common::Duration& _forceInterval = Common::Duration());
 
     [[nodiscard]] std::unique_ptr<DosageTimeRange> createDosage(
             const SimpleDosageCandidate& _candidate, const DateTime& _startTime, const DateTime& _endTime);

@@ -37,6 +37,7 @@
 #include "tucucore/drugtreatment/drugtreatment.h"
 
 #include "../gtest_core.h"
+#include "computingcomponentfactory.h"
 
 
 using namespace std::chrono_literals;
@@ -847,7 +848,7 @@ TEST(Core_TestMichaelisMenten2comp, Bolus)
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -927,10 +928,6 @@ TEST(Core_TestMichaelisMenten2comp, Bolus)
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}
     }
-
-    if (component != nullptr) {
-        delete component;
-    }
 }
 
 TEST(Core_TestMichaelisMenten2comp, Infusion)
@@ -945,7 +942,7 @@ TEST(Core_TestMichaelisMenten2comp, Infusion)
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -1025,10 +1022,6 @@ TEST(Core_TestMichaelisMenten2comp, Infusion)
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}
     }
-
-    if (component != nullptr) {
-        delete component;
-    }
 }
 
 TEST(Core_TestMichaelisMenten2comp, Extra)
@@ -1043,7 +1036,7 @@ TEST(Core_TestMichaelisMenten2comp, Extra)
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -1120,10 +1113,6 @@ TEST(Core_TestMichaelisMenten2comp, Extra)
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}
     }
-
-    if (component != nullptr) {
-        delete component;
-    }
 }
 
 TEST(Core_TestMichaelisMenten2comp, ExtraLag)
@@ -1138,7 +1127,7 @@ TEST(Core_TestMichaelisMenten2comp, ExtraLag)
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -1216,10 +1205,6 @@ TEST(Core_TestMichaelisMenten2comp, ExtraLag)
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}
     }
-
-    if (component != nullptr) {
-        delete component;
-    }
 }
 
 TEST(Core_TestMichaelisMenten2comp, Mix)
@@ -1234,7 +1219,7 @@ TEST(Core_TestMichaelisMenten2comp, Mix)
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -1312,10 +1297,6 @@ TEST(Core_TestMichaelisMenten2comp, Mix)
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}
     }
-
-    if (component != nullptr) {
-        delete component;
-    }
 }
 
 TEST(Core_TestMichaelisMenten2comp, MixPercentiles)
@@ -1330,7 +1311,7 @@ TEST(Core_TestMichaelisMenten2comp, MixPercentiles)
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -1376,9 +1357,5 @@ TEST(Core_TestMichaelisMenten2comp, MixPercentiles)
         //for (auto parameter : resp->getData()[0].m_parameters) {
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}
-    }
-
-    if (component != nullptr) {
-        delete component;
     }
 }

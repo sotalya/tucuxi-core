@@ -33,6 +33,7 @@
 #include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/montecarlopercentilecalculator.h"
 
+#include "computingcomponentfactory.h"
 #include "drugmodels/buildconstantelimination.h"
 #include "drugmodels/buildimatinib.h"
 #include "gtest_core.h"
@@ -68,7 +69,7 @@ static std::unique_ptr<DrugTreatment> buildSimpleDrugTreatment(
 
 TEST(Core_TestComputingComponentConcentration, Simple1)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -167,9 +168,6 @@ TEST(Core_TestComputingComponentConcentration, Simple1)
         ASSERT_DOUBLE_EQ(
                 data[1].m_start.toSeconds() + data[1].m_times[0][0] * 3600.0, startSept2018.toSeconds() + 3600.0 * 6.0);
     }
-
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestComputingComponentConcentration, ImatinibSteadyState)
@@ -262,7 +260,7 @@ TEST(Core_TestComputingComponentConcentration, ImatinibSteadyState)
 
 TEST(Core_TestComputingComponentConcentration, SampleBeforeTreatmentStart)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     BuildConstantElimination builder;
     auto drugModel = builder.buildDrugModel(
@@ -320,8 +318,6 @@ TEST(Core_TestComputingComponentConcentration, SampleBeforeTreatmentStart)
     resultM = component->compute(requestM, responseM);
 
     ASSERT_EQ(resultM, ComputingStatus::SampleBeforeTreatmentStart);
-
-    delete component;
 }
 
 TEST(Core_TestComputingComponentConcentration, Gof)

@@ -36,6 +36,7 @@
 #include "tucucore/drugmodelimport.h"
 
 #include "../gtest_core.h"
+#include "computingcomponentfactory.h"
 
 using namespace std::chrono_literals;
 using namespace date;
@@ -921,7 +922,7 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtra)
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -1002,10 +1003,6 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtra)
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
         //}
     }
-
-    if (component != nullptr) {
-        delete component;
-    }
 }
 
 TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtraPercentilesApriori)
@@ -1020,7 +1017,7 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtraPercentilesAp
     ASSERT_TRUE(drugModel != nullptr);
 
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -1058,9 +1055,5 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtraPercentilesAp
             return;
         }
         //const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
-    }
-
-    if (component != nullptr) {
-        delete component;
     }
 }

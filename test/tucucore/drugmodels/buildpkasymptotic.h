@@ -214,7 +214,7 @@ public:
         std::vector<AnalyteId> analyteList;
         analyteList.push_back(AnalyteId("analyte"));
         std::unique_ptr<ActiveMoiety> activeMoiety = std::make_unique<ActiveMoiety>(
-                ActiveMoietyId("activeMoietyConstant"),
+                ActiveMoietyId("activeMoietyPkAsymptotic"),
                 TucuUnit("ug/l"),
                 analyteList,
                 std::move(activeMoietyOperation));

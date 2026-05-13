@@ -115,6 +115,7 @@ public:
     using base_vector::empty;
     using base_vector::end;
     using base_vector::erase;
+    using base_vector::front;
     using base_vector::pop_back;
     using base_vector::push_back;
     using base_vector::reserve;
@@ -153,6 +154,7 @@ public:
     using base_vector::empty;
     using base_vector::end;
     using base_vector::erase;
+    using base_vector::front;
     using base_vector::pop_back;
     using base_vector::push_back;
     using base_vector::reserve;
@@ -191,6 +193,7 @@ public:
     using base_vector::empty;
     using base_vector::end;
     using base_vector::erase;
+    using base_vector::front;
     using base_vector::pop_back;
     using base_vector::push_back;
     using base_vector::reserve;
@@ -229,6 +232,7 @@ public:
     using base_vector::empty;
     using base_vector::end;
     using base_vector::erase;
+    using base_vector::front;
     using base_vector::pop_back;
     using base_vector::push_back;
     using base_vector::reserve;
