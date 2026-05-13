@@ -285,17 +285,17 @@ TEST(Core_TestOperation, JSOperationIfEqual)
 #endif // __linux__
 
     rc = jsOp2.evaluate({OperationInput("flu", 0), OperationInput("gsta1", 1)}, res);
-    ASSERT_TRUE (rc);
-    ASSERT_DOUBLE_EQ (1, res);
+    ASSERT_TRUE(rc);
+    ASSERT_DOUBLE_EQ(1, res);
 
     rc = jsOp2.evaluate({OperationInput("flu", 1), OperationInput("gsta1", 1)}, res);
-    ASSERT_TRUE (rc);
-    ASSERT_DOUBLE_EQ (0.92, res);
+    ASSERT_TRUE(rc);
+    ASSERT_DOUBLE_EQ(0.92, res);
 
     // Unfortunately
     rc = jsOp2.evaluate({OperationInput("flu", 1), OperationInput("gsta1", 3)}, res);
-    ASSERT_TRUE (rc);
-    ASSERT_DOUBLE_EQ (0.92, res);
+    ASSERT_TRUE(rc);
+    ASSERT_DOUBLE_EQ(0.92, res);
 
 #ifdef __linux__
     std::fflush(stdout);

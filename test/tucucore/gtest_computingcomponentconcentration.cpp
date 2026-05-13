@@ -386,36 +386,36 @@ TEST(Core_TestComputingComponentConcentration, Gof)
     std::unique_ptr<ComputingResponse> responseC = std::make_unique<ComputingResponse>(requestResponseId);
 
     ComputingStatus resultC = component->compute(requestC, responseC);
-    ASSERT_EQ (resultC, ComputingStatus::Ok);
+    ASSERT_EQ(resultC, ComputingStatus::Ok);
 
     auto cGof = responseC->getData()->getGof();
-    ASSERT_TRUE (cGof != nullptr);
-    EXPECT_NEAR (cGof->getMae(), 192233, 1.0);
-    EXPECT_NEAR (cGof->getMape(), 144.675, 0.001);
-    EXPECT_NEAR (cGof->getMse(), 3.69555e+10, 1e+7);
-    EXPECT_NEAR (cGof->getRmse(), 192238, 1.0);
-    EXPECT_NEAR (cGof->getRmsle(), 4.85039, 0.001);
-    EXPECT_NEAR (cGof->getRSquared(), -18476.8, 0.1);
-    EXPECT_NEAR (cGof->getMeanPredictionError(), -192233, 1.0);
-    EXPECT_NEAR (cGof->getMeanAbsolutePredictionError(), 98.9703, 0.001);
+    ASSERT_TRUE(cGof != nullptr);
+    EXPECT_NEAR(cGof->getMae(), 192233, 1.0);
+    EXPECT_NEAR(cGof->getMape(), 144.675, 0.001);
+    EXPECT_NEAR(cGof->getMse(), 3.69555e+10, 1e+7);
+    EXPECT_NEAR(cGof->getRmse(), 192238, 1.0);
+    EXPECT_NEAR(cGof->getRmsle(), 4.85039, 0.001);
+    EXPECT_NEAR(cGof->getRSquared(), -18476.8, 0.1);
+    EXPECT_NEAR(cGof->getMeanPredictionError(), -192233, 1.0);
+    EXPECT_NEAR(cGof->getMeanAbsolutePredictionError(), 98.9703, 0.001);
 
     auto cPredErrors = cGof->getPredErrors();
-    ASSERT_EQ (cPredErrors.size(), static_cast<size_t>(3));
+    ASSERT_EQ(cPredErrors.size(), static_cast<size_t>(3));
 
-    EXPECT_NEAR (cPredErrors[0].getMeasure(), 1000, 1.0);
-    EXPECT_NEAR (cPredErrors[0].getPrediction(), 194233, 1.0);
-    EXPECT_NEAR (cPredErrors[0].getPredictionError(), -193233, 1.0);
-    EXPECT_NEAR (cPredErrors[0].getAbsPredErrorPct(), 99.4852, 0.001);
+    EXPECT_NEAR(cPredErrors[0].getMeasure(), 1000, 1.0);
+    EXPECT_NEAR(cPredErrors[0].getPrediction(), 194233, 1.0);
+    EXPECT_NEAR(cPredErrors[0].getPredictionError(), -193233, 1.0);
+    EXPECT_NEAR(cPredErrors[0].getAbsPredErrorPct(), 99.4852, 0.001);
 
-    EXPECT_NEAR (cPredErrors[1].getMeasure(), 4000, 1.0);
-    EXPECT_NEAR (cPredErrors[1].getPrediction(), 194233, 1.0);
-    EXPECT_NEAR (cPredErrors[1].getPredictionError(), -190233, 1.0);
-    EXPECT_NEAR (cPredErrors[1].getAbsPredErrorPct(), 97.9406, 0.001);
+    EXPECT_NEAR(cPredErrors[1].getMeasure(), 4000, 1.0);
+    EXPECT_NEAR(cPredErrors[1].getPrediction(), 194233, 1.0);
+    EXPECT_NEAR(cPredErrors[1].getPredictionError(), -190233, 1.0);
+    EXPECT_NEAR(cPredErrors[1].getAbsPredErrorPct(), 97.9406, 0.001);
 
-    EXPECT_NEAR (cPredErrors[2].getMeasure(), 1000, 1.0);
-    EXPECT_NEAR (cPredErrors[2].getPrediction(), 194233, 1.0);
-    EXPECT_NEAR (cPredErrors[2].getPredictionError(), -193233, 1.0);
-    EXPECT_NEAR (cPredErrors[2].getAbsPredErrorPct(), 99.4852, 0.001);
+    EXPECT_NEAR(cPredErrors[2].getMeasure(), 1000, 1.0);
+    EXPECT_NEAR(cPredErrors[2].getPrediction(), 194233, 1.0);
+    EXPECT_NEAR(cPredErrors[2].getPredictionError(), -193233, 1.0);
+    EXPECT_NEAR(cPredErrors[2].getAbsPredErrorPct(), 99.4852, 0.001);
 
     auto traitsM = std::make_unique<ComputingTraitAtMeasures>(requestResponseId, computingOption);
     ComputingRequest requestM(requestResponseId, *drugModel, *drugTreatment, std::move(traitsM));
@@ -423,36 +423,36 @@ TEST(Core_TestComputingComponentConcentration, Gof)
     std::unique_ptr<ComputingResponse> responseM = std::make_unique<ComputingResponse>(requestResponseId);
 
     ComputingStatus resultM = component->compute(requestM, responseM);
-    ASSERT_EQ (resultM, ComputingStatus::Ok);
+    ASSERT_EQ(resultM, ComputingStatus::Ok);
 
     auto mGof = responseM->getData()->getGof();
-    ASSERT_TRUE (mGof != nullptr);
-    EXPECT_NEAR (mGof->getMae(), 192233, 1.0);
-    EXPECT_NEAR (mGof->getMape(), 144.675, 0.001);
-    EXPECT_NEAR (mGof->getMse(), 3.69555e+10, 1e+7);
-    EXPECT_NEAR (mGof->getRmse(), 192238, 1.0);
-    EXPECT_NEAR (mGof->getRmsle(), 4.85039, 0.001);
-    EXPECT_NEAR (mGof->getRSquared(), -18476.8, 0.1);
-    EXPECT_NEAR (mGof->getMeanPredictionError(), -192233, 1.0);
-    EXPECT_NEAR (mGof->getMeanAbsolutePredictionError(), 98.9703, 0.001);
+    ASSERT_TRUE(mGof != nullptr);
+    EXPECT_NEAR(mGof->getMae(), 192233, 1.0);
+    EXPECT_NEAR(mGof->getMape(), 144.675, 0.001);
+    EXPECT_NEAR(mGof->getMse(), 3.69555e+10, 1e+7);
+    EXPECT_NEAR(mGof->getRmse(), 192238, 1.0);
+    EXPECT_NEAR(mGof->getRmsle(), 4.85039, 0.001);
+    EXPECT_NEAR(mGof->getRSquared(), -18476.8, 0.1);
+    EXPECT_NEAR(mGof->getMeanPredictionError(), -192233, 1.0);
+    EXPECT_NEAR(mGof->getMeanAbsolutePredictionError(), 98.9703, 0.001);
 
     auto mPredErrors = mGof->getPredErrors();
-    ASSERT_EQ (mPredErrors.size(), static_cast<size_t>(3));
+    ASSERT_EQ(mPredErrors.size(), static_cast<size_t>(3));
 
-    EXPECT_NEAR (mPredErrors[0].getMeasure(), 1000, 1.0);
-    EXPECT_NEAR (mPredErrors[0].getPrediction(), 194233, 1.0);
-    EXPECT_NEAR (mPredErrors[0].getPredictionError(), -193233, 1.0);
-    EXPECT_NEAR (mPredErrors[0].getAbsPredErrorPct(), 99.4852, 0.001);
+    EXPECT_NEAR(mPredErrors[0].getMeasure(), 1000, 1.0);
+    EXPECT_NEAR(mPredErrors[0].getPrediction(), 194233, 1.0);
+    EXPECT_NEAR(mPredErrors[0].getPredictionError(), -193233, 1.0);
+    EXPECT_NEAR(mPredErrors[0].getAbsPredErrorPct(), 99.4852, 0.001);
 
-    EXPECT_NEAR (mPredErrors[1].getMeasure(), 4000, 1.0);
-    EXPECT_NEAR (mPredErrors[1].getPrediction(), 194233, 1.0);
-    EXPECT_NEAR (mPredErrors[1].getPredictionError(), -190233, 1.0);
-    EXPECT_NEAR (mPredErrors[1].getAbsPredErrorPct(), 97.9406, 0.001);
+    EXPECT_NEAR(mPredErrors[1].getMeasure(), 4000, 1.0);
+    EXPECT_NEAR(mPredErrors[1].getPrediction(), 194233, 1.0);
+    EXPECT_NEAR(mPredErrors[1].getPredictionError(), -190233, 1.0);
+    EXPECT_NEAR(mPredErrors[1].getAbsPredErrorPct(), 97.9406, 0.001);
 
-    EXPECT_NEAR (mPredErrors[2].getMeasure(), 1000, 1.0);
-    EXPECT_NEAR (mPredErrors[2].getPrediction(), 194233, 1.0);
-    EXPECT_NEAR (mPredErrors[2].getPredictionError(), -193233, 1.0);
-    EXPECT_NEAR (mPredErrors[2].getAbsPredErrorPct(), 99.4852, 0.001);
+    EXPECT_NEAR(mPredErrors[2].getMeasure(), 1000, 1.0);
+    EXPECT_NEAR(mPredErrors[2].getPrediction(), 194233, 1.0);
+    EXPECT_NEAR(mPredErrors[2].getPredictionError(), -193233, 1.0);
+    EXPECT_NEAR(mPredErrors[2].getAbsPredErrorPct(), 99.4852, 0.001);
 
     // Delete all dynamically allocated objects
     delete component;
