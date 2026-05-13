@@ -34,6 +34,7 @@ file(GLOB TUCUTESTCOMMON_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/gtest_iterator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_logger.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_scriptengine.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/gtest_translatablestring.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_unit.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_xml.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_xmlimporter.cpp
