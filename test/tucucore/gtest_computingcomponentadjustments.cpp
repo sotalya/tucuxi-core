@@ -32,6 +32,7 @@
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
+#include "tucucore/drugtreatment/sample.h"
 
 #include "computingresponsecomparator.h"
 #include "drugmodels/buildgentamicinfuchs2014.h"
@@ -959,6 +960,60 @@ TEST(Core_TestComputingComponentAdjusements, GentamicinTwoTargets)
     ASSERT_GT(resp->getAdjustments().size(), 0);
 
     // Delete all dynamically allocated objects
+    delete component;
+}
+
+TEST(Core_TestComputingComponentAdjusements, ImatinibAposterioriSampleBeforeTreatmentStart)
+{
+    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+    ASSERT_TRUE(component != nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_TRUE(drugModel != nullptr);
+
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
+
+    DateTime startSept2018(
+            date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+            Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+
+    auto drugTreatment = buildDrugTreatment(route, startSept2018);
+
+    // This sample is before the first dosage intake and must be rejected by checkSamplesValidity.
+    drugTreatment->addSample(std::make_unique<Sample>(
+            startSept2018 - Duration(std::chrono::hours(3)), AnalyteId("imatinib"), 100.0, TucuUnit("mg/l")));
+
+    RequestResponseId requestResponseId = "1";
+    Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+    Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+    double nbPointsPerHour = 10.0;
+    ComputingOption computingOption(PredictionParameterType::Aposteriori, CompartmentsOption::MainCompartment);
+    Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
+    BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
+    std::unique_ptr<ComputingTraitAdjustment> adjustmentsTraits = std::make_unique<ComputingTraitAdjustment>(
+            requestResponseId,
+            start,
+            end,
+            nbPointsPerHour,
+            computingOption,
+            adjustmentTime,
+            adjustmentOption,
+            LoadingOption::NoLoadingDose,
+            RestPeriodOption::NoRestPeriod,
+            SteadyStateTargetOption::WithinTreatmentTimeRange,
+            TargetExtractionOption::PopulationValues,
+            FormulationAndRouteSelectionOption::LastFormulationAndRoute);
+
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
+
+    std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ComputingStatus result = component->compute(request, response);
+
+    ASSERT_EQ(result, ComputingStatus::SampleBeforeTreatmentStart);
+
     delete component;
 }
 
