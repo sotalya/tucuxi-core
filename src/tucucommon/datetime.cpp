@@ -162,14 +162,14 @@ DateTime::DateTime(const std::string& _date, const std::string& _format)
             date::month(static_cast<unsigned int>(tm.tm_mon + 1)),
             date::day(static_cast<unsigned int>(tm.tm_mday)));
 
-    m_date = date::sys_days(day);
+    m_date = date::sys_days{day};
     m_date += std::chrono::milliseconds(tm.tm_hour * 3600 * 1000 + tm.tm_min * 60000 + tm.tm_sec * 1000);
     SETDEFINED(true);
     UPDATESTRING;
 }
 
 
-DateTime::DateTime(const date::year_month_day& _date) : m_date(date::sys_days(_date))
+DateTime::DateTime(const date::year_month_day& _date) : m_date(date::sys_days{_date})
 {
     SETDEFINED(true);
     UPDATESTRING;
@@ -178,7 +178,7 @@ DateTime::DateTime(const date::year_month_day& _date) : m_date(date::sys_days(_d
 
 DateTime::DateTime(const date::year_month_day& _date, const TimeOfDay& _time)
 {
-    m_date = date::sys_days(_date);
+    m_date = date::sys_days{_date};
     m_date += std::chrono::milliseconds(_time.getDuration());
     SETDEFINED(true);
     UPDATESTRING;
@@ -187,7 +187,7 @@ DateTime::DateTime(const date::year_month_day& _date, const TimeOfDay& _time)
 
 DateTime::DateTime(const date::year_month_day& _date, const std::chrono::seconds& _time)
 {
-    m_date = date::sys_days(_date);
+    m_date = date::sys_days{_date};
     m_date += _time;
     SETDEFINED(true);
     UPDATESTRING;
@@ -229,7 +229,7 @@ void DateTime::setDate(const date::year_month_day& _newDate)
     // Do not check here, as we could use this function on an undefined datetime
     // CHECKDEFINED;
     TimeOfDay tod = getTimeOfDay();
-    m_date = date::sys_days(_newDate);
+    m_date = date::sys_days{_newDate};
     m_date += std::chrono::milliseconds(tod.getDuration());
     // The next line is only partially true, but we consider it enough
     SETDEFINED(true);

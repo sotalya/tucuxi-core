@@ -103,7 +103,7 @@ std::vector<Duration> SingleDoseAtTimeList::getTimeStepList(DateTime const& _int
         }
     }
     else {
-        int64_t avg_val = 0;
+        int64_t avgVal = 0;
         for (std::size_t i = 0; i < m_dosageList.size() - 1; ++i) {
             const auto& current = m_dosageList.at(i);
             const auto& next = m_dosageList.at(i + 1);
@@ -111,11 +111,11 @@ std::vector<Duration> SingleDoseAtTimeList::getTimeStepList(DateTime const& _int
             if (m_dosageList.at(i)->getDateTime() >= _intervalStart) {
                 timeStepList.emplace_back(next->getDateTime() - current->getDateTime());
             }
-            avg_val += (next->getDateTime() - current->getDateTime()).toMilliseconds();
+            avgVal += (next->getDateTime() - current->getDateTime()).toMilliseconds();
         }
-        avg_val /= (m_dosageList.size() - 1);
+        avgVal /= (m_dosageList.size() - 1);
         if (m_dosageList.back()->getDateTime() >= _intervalStart) {
-            timeStepList.emplace_back(Duration(std::chrono::milliseconds(avg_val)));
+            timeStepList.emplace_back(Duration(std::chrono::milliseconds(avgVal)));
         }
     }
 
@@ -125,15 +125,15 @@ std::vector<Duration> SingleDoseAtTimeList::getTimeStepList(DateTime const& _int
 Duration SingleDoseAtTimeList::getLastTimeStep() const
 {
     if (m_dosageList.size() == 1) {
-        Tucuxi::Common::LoggerHelper m_logger;
-        m_logger.warn("Only one dose present, returning the default time step value");
+        Tucuxi::Common::LoggerHelper logger;
+        logger.warn("Only one dose present, returning the default time step value");
         return SINGLE_DOSE_DEFAULT_TSTEP;
     }
 
     const auto& last = m_dosageList.at(m_dosageList.size() - 1);
-    const auto& last_but_one = m_dosageList.at(m_dosageList.size() - 2);
+    const auto& lastButOne = m_dosageList.at(m_dosageList.size() - 2);
 
-    return last->getDateTime() - last_but_one->getDateTime();
+    return last->getDateTime() - lastButOne->getDateTime();
 }
 
 
@@ -233,15 +233,15 @@ std::vector<Duration> SimpleDoseList::getTimeStepList(DateTime const& _intervalS
 Duration SimpleDoseList::getLastTimeStep() const
 {
     if (m_dosageList.size() == 1) {
-        Tucuxi::Common::LoggerHelper m_logger;
-        m_logger.warn("Only one dose present, returning the default time step value");
+        Tucuxi::Common::LoggerHelper logger;
+        logger.warn("Only one dose present, returning the default time step value");
         return SINGLE_DOSE_DEFAULT_TSTEP;
     }
 
     const auto& last = m_dosageList.at(m_dosageList.size() - 1);
-    const auto& last_but_one = m_dosageList.at(m_dosageList.size() - 2);
+    const auto& lastButOne = m_dosageList.at(m_dosageList.size() - 2);
 
-    return last->getDateTime() - last_but_one->getDateTime();
+    return last->getDateTime() - lastButOne->getDateTime();
 }
 
 

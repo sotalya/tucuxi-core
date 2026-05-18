@@ -551,7 +551,7 @@ public:
 
     void setCurrentDosageWithScore(DosageAdjustment _currentDosage)
     {
-        m_currentDosageWithScore = _currentDosage;
+        m_currentDosageWithScore = std::move(_currentDosage);
     }
 
     void setIsCurrentInRange(bool _isInRange)

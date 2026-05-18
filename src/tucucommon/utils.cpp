@@ -31,11 +31,13 @@ using Tucuxi::Core::Value;
 
 std::string Utils::getAppFolder(char** _argv)
 {
-    std::string::size_type found = std::string(_argv[0]).find_last_of("/\\");
+    std::string::size_type found =
+            std::string(_argv[0]).find_last_of("/\\"); //NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     if (found == std::string::npos) {
         return ".";
     }
-    std::string appFolder = std::string(_argv[0]).substr(0, found);
+    std::string appFolder =
+            std::string(_argv[0]).substr(0, found); //NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     return appFolder;
 }
 
@@ -205,7 +207,7 @@ std::string Utils::varToString(const double& _value)
 std::string Utils::varToString(const DateTime& _value)
 {
     std::array<char, 64> buf{};
-    snprintf(
+    snprintf( //NOLINT(cppcoreguidelines-pro-type-vararg)
             buf.data(),
             buf.size(),
             "%04d-%02d-%02d %02d:%02d:%02d",

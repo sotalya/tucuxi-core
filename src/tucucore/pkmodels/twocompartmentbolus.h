@@ -98,14 +98,12 @@ inline void TwoCompartmentBolusMicro::compute(
     Concentration resid1 = _inResiduals[0] + (m_D / m_V1);
     Concentration resid2 = _inResiduals[1];
 
-    Value A =
-            ((m_K12 - m_K21 + m_Ke + m_RootK) * resid1) - (2 * m_K21 * resid2); // NOLINT(readability-identifier-naming)
-    Value B = ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid1)
-              + (2 * m_K21 * resid2); // NOLINT(readability-identifier-naming)
-    Value A2 = (-2 * m_K12 * resid1)
-               + ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid2); // NOLINT(readability-identifier-naming)
-    Value BB2 =
-            (2 * m_K12 * resid1) + ((m_K12 - m_K21 + m_Ke + m_RootK) * resid2); // NOLINT(readability-identifier-naming)
+    // NOLINTBEGIN(readability-identifier-naming)
+    Value A = ((m_K12 - m_K21 + m_Ke + m_RootK) * resid1) - (2 * m_K21 * resid2);
+    Value B = ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid1) + (2 * m_K21 * resid2);
+    Value A2 = (-2 * m_K12 * resid1) + ((-m_K12 + m_K21 - m_Ke + m_RootK) * resid2);
+    Value BB2 = (2 * m_K12 * resid1) + ((m_K12 - m_K21 + m_Ke + m_RootK) * resid2);
+    // NOLINTEND(readability-identifier-naming)
 
     // Calculate concentrations for comp1 and comp2
     _concentrations1 =

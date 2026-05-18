@@ -193,9 +193,9 @@ Duration XMLImporter::extractDuration(Common::XmlNodeIterator _rootIterator)
 
     std::vector<int> values;
 
-    static const std::regex durationRegex("(([0-9]{1,}:)([0-9]{1,2}:)([0-9]{1,2}))");
+    static const std::regex DURATION_REGEX("(([0-9]{1,}:)([0-9]{1,2}:)([0-9]{1,2}))");
 
-    if (regex_match(s, durationRegex)) {
+    if (regex_match(s, DURATION_REGEX)) {
         std::string delimiter = ":";
 
         size_t pos = 0;

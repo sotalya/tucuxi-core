@@ -331,7 +331,7 @@ ComputingStatus ComputingAdjustments::computeCandidate(
         std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& _pkModel,
         std::vector<AnalyteGroupId>& _allGroupIds,
         std::map<AnalyteGroupId, Etas> _etas,
-        std::vector<DosageAdjustment>& allAdjustments,
+        std::vector<DosageAdjustment>& _allAdjustments,
         DateTime& _calculationStartTime,
         bool& _isValidCandidate,
         std::vector<ConcentrationPredictionPtr>& _analytesPredictions,
@@ -633,8 +633,7 @@ ComputingStatus ComputingAdjustments::compute(
                 _traits, _request, *resp, pkModel, allGroupIds, etas, targetSeries, calculationStartTime);
     }
 
-    if (_traits->getAdjustmentWithCurrentDosageOption() 
-        == AdjustmentWithCurrentDosageOption::DontAdjustIfCurrentInRange
+    if (_traits->getAdjustmentWithCurrentDosageOption() == AdjustmentWithCurrentDosageOption::DontAdjustIfCurrentInRange
         && resp->isCurrentInRange()) {
         std::vector<DosageAdjustment> currentAsAdjustment;
         currentAsAdjustment.push_back(resp->getCurrentDosageWithScore());

@@ -345,7 +345,7 @@ struct Frprmn : Dlinemethod<T>
             double den = std::max(fp, 1.0);
 
             for (size_t j = 0; j < n; j++) {
-                double temp = std::abs(xi[j]) * std::max(std::abs(p[j]), Value(1.0)) / den;
+                double temp = std::abs(xi[j]) * std::max(std::abs(p[j]), Value{1.0}) / den;
                 if (temp > test) {
                     test = temp;
                 }

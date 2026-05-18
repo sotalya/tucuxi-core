@@ -302,11 +302,11 @@ public:
     /// \param _value Dose's value.
     /// \param _doseUnit Dose's unit.
     SingleDoseAtTime(
-            DateTime const& _dateTime,
-            FormulationAndRoute const& _formulationAndRoute,
-            Duration const& _infusionTime,
-            DoseValue const& _doseValue,
-            TucuUnit const& _doseUnit)
+            const DateTime& _dateTime,
+            const FormulationAndRoute& _formulationAndRoute,
+            const Duration& _infusionTime,
+            const DoseValue& _doseValue,
+            const TucuUnit& _doseUnit)
         : m_dateTime{_dateTime}, m_formulationAndRoute{_formulationAndRoute}, m_infusionTime{_infusionTime},
           m_doseValue{_doseValue}, m_doseUnit{_doseUnit}
     {
@@ -564,6 +564,7 @@ public:
     {
         std::vector<FormulationAndRoute> resultList;
 
+        resultList.reserve(m_dosageList.size());
         for (auto const& dose : m_dosageList) {
             resultList.emplace_back(dose->getFormulationAndRoute());
         }
@@ -801,7 +802,7 @@ public:
     /// \param _formulationAndRoute Doses' formulation and route.
     /// \param _doseUnit Doses' unit.
     SimpleDoseList(
-            SimpleDose const& _dosage, FormulationAndRoute const& _formulationAndRoute, TucuUnit const& _doseUnit)
+            const SimpleDose& _dosage, const FormulationAndRoute& _formulationAndRoute, const TucuUnit& _doseUnit)
         : m_formulationAndRoute{_formulationAndRoute}, m_doseUnit{_doseUnit}
     {
         m_dosageList.emplace_back(std::make_unique<SimpleDose>(_dosage));
@@ -1907,9 +1908,9 @@ public:
         }
 
         // Check if we are at steady state.
-        DosageSteadyState const* steady_state_ptr =
+        DosageSteadyState const* steadyStatePtr =
                 dynamic_cast<DosageSteadyState const*>(m_history[getNumberOfTimeRanges() - 1]->getDosage());
-        if (steady_state_ptr != nullptr) {
+        if (steadyStatePtr != nullptr) {
             return false;
         }
 
