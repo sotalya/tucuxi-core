@@ -45,7 +45,7 @@ using namespace date;
 std::unique_ptr<DrugTreatment> buildDrugTreatmentForAdjustments(
         const FormulationAndRoute& _route,
         const DateTime startDateTime,
-        DoseValue _doseValue = DoseValue(200),
+        DoseValue _doseValue = DoseValue{200},
         TucuUnit _unit = TucuUnit("mg"),
         int interval = 6,
         unsigned int nbrDoses = 16)
@@ -67,7 +67,7 @@ std::unique_ptr<DrugTreatment> buildDrugTreatmentForAdjustments(
 std::unique_ptr<DrugTreatment> buildDrugTreatmentForAdjustmentsDaily(
         const FormulationAndRoute& _route,
         const DateTime startDateTime,
-        DoseValue _doseValue = DoseValue(200),
+        DoseValue _doseValue = DoseValue{200},
         TucuUnit _unit = TucuUnit("mg"),
         int interval = 6,
         unsigned int nbrDoses = 16)

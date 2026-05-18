@@ -183,12 +183,12 @@ public:
 
             auto validDoses = std::make_unique<ValidDoses>(TucuUnit("mg"), std::make_unique<PopulationValue>(400));
             std::unique_ptr<ValidValuesFixed> specificDoses = std::make_unique<ValidValuesFixed>();
-            specificDoses->addValue(DoseValue(100));
-            specificDoses->addValue(DoseValue(200));
-            specificDoses->addValue(DoseValue(300));
-            specificDoses->addValue(DoseValue(400));
-            specificDoses->addValue(DoseValue(600));
-            specificDoses->addValue(DoseValue(800));
+            specificDoses->addValue(DoseValue{100});
+            specificDoses->addValue(DoseValue{200});
+            specificDoses->addValue(DoseValue{300});
+            specificDoses->addValue(DoseValue{400});
+            specificDoses->addValue(DoseValue{600});
+            specificDoses->addValue(DoseValue{800});
 
             validDoses->addValues(std::move(specificDoses));
 
@@ -233,12 +233,12 @@ public:
             std::unique_ptr<ValidDoses> validDoses =
                     std::make_unique<ValidDoses>(TucuUnit("mg"), std::make_unique<PopulationValue>(400));
             std::unique_ptr<ValidValuesFixed> specificDoses = std::make_unique<ValidValuesFixed>();
-            specificDoses->addValue(DoseValue(100));
-            specificDoses->addValue(DoseValue(200));
-            specificDoses->addValue(DoseValue(300));
-            specificDoses->addValue(DoseValue(400));
-            specificDoses->addValue(DoseValue(600));
-            specificDoses->addValue(DoseValue(800));
+            specificDoses->addValue(DoseValue{100});
+            specificDoses->addValue(DoseValue{200});
+            specificDoses->addValue(DoseValue{300});
+            specificDoses->addValue(DoseValue{400});
+            specificDoses->addValue(DoseValue{600});
+            specificDoses->addValue(DoseValue{800});
 
             validDoses->addValues(std::move(specificDoses));
 
@@ -293,12 +293,12 @@ public:
             std::unique_ptr<ValidDoses> validDoses =
                     std::make_unique<ValidDoses>(TucuUnit("mg"), std::make_unique<PopulationValue>(400));
             std::unique_ptr<ValidValuesFixed> specificDoses = std::make_unique<ValidValuesFixed>();
-            specificDoses->addValue(DoseValue(100));
-            specificDoses->addValue(DoseValue(200));
-            specificDoses->addValue(DoseValue(300));
-            specificDoses->addValue(DoseValue(400));
-            specificDoses->addValue(DoseValue(600));
-            specificDoses->addValue(DoseValue(800));
+            specificDoses->addValue(DoseValue{100});
+            specificDoses->addValue(DoseValue{200});
+            specificDoses->addValue(DoseValue{300});
+            specificDoses->addValue(DoseValue{400});
+            specificDoses->addValue(DoseValue{600});
+            specificDoses->addValue(DoseValue{800});
 
             validDoses->addValues(std::move(specificDoses));
 

@@ -133,7 +133,7 @@ TEST(Core_TestComputingComponentAdjusements, DontAdjustIfCurrentInRange_WhenInRa
 
     // 100mg q6h: linear model, half of 200mg q6h (~2032)
     // gives ~1016 ug/l, within target [750, 1500]
-    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue(100), TucuUnit("mg"), 6, 16);
+    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue{100}, TucuUnit("mg"), 6, 16);
 
     RequestResponseId requestResponseId = "1";
     Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
@@ -800,7 +800,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllD
     //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
     // Add a treatment intake every ten days in June
     // 200mg via a intravascular at 08h30, starting the 01.06
-    LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), route, Duration(), Duration(std::chrono::hours(24)));
+    LastingDose periodicDose(DoseValue{200.0}, TucuUnit("mg"), route, Duration(), Duration(std::chrono::hours(24)));
     DosageRepeat repeatedDose(periodicDose, 300);
     auto jun2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJun2018, repeatedDose);
 
@@ -935,7 +935,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibAllFormulationAndRouteBestD
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
             Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue(20000));
+    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue{20000});
 
 
     // Construct the adjustment traits object

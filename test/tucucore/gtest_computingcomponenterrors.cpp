@@ -153,7 +153,7 @@ static std::unique_ptr<DrugTreatment> buildImatinibTreatment()
     const DateTime startTime(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)), Duration(std::chrono::hours(8)));
     auto drugTreatment = std::make_unique<DrugTreatment>();
-    LastingDose dose(DoseValue(200.0), TucuUnit("mg"), route, Duration(), Duration(std::chrono::hours(24)));
+    LastingDose dose(DoseValue{200.0}, TucuUnit("mg"), route, Duration(), Duration(std::chrono::hours(24)));
     DosageRepeat repeatedDose(dose, 4);
     auto timeRange = std::make_unique<DosageTimeRange>(startTime, repeatedDose);
     drugTreatment->getModifiableDosageHistory().addTimeRange(*timeRange);
@@ -274,7 +274,7 @@ TEST(Core_TestComputingComponentErrors, IncompatibleTreatmentModel)
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
             Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
     auto drugTreatment = std::make_unique<DrugTreatment>();
-    LastingDose dose(DoseValue(200.0), TucuUnit("mg"), incompatibleRoute, Duration(), Duration(std::chrono::hours(24)));
+    LastingDose dose(DoseValue{200.0}, TucuUnit("mg"), incompatibleRoute, Duration(), Duration(std::chrono::hours(24)));
     DosageRepeat repeatedDose(dose, 4);
     auto dosageTimeRange = std::make_unique<DosageTimeRange>(startTime, repeatedDose);
     drugTreatment->getModifiableDosageHistory().addTimeRange(*dosageTimeRange);

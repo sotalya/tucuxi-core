@@ -441,7 +441,7 @@ TEST(Core_TestDosage, DosageTimeRange)
     emptyDate.reset();
     const FormulationAndRoute routePerfusion(Formulation::Test, AdministrationRoute::IntravenousDrip);
     LastingDose fakeDose(
-            DoseValue(200.0),
+            DoseValue{200.0},
             TucuUnit("mg"),
             routePerfusion,
             Duration(std::chrono::minutes(20)),

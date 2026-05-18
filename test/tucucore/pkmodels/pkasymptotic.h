@@ -195,7 +195,7 @@ protected:
         bOK &= checkValidValue(m_R, "The convergence rate");
 
         // We have to set the time to peak to allow a correct calculation of times
-        static_cast<PertinentTimesCalculatorAsymptotic*>(this->m_pertinentTimesCalculator.get())->setTPeak(m_TPeak);
+        dynamic_cast<PertinentTimesCalculatorAsymptotic*>(this->m_pertinentTimesCalculator.get())->setTPeak(m_TPeak);
         return bOK;
     }
 

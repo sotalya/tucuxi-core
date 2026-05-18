@@ -58,7 +58,7 @@ protected:
 
         // Traitement hebdomadaire en juin (mardi 8h30, 200 mg, 20 min perfusion)
         WeeklyDose juneWeeklyDose(
-                DoseValue(200.0),
+                DoseValue{200.0},
                 TucuUnit("mg"),
                 getInfusionFormulationAndRoute(),
                 Duration(std::chrono::minutes(20)),
@@ -69,7 +69,7 @@ protected:
 
 
         WeeklyDose julyWeeklyDose(
-                DoseValue(400.0),
+                DoseValue{400.0},
                 TucuUnit("mg"),
                 getInfusionFormulationAndRoute(),
                 Duration(std::chrono::minutes(10)),

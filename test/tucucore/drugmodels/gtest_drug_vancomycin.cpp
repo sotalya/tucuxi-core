@@ -43,7 +43,7 @@ using namespace date;
 
 using namespace Tucuxi::Core;
 
-static const std::string vancomycin_tdd = R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+static const std::string VANCOMYCIN_TDD = R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?>
                                     <?xml-stylesheet href="drugsmodel.xsl" type="text/xsl" ?>
                                     <model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.6" xsi:noNamespaceSchemaLocation="drug2.xsd">
                                         <!-- Drug history -->
@@ -751,7 +751,7 @@ TEST(Core_TestDrugVancomycin, Vancomycin)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, vancomycin_tdd);
+    auto importStatus = importer.importFromString(drugModel, VANCOMYCIN_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
     //        importer.importFromFile(drugModel, "/home/ythoma/docs/ezechiel/git/dev/src/drugs2/ch.tucuxi.vancomycin.tdd");
 
@@ -848,7 +848,7 @@ TEST(Core_TestDrugVancomycin, VancomycinInfusionTime0)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, vancomycin_tdd);
+    auto importStatus = importer.importFromString(drugModel, VANCOMYCIN_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
     //        importer.importFromFile(drugModel, "/home/ythoma/docs/ezechiel/git/dev/src/drugs2/ch.tucuxi.vancomycin.tdd");
 

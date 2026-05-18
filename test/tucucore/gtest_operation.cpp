@@ -42,7 +42,7 @@ class DiffOperation : public HardcodedOperation
 public:
     /// \brief Implementation of the inherited clone operation.
     /// \return Pointer to a new object of subclass' type.
-    virtual std::unique_ptr<Operation> clone() const
+    std::unique_ptr<Operation> clone() const override
     {
         return std::make_unique<DiffOperation>(*this);
     }
@@ -55,7 +55,7 @@ protected:
     /// \return true if the operation could be performed (that is, inputs can be successfully retrieved), false
     ///         otherwise.
     /// \pre check(_inputs) == true
-    virtual bool compute(const OperationInputList& _inputs, double& _result) const
+    bool compute(const OperationInputList& _inputs, double& _result) const override
     {
         double a;
         int b;
@@ -71,7 +71,7 @@ protected:
 
 
     /// \brief Fill the vector of required inputs.
-    virtual void fillRequiredInputs()
+    void fillRequiredInputs() override
     {
         OperationInput a("a", InputType::DOUBLE);
         OperationInput b("b", InputType::INTEGER);

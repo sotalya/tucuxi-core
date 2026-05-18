@@ -776,14 +776,14 @@ static std::unique_ptr<DrugTreatment> buildDrugTreatmentMix(
     //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
     // Add a treatment intake every ten days in June
     // 200mg via a intravascular at 08h30, starting the 01.06
-    LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), _route1, Duration(), Duration(std::chrono::hours(6)));
+    LastingDose periodicDose(DoseValue{200.0}, TucuUnit("mg"), _route1, Duration(), Duration(std::chrono::hours(6)));
     DosageRepeat repeatedDose(periodicDose, 16);
     auto sept2018 = std::make_unique<DosageTimeRange>(startSept2018, repeatedDose);
 
 
     drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
 
-    LastingDose periodicDose2(DoseValue(200.0), TucuUnit("mg"), _route2, Duration(), Duration(std::chrono::hours(6)));
+    LastingDose periodicDose2(DoseValue{200.0}, TucuUnit("mg"), _route2, Duration(), Duration(std::chrono::hours(6)));
     DosageRepeat repeatedDose2(periodicDose2, 16);
     auto second =
             std::make_unique<DosageTimeRange>(startSept2018 + Duration(std::chrono::hours(6 * 16)), repeatedDose2);
@@ -812,21 +812,21 @@ static std::unique_ptr<DrugTreatment> buildDrugTreatmentMix3(
     //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
     // Add a treatment intake every ten days in June
     // 200mg via a intravascular at 08h30, starting the 01.06
-    LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), _route1, Duration(), Duration(std::chrono::hours(24)));
+    LastingDose periodicDose(DoseValue{200.0}, TucuUnit("mg"), _route1, Duration(), Duration(std::chrono::hours(24)));
     DosageRepeat repeatedDose(periodicDose, 2);
     auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
 
     drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
 
-    LastingDose periodicDose2(DoseValue(200.0), TucuUnit("mg"), _route2, Duration(), Duration(std::chrono::hours(24)));
+    LastingDose periodicDose2(DoseValue{200.0}, TucuUnit("mg"), _route2, Duration(), Duration(std::chrono::hours(24)));
     DosageRepeat repeatedDose2(periodicDose2, 1);
     auto second = std::make_unique<Tucuxi::Core::DosageTimeRange>(
             startSept2018 + Duration(std::chrono::hours(2 * 24)), repeatedDose2);
 
     drugTreatment->getModifiableDosageHistory().addTimeRange(*second);
 
-    LastingDose periodicDose3(DoseValue(200.0), TucuUnit("mg"), _route3, Duration(), Duration(std::chrono::hours(24)));
+    LastingDose periodicDose3(DoseValue{200.0}, TucuUnit("mg"), _route3, Duration(), Duration(std::chrono::hours(24)));
     DosageRepeat repeatedDose3(periodicDose3, 1);
     auto third = std::make_unique<Tucuxi::Core::DosageTimeRange>(
             startSept2018 + Duration(std::chrono::hours(3 * 24)), repeatedDose3);

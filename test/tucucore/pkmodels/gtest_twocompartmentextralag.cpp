@@ -35,8 +35,6 @@
 using namespace Tucuxi::Core;
 using namespace std::chrono_literals;
 
-const unsigned int maxResidualSize = 3;
-
 void testFirstDose(
         const Tucuxi::Core::ParameterSetEvent& _parameters,
         double _dose,
@@ -45,6 +43,8 @@ void testFirstDose(
         std::chrono::seconds _infusionTime,
         CycleSize _nbPoints)
 {
+    const unsigned int maxResidualSize = 3;
+
     Tucuxi::Core::ComputingStatus res;
     TwoCompartmentExtraLagMacro macroCalculator;
 

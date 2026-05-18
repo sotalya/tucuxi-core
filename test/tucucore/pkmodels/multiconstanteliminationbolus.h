@@ -168,11 +168,9 @@ protected:
 
 
         // Return concentrations of first compartment
-        _concentrations[firstCompartment].assign(
-                concentrations1.data(), concentrations1.data() + concentrations1.size());
+        _concentrations[firstCompartment].assign(concentrations1.cbegin(), concentrations1.cend());
         // Return concentrations of the second compartment
-        _concentrations[secondCompartment].assign(
-                concentrations2.data(), concentrations2.data() + concentrations2.size());
+        _concentrations[secondCompartment].assign(concentrations2.cbegin(), concentrations2.cend());
         TMP_UNUSED_PARAMETER(_isAll);
 
         return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.")

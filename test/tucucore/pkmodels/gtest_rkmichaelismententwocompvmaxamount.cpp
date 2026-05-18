@@ -969,7 +969,7 @@ static std::unique_ptr<DrugTreatment> buildMixedDrugTreatment(const std::vector<
         //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
         // Add a treatment intake every ten days in June
         // 200mg via a intravascular at 08h30, starting the 01.06
-        LastingDose periodicDose(DoseValue(500.0), TucuUnit("mg"), route, Duration(), Duration(std::chrono::hours(6)));
+        LastingDose periodicDose(DoseValue{500.0}, TucuUnit("mg"), route, Duration(), Duration(std::chrono::hours(6)));
         DosageRepeat repeatedDose(periodicDose, 4);
         auto dosageTimeRange = Tucuxi::Core::DosageTimeRange(currentDate, repeatedDose);
 
@@ -1003,7 +1003,7 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountBolus)
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
             Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue(500));
+    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue{500});
 
     {
 
@@ -1098,7 +1098,7 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountInfu)
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
             Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue(500));
+    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue{500});
 
     {
 
@@ -1193,7 +1193,7 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountExtra)
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
             Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue(500));
+    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue{500});
 
     {
 

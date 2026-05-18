@@ -579,7 +579,7 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes)
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
             Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue(200), TucuUnit("mg"), 6, 16);
+    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue{200}, TucuUnit("mg"), 6, 16);
 
     const FormulationAndRoute route2(Formulation::OralSolution, AdministrationRoute::Oral);
 

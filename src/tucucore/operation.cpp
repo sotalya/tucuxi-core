@@ -334,6 +334,7 @@ std::unique_ptr<Operation> JSOperation::clone() const
 
 
 // Add the variable according to the given data type
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define ADD_VAR_CASE(CASE_VAR, DATA_TYPE)                             \
     case CASE_VAR: {                                                  \
         DATA_TYPE value;                                              \

@@ -93,7 +93,7 @@ public:
         expectedIntakes.push_back(IntakeEvent(
                 DATE_TIME_NO_VAR(2015, 06, 11, 11, 46, 23),
                 Duration(),
-                DoseValue(200.0),
+                DoseValue{200.0},
                 TucuUnit("mg"),
                 Duration(std::chrono::hours(7 * 24)),
                 FormulationAndRoute(Formulation::Test, AdministrationRoute::IntravenousDrip),
