@@ -352,7 +352,7 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
 
     // if (m_Tinf == 1.0) {
-    //     std::cout << "O" << std::endl;
+    //     std::cout << "O" << '\n';
     // }
 
     // Only used for debugging purpose
@@ -429,7 +429,7 @@ bool TwoCompartmentInfusionMacroRatios::checkInputs(
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
 
     // if (m_Tinf == 1.0) {
-    //     std::cout << "O" << std::endl;
+    //     std::cout << "O" << '\n';
     // }
 
     // Only used for debugging purpose

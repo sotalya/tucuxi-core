@@ -62,7 +62,7 @@ void DateTime::disableChecks()
 /// This function is just useful to place a breakpoint during debugging
 void errorUndefinedDateTime(const DateTime& /*_date*/)
 {
-    std::cerr << "Error : Using an undefined DateTime" << std::endl;
+    std::cerr << "Error : Using an undefined DateTime" << '\n';
 }
 
 #define SETDEFINED(value)    \

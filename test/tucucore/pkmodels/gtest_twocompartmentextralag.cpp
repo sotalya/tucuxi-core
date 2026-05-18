@@ -95,9 +95,9 @@ void testFirstDose(
             concentrations, times, intakeEvent, _parameters, firstInResidual, isAll, outMicroMultiResiduals, true);
 
 #if GTEST_VERBOSE
-    std::cout << "[Micro Class Calculation]" << std::endl;
+    std::cout << "[Micro Class Calculation]" << '\n';
     for (unsigned int i = 0; i < residualSize; i++) {
-        std::cout << "Multiple Out residual[" << i << "] = " << outMicroMultiResiduals[i] << std::endl;
+        std::cout << "Multiple Out residual[" << i << "] = " << outMicroMultiResiduals[i] << '\n';
     }
 #endif
 

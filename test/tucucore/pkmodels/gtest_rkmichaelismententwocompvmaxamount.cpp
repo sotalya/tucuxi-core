@@ -1035,9 +1035,9 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountBolus)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "voriconazole");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -1068,9 +1068,9 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountBolus)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "voriconazole");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }
@@ -1130,9 +1130,9 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountInfu)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "voriconazole");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -1163,9 +1163,9 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountInfu)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "voriconazole");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }
@@ -1225,9 +1225,9 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountExtra)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "voriconazole");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -1258,9 +1258,9 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountExtra)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "voriconazole");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }
@@ -1344,9 +1344,9 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix)
         ASSERT_DOUBLE_EQ(resp->getData().at(4).m_parameters[0].m_value, 2.0);
         ASSERT_DOUBLE_EQ(resp->getData().at(8).m_parameters[0].m_value, 3.0);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -1412,9 +1412,9 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix)
         ASSERT_DOUBLE_EQ(resp->getData().at(4).m_parameters[0].m_value, 2.0);
         ASSERT_DOUBLE_EQ(resp->getData().at(8).m_parameters[0].m_value, 3.0);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }

@@ -60,7 +60,7 @@ static std::vector<Value> percentileRanks = {5, 10, 25, 50, 75, 90, 95};
 TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiveMoieties)
 {
 #if GTEST_VERBOSE
-    std::cout << __FUNCTION__ << std::endl;
+    std::cout << __FUNCTION__ << '\n';
 #endif
 
 
@@ -89,7 +89,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -235,7 +235,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
     {
         //second test, using samples and intakes
 #if GTEST_VERBOSE
-        std::cout << __FUNCTION__ << std::endl;
+        std::cout << __FUNCTION__ << '\n';
 #endif
 
         std::vector<SampleSeries> samples;
@@ -348,7 +348,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
         return;
     }
 
@@ -551,7 +551,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_Adjustments)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
         return;
     }
 

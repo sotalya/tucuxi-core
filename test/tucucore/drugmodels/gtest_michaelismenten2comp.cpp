@@ -890,9 +890,9 @@ TEST(Core_TestMichaelisMenten2comp, Bolus)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -923,9 +923,9 @@ TEST(Core_TestMichaelisMenten2comp, Bolus)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }
@@ -984,9 +984,9 @@ TEST(Core_TestMichaelisMenten2comp, Infusion)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -1017,9 +1017,9 @@ TEST(Core_TestMichaelisMenten2comp, Infusion)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }
@@ -1075,9 +1075,9 @@ TEST(Core_TestMichaelisMenten2comp, Extra)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -1108,9 +1108,9 @@ TEST(Core_TestMichaelisMenten2comp, Extra)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }
@@ -1167,9 +1167,9 @@ TEST(Core_TestMichaelisMenten2comp, ExtraLag)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -1200,9 +1200,9 @@ TEST(Core_TestMichaelisMenten2comp, ExtraLag)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }
@@ -1259,9 +1259,9 @@ TEST(Core_TestMichaelisMenten2comp, Mix)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -1292,9 +1292,9 @@ TEST(Core_TestMichaelisMenten2comp, Mix)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }
@@ -1353,9 +1353,9 @@ TEST(Core_TestMichaelisMenten2comp, MixPercentiles)
         //            ASSERT_EQ(resp->getIds().size(), static_cast<size_t>(1));
         //            ASSERT_EQ(resp->getIds()[0], "analyte");
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }

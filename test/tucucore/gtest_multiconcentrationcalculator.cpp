@@ -88,7 +88,7 @@ static void testMultiConcentrationCalculator(
                 infusionTime,
                 _nbPoints);
 
-        // std::cout << typeid(calculator).name() << std::endl;
+        // std::cout << typeid(calculator).name() << '\n';
 
         {
             Tucuxi::Core::Residuals inResiduals(residualSize);
@@ -125,7 +125,7 @@ static void testMultiConcentrationCalculator(
         //int analytes = getNbAnalytes();
         for (size_t i = 0; i < _nbPoints; i++) {
             MultiCompConcentrations concentration2 = predictionPtr->getValues()[0];
-            // std::cout << i <<  " :: " << concentrations[0][i] << " : " << concentration2[i] << std::endl;
+            // std::cout << i <<  " :: " << concentrations[0][i] << " : " << concentration2[i] << '\n';
             // compare concentrations of compartment 1
             ASSERT_DOUBLE_EQ(concentrations[0][i], concentration2[0][i]);
         }
@@ -179,7 +179,7 @@ static void testMultiConcentrationCalculator(
 
 #if GTEST_VERBOSE
             for (int testPoint = 0; testPoint < (_nbPoints - 1) * nbCycles + 1; testPoint++) {
-                std::cout << "concentration[" << testPoint << "]: " << concentrations[0][testPoint] << std::endl;
+                std::cout << "concentration[" << testPoint << "]: " << concentrations[0][testPoint] << '\n';
             }
 #endif
 
@@ -221,7 +221,7 @@ static void testMultiConcentrationCalculator(
                 for (int testNbPoint = 0; testNbPoint < _nbPoints; testNbPoint++) {
                     std::cout << "concentration[" << testCycle << "]"
                               << "[" << testNbPoint << "]"
-                              << ": " << predictionPtr->getValues()[testCycle][testNbPoint] << std::endl;
+                              << ": " << predictionPtr->getValues()[testCycle][testNbPoint] << '\n';
                 }
             }
 #endif
@@ -236,9 +236,9 @@ static void testMultiConcentrationCalculator(
                     double sumConcentration = 0.0;
                     for (size_t c = 0; c < cycle + 1; c++) {
                         sumConcentration += concentrations[0][c * (_nbPoints - 1) + i];
-                        // std::cout << c <<  " : " << sumConcentration << " : " << concentrations[0][c * (_nbPoints - 1) + i] << std::endl;
+                        // std::cout << c <<  " : " << sumConcentration << " : " << concentrations[0][c * (_nbPoints - 1) + i] << '\n';
                     }
-                    // std::cout << cycle <<  " : " << i << " :: " << predictionPtr->getTimes()[cycle][i] << " . " << sumConcentration << " : " << concentration2[i] << std::endl;
+                    // std::cout << cycle <<  " : " << i << " :: " << predictionPtr->getTimes()[cycle][i] << " . " << sumConcentration << " : " << concentration2[i] << '\n';
                     ASSERT_PRED4(
                             double_eq_rel_abs,
                             sumConcentration,
@@ -297,7 +297,7 @@ static void testMultiConcentrationCalculator(
 
 #if GTEST_VERBOSE
             for (int i = 0; i < nbPoints; i++) {
-                std::cout << i << ":" << predictionPtr->getValues()[0][i] << std::endl;
+                std::cout << i << ":" << predictionPtr->getValues()[0][i] << '\n';
             }
 #endif
         }

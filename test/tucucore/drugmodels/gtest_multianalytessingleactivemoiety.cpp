@@ -82,7 +82,7 @@ TEST(Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoiety)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -228,7 +228,7 @@ TEST(Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoietyCo
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -420,7 +420,7 @@ TEST(Core_TestMultiAnalytesSingleActiveMoiety, Adjustments)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used

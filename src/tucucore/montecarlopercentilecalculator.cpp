@@ -819,8 +819,8 @@ ComputingStatus AprioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
 
     //clock_t t3 = clock();
 
-    //std::cout << "Time : " << t2 - t1 << ", " << t3 - t1 << std::endl;
-    //std::cout << "Time : " << ((double)t2 - t1)/((double)CLOCKS_PER_SEC) << ", " << ((double)t3 - t1)/((double)CLOCKS_PER_SEC) << std::endl;
+    //std::cout << "Time : " << t2 - t1 << ", " << t3 - t1 << '\n';
+    //std::cout << "Time : " << ((double)t2 - t1)/((double)CLOCKS_PER_SEC) << ", " << ((double)t3 - t1)/((double)CLOCKS_PER_SEC) << '\n';
 
     _etas = std::vector<Etas>(nbPatients);
 
@@ -1014,8 +1014,8 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
 
     //clock_t t2 = clock();
 
-    //std::cout << "Time : " << t2 - t1 << std::endl;
-    //std::cout << "Time : " << ((double)t2 - t1)/((double)CLOCKS_PER_SEC) << std::endl;
+    //std::cout << "Time : " << t2 - t1 << '\n';
+    //std::cout << "Time : " << ((double)t2 - t1)/((double)CLOCKS_PER_SEC) << '\n';
 
 
     bool abort = false;
@@ -1186,7 +1186,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
 
     // auto endTime = std::chrono::system_clock::now();
     // std::chrono::duration<double> diff = endTime - startTime;
-    // std::cout << "Extract Etas and Epsilon: " << diff.count() << std::endl;
+    // std::cout << "Extract Etas and Epsilon: " << diff.count() << '\n';
 
     return ComputingStatus::Ok;
 }

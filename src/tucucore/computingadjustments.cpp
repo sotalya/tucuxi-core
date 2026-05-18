@@ -193,11 +193,11 @@ std::vector<DosageAdjustment> ComputingAdjustments::sortAndFilterCandidates(
     std::sort(_candidates.rbegin(), _candidates.rend(), compareCandidates);
 
 #if 0
-    std::cout << "Sorted..." << std::endl;
+    std::cout << "Sorted..." << '\n';
     // For debugging purpose only
     for (const auto & candidates : dosageCandidates)
     {
-        std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
+        std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << '\n';
     }
 #endif // 0
 
@@ -797,14 +797,14 @@ ComputingStatus ComputingAdjustments::compute(
     {
         for (const auto & targetEvaluationResult : evaluationResult) {
             std::cout << "Evaluation. Score : " << targetEvaluationResult.getScore() <<
-                         " . Value : " << targetEvaluationResult.getValue() << std::endl;
+                         " . Value : " << targetEvaluationResult.getValue() << '\n';
         }
     }
 
     // For debugging purpose only
     for (const auto & candidates : dosageCandidates)
     {
-        std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
+        std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << '\n';
     }
 #endif // 0
 
@@ -1924,7 +1924,7 @@ ComputingStatus ComputingAdjustments::evaluateCurrentDosageHistory(
     {
         for (const auto & targetEvaluationResult : evaluationResult) {
             std::cout << "Evaluation. Score : " << targetEvaluationResult.getScore() <<
-                         " . Value : " << targetEvaluationResult.getValue() << std::endl;
+                         " . Value : " << targetEvaluationResult.getValue() << '\n';
         }
     }
 #endif // 0

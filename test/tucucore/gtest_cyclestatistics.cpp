@@ -71,19 +71,19 @@ TEST(Core_TestCycleStatistics, CycleStatistics)
     // AUC
     cycleStatistics.getStatistics(CycleStatisticType::AUC, stats);
     stats[0][static_cast<int>(CycleStatisticType::AUC)].getValue(dateTime, value, 0);
-    //std::cout << "[AUC] dataTime: " << dateTime << ", value: " << value << std::endl;
+    //std::cout << "[AUC] dataTime: " << dateTime << ", value: " << value << '\n';
     ASSERT_PRED4(double_eq_rel_abs, 56.75, value, 0.01, 0.01);
 
     // Mean
     cycleStatistics.getStatistics(CycleStatisticType::Mean, stats);
     stats[0][static_cast<int>(CycleStatisticType::Mean)].getValue(dateTime, value, 0);
-    //std::cout << "[Mean] dateTime: " << dateTime << ", value: " << value << std::endl;
+    //std::cout << "[Mean] dateTime: " << dateTime << ", value: " << value << '\n';
     ASSERT_PRED4(double_eq_rel_abs, 12.61, value, 0.01, 0.01);
 
     // Peak
     cycleStatistics.getStatistics(CycleStatisticType::Peak, stats);
     stats[0][static_cast<int>(CycleStatisticType::Peak)].getValue(dateTime, value, 0);
-    //std::cout << "[Peak] dateTime: " << dateTime << ", value: " << value << std::endl;
+    //std::cout << "[Peak] dateTime: " << dateTime << ", value: " << value << '\n';
     ASSERT_DOUBLE_EQ(value, 20.5);
 
     // Max
@@ -91,7 +91,7 @@ TEST(Core_TestCycleStatistics, CycleStatistics)
     cycleStatistics.getStatistics(CycleStatisticType::Maximum, stats);
     for (nbValue = 0; nbValue < stats[0][static_cast<int>(CycleStatisticType::Maximum)].getNbValue(); nbValue++) {
         stats[0][static_cast<int>(CycleStatisticType::Maximum)].getValue(dateTime, value, nbValue);
-        //std::cout << "[Maximum] dateTime: " << dateTime << ", value: " << value << std::endl;
+        //std::cout << "[Maximum] dateTime: " << dateTime << ", value: " << value << '\n';
     }
     ASSERT_EQ(nbValue, static_cast<size_t>(2));
 
@@ -100,7 +100,7 @@ TEST(Core_TestCycleStatistics, CycleStatistics)
     for (size_t nbValue = 0; nbValue < stats[0][static_cast<int>(CycleStatisticType::Minimum)].getNbValue();
          nbValue++) {
         stats[0][static_cast<int>(CycleStatisticType::Minimum)].getValue(dateTime, value, nbValue);
-        //std::cout << "[Minimum] dateTime: " << dateTime << ", value: " << value << std::endl;
+        //std::cout << "[Minimum] dateTime: " << dateTime << ", value: " << value << '\n';
     }
     ASSERT_EQ(nbValue, static_cast<size_t>(2));
 }
