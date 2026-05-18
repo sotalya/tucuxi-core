@@ -166,7 +166,7 @@ public:
             specificDoses->addValue(DoseValue(1900));
             specificDoses->addValue(DoseValue(2000));
             specificDoses->addValue(DoseValue(2100));
-            specificDoses->addValue(DoseValue(2200));
+            specificDoses->addValue(DoseValue{2200});
             specificDoses->addValue(DoseValue(2300));
             specificDoses->addValue(DoseValue(2400));
             specificDoses->addValue(DoseValue(2500));

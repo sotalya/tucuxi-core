@@ -38,6 +38,7 @@ class DrugModelBuilder
 {
 public:
     virtual std::unique_ptr<Tucuxi::Core::DrugModel> buildDrugModel() = 0;
+    virtual ~DrugModelBuilder() = default; //LCOV_EXCL_LINE
 };
 
 #endif // DRUGMODELBUILDER_H

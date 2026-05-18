@@ -44,41 +44,43 @@ using namespace Tucuxi::Core;
 using namespace std::chrono_literals;
 using namespace date;
 
-static std::unique_ptr<CacheComputing> m_cache;
-
-static void compute(
-        DrugTreatment* _drugTreatment,
-        DrugModel* _drugModel,
-        DateTime _start,
-        DateTime _end,
-        double _nbPointsPerHour,
-        bool _isHitExpected)
+class CacheComputingTest : public ::testing::Test
 {
+protected:
+    std::unique_ptr<CacheComputing> m_cache;
 
-    RequestResponseId requestResponseId = "1";
-    PercentileRanks percentileRanks({5, 25, 50, 75, 95});
-    ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-    std::unique_ptr<ComputingTraitPercentiles> traits = std::make_unique<ComputingTraitPercentiles>(
-            requestResponseId, _start, _end, percentileRanks, _nbPointsPerHour, computingOption);
+    void compute(
+            DrugTreatment* _drugTreatment,
+            DrugModel* _drugModel,
+            DateTime _start,
+            DateTime _end,
+            double _nbPointsPerHour,
+            bool _isHitExpected)
+    {
+        RequestResponseId requestResponseId = "1";
+        PercentileRanks percentileRanks({5, 25, 50, 75, 95});
+        ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+        std::unique_ptr<ComputingTraitPercentiles> traits = std::make_unique<ComputingTraitPercentiles>(
+                requestResponseId, _start, _end, percentileRanks, _nbPointsPerHour, computingOption);
 
-    ComputingRequest request(requestResponseId, *_drugModel, *_drugTreatment, std::move(traits));
+        ComputingRequest request(requestResponseId, *_drugModel, *_drugTreatment, std::move(traits));
 
+        std::unique_ptr<ComputingResponse> response2 = std::make_unique<ComputingResponse>(requestResponseId);
 
-    std::unique_ptr<ComputingResponse> response2 = std::make_unique<ComputingResponse>(requestResponseId);
+        ComputingStatus result;
+        result = m_cache->compute(request, response2);
 
-    ComputingStatus result;
-    result = m_cache->compute(request, response2);
+        ASSERT_EQ(result, ComputingStatus::Ok);
 
-    ASSERT_EQ(result, ComputingStatus::Ok);
+        ASSERT_EQ(m_cache->isLastCallaHit(), _isHitExpected);
 
-    ASSERT_EQ(m_cache->isLastCallaHit(), _isHitExpected);
+        const ComputedData* responseData = response2->getData();
+        ASSERT_TRUE(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
+        const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
 
-    const ComputedData* responseData = response2->getData();
-    ASSERT_TRUE(dynamic_cast<const PercentilesData*>(responseData) != nullptr);
-    const PercentilesData* resp = dynamic_cast<const PercentilesData*>(responseData);
-
-    TMP_UNUSED_PARAMETER(resp);
-}
+        TMP_UNUSED_PARAMETER(resp);
+    }
+};
 
 ///
 /// \brief Tests the cache with single intervals
@@ -86,7 +88,7 @@ static void compute(
 /// This test verifies that if the cache contains an interval surrounding the asked interval, then
 /// it will return the surrounding interval
 ///
-TEST(Core_TestCacheComputing, ImatinibSplitInterval)
+TEST_F(CacheComputingTest, ImatinibSplitInterval)
 {
     // We reduce the number of patients to speed up the tests
     MonteCarloPercentileCalculatorBase::setStaticNumberPatients(10);
@@ -107,7 +109,7 @@ TEST(Core_TestCacheComputing, ImatinibSplitInterval)
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
             Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue(200.0), TucuUnit("mg"), 6, 30);
+    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue{200.0}, TucuUnit("mg"), 6, 30);
 
 
     RequestResponseId requestResponseId = "1";
@@ -133,12 +135,9 @@ TEST(Core_TestCacheComputing, ImatinibSplitInterval)
 
     // The points already exist, so they should be found in the cache
     compute(drugTreatment.get(), drugModel.get(), start3, end3, nbPointsPerHour, true);
-
-    // Delete all dynamically allocated objects
-    m_cache.reset();
 }
 
-TEST(Core_TestCacheComputing, ImatinibFullInterval)
+TEST_F(CacheComputingTest, ImatinibFullInterval)
 {
     // We reduce the number of patients to speed up the tests
     MonteCarloPercentileCalculatorBase::setStaticNumberPatients(10);
@@ -192,7 +191,4 @@ TEST(Core_TestCacheComputing, ImatinibFullInterval)
 
     compute(drugTreatment.get(), drugModel.get(), start2, end2, nbPointsPerHour * 1.1, false);
     compute(drugTreatment.get(), drugModel.get(), start2, end2, nbPointsPerHour * 1.1, true);
-
-    // Delete all dynamically allocated objects
-    m_cache.reset();
 }

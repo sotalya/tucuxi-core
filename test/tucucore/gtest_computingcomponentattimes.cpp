@@ -41,7 +41,7 @@ using namespace Tucuxi::Core;
 using namespace std::chrono_literals;
 using namespace date;
 
-static const std::string test_mm_1comp_extra_tdd = R"(<?xml version="1.0" encoding="UTF-8"?>
+static const std::string TEST_MM_1COMP_EXTRA_TDD = R"(<?xml version="1.0" encoding="UTF-8"?>
 <model version='0.6' xsi:noNamespaceSchemaLocation='drugfile.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
     <history>
         <revisions>
@@ -431,7 +431,7 @@ static std::unique_ptr<DrugModel> buildDrugModel()
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_1comp_extra_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_1COMP_EXTRA_TDD);
     EXPECT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     EXPECT_TRUE(drugModel != nullptr);
@@ -439,11 +439,11 @@ static std::unique_ptr<DrugModel> buildDrugModel()
 }
 
 static std::unique_ptr<DrugTreatment> buildSimpleDrugTreatment(
-        FormulationAndRoute _route, DateTime& _startTime, Duration _interval, Duration _treatmentDuration)
+        const FormulationAndRoute& _route, DateTime& _startTime, Duration _interval, Duration _treatmentDuration)
 {
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
-    LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), _route, Duration(), _interval);
+    LastingDose periodicDose(DoseValue{200.0}, TucuUnit("mg"), _route, Duration(), _interval);
     DosageRepeat repeatedDose(periodicDose, static_cast<unsigned int>(_treatmentDuration / _interval));
     auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(_startTime, repeatedDose);
 

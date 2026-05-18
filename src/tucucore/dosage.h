@@ -25,6 +25,7 @@
 
 #include <iostream>
 #include <memory>
+#include <utility>
 #include <vector>
 
 #include "tucucommon/datetime.h"
@@ -303,12 +304,12 @@ public:
     /// \param _doseUnit Dose's unit.
     SingleDoseAtTime(
             const DateTime& _dateTime,
-            const FormulationAndRoute& _formulationAndRoute,
+            FormulationAndRoute _formulationAndRoute,
             const Duration& _infusionTime,
             const DoseValue& _doseValue,
-            const TucuUnit& _doseUnit)
-        : m_dateTime{_dateTime}, m_formulationAndRoute{_formulationAndRoute}, m_infusionTime{_infusionTime},
-          m_doseValue{_doseValue}, m_doseUnit{_doseUnit}
+            TucuUnit _doseUnit)
+        : m_dateTime{_dateTime}, m_formulationAndRoute{std::move(_formulationAndRoute)}, m_infusionTime{_infusionTime},
+          m_doseValue{_doseValue}, m_doseUnit{std::move(_doseUnit)}
     {
         if (_doseValue < 0) {
             throw std::invalid_argument("Dose value = " + std::to_string(_doseValue) + " is invalid (must be >= 0).");
@@ -801,9 +802,8 @@ public:
     ///        one is available).
     /// \param _formulationAndRoute Doses' formulation and route.
     /// \param _doseUnit Doses' unit.
-    SimpleDoseList(
-            const SimpleDose& _dosage, const FormulationAndRoute& _formulationAndRoute, const TucuUnit& _doseUnit)
-        : m_formulationAndRoute{_formulationAndRoute}, m_doseUnit{_doseUnit}
+    SimpleDoseList(const SimpleDose& _dosage, FormulationAndRoute _formulationAndRoute, TucuUnit _doseUnit)
+        : m_formulationAndRoute{std::move(_formulationAndRoute)}, m_doseUnit{std::move(_doseUnit)}
     {
         m_dosageList.emplace_back(std::make_unique<SimpleDose>(_dosage));
     }

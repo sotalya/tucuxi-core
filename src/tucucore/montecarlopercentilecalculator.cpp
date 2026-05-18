@@ -79,14 +79,12 @@ const EigenMatrix& AposterioriMatrixCache::getAvecs(int _nbSamples, int _nbEtas)
 
 
 
-size_t MonteCarloPercentileCalculatorBase::sm_nbPatients = 0; // NOLINT(readability-identifier-naming)
-
 MonteCarloPercentileCalculatorBase::MonteCarloPercentileCalculatorBase()
 {
     // Here, hardcoded number of simulated patients
     // Aziz says this is an approximate number to assure a reasonable result for most cases
-    if (sm_nbPatients != 0) {
-        setNumberPatients(sm_nbPatients);
+    if (globalNbPatients() != 0) {
+        setNumberPatients(globalNbPatients());
     }
     else {
         setNumberPatients(10000);
@@ -862,9 +860,8 @@ void MonteCarloPercentileCalculatorBase::calculateSubomega(
 
     EigenMatrix hessian(etas.size(), etas.size());
 
-    // EigenVector e = etas;
-
     // Get the hessian
+    // NOLINTNEXTLINE(google-readability-casting, cppcoreguidelines-pro-type-cstyle-cast)
     deriv2(_logLikelihood, ( EigenVector& )etas, ( EigenMatrix& )hessian); // NOLINT(google-readability-casting)
 
     // Negative inverse
@@ -1161,6 +1158,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
 
     // 6. Draw samples from discrete distribution using weights
     std::normal_distribution<> normalDistribution(0, 1.0);
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     std::discrete_distribution<std::size_t> discreteDistribution(&weight(0), &weight(0) + weight.size());
 
     // TODO : These epsilons could be stored in a cache to save time

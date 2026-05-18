@@ -111,18 +111,20 @@ inline void ThreeCompartmentBolusMicro::compute(
     Concentration resid2 = _inResiduals[1];
     Concentration resid3 = _inResiduals[2];
 
+    // NOLINTBEGIN(readability-identifier-naming)
     Value A = (1 / m_V1) * (m_K21 - m_Alpha) * (m_K31 - m_Alpha) / (m_Alpha - m_Beta)
-              / (m_Alpha - m_Gamma); // NOLINT(readability-identifier-naming)
+              / (m_Alpha - m_Gamma);
     Value B = (1 / m_V1) * (m_K21 - m_Beta) * (m_K31 - m_Beta) / (m_Beta - m_Alpha)
-              / (m_Beta - m_Gamma); // NOLINT(readability-identifier-naming)
+              / (m_Beta - m_Gamma);
     Value C = (1 / m_V1) * (m_K21 - m_Gamma) * (m_K31 - m_Gamma) / (m_Gamma - m_Beta)
-              / (m_Gamma - m_Alpha);          // NOLINT(readability-identifier-naming)
-    Value A2 = m_K12 / (m_K21 - m_Alpha) * A; // NOLINT(readability-identifier-naming)
-    Value B2 = m_K12 / (m_K21 - m_Beta) * B;  // NOLINT(readability-identifier-naming)
-    Value C2 = m_K12 / (m_K21 - m_Gamma) * C; // NOLINT(readability-identifier-naming)
-    Value A3 = m_K13 / (m_K31 - m_Alpha) * A; // NOLINT(readability-identifier-naming)
-    Value B3 = m_K13 / (m_K31 - m_Beta) * B;  // NOLINT(readability-identifier-naming)
-    Value C3 = m_K13 / (m_K31 - m_Gamma) * C; // NOLINT(readability-identifier-naming)
+              / (m_Gamma - m_Alpha);
+    Value A2 = m_K12 / (m_K21 - m_Alpha) * A;
+    Value B2 = m_K12 / (m_K21 - m_Beta) * B;
+    Value C2 = m_K12 / (m_K21 - m_Gamma) * C;
+    Value A3 = m_K13 / (m_K31 - m_Alpha) * A;
+    Value B3 = m_K13 / (m_K31 - m_Beta) * B;
+    Value C3 = m_K13 / (m_K31 - m_Gamma) * C;
+    // NOLINTEND(readability-identifier-naming)
 
     // Calculate concentrations for comp1, comp2 and comp3
     _concentrations1 = resid1
