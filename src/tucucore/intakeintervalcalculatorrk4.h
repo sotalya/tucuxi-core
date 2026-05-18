@@ -185,12 +185,11 @@ protected:
         }
 
         // Return concentrations of first compartment
-        _concentrations[0].assign(concentrations[0].data(), concentrations[0].data() + concentrations[0].size());
+        _concentrations[0].assign(concentrations[0].cbegin(), concentrations[0].cend());
         // Return concentrations of other compartments if required
         if (_isAll) {
             for (size_t i = 1; i < ResidualSize; i++) {
-                _concentrations[i].assign(
-                        concentrations[i].data(), concentrations[i].data() + concentrations[i].size());
+                _concentrations[i].assign(concentrations[i].cbegin(), concentrations[i].cend());
             }
         }
 

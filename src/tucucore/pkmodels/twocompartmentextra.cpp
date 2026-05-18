@@ -108,7 +108,7 @@ bool TwoCompartmentExtraMicro::computeConcentrations(
     _outResiduals[thirdCompartment] = concentrations3[m_nbPoints - 1];
 
     // Return concentrations of comp1, comp2 and comp3
-    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
+    _concentrations[firstCompartment].assign(concentrations1.cbegin(), concentrations1.cend());
     // TODO: add calcuation concentrations of second and third compartment and condtions
     TMP_UNUSED_PARAMETER(_isAll);
 
