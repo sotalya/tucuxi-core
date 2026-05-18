@@ -55,7 +55,7 @@ static void testSteadyState(
         const Tucuxi::Core::ParameterSetEvent& _microParameters,
         const Tucuxi::Core::ParameterSetEvent& _macroParameters,
         double _dose,
-        Tucuxi::Core::AbsorptionModel _route,
+        Tucuxi::Core::AbsorptionModel /*_route*/,
         std::chrono::hours _interval,
         std::chrono::seconds _infusionTime,
         size_t _nbPoints)
@@ -86,7 +86,6 @@ static void testSteadyState(
             TucuUnit("mg"),
             interval,
             Tucuxi::Core::FormulationAndRoute(),
-            //_route,
             infusionTime,
             _nbPoints);
 
@@ -149,7 +148,7 @@ static void testSingleVsMultiple(
         const Tucuxi::Core::ParameterSetEvent& _microParameters,
         const Tucuxi::Core::ParameterSetEvent& _macroParameters,
         double _dose,
-        Tucuxi::Core::AbsorptionModel _route,
+        Tucuxi::Core::AbsorptionModel /*_route*/,
         std::chrono::hours _interval,
         std::chrono::seconds _infusionTime,
         CycleSize _nbPoints)

@@ -144,7 +144,7 @@ TEST(Core_TestIntakeExtractor, SimpleDoseList)
     ASSERT_NO_THROW(sdl.addDosage(sd4));
 
     std::vector<SimpleDose> doses = sdl.getDosageList(dateBefore);
-    std::vector<Duration> time_steps = sdl.getTimeStepList(dateBefore);
+    std::vector<Duration> timeSteps = sdl.getTimeStepList(dateBefore);
 
     DosageTimeRange dtr(dateBefore, sdl);
     // Create the dosage history.
@@ -159,10 +159,10 @@ TEST(Core_TestIntakeExtractor, SimpleDoseList)
                 Duration(),
                 doses.at(i).getDoseValue(),
                 sdl.getDoseUnit(),
-                time_steps.at(i),
+                timeSteps.at(i),
                 sdl.getFormulationAndRoute(),
                 doses.at(i).getInfusionTime(),
-                static_cast<int>(time_steps.at(i).toHours() * NB_POINTS_PER_HOUR) + 1));
+                static_cast<int>(timeSteps.at(i).toHours() * NB_POINTS_PER_HOUR) + 1));
     }
 
     IntakeSeries iSeries;
