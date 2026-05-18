@@ -31,7 +31,6 @@
 #include "tucucore/computingservice/computingresponse.h"
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
-#include "tucucore/montecarlopercentilecalculator.h"
 
 #include "computingcomponentfactory.h"
 #include "drugmodels/buildconstantelimination.h"
@@ -44,7 +43,7 @@ using namespace std::chrono_literals;
 using namespace date;
 
 static std::unique_ptr<DrugTreatment> buildSimpleDrugTreatment(
-        FormulationAndRoute _route, DateTime& _startTime, Duration _interval, Duration _treatmentDuration)
+        const FormulationAndRoute& _route, DateTime& _startTime, Duration _interval, Duration _treatmentDuration)
 {
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
@@ -58,7 +57,7 @@ static std::unique_ptr<DrugTreatment> buildSimpleDrugTreatment(
     //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
     // Add a treatment intake every ten days in June
     // 200mg via a intravascular at 08h30, starting the 01.06
-    LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), _route, Duration(), _interval);
+    LastingDose periodicDose(DoseValue{200.0}, TucuUnit("mg"), _route, Duration(), _interval);
     DosageRepeat repeatedDose(periodicDose, static_cast<unsigned int>(_treatmentDuration / _interval));
     auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(_startTime, repeatedDose);
 
@@ -197,7 +196,7 @@ TEST(Core_TestComputingComponentConcentration, ImatinibSteadyState)
     //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
     // Add a treatment intake every ten days in June
     // 200mg via a intravascular at 08h30, starting the 01.06
-    LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), route, Duration(), Duration(std::chrono::hours(24)));
+    LastingDose periodicDose(DoseValue{200.0}, TucuUnit("mg"), route, Duration(), Duration(std::chrono::hours(24)));
     DosageRepeat repeatedDose(periodicDose, 1000);
     auto jun2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJun2018, repeatedDose);
 

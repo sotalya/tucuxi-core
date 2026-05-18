@@ -112,12 +112,9 @@ inline void ThreeCompartmentBolusMicro::compute(
     Concentration resid3 = _inResiduals[2];
 
     // NOLINTBEGIN(readability-identifier-naming)
-    Value A = (1 / m_V1) * (m_K21 - m_Alpha) * (m_K31 - m_Alpha) / (m_Alpha - m_Beta)
-              / (m_Alpha - m_Gamma);
-    Value B = (1 / m_V1) * (m_K21 - m_Beta) * (m_K31 - m_Beta) / (m_Beta - m_Alpha)
-              / (m_Beta - m_Gamma);
-    Value C = (1 / m_V1) * (m_K21 - m_Gamma) * (m_K31 - m_Gamma) / (m_Gamma - m_Beta)
-              / (m_Gamma - m_Alpha);
+    Value A = (1 / m_V1) * (m_K21 - m_Alpha) * (m_K31 - m_Alpha) / (m_Alpha - m_Beta) / (m_Alpha - m_Gamma);
+    Value B = (1 / m_V1) * (m_K21 - m_Beta) * (m_K31 - m_Beta) / (m_Beta - m_Alpha) / (m_Beta - m_Gamma);
+    Value C = (1 / m_V1) * (m_K21 - m_Gamma) * (m_K31 - m_Gamma) / (m_Gamma - m_Beta) / (m_Gamma - m_Alpha);
     Value A2 = m_K12 / (m_K21 - m_Alpha) * A;
     Value B2 = m_K12 / (m_K21 - m_Beta) * B;
     Value C2 = m_K12 / (m_K21 - m_Gamma) * C;

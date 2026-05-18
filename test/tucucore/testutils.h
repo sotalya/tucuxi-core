@@ -25,6 +25,7 @@
 
 #include "tucucommon/timeofday.h"
 
+// NOLINTBEGIN(cppcoreguidelines-avoid-macros)
 /// \brief Create a DateTime temporary variable (without creating an explicit named variable for this).
 /// \param YY Year in 4 digits format.
 /// \param MM Month in 2 digits format.
@@ -286,4 +287,7 @@
         auto tmp = std::make_unique<ParameterDefinition>(#NAME, 0, std::move(op), ParameterVariabilityType::None);   \
         PD_VEC.push_back(std::move(tmp));                                                                            \
     } while (0);
+
+// NOLINTEND(cppcoreguidelines-avoid-macros)
+
 #endif // TESTUTILS_H
