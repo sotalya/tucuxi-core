@@ -338,6 +338,7 @@ ComputingStatus ComputingAdjustments::computeCandidate(
         std::unique_ptr<DosageTimeRange>& _newDosage,
         GroupsIntakeSeries& _intakeSeriesPerGroup)
 {
+    TMP_UNUSED_PARAMETER(_allAdjustments);
 
     GroupsParameterSetSeries parameterSeries;
 
@@ -631,6 +632,7 @@ ComputingStatus ComputingAdjustments::compute(
         // Compute the current dosage targets attainment
         ComputingStatus status = evaluateCurrentDosageHistory(
                 _traits, _request, *resp, pkModel, allGroupIds, etas, targetSeries, calculationStartTime);
+        TMP_UNUSED_PARAMETER(status);
     }
 
     if (_traits->getAdjustmentWithCurrentDosageOption() == AdjustmentWithCurrentDosageOption::DontAdjustIfCurrentInRange
@@ -1638,23 +1640,11 @@ ComputingStatus ComputingAdjustments::evaluateCurrentDosageHistory(
         std::map<ActiveMoietyId, TargetSeries> _targetSeries,
         DateTime _calculationStartTime)
 {
-    // As an intermediate step for the development of tucuxi-cdss-core, we create a fake evaluation.
-    // It will be removed later on
-    if (false) {
-        bool isValidCandidate = true;
-        DosageAdjustment currentDosageAdjustment;
-        TargetEvaluationResult result = TargetEvaluationResult(TargetType::Residual, 0.5, 200, TucuUnit("ug/l"));
-        currentDosageAdjustment.m_targetsEvaluation.push_back(result);
-        _adjustmentData.setIsCurrentInRange(isValidCandidate);
-        _adjustmentData.setCurrentDosageWithScore(currentDosageAdjustment);
-        return ComputingStatus::Ok;
+    if (_targetSeries.empty()) {
+        return ComputingStatus::TargetExtractionError;
     }
 
     bool isValidCandidate = true;
-
-    if (_targetSeries.empty()) {
-        isValidCandidate = false;
-    }
 
     if (_request.getDrugTreatment().getDosageHistory().isEmpty()) {
         return ComputingStatus::Ok;
