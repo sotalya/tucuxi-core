@@ -67,7 +67,7 @@ class DrugModelChecker;
 /// 3. F
 /// 4. Ka
 ///
-class ParameterDefinitionIterator : public Tucuxi::Common::Iterator<const ParameterDefinition*>
+class ParameterDefinitionIterator final : public Tucuxi::Common::Iterator<const ParameterDefinition*>
 {
 public:
     ParameterDefinitionIterator(
@@ -79,6 +79,8 @@ public:
     {
         build();
     }
+
+    ~ParameterDefinitionIterator() = default; // LCOV_EXCL_LINE
 
     ParameterDefinitionIterator(
             const DrugModel& _model,

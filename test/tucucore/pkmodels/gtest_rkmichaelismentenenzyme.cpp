@@ -43,7 +43,7 @@ using namespace date;
 
 using namespace Tucuxi::Core;
 
-static const std::string test_mm_1comp_enzyme_bolus_tdd = R"(
+static const std::string TEST_MM_1COMP_ENZYME_BOLUS_TDD = R"(
 <?xml version="1.0" encoding="UTF-8"?>
 <model version='0.6' xsi:noNamespaceSchemaLocation='drug2.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
     <history>
@@ -818,7 +818,7 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten2compBolus)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_1comp_enzyme_bolus_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_1COMP_ENZYME_BOLUS_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);
@@ -916,7 +916,7 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtra)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_1comp_enzyme_bolus_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_1COMP_ENZYME_BOLUS_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);
@@ -1011,7 +1011,7 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtraPercentilesAp
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_1comp_enzyme_bolus_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_1COMP_ENZYME_BOLUS_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);

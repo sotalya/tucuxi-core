@@ -45,7 +45,7 @@ using namespace date;
 
 using namespace Tucuxi::Core;
 
-static const std::string test_mm_2comp_vmaxamount_tdd = R"(
+static const std::string TEST_MM_2COMP_VMAXAMOUNT_TDD = R"(
                                                           <?xml version="1.0" encoding="UTF-8"?>
                                                           <model version='0.6' xsi:noNamespaceSchemaLocation='drugfile.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
                                                               <history>
@@ -987,7 +987,7 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountBolus)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_2comp_vmaxamount_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_2COMP_VMAXAMOUNT_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);
@@ -1082,7 +1082,7 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountInfu)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_2comp_vmaxamount_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_2COMP_VMAXAMOUNT_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);
@@ -1177,7 +1177,7 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountExtra)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_2comp_vmaxamount_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_2COMP_VMAXAMOUNT_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);
@@ -1271,7 +1271,7 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_2comp_vmaxamount_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_2COMP_VMAXAMOUNT_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);

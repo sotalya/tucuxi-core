@@ -279,7 +279,7 @@ TEST(Core_TestOperation, JSOperationIfEqual)
 #ifdef __linux__
     std::fflush(stdout);
     int savedStdout = dup(fileno(stdout));
-    int devNull = open("/dev/null", O_WRONLY);
+    int devNull = open("/dev/null", O_WRONLY); // NOLINT(cppcoreguidelines-pro-type-vararg)
     dup2(devNull, fileno(stdout));
     close(devNull);
 #endif // __linux__

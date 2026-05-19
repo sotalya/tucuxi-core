@@ -22,15 +22,15 @@ static const double DEFAULT_PRECISION = 0.00001;
 
 using namespace Tucuxi::Core;
 
-int double_fuzzy_compare(double a, double b, double relative_tolerance, double absolute_tolerance);
+int double_fuzzy_compare(double _a, double _b, double _relativeTolerance, double _absoluteTolerance);
 
-bool double_eq_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance);
+bool double_eq_rel_abs(double _a, double _b, double _relativeTolerance, double absolute_tolerance);
 
-bool double_ge_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance);
+bool double_ge_rel_abs(double _a, double _b, double _relativeTolerance, double _absoluteTolerance);
 
-bool double_le_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance);
+bool double_le_rel_abs(double _a, double _b, double _relativeTolerance, double _absoluteTolerance);
 
-bool double_ne_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance);
+bool double_ne_rel_abs(double _a, double _b, double _relativeTolerance, double _absoluteTolerance);
 
 Tucuxi::Core::FormulationAndRoute getInfusionFormulationAndRoute();
 
@@ -350,7 +350,7 @@ std::unique_ptr<DrugTreatment> buildDrugTreatment(
         const FormulationAndRoute& _route,
         const DateTime& _startDateTime,
         DoseValue _doseValue = DoseValue{200},
-        TucuUnit _unit = TucuUnit("mg"),
+        const TucuUnit& _unit = TucuUnit("mg"),
         int _interval = 6,
         unsigned int _nbrDoses = 16,
         Duration _infusionTime = Duration());

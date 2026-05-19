@@ -38,7 +38,6 @@ using namespace std::chrono_literals;
 void testFirstDose(
         const Tucuxi::Core::ParameterSetEvent& _parameters,
         double _dose,
-        Tucuxi::Core::AbsorptionModel _route,
         std::chrono::hours _interval,
         std::chrono::seconds _infusionTime,
         CycleSize _nbPoints)
@@ -129,5 +128,5 @@ TEST(Core_TestTwoCompartmentExtraLag, twoCompExtraLagSingleDose)
             "Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
-    testFirstDose(macroParameters, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
+    testFirstDose(macroParameters, 400.0, 12h, 0s, CYCLE_SIZE);
 }

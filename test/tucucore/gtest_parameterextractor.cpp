@@ -76,7 +76,7 @@ static void printCovariateSeries(const std::map<DateTime, std::vector<std::pair<
     std::cerr << "-----------------------------------------\n";
 }
 
-class MyParameterDefinitionIterator : public Tucuxi::Common::Iterator<const ParameterDefinition*>
+class MyParameterDefinitionIterator final : public Tucuxi::Common::Iterator<const ParameterDefinition*>
 {
 public:
     typedef ParameterDefinitions::const_iterator iteratorType;
@@ -85,6 +85,9 @@ public:
     {
         reset();
     }
+
+    ~MyParameterDefinitionIterator() = default;
+
     Tucuxi::Common::Iterator<const ParameterDefinition*>& next() override
     {
         m_it++;
@@ -145,24 +148,19 @@ public:
             return false;
         }
         const Parameters& parameters = it->m_parameters;
-        if (std::find_if(
-                    parameters.begin(),
-                    parameters.end(),
-                    [_id, _value](const Parameter& _p) {
-                        return _p.m_definition.getId() == _id && _p.m_value == _value;
-                    })
-            == parameters.end()) {
-            return false;
-        }
-        else {
-            return true;
-        }
+        return (std::find_if(
+                        parameters.begin(),
+                        parameters.end(),
+                        [_id, _value](const Parameter& _p) {
+                            return _p.m_definition.getId() == _id && _p.m_value == _value;
+                        })
+                != parameters.end());
     }
 
     static std::map<DateTime, std::vector<std::pair<std::string, Value>>> get_m_timedCValues(
-            ParametersExtractor* extractor)
+            ParametersExtractor* _extractor)
     {
-        return extractor->m_timedCValues;
+        return _extractor->m_timedCValues;
     }
 };
 

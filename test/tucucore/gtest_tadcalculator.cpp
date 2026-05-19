@@ -106,12 +106,12 @@ protected:
     }
 
     /// Helper to build a DateTime from components.
-    static DateTime makeDateTime(int year, int month, int day, int hour, int minute, int second)
+    static DateTime makeDateTime(int _year, int _month, int _day, int _hour, int _minute, int _second)
     {
         return DateTime(
-                date::year_month_day(date::year(year), date::month(month), date::day(day)),
+                date::year_month_day(date::year(_year), date::month(_month), date::day(_day)),
                 TimeOfDay(Duration(
-                        std::chrono::hours(hour), std::chrono::minutes(minute), std::chrono::seconds(second))));
+                        std::chrono::hours(_hour), std::chrono::minutes(_minute), std::chrono::seconds(_second))));
     }
 };
 

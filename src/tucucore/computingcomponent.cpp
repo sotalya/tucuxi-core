@@ -252,6 +252,7 @@ void ComputingComponent::endRecord(
 void ComputingComponent::setCompartmentInfo(
         const ComputingTraitStandard* _traits, const ComputingRequest& _request, ConcentrationData& _data)
 {
+    TMP_UNUSED_PARAMETER(_traits);
     if (_request.getDrugModel().isSingleAnalyte()) {
         AnalyteId analyteId = _request.getDrugModel().getAnalyteSets()[0]->getAnalytes()[0]->getAnalyteId();
         _data.addCompartmentInfo({CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte, analyteId.toString()});
@@ -273,6 +274,7 @@ void ComputingComponent::setCompartmentInfo(
 void ComputingComponent::setCompartmentInfo(
         const ComputingTraitStandard* _traits, const ComputingRequest& _request, PercentilesData& _data)
 {
+    TMP_UNUSED_PARAMETER(_traits);
     if (_request.getDrugModel().isSingleAnalyte()) {
         AnalyteId analyteId = _request.getDrugModel().getAnalyteSets()[0]->getAnalytes()[0]->getAnalyteId();
         _data.addCompartmentInfo({CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte, analyteId.toString()});
@@ -294,6 +296,7 @@ void ComputingComponent::setCompartmentInfo(
 void ComputingComponent::setCompartmentInfo(
         const ComputingTraitSinglePoints* _traits, const ComputingRequest& _request, SinglePointsData& _data)
 {
+    TMP_UNUSED_PARAMETER(_traits);
     if (_request.getDrugModel().isSingleAnalyte()) {
         AnalyteId analyteId = _request.getDrugModel().getAnalyteSets()[0]->getAnalytes()[0]->getAnalyteId();
         _data.addCompartmentInfo({CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte, analyteId.toString()});
@@ -473,7 +476,9 @@ ComputingStatus ComputingComponent::compute(
         ComputingGof gofComputer;
         std::optional<GofData> gofData;
         gofComputer.compute(_request, *resp, gofData);
-        resp->setGof(gofData.value());
+        if (gofData.has_value()) {
+            resp->setGof(gofData.value());
+        }
     }
 
     _response->addResponse(std::move(resp));
@@ -1177,7 +1182,9 @@ ComputingStatus ComputingComponent::compute(
                 ComputingGof gofComputer;
                 std::optional<GofData> gofData;
                 gofComputer.compute(_request, *resp, gofData);
-                resp->setGof(gofData.value());
+                if (gofData.has_value()) {
+                    resp->setGof(gofData.value());
+                }
             }
 
             _response->addResponse(std::move(resp));

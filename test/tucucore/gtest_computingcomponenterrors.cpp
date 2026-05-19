@@ -35,6 +35,7 @@
 #include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/pkmodel.h"
 
+#include "computingcomponentfactory.h"
 #include "drugmodels/buildimatinib.h"
 #include "mocklogger.h"
 
@@ -213,12 +214,11 @@ TEST(Core_TestComputingComponentErrors, NullPkModelCollection)
 {
     Tucuxi::Common::ScopedMockLogger mockLogger;
 
-    auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
-    IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
+    auto component = ComputingComponentFactory::createComputingService();
     ASSERT_NE(component, nullptr);
 
     // Set the models collection to nullptr so the second guard triggers
-    rawComponent->setPkModelCollection(nullptr);
+    component->setPkModelCollection(nullptr);
 
     BuildImatinib builder;
     auto drugModel = builder.buildDrugModel();
@@ -226,10 +226,8 @@ TEST(Core_TestComputingComponentErrors, NullPkModelCollection)
 
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
-    ASSERT_EQ(computeWithStandardRequest(component, *drugModel, *drugTreatment), ComputingStatus::NoPkModels);
+    ASSERT_EQ(computeWithStandardRequest(component.get(), *drugModel, *drugTreatment), ComputingStatus::NoPkModels);
     EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "No Pk Model loaded"));
-
-    delete component;
 }
 
 /// \brief Test that compute() returns NoPkModels when the PkModel collection is empty
@@ -238,12 +236,11 @@ TEST(Core_TestComputingComponentErrors, EmptyPkModelCollection)
 {
     Tucuxi::Common::ScopedMockLogger mockLogger;
 
-    auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
-    IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
+    auto component = ComputingComponentFactory::createComputingService();
     ASSERT_NE(component, nullptr);
 
     // Replace the default populated collection with an empty one
-    rawComponent->setPkModelCollection(std::make_shared<PkModelCollection>());
+    component->setPkModelCollection(std::make_shared<PkModelCollection>());
 
     BuildImatinib builder;
     auto drugModel = builder.buildDrugModel();
@@ -251,17 +248,15 @@ TEST(Core_TestComputingComponentErrors, EmptyPkModelCollection)
 
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
-    ASSERT_EQ(computeWithStandardRequest(component, *drugModel, *drugTreatment), ComputingStatus::NoPkModels);
+    ASSERT_EQ(computeWithStandardRequest(component.get(), *drugModel, *drugTreatment), ComputingStatus::NoPkModels);
     EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "No Pk Model loaded"));
-
-    delete component;
 }
 
 /// \brief Test that compute() returns IncompatibleTreatmentModel when the drug treatment uses
 /// a formulation/route not supported by the drug model.
 TEST(Core_TestComputingComponentErrors, IncompatibleTreatmentModel)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -280,17 +275,15 @@ TEST(Core_TestComputingComponentErrors, IncompatibleTreatmentModel)
     drugTreatment->getModifiableDosageHistory().addTimeRange(*dosageTimeRange);
 
     ASSERT_EQ(
-            computeWithStandardRequest(component, *drugModel, *drugTreatment),
+            computeWithStandardRequest(component.get(), *drugModel, *drugTreatment),
             ComputingStatus::IncompatibleTreatmentModel);
-
-    delete component;
 }
 
 /// \brief Test that compute() returns ComputingComponentExceptionError when a trait throws,
 /// covering the TUCU_CATCH(...) block in ComputingComponent::compute().
 TEST(Core_TestComputingComponentErrors, ExceptionInTrait)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -310,8 +303,6 @@ TEST(Core_TestComputingComponentErrors, ExceptionInTrait)
     ComputingStatus result = component->compute(request, response);
 
     ASSERT_EQ(result, ComputingStatus::ComputingComponentExceptionError);
-
-    delete component;
 }
 
 /// \brief Test that compute(TraitConcentration) returns NoComputingTraits when
@@ -320,8 +311,7 @@ TEST(Core_TestComputingComponentErrors, NullTraitsConcentration)
 {
     Tucuxi::Common::ScopedMockLogger mockLogger;
 
-    auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
-    IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
+    auto component = ComputingComponentFactory::createComputingService();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -340,12 +330,11 @@ TEST(Core_TestComputingComponentErrors, NullTraitsConcentration)
     std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
     ASSERT_EQ(
-            ComputingComponentTestHelper::computeNullConcentrationTraits(rawComponent, request, response),
+            ComputingComponentTestHelper::computeNullConcentrationTraits(
+                    dynamic_cast<ComputingComponent*>(component.get()), request, response),
             ComputingStatus::NoComputingTraits);
     EXPECT_TRUE(
             mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
-
-    delete component;
 }
 
 /// \brief Test that computePercentilesSimple() returns NoComputingTraits when
@@ -354,8 +343,7 @@ TEST(Core_TestComputingComponentErrors, NullTraitsPercentilesSimple)
 {
     Tucuxi::Common::ScopedMockLogger mockLogger;
 
-    auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
-    IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
+    auto component = ComputingComponentFactory::createComputingService();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -373,12 +361,11 @@ TEST(Core_TestComputingComponentErrors, NullTraitsPercentilesSimple)
     std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
     ASSERT_EQ(
-            ComputingComponentTestHelper::computeNullPercentilesSimpleTraits(rawComponent, request, response),
+            ComputingComponentTestHelper::computeNullPercentilesSimpleTraits(
+                    dynamic_cast<ComputingComponent*>(component.get()), request, response),
             ComputingStatus::NoComputingTraits);
     EXPECT_TRUE(
             mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
-
-    delete component;
 }
 
 /// \brief Test that compute(TraitAdjustment) returns NoComputingTraits when
@@ -387,8 +374,7 @@ TEST(Core_TestComputingComponentErrors, NullTraitsAdjustment)
 {
     Tucuxi::Common::ScopedMockLogger mockLogger;
 
-    auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
-    IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
+    auto component = ComputingComponentFactory::createComputingService();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -406,12 +392,11 @@ TEST(Core_TestComputingComponentErrors, NullTraitsAdjustment)
     std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
     ASSERT_EQ(
-            ComputingComponentTestHelper::computeNullAdjustmentTraits(rawComponent, request, response),
+            ComputingComponentTestHelper::computeNullAdjustmentTraits(
+                    dynamic_cast<ComputingComponent*>(component.get()), request, response),
             ComputingStatus::NoComputingTraits);
     EXPECT_TRUE(
             mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
-
-    delete component;
 }
 
 /// \brief Test that compute(TraitSinglePoints) returns NoComputingTraits when
@@ -420,8 +405,7 @@ TEST(Core_TestComputingComponentErrors, NullTraitsSinglePoints)
 {
     Tucuxi::Common::ScopedMockLogger mockLogger;
 
-    auto* rawComponent = dynamic_cast<ComputingComponent*>(ComputingComponent::createComponent());
-    IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
+    auto component = ComputingComponentFactory::createComputingService();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -439,19 +423,18 @@ TEST(Core_TestComputingComponentErrors, NullTraitsSinglePoints)
     std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
     ASSERT_EQ(
-            ComputingComponentTestHelper::computeNullSinglePointsTraits(rawComponent, request, response),
+            ComputingComponentTestHelper::computeNullSinglePointsTraits(
+                    dynamic_cast<ComputingComponent*>(component.get()), request, response),
             ComputingStatus::NoComputingTraits);
     EXPECT_TRUE(
             mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
-
-    delete component;
 }
 
 /// \brief Test that compute() returns OutOfBoundsPercentileRank when a percentile rank
 /// exceeds PERCENTILE_RANK_MAX (100), covering the bounds check in compute(TraitPercentiles).
 TEST(Core_TestComputingComponentErrors, OutOfBoundsPercentileRank)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -472,15 +455,13 @@ TEST(Core_TestComputingComponentErrors, OutOfBoundsPercentileRank)
     std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
     ASSERT_EQ(component->compute(request, response), ComputingStatus::OutOfBoundsPercentileRank);
-
-    delete component;
 }
 
 /// \brief Test that compute() returns Ok with an empty response when the
 /// ComputingTraitSinglePoints has no requested times, covering the early-return branch.
 TEST(Core_TestComputingComponentErrors, EmptySinglePointsTimes)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -498,14 +479,12 @@ TEST(Core_TestComputingComponentErrors, EmptySinglePointsTimes)
     std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
     ASSERT_EQ(component->compute(request, response), ComputingStatus::Ok);
-
-    delete component;
 }
 
 /// \brief Test concentration with RetrieveStatistics, covering the statistics branch in endRecord().
 TEST(Core_TestComputingComponentErrors, ConcentrationRetrieveStatistics)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -527,14 +506,12 @@ TEST(Core_TestComputingComponentErrors, ConcentrationRetrieveStatistics)
     std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
     ASSERT_EQ(component->compute(request, response), ComputingStatus::Ok);
-
-    delete component;
 }
 
 /// \brief Test concentration with RetrieveParameters, covering the parameters branch in recordCycle().
 TEST(Core_TestComputingComponentErrors, ConcentrationRetrieveParameters)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -557,14 +534,12 @@ TEST(Core_TestComputingComponentErrors, ConcentrationRetrieveParameters)
     std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
     ASSERT_EQ(component->compute(request, response), ComputingStatus::Ok);
-
-    delete component;
 }
 
 /// \brief Test concentration with RetrieveCovariates, covering the covariates branch in recordCycle().
 TEST(Core_TestComputingComponentErrors, ConcentrationRetrieveCovariates)
 {
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -588,6 +563,4 @@ TEST(Core_TestComputingComponentErrors, ConcentrationRetrieveCovariates)
     std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
     ASSERT_EQ(component->compute(request, response), ComputingStatus::Ok);
-
-    delete component;
 }

@@ -291,7 +291,7 @@ template<typename T>
 struct Frprmn : Dlinemethod<T>
 {
     //int iter;
-    double fret;
+    double fret{}; // Not sure it should be a member variable
     using Dlinemethod<T>::func;
     using Dlinemethod<T>::linmin;
     using Dlinemethod<T>::p;

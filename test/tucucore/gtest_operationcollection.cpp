@@ -31,6 +31,7 @@ using namespace Tucuxi::Core;
 
 /// \brief Get an operation from a collection and check its type.
 /// \param _TYPE Type of the operation to get.
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define TEST_GET_OPERATION(_TYPE)                                                     \
     do {                                                                              \
         std::shared_ptr<Operation> operation = collection.getOperationFromId(#_TYPE); \

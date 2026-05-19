@@ -2,6 +2,7 @@
 # test files under this directory. The warning is a false positive caused by the
 # TEST() macro from GoogleTest, which expands to a static global registration
 # variable that clang-tidy cannot distinguish from user-written globals.
+# cppcoreguidelines-avoid-goto generates warning for ASSERT_NO_THROW().
 # All other checks are inherited from the root .clang-tidy configuration.
 InheritParentConfig: true
-Checks: '-cppcoreguidelines-avoid-non-const-global-variables'
+Checks: '-cppcoreguidelines-avoid-non-const-global-variables,-cppcoreguidelines-avoid-goto'

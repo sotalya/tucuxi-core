@@ -99,7 +99,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<MultiComputingComponent*>(component)->setPkModelCollection(collection);
+    dynamic_cast<MultiComputingComponent*>(component)->setPkModelCollection(collection);
 
 
     {
@@ -359,7 +359,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<MultiComputingComponent*>(component)->setPkModelCollection(collection);
+    dynamic_cast<MultiComputingComponent*>(component)->setPkModelCollection(collection);
 
 
     {
@@ -562,7 +562,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_Adjustments)
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<MultiComputingComponent*>(component)->setPkModelCollection(collection);
+    dynamic_cast<MultiComputingComponent*>(component)->setPkModelCollection(collection);
 
 
     {
