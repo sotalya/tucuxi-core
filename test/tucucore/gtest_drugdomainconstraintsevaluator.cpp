@@ -320,8 +320,8 @@ static std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluateUni
 
 static void compatibleTests(ConstraintType _firstConstraintType, ConstraintType _secondConstraintType)
 {
-    const Result RESULT_TYPE = Result::Compatible;
-    const DrugDomainConstraintsEvaluator::Result CONSTRAINTS_RESULT_TYPE =
+    constexpr Result RESULT_TYPE = Result::Compatible;
+    constexpr DrugDomainConstraintsEvaluator::Result CONSTRAINTS_RESULT_TYPE =
             DrugDomainConstraintsEvaluator::Result::Compatible;
 
     uint8_t nbConstraints = 2;
@@ -354,8 +354,8 @@ static void compatibleTests(ConstraintType _firstConstraintType, ConstraintType 
 
 static void computationErrorTests(ConstraintType _firstConstraintType, ConstraintType _secondConstraintType)
 {
-    const Result RESULT_TYPE = Result::ComputationError;
-    const DrugDomainConstraintsEvaluator::Result CONSTRAINTS_RESULT_TYPE =
+    constexpr Result RESULT_TYPE = Result::ComputationError;
+    constexpr DrugDomainConstraintsEvaluator::Result CONSTRAINTS_RESULT_TYPE =
             DrugDomainConstraintsEvaluator::Result::ComputationError;
 
     uint8_t nbConstraints = 2;

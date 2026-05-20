@@ -823,8 +823,7 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten2compBolus)
 
     ASSERT_TRUE(drugModel != nullptr);
 
-
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -904,10 +903,6 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten2compBolus)
         //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
-
-    if (component != nullptr) {
-        delete component;
-    }
 }
 
 TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtra)
@@ -920,7 +915,6 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtra)
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);
-
 
     auto component = ComputingComponentFactory::createComputingService();
 

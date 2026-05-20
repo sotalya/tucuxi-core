@@ -100,12 +100,12 @@ std::unique_ptr<Tucuxi::Core::DrugModel> BuildImatinib::buildDrugModel()
             OperationInputList{
                     OperationInput("V_population", InputType::DOUBLE), OperationInput("sex", InputType::DOUBLE)});
 
-    auto PV = std::make_unique<Tucuxi::Core::ParameterDefinition>(
+    auto pv = std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "V",
             347,
             std::move(opV),
             std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.629));
-    dispositionParameters->addParameter(std::move(PV));
+    dispositionParameters->addParameter(std::move(pv));
     auto opCl = std::make_unique<JSOperation>(
             " \
                                             theta1=CL_population; \
@@ -132,12 +132,12 @@ std::unique_ptr<Tucuxi::Core::DrugModel> BuildImatinib::buildDrugModel()
                     OperationInput("age", InputType::DOUBLE),
                     OperationInput("gist", InputType::BOOL)});
 
-    auto PCL = std::make_unique<Tucuxi::Core::ParameterDefinition>(
+    auto pcl = std::make_unique<Tucuxi::Core::ParameterDefinition>(
             "CL",
             14.3,
             std::move(opCl),
             std::make_unique<ParameterVariability>(Tucuxi::Core::ParameterVariabilityType::Proportional, 0.356));
-    dispositionParameters->addParameter(std::move(PCL));
+    dispositionParameters->addParameter(std::move(pcl));
 
     dispositionParameters->addCorrelation(std::make_unique<Correlation>("CL", "V", 0.798));
     analyteSet->setDispositionParameters(std::move(dispositionParameters));
@@ -159,12 +159,12 @@ std::unique_ptr<Tucuxi::Core::DrugModel> BuildImatinib::buildDrugModel()
         association->setAbsorptionModel(AbsorptionModel::Extravascular);
 
         auto absorptionParameters = std::make_unique<ParameterSetDefinition>();
-        auto PKa = std::make_unique<Tucuxi::Core::ParameterDefinition>(
+        auto pKa = std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None);
-        absorptionParameters->addParameter(std::move(PKa));
-        auto PF = std::make_unique<Tucuxi::Core::ParameterDefinition>(
+        absorptionParameters->addParameter(std::move(pKa));
+        auto pf = std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "F", 1, Tucuxi::Core::ParameterVariabilityType::None);
-        absorptionParameters->addParameter(std::move(PF));
+        absorptionParameters->addParameter(std::move(pf));
 
         association->setAbsorptionParameters(std::move(absorptionParameters));
         DMFormulationAndRoute formulationSpecs(
@@ -204,12 +204,12 @@ std::unique_ptr<Tucuxi::Core::DrugModel> BuildImatinib::buildDrugModel()
 
         auto absorptionParameters = std::make_unique<ParameterSetDefinition>();
 
-        auto PKa = std::make_unique<Tucuxi::Core::ParameterDefinition>(
+        auto pKa = std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None);
-        absorptionParameters->addParameter(std::move(PKa));
-        auto PF = std::make_unique<Tucuxi::Core::ParameterDefinition>(
+        absorptionParameters->addParameter(std::move(pKa));
+        auto pf = std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "F", 1, Tucuxi::Core::ParameterVariabilityType::None);
-        absorptionParameters->addParameter(std::move(PF));
+        absorptionParameters->addParameter(std::move(pf));
 
         association->setAbsorptionParameters(std::move(absorptionParameters));
         DMFormulationAndRoute formulationSpecs(
@@ -265,12 +265,12 @@ std::unique_ptr<Tucuxi::Core::DrugModel> BuildImatinib::buildDrugModel()
 
         auto absorptionParameters = std::make_unique<ParameterSetDefinition>();
 
-        auto PKa = std::make_unique<Tucuxi::Core::ParameterDefinition>(
+        auto pKa = std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None);
-        absorptionParameters->addParameter(std::move(PKa));
-        auto PF = std::make_unique<Tucuxi::Core::ParameterDefinition>(
+        absorptionParameters->addParameter(std::move(pKa));
+        auto pf = std::make_unique<Tucuxi::Core::ParameterDefinition>(
                 "F", 1, Tucuxi::Core::ParameterVariabilityType::None);
-        absorptionParameters->addParameter(std::move(PF));
+        absorptionParameters->addParameter(std::move(pf));
 
         association->setAbsorptionParameters(std::move(absorptionParameters));
         DMFormulationAndRoute formulationSpecs(
