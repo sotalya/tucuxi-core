@@ -82,7 +82,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
     sharedPkModel->addParameterList(AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
 
     std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
-    defaultPopulate(*collection.get());
+    defaultPopulate(*collection);
     //        collection->addPkModel(sharedPkModel);
     DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 

@@ -16,7 +16,7 @@ using namespace Tucuxi::Common;
 
 
 /// Fixture that provides common dosage-building helpers.
-class Core_TestTADCalculator : public testing::Test
+class TADCalculatorTest : public testing::Test
 {
 protected:
     /// Create a simple DosageHistory with a single LastingDose time range.
@@ -116,7 +116,7 @@ protected:
 };
 
 
-TEST_F(Core_TestTADCalculator, CalculateDurations)
+TEST_F(TADCalculatorTest, CalculateDurations)
 {
     IntakeExtractor extractor;
     TimeAfterDoseCalculator tadCalc;
@@ -136,7 +136,7 @@ TEST_F(Core_TestTADCalculator, CalculateDurations)
 }
 
 /// A single sample taken 30 minutes after a dose should yield a 30-minute duration.
-TEST_F(Core_TestTADCalculator, SingleSampleAfterSingleDose)
+TEST_F(TADCalculatorTest, SingleSampleAfterSingleDose)
 {
     // Doses every 12 hours starting at 08:00 on Jan 1
     DateTime start = makeDateTime(2024, 1, 1, 8, 0, 0);
@@ -157,7 +157,7 @@ TEST_F(Core_TestTADCalculator, SingleSampleAfterSingleDose)
 
 
 /// A sample taken exactly at a dose time should yield a zero duration.
-TEST_F(Core_TestTADCalculator, SampleExactlyAtDoseTime)
+TEST_F(TADCalculatorTest, SampleExactlyAtDoseTime)
 {
     DateTime start = makeDateTime(2024, 1, 1, 8, 0, 0);
     DateTime end = makeDateTime(2024, 1, 2, 8, 0, 0);
@@ -177,7 +177,7 @@ TEST_F(Core_TestTADCalculator, SampleExactlyAtDoseTime)
 
 
 /// A sample between two doses should be relative to the most recent preceding dose.
-TEST_F(Core_TestTADCalculator, SampleBetweenTwoDoses)
+TEST_F(TADCalculatorTest, SampleBetweenTwoDoses)
 {
     DateTime start = makeDateTime(2024, 1, 1, 8, 0, 0);
     DateTime end = makeDateTime(2024, 1, 2, 8, 0, 0);
@@ -197,7 +197,7 @@ TEST_F(Core_TestTADCalculator, SampleBetweenTwoDoses)
 
 
 /// Multiple samples should each yield the correct duration from their closest preceding intake.
-TEST_F(Core_TestTADCalculator, MultipleSamples)
+TEST_F(TADCalculatorTest, MultipleSamples)
 {
     // Three time ranges to produce intakes at 08:00, 16:00, and 00:00
     DosageHistory history;
@@ -235,7 +235,7 @@ TEST_F(Core_TestTADCalculator, MultipleSamples)
 
 
 /// Two dosage time ranges: sample in the second range should use the correct intake.
-TEST_F(Core_TestTADCalculator, MultipleTimeRanges)
+TEST_F(TADCalculatorTest, MultipleTimeRanges)
 {
     DosageHistory history;
     Unit unit{"mg"};
@@ -264,7 +264,7 @@ TEST_F(Core_TestTADCalculator, MultipleTimeRanges)
 
 
 /// A sample at the exact boundary of the second dose should yield the interval.
-TEST_F(Core_TestTADCalculator, SampleAtSecondDoseTime2Ranges)
+TEST_F(TADCalculatorTest, SampleAtSecondDoseTime2Ranges)
 {
     // Two time ranges to produce intakes at 08:00 and 20:00
     DosageHistory history;
@@ -292,7 +292,7 @@ TEST_F(Core_TestTADCalculator, SampleAtSecondDoseTime2Ranges)
 }
 
 /// A sample at the exact boundary of the second dose should yield the interval.
-TEST_F(Core_TestTADCalculator, SampleAtSecondDoseTime1Range)
+TEST_F(TADCalculatorTest, SampleAtSecondDoseTime1Range)
 {
     // Two time ranges to produce intakes at 08:00 and 20:00
     DosageHistory history;
@@ -319,7 +319,7 @@ TEST_F(Core_TestTADCalculator, SampleAtSecondDoseTime1Range)
 
 
 /// A sample at the exact boundary of the second dose should yield the interval.
-TEST_F(Core_TestTADCalculator, SampleAtFirstDose)
+TEST_F(TADCalculatorTest, SampleAtFirstDose)
 {
     // Two time ranges to produce intakes at 08:00 and 20:00
     DosageHistory history;
@@ -346,7 +346,7 @@ TEST_F(Core_TestTADCalculator, SampleAtFirstDose)
 
 
 /// A sample taken before all intakes should produce a negative-ish duration (sampleTime - firstIntake).
-TEST_F(Core_TestTADCalculator, SampleBeforeAllIntakes)
+TEST_F(TADCalculatorTest, SampleBeforeAllIntakes)
 {
     // Doses start at 10:00
     DateTime start = makeDateTime(2024, 1, 1, 10, 0, 0);
@@ -369,7 +369,7 @@ TEST_F(Core_TestTADCalculator, SampleBeforeAllIntakes)
 
 
 /// A sample just before the second dose verifies correct "closest preceding" logic.
-TEST_F(Core_TestTADCalculator, SampleJustBeforeSecondDose)
+TEST_F(TADCalculatorTest, SampleJustBeforeSecondDose)
 {
     DateTime start = makeDateTime(2024, 1, 1, 8, 0, 0);
     DateTime end = makeDateTime(2024, 1, 2, 8, 0, 0);

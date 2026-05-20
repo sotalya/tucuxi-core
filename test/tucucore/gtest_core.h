@@ -20,11 +20,9 @@
 
 static const double DEFAULT_PRECISION = 0.00001;
 
-using namespace Tucuxi::Core;
-
 int double_fuzzy_compare(double _a, double _b, double _relativeTolerance, double _absoluteTolerance);
 
-bool double_eq_rel_abs(double _a, double _b, double _relativeTolerance, double absolute_tolerance);
+bool double_eq_rel_abs(double _a, double _b, double _relativeTolerance, double _absoluteTolerance);
 
 bool double_ge_rel_abs(double _a, double _b, double _relativeTolerance, double _absoluteTolerance);
 
@@ -53,13 +51,13 @@ static void testCalculator(
         Tucuxi::Core::AbsorptionModel _route,
         std::chrono::hours _interval,
         std::chrono::seconds _infusionTime,
-        CycleSize _nbPoints)
+        Tucuxi::Core::CycleSize _nbPoints)
 {
     // Compare the result on one interval
     // with ConcentrationCalculator vs directly with the IntakeIntervalCalculator
     {
         Tucuxi::Core::ComputingStatus res;
-        std::shared_ptr<IntakeIntervalCalculator> calculator = std::make_shared<CalculatorClass>();
+        std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator = std::make_shared<CalculatorClass>();
 
         DateTime now = DateTime::now();
         Tucuxi::Common::Duration offsetTime = 0s;
@@ -69,7 +67,7 @@ static void testCalculator(
         unsigned int residualSize = calculator->getResidualSize();
         bool isAll = false;
 
-        MultiCompConcentrations concentrations;
+        Tucuxi::Core::MultiCompConcentrations concentrations;
         concentrations.resize(residualSize);
 
         Tucuxi::Core::TimeOffsets times;
@@ -108,13 +106,13 @@ static void testCalculator(
             DateTime recordTo = now + intakeEvent.getInterval();
 
             Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+            std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
             intakeEvent.setCalculator(calculator2);
             intakeSeries.push_back(intakeEvent);
             auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
             auto status = concentrationCalculator->computeConcentrations(
                     predictionPtr, isAll, recordFrom, recordTo, intakeSeries, _parameters);
-            ASSERT_EQ(status, ComputingStatus::Ok);
+            ASSERT_EQ(status, Tucuxi::Core::ComputingStatus::Ok);
         }
 
         for (size_t i = 0; i < _nbPoints; i++) {
@@ -134,7 +132,7 @@ static void testCalculator(
     //
     // With the new calculation of pertinent times for infusion, this test fails.
     // The test should behave differently in case of infusion
-    if (_route != AbsorptionModel::Infusion) {
+    if (_route != Tucuxi::Core::AbsorptionModel::Infusion) {
         size_t nbCycles = 10;
 
         Tucuxi::Core::ComputingStatus res;
@@ -147,7 +145,7 @@ static void testCalculator(
 
         unsigned int residualSize = calculator.getResidualSize();
         bool isAll = false;
-        MultiCompConcentrations concentrations;
+        Tucuxi::Core::MultiCompConcentrations concentrations;
         concentrations.resize(residualSize);
         Tucuxi::Core::TimeOffsets times;
         {
@@ -188,7 +186,7 @@ static void testCalculator(
             predictionPtr = std::make_unique<Tucuxi::Core::ConcentrationPrediction>();
 
             Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+            std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
 
             DateTime recordFrom = now;
             DateTime recordTo = now + interval * nbCycles;
@@ -212,7 +210,7 @@ static void testCalculator(
             auto status = concentrationCalculator->computeConcentrations(
                     predictionPtr, isAll, recordFrom, recordTo, intakeSeries, _parameters);
 
-            ASSERT_EQ(status, ComputingStatus::Ok);
+            ASSERT_EQ(status, Tucuxi::Core::ComputingStatus::Ok);
 
 #if GTEST_VERBOSE
             for (int testCycle = 0; testCycle < nbCycles; testCycle++) {
@@ -226,12 +224,12 @@ static void testCalculator(
         }
 
         // Only works for linear elimination, so do not perform that for some classes
-        if (!(typeid(CalculatorClass) == typeid(ConstantEliminationBolus)
-              || typeid(CalculatorClass) == typeid(MultiConstantEliminationBolus))) {
+        if (!(typeid(CalculatorClass) == typeid(Tucuxi::Core::ConstantEliminationBolus)
+              || typeid(CalculatorClass) == typeid(Tucuxi::Core::MultiConstantEliminationBolus))) {
             for (size_t cycle = 0; cycle < nbCycles; cycle++) {
                 Tucuxi::Core::Concentrations concentration2;
                 concentration2 = predictionPtr->getValues()[cycle];
-                for (CycleSize i = 0; i < _nbPoints - 1; i++) {
+                for (Tucuxi::Core::CycleSize i = 0; i < _nbPoints - 1; i++) {
                     double sumConcentration = 0.0;
                     for (size_t c = 0; c < cycle + 1; c++) {
                         sumConcentration += concentrations[0][c * (_nbPoints - 1) + i];
@@ -252,10 +250,9 @@ static void testCalculator(
     // Create 2 samples and compare the result of computeConcentrations() and pointsAtTime().
     //
     // This test fails for infusion. It should be redesigned according to non linear times
-    if (_route != AbsorptionModel::Infusion) {
+    if (_route != Tucuxi::Core::AbsorptionModel::Infusion) {
         CalculatorClass calculator;
-
-        CycleSize nbPoints = 201;
+        Tucuxi::Core::CycleSize nbPoints = 201;
         bool isAll = false;
 
         DateTime now = DateTime::now();
@@ -285,14 +282,14 @@ static void testCalculator(
             DateTime recordTo = recordFrom + interval;
 
             Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+            std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
             intakeEvent.setCalculator(calculator2);
             intakeSeries.push_back(intakeEvent);
             auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
             auto status = concentrationCalculator->computeConcentrations(
                     predictionPtr, isAll, recordFrom, recordTo, intakeSeries, _parameters);
 
-            ASSERT_EQ(status, ComputingStatus::Ok);
+            ASSERT_EQ(status, Tucuxi::Core::ComputingStatus::Ok);
 
 #if GTEST_VERBOSE
             for (int i = 0; i < nbPoints; i++) {
@@ -302,7 +299,7 @@ static void testCalculator(
         }
         {
             Tucuxi::Core::IntakeSeries intakeSeries;
-            std::shared_ptr<IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
+            std::shared_ptr<Tucuxi::Core::IntakeIntervalCalculator> calculator2 = std::make_shared<CalculatorClass>();
             intakeEvent.setCalculator(calculator2);
             intakeSeries.push_back(intakeEvent);
 
@@ -317,10 +314,10 @@ static void testCalculator(
             sampleSeries.push_back(s1);
 
             auto concentrationCalculator = std::make_unique<Tucuxi::Core::ConcentrationCalculator>();
-            ComputingStatus res = concentrationCalculator->computeConcentrationsAtTimes(
+            Tucuxi::Core::ComputingStatus res = concentrationCalculator->computeConcentrationsAtTimes(
                     concentrations, isAll, intakeSeries, _parameters, sampleSeries);
 
-            ASSERT_EQ(res, ComputingStatus::Ok);
+            ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::Ok);
         }
 
         size_t n0 = (nbPoints - 1) / 4;
@@ -346,19 +343,19 @@ static void testCalculator(
     // synchronized with the times at which the concentration points are expected
 }
 
-std::unique_ptr<DrugTreatment> buildDrugTreatment(
-        const FormulationAndRoute& _route,
+std::unique_ptr<Tucuxi::Core::DrugTreatment> buildDrugTreatment(
+        const Tucuxi::Core::FormulationAndRoute& _route,
         const DateTime& _startDateTime,
-        DoseValue _doseValue = DoseValue{200},
+        Tucuxi::Core::DoseValue _doseValue = Tucuxi::Core::DoseValue{200},
         const TucuUnit& _unit = TucuUnit("mg"),
         int _interval = 6,
         unsigned int _nbrDoses = 16,
         Duration _infusionTime = Duration());
 
-std::unique_ptr<DosageTimeRange> buildDosageTimeRange(
-        const FormulationAndRoute& _route,
+std::unique_ptr<Tucuxi::Core::DosageTimeRange> buildDosageTimeRange(
+        const Tucuxi::Core::FormulationAndRoute& _route,
         const DateTime& _startDateTime,
-        DoseValue _doseValue = DoseValue{200},
+        Tucuxi::Core::DoseValue _doseValue = Tucuxi::Core::DoseValue{200},
         const TucuUnit& _unit = TucuUnit("mg"),
         int _interval = 6,
         unsigned int _nbrDoses = 16);

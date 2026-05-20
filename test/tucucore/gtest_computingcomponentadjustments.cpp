@@ -979,7 +979,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibAllFormulationAndRouteBestD
     ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "imatinib");
     ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-    if (resp) {
+    if (resp != nullptr) {
         // We expect 2 dosage time range (rest period)
         ASSERT_EQ(resp->getAdjustments()[0].getDosageHistory().getDosageTimeRanges().size(), static_cast<size_t>(2));
     }
@@ -1154,7 +1154,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibShortInterval)
 
     const ComputedData* responseData1 = response1->getData();
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData1) != nullptr);
-    const AdjustmentData* resp1 = dynamic_cast<const AdjustmentData*>(responseData1);
+    // const AdjustmentData* resp1 = dynamic_cast<const AdjustmentData*>(responseData1);
 
 
     ComputingRequest request2(requestResponseId2, *drugModel, *drugTreatment2, std::move(adjustmentsTraits2));
@@ -1168,7 +1168,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibShortInterval)
 
     const ComputedData* responseData2 = response2->getData();
     ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData2) != nullptr);
-    const AdjustmentData* resp2 = dynamic_cast<const AdjustmentData*>(responseData2);
+    // const AdjustmentData* resp2 = dynamic_cast<const AdjustmentData*>(responseData2);
 
 
     ComputingResponseComparator comparator;
@@ -1267,7 +1267,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibShortIntervalConcentration)
 
     const ComputedData* responseData1 = response1->getData();
     ASSERT_TRUE(dynamic_cast<const ConcentrationData*>(responseData1) != nullptr);
-    const ConcentrationData* resp1 = dynamic_cast<const ConcentrationData*>(responseData1);
+    // const ConcentrationData* resp1 = dynamic_cast<const ConcentrationData*>(responseData1);
 
 
     ComputingRequest request2(requestResponseId2, *drugModel, *drugTreatment2, std::move(adjustmentsTraits2));
@@ -1281,7 +1281,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibShortIntervalConcentration)
 
     const ComputedData* responseData2 = response2->getData();
     ASSERT_TRUE(dynamic_cast<const ConcentrationData*>(responseData2) != nullptr);
-    const ConcentrationData* resp2 = dynamic_cast<const ConcentrationData*>(responseData2);
+    // const ConcentrationData* resp2 = dynamic_cast<const ConcentrationData*>(responseData2);
 
 
     ComputingResponseComparator comparator;

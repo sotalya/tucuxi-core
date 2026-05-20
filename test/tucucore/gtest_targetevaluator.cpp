@@ -126,10 +126,10 @@ TEST(Core_TestTargetEvaluator, Residual)
             ActiveMoietyId("imatinib"),
             TargetType::Residual,
             TucuUnit("mg/l"), //unit
-            Value(1),         //min
-            Value(5),         //best
-            Value(10),        //max
-            Value(0),         //not used
+            Value{1},         //min
+            Value{5},         //best
+            Value{10},        //max
+            Value{0},         //not used
             TucuUnit("mg/l"), //not used
             Duration(),       //Not used
             Duration(),       //Not used
@@ -178,10 +178,10 @@ TEST(Core_TestTargetEvaluator, Peak)
             ActiveMoietyId("imatinib"),
             TargetType::Peak,
             TucuUnit("mg/l"),                     //unit
-            Value(5),                             //min
-            Value(25),                            //best
-            Value(30),                            //max
-            Value(0),                             //not used
+            Value{5},                             //min
+            Value{25},                            //best
+            Value{30},                            //max
+            Value{0},                             //not used
             TucuUnit("ug/l"),                     //not used
             Duration(std::chrono::minutes(0)),    //min
             Duration(std::chrono::minutes(60)),   //best
@@ -223,10 +223,10 @@ TEST(Core_TestTargetEvaluator, Mean)
             ActiveMoietyId("imatinib"),
             TargetType::Mean,
             TucuUnit("ug/l"),                     //unit
-            Value(5),                             //min
-            Value(25),                            //best
-            Value(35),                            //max
-            Value(0),                             //not used
+            Value{5},                             //min
+            Value{25},                            //best
+            Value{35},                            //max
+            Value{0},                             //not used
             TucuUnit("ug/l"),                     //not used
             Duration(std::chrono::minutes(0)),    //min
             Duration(std::chrono::minutes(60)),   //best
@@ -267,10 +267,10 @@ TEST(Core_TestTargetEvaluator, Auc)
             ActiveMoietyId("imatinib"),
             TargetType::Auc,
             TucuUnit("ug*h/l"),                   //unit
-            Value(5),                             //min
-            Value(25),                            //best
-            Value(100),                           //max
-            Value(0),                             // mic not used
+            Value{5},                             //min
+            Value{25},                            //best
+            Value{100},                           //max
+            Value{0},                             // mic not used
             TucuUnit("ug/l"),                     // mic unit not used
             Duration(std::chrono::minutes(0)),    //min
             Duration(std::chrono::minutes(60)),   //best
@@ -311,10 +311,10 @@ TEST(Core_TestTargetEvaluator, Auc24)
             ActiveMoietyId("imatinib"),
             TargetType::Auc24,
             TucuUnit("ug*h/l"),                   //unit
-            Value(0),                             //min
-            Value(250),                           //best
-            Value(500),                           //max
-            Value(0),                             //not used
+            Value{0},                             //min
+            Value{250},                           //best
+            Value{500},                           //max
+            Value{0},                             //not used
             TucuUnit("ug/l"),                     //not used
             Duration(std::chrono::minutes(0)),    //min
             Duration(std::chrono::minutes(60)),   //best
@@ -357,10 +357,10 @@ TEST(Core_TestTargetEvaluator, CumulativeAuc)
             ActiveMoietyId("imatinib"),
             TargetType::CumulativeAuc,
             TucuUnit("ug*h/l"),                   //unit
-            Value(0),                             //min
-            Value(50),                            //best
-            Value(100),                           //max
-            Value(0),                             //not used
+            Value{0},                             //min
+            Value{50},                            //best
+            Value{100},                           //max
+            Value{0},                             //not used
             TucuUnit("ug/l"),                     //not used
             Duration(std::chrono::minutes(0)),    //min
             Duration(std::chrono::minutes(60)),   //best
@@ -401,10 +401,10 @@ TEST(Core_TestTargetEvaluator, AucOverMic)
             ActiveMoietyId("imatinib"),
             TargetType::AucOverMic,
             TucuUnit("ug*h/l"),                   //unit
-            Value(0),                             //min
-            Value(25),                            //best
-            Value(100),                           //max
-            Value(15),                            //mic
+            Value{0},                             //min
+            Value{25},                            //best
+            Value{100},                           //max
+            Value{15},                            //mic
             TucuUnit("ug/l"),                     //mic Unit
             Duration(std::chrono::minutes(0)),    //min
             Duration(std::chrono::minutes(60)),   //best
@@ -446,10 +446,10 @@ TEST(Core_TestTargetEvaluator, Auc24OverMic)
             ActiveMoietyId("imatinib"),
             TargetType::Auc24OverMic,
             TucuUnit("ug*h/l"),                   //unit
-            Value(0),                             //min
-            Value(15),                            //best
-            Value(30),                            //max
-            Value(15),                            //mic
+            Value{0},                             //min
+            Value{15},                            //best
+            Value{30},                            //max
+            Value{15},                            //mic
             TucuUnit("ug/l"),                     //mic Unit
             Duration(std::chrono::minutes(0)),    //min
             Duration(std::chrono::minutes(60)),   //best
@@ -491,10 +491,10 @@ TEST(Core_TestTargetEvaluator, TimeOverMic)
             ActiveMoietyId("imatinib"),
             TargetType::TimeOverMic,
             TucuUnit("h"),                        //unit
-            Value(15),                            //min
-            Value(25),                            //best
-            Value(30),                            //max
-            Value(15),                            //mic
+            Value{15},                            //min
+            Value{25},                            //best
+            Value{30},                            //max
+            Value{15},                            //mic
             TucuUnit("ug/l"),                     //mic Unit
             Duration(std::chrono::minutes(0)),    //min
             Duration(std::chrono::minutes(60)),   //best
@@ -587,10 +587,10 @@ TEST(Core_TestTargetEvaluator, TimeOverMic)
                 ActiveMoietyId("imatinib"),
                 TargetType::TimeOverMic,
                 TucuUnit("h"),                        //unit
-                Value(0),                             //min
-                Value(25),                            //best
-                Value(30),                            //max
-                Value(15),                            //mic
+                Value{0},                             //min
+                Value{25},                            //best
+                Value{30},                            //max
+                Value{15},                            //mic
                 TucuUnit("ug/l"),                     //mic Unit
                 Duration(std::chrono::minutes(0)),    //min
                 Duration(std::chrono::minutes(60)),   //best
@@ -626,10 +626,10 @@ TEST(Core_TestTargetEvaluator, TimeOverMic)
                 ActiveMoietyId("imatinib"),
                 TargetType::TimeOverMic,
                 TucuUnit("h"),                        //unit
-                Value(15),                            //min
-                Value(25),                            //best
-                Value(55),                            //max
-                Value(15),                            //mic
+                Value{15},                            //min
+                Value{25},                            //best
+                Value{55},                            //max
+                Value{15},                            //mic
                 TucuUnit("ug/l"),                     //mic Unit
                 Duration(std::chrono::minutes(0)),    //min
                 Duration(std::chrono::minutes(60)),   //best
@@ -672,10 +672,10 @@ TEST(Core_TestTargetEvaluator, AucDividedByMic)
             ActiveMoietyId("imatinib"),
             TargetType::AucDividedByMic,
             TucuUnit("h"),                        //unit
-            Value(0),                             //min
-            Value(25),                            //best
-            Value(100),                           //max
-            Value(15),                            //mic
+            Value{0},                             //min
+            Value{25},                            //best
+            Value{100},                           //max
+            Value{15},                            //mic
             TucuUnit("ug/l"),                     //mic Unit
             Duration(std::chrono::minutes(0)),    //min
             Duration(std::chrono::minutes(60)),   //best
@@ -716,10 +716,10 @@ TEST(Core_TestTargetEvaluator, Auc24DividedByMic)
             ActiveMoietyId("imatinib"),
             TargetType::Auc24DividedByMic,
             TucuUnit("h"),                        //unit
-            Value(5),                             //min
-            Value(25),                            //best
-            Value(100),                           //max
-            Value(15),                            //mic
+            Value{5},                             //min
+            Value{25},                            //best
+            Value{100},                           //max
+            Value{15},                            //mic
             TucuUnit("ug/l"),                     //mic Unit
             Duration(std::chrono::minutes(0)),    //min
             Duration(std::chrono::minutes(60)),   //best
@@ -760,10 +760,10 @@ TEST(Core_TestTargetEvaluator, PeakDividedByMic)
             ActiveMoietyId("imatinib"),
             TargetType::PeakDividedByMic,
             TucuUnit(""),                         //unit
-            Value(0),                             //min
-            Value(25),                            //best
-            Value(100),                           //max
-            Value(15),                            //mic
+            Value{0},                             //min
+            Value{25},                            //best
+            Value{100},                           //max
+            Value{15},                            //mic
             TucuUnit("ug/l"),                     //mic Unit
             Duration(std::chrono::minutes(0)),    //min
             Duration(std::chrono::minutes(60)),   //best
@@ -804,10 +804,10 @@ TEST(Core_TestTargetEvaluator, FractionTimeOverMic)
             ActiveMoietyId("imatinib"),
             TargetType::FractionTimeOverMic,
             TucuUnit(""),                         //unit
-            Value(0.0),                           //min
-            Value(0.5),                           //best
-            Value(1.0),                           //max
-            Value(15),                            //mic
+            Value{0.0},                           //min
+            Value{0.5},                           //best
+            Value{1.0},                           //max
+            Value{15},                            //mic
             TucuUnit("ug/l"),                     //mic Unit
             Duration(std::chrono::minutes(0)),    //min
             Duration(std::chrono::minutes(60)),   //best
@@ -900,10 +900,10 @@ TEST(Core_TestTargetEvaluator, FractionTimeOverMic)
                 ActiveMoietyId("imatinib"),
                 TargetType::FractionTimeOverMic,
                 TucuUnit(""),                         //unit
-                Value(0.0),                           //min
-                Value(0.5),                           //best
-                Value(1.0),                           //max
-                Value(15),                            //mic
+                Value{0.0},                           //min
+                Value{0.5},                           //best
+                Value{1.0},                           //max
+                Value{15},                            //mic
                 TucuUnit("ug/l"),                     //mic Unit
                 Duration(std::chrono::minutes(0)),    //min
                 Duration(std::chrono::minutes(60)),   //best
@@ -939,10 +939,10 @@ TEST(Core_TestTargetEvaluator, FractionTimeOverMic)
                 ActiveMoietyId("imatinib"),
                 TargetType::FractionTimeOverMic,
                 TucuUnit(""),                         //unit
-                Value(0.0),                           //min
-                Value(0.5),                           //best
-                Value(1.0),                           //max
-                Value(15),                            //mic
+                Value{0.0},                           //min
+                Value{0.5},                           //best
+                Value{1.0},                           //max
+                Value{15},                            //mic
                 TucuUnit("ug/l"),                     //mic Unit
                 Duration(std::chrono::minutes(0)),    //min
                 Duration(std::chrono::minutes(60)),   //best
@@ -985,10 +985,10 @@ TEST(Core_TestTargetEvaluator, ResidualDividedByMic)
             ActiveMoietyId("imatinib"),
             TargetType::ResidualDividedByMic,
             TucuUnit(""),                         //unit
-            Value(0),                             //min
-            Value(25),                            //best
-            Value(100),                           //max
-            Value(15),                            //mic
+            Value{0},                             //min
+            Value{25},                            //best
+            Value{100},                           //max
+            Value{15},                            //mic
             TucuUnit("ug/l"),                     //mic Unit
             Duration(std::chrono::minutes(0)),    //min
             Duration(std::chrono::minutes(60)),   //best

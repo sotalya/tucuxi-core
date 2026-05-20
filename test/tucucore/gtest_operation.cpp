@@ -458,6 +458,7 @@ TEST(Core_TestOperation, DynamicOperation)
     ASSERT_DOUBLE_EQ(-0.544, res);
 }
 
+// NOLINTBEGIN(readability-identifier-naming)
 TEST(Core_TestOperation, CockcroftGaultGeneral)
 {
     bool rc;
@@ -1187,3 +1188,5 @@ TEST(Core_TestOperation, SalazarCorcoran)
     ASSERT_TRUE(rc);
     ASSERT_TRUE(fabs(eGFR - hc_eGFR) < 1e-6);
 }
+
+// NOLINTEND(readability-identifier-naming)
