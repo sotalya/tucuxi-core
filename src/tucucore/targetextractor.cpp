@@ -407,7 +407,7 @@ TargetEvent TargetExtractor::targetEventFromTargetDefinition(
                         _target->getCMax().getValue(),
                         _target->getUnit(),
                         getConcentrationTimeUnit(_concentrationUnit)),
-                UnitManager::convertToUnit<UnitManager::UnitType::ConcentrationTime>(
+                UnitManager::convertToUnit<UnitManager::UnitType::Concentration>(
                         _target->getMic().getValue(), _target->getMicUnit(), _concentrationUnit),
                 _concentrationUnit,
                 Tucuxi::Common::Duration(

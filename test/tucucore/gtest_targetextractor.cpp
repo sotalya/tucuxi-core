@@ -536,7 +536,7 @@ TEST(Core_TestTargetExtractor, TargetEventFromTargetDefinitionAucFamily)
     }
 }
 
-TEST(Core_TestTargetExtractor, DISABLED_TargetEventFromTargetDefinitionAucOverMicFamily)
+TEST(Core_TestTargetExtractor, TargetEventFromTargetDefinitionAucOverMicFamily)
 {
     TestableTargetExtractor extractor;
 
