@@ -115,11 +115,10 @@ bool TwoCompartmentBolusMicro::computeConcentrations(
     _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
 
     // return concentration of comp1
-    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
+    _concentrations[firstCompartment].assign(concentrations1.cbegin(), concentrations1.cend());
     // Return concentrations of other compartments
     if (_isAll) {
-        _concentrations[secondCompartment].assign(
-                concentrations2.data(), concentrations2.data() + concentrations2.size());
+        _concentrations[secondCompartment].assign(concentrations2.cbegin(), concentrations2.cend());
     }
 
 

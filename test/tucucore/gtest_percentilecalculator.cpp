@@ -130,7 +130,7 @@ TEST(Core_TestPercentileCalculator, AprioriInvalidParameters)
     intakeEvent4.setCalculator(calculator2);
     intakeSeries.push_back(intakeEvent4);
 
-    // std::cout << typeid(calculator).name() << std::endl;
+    // std::cout << typeid(calculator).name() << '\n';
 
     Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
     {
@@ -276,7 +276,7 @@ TEST(Core_TestPercentileCalculator, Apriori)
     intakeEvent4.setCalculator(calculator2);
     intakeSeries.push_back(intakeEvent4);
 
-    // std::cout << typeid(calculator).name() << std::endl;
+    // std::cout << typeid(calculator).name() << '\n';
 
     Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
     {
@@ -294,7 +294,7 @@ TEST(Core_TestPercentileCalculator, Apriori)
         for(int i = 0; i < _nbPoints; i++) {
             Tucuxi::Core::Concentrations concentration2;
             concentration2 = predictionPtr->getValues()[0];
-            // std::cout << i <<  " :: " << concentrations[0][i] << " : " << concentration2[i] << std::endl;
+            // std::cout << i <<  " :: " << concentrations[0][i] << " : " << concentration2[i] << '\n';
 
             // compare concentrations of compartment 1
             ASSERT_DOUBLE_EQ(concentrations[0][i], concentration2[i]);
@@ -339,7 +339,7 @@ TEST(Core_TestPercentileCalculator, Apriori)
 
     // percentiles.streamToFile("apriori_percentiles_imatinib.dat");
 
-    // std::cout << "Apriori Percentile result is saved" << std::endl;
+    // std::cout << "Apriori Percentile result is saved" << '\n';
 
     ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::Ok);
 }
@@ -400,7 +400,7 @@ TEST(Core_TestPercentileCalculator, AposterioriNormal)
     intakeEvent.setCalculator(calculator2);
     intakeSeries.push_back(intakeEvent);
 
-    // std::cout << typeid(calculator).name() << std::endl;
+    // std::cout << typeid(calculator).name() << '\n';
 
     Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
     {
@@ -457,7 +457,7 @@ TEST(Core_TestPercentileCalculator, AposterioriNormal)
 
     // percentiles.streamToFile("aposteriori_normal_percentiles_imatinib.dat");
 
-    // std::cout << "Aposteriori Normal Percentile result is saved" << std::endl;
+    // std::cout << "Aposteriori Normal Percentile result is saved" << '\n';
 
     ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::Ok);
 }
@@ -521,7 +521,7 @@ TEST(Core_TestPercentileCalculator, AposterioriMatrixCache)
     intakeEvent.setCalculator(calculator2);
     intakeSeries.push_back(intakeEvent);
 
-    // std::cout << typeid(calculator).name() << std::endl;
+    // std::cout << typeid(calculator).name() << '\n';
 
     Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
     {
@@ -577,7 +577,7 @@ TEST(Core_TestPercentileCalculator, AposterioriMatrixCache)
 
     // percentiles.streamToFile("aposteriori_percentiles_imatinib.dat");
 
-    // std::cout << "Aposteriori Percentile result is saved" << std::endl;
+    // std::cout << "Aposteriori Percentile result is saved" << '\n';
 
     ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::PercentilesNoValidPrediction);
 }
@@ -638,7 +638,7 @@ TEST(Core_TestPercentileCalculator, Aposteriori)
     intakeEvent.setCalculator(calculator2);
     intakeSeries.push_back(intakeEvent);
 
-    // std::cout << typeid(calculator).name() << std::endl;
+    // std::cout << typeid(calculator).name() << '\n';
 
     Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
     {
@@ -695,7 +695,7 @@ TEST(Core_TestPercentileCalculator, Aposteriori)
 
     // percentiles.streamToFile("aposteriori_percentiles_imatinib.dat");
 
-    // std::cout << "Aposteriori Percentile result is saved" << std::endl;
+    // std::cout << "Aposteriori Percentile result is saved" << '\n';
 
     ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::Ok);
 }
@@ -756,7 +756,7 @@ TEST(Core_TestPercentileCalculator, AposterioriUnlikelySample)
     intakeEvent.setCalculator(calculator2);
     intakeSeries.push_back(intakeEvent);
 
-    // std::cout << typeid(calculator).name() << std::endl;
+    // std::cout << typeid(calculator).name() << '\n';
 
     Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
     {
@@ -813,7 +813,7 @@ TEST(Core_TestPercentileCalculator, AposterioriUnlikelySample)
 
     // percentiles.streamToFile("aposteriori_percentiles_imatinib.dat");
 
-    // std::cout << "Aposteriori Percentile result is saved" << std::endl;
+    // std::cout << "Aposteriori Percentile result is saved" << '\n';
 
     ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::AposterioriPercentilesNoLikelySample);
 }
@@ -874,7 +874,7 @@ TEST(Core_TestPercentileCalculator, AposterioriInvalidParameters)
     intakeEvent.setCalculator(calculator2);
     intakeSeries.push_back(intakeEvent);
 
-    // std::cout << typeid(calculator).name() << std::endl;
+    // std::cout << typeid(calculator).name() << '\n';
 
     Tucuxi::Core::ConcentrationPredictionPtr predictionPtr;
     {
@@ -932,7 +932,7 @@ TEST(Core_TestPercentileCalculator, AposterioriInvalidParameters)
 
         // percentiles.streamToFile("aposteriori_percentiles_imatinib.dat");
 
-        // std::cout << "Aposteriori Percentile result is saved" << std::endl;
+        // std::cout << "Aposteriori Percentile result is saved" << '\n';
 
         ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError);
     }
@@ -970,7 +970,7 @@ TEST(Core_TestPercentileCalculator, AposterioriInvalidParameters)
 
         // percentiles.streamToFile("aposteriori_percentiles_imatinib.dat");
 
-        // std::cout << "Aposteriori Percentile result is saved" << std::endl;
+        // std::cout << "Aposteriori Percentile result is saved" << '\n';
 
         ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::AposterioriPercentilesOutOfScopeSamplesError);
     }

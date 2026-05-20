@@ -58,9 +58,7 @@ static bool covariateEventIsPresent(
         == _timedCValues.at(_date).end()) {
         return false;
     }
-    else {
-        return true;
-    }
+    return true;
 }
 
 
@@ -168,611 +166,573 @@ public:
     }
 };
 
-TEST(Core_TestParameterExtractor, PE_constructor)
+class ParameterExtractorConstructorTest : public ::testing::Test
 {
-    ParameterDefinitions pDefinitions;
-    pDefinitions.push_back(std::make_unique<ParameterDefinition>("ParamA", 1));
-    pDefinitions.push_back(std::make_unique<ParameterDefinition>("ParamB", 2));
-    pDefinitions.push_back(std::make_unique<ParameterDefinition>("ParamC", 3));
-    pDefinitions.push_back(std::make_unique<ParameterDefinition>("ParamD", 4));
-    MyParameterDefinitionIterator itDefinitions(pDefinitions.begin(), pDefinitions.end());
+protected:
+    void SetUp() override
+    {
+        m_pDefinitions.push_back(std::make_unique<ParameterDefinition>("ParamA", 1));
+        m_pDefinitions.push_back(std::make_unique<ParameterDefinition>("ParamB", 2));
+        m_pDefinitions.push_back(std::make_unique<ParameterDefinition>("ParamC", 3));
+        m_pDefinitions.push_back(std::make_unique<ParameterDefinition>("ParamD", 4));
+    }
 
+    MyParameterDefinitionIterator makeIterator()
+    {
+        return MyParameterDefinitionIterator(m_pDefinitions.begin(), m_pDefinitions.end());
+    }
+
+    ParameterDefinitions m_pDefinitions;
+};
+
+TEST_F(ParameterExtractorConstructorTest, InvalidStartEnd)
+{
     // Invalid definition (_start > _end).
-    {
-        CovariateDefinitions cDefinitions;
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
+    auto itDefinitions = makeIterator();
 
-        CovariateSeries cSeries;
-        // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-        cSeries.push_back(
-                CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
-        // Events in interval time span.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
-        // This one is past _end -> should be discarded.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+    CovariateDefinitions cDefinitions;
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
+    ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
-        ASSERT_THROW(
-                ParametersExtractor(
-                        cSeries,
-                        itDefinitions,
-                        DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0),
-                        DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)),
-                std::runtime_error);
-    }
+    CovariateSeries cSeries;
+    // These events are before _start -> should be pushed forward at the parameter's interval beginning.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+    // Events in interval time span.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+    // This one is past _end -> should be discarded.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
-    // Covariate appearing out of blue sky.
-    {
-        CovariateDefinitions cDefinitions;
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
-        ADD_CDEF_NO_R(Ghost, true, Standard, Bool, Direct, cDefinitions);
+    ASSERT_THROW(
+            ParametersExtractor(
+                    cSeries,
+                    itDefinitions,
+                    DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0),
+                    DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)),
+            std::runtime_error);
+}
 
-        CovariateSeries cSeries;
-        // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-        cSeries.push_back(
-                CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
-        // Events in interval time span.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
-        // This one is past _end -> should be discarded.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
-        // Event appearing out of nowhere.
-        cSeries.push_back(
-                CovariateEvent(*(cDefinitions[3]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
-        ASSERT_THROW(
-                ParametersExtractor(
-                        cSeries,
-                        itDefinitions,
-                        DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                        DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)),
-                std::runtime_error);
-    }
+TEST_F(ParameterExtractorConstructorTest, CovariateOutOfBlueSky)
+{
+    // Covariate appearing out of blue sky (no event before the interval start).
+    auto itDefinitions = makeIterator();
 
-    // Duplicate event (same value).
-    {
-        CovariateDefinitions cDefinitions;
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
+    CovariateDefinitions cDefinitions;
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
+    ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
+    ADD_CDEF_NO_R(Ghost, true, Standard, Bool, Direct, cDefinitions);
 
-        CovariateSeries cSeries;
-        // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-        cSeries.push_back(
-                CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
-        // Events in interval time span.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-        // Duplicated event.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
-        // This one is past _end -> should be discarded.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+    CovariateSeries cSeries;
+    // These events are before _start -> should be pushed forward at the parameter's interval beginning.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+    // Events in interval time span.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+    // This one is past _end -> should be discarded.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+    // Event appearing out of nowhere.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[3]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
 
-        ASSERT_THROW(
-                ParametersExtractor(
-                        cSeries,
-                        itDefinitions,
-                        DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                        DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)),
-                std::runtime_error);
-    }
+    ASSERT_THROW(
+            ParametersExtractor(
+                    cSeries,
+                    itDefinitions,
+                    DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+                    DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)),
+            std::runtime_error);
+}
 
-    // Duplicate event (different value).
-    {
-        CovariateDefinitions cDefinitions;
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
+TEST_F(ParameterExtractorConstructorTest, DuplicateEventSameValue)
+{
+    // Duplicate event at the same time with the same value.
+    auto itDefinitions = makeIterator();
 
-        CovariateSeries cSeries;
-        // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-        cSeries.push_back(
-                CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
-        // Events in interval time span.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-        // Duplicated event.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 132));
-        // This one is past _end -> should be discarded.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+    CovariateDefinitions cDefinitions;
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
+    ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
-        ASSERT_THROW(
-                ParametersExtractor(
-                        cSeries,
-                        itDefinitions,
-                        DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                        DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)),
-                std::runtime_error);
-    }
+    CovariateSeries cSeries;
+    // These events are before _start -> should be pushed forward at the parameter's interval beginning.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+    // Events in interval time span.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+    // Duplicated event.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+    // This one is past _end -> should be discarded.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
-    // No duplicate error if time instant is different.
-    {
-        CovariateDefinitions cDefinitions;
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
+    ASSERT_THROW(
+            ParametersExtractor(
+                    cSeries,
+                    itDefinitions,
+                    DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+                    DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)),
+            std::runtime_error);
+}
 
-        CovariateSeries cSeries;
-        // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-        cSeries.push_back(
-                CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
-        // Events in interval time span.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 123));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 132));
-        // This one is past _end -> should be discarded.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+TEST_F(ParameterExtractorConstructorTest, DuplicateEventDifferentValue)
+{
+    // Duplicate event at the same time with a different value.
+    auto itDefinitions = makeIterator();
 
-        ASSERT_NO_THROW(ParametersExtractor(
-                cSeries,
-                itDefinitions,
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)));
-    }
+    CovariateDefinitions cDefinitions;
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
+    ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
+    CovariateSeries cSeries;
+    // These events are before _start -> should be pushed forward at the parameter's interval beginning.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+    // Events in interval time span.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+    // Duplicated event.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 132));
+    // This one is past _end -> should be discarded.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+
+    ASSERT_THROW(
+            ParametersExtractor(
+                    cSeries,
+                    itDefinitions,
+                    DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+                    DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)),
+            std::runtime_error);
+}
+
+TEST_F(ParameterExtractorConstructorTest, NoDuplicateWhenDifferentTime)
+{
+    // No duplicate error if the same covariate appears at different time instants.
+    auto itDefinitions = makeIterator();
+
+    CovariateDefinitions cDefinitions;
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
+    ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
+
+    CovariateSeries cSeries;
+    // These events are before _start -> should be pushed forward at the parameter's interval beginning.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+    // Events in interval time span.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 123));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 132));
+    // This one is past _end -> should be discarded.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+
+    ASSERT_NO_THROW(ParametersExtractor(
+            cSeries, itDefinitions, DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)));
+}
+
+TEST_F(ParameterExtractorConstructorTest, NoCovariatesNoParameters)
+{
     // No covariates, no parameters. Should still throw no error.
-    {
-        CovariateDefinitions cDefinitions;
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
+    ParameterDefinitions pDef;
+    MyParameterDefinitionIterator itDefinitions(pDef.begin(), pDef.end());
 
-        CovariateSeries cSeries;
-        // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-        cSeries.push_back(
-                CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
-        // Events in interval time span.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
-        // This one is past _end -> should be discarded.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+    ASSERT_NO_THROW(ParametersExtractor(
+            CovariateSeries(),
+            itDefinitions,
+            DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+            DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)));
 
-        ParameterDefinitions pDef;
-        MyParameterDefinitionIterator itDefinitions(pDef.begin(), pDef.end());
-        ASSERT_NO_THROW(ParametersExtractor(
-                CovariateSeries(),
-                itDefinitions,
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)));
+    ParametersExtractor extractor = ParametersExtractor(
+            CovariateSeries(),
+            itDefinitions,
+            DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+            DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
 
-        ParametersExtractor extractor = ParametersExtractor(
-                CovariateSeries(),
-                itDefinitions,
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
+    ASSERT_EQ(TestParameterExtractor::get_m_timedCValues(&extractor).size(), static_cast<size_t>(1));
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).count(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)),
+            static_cast<size_t>(1));
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).at(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)).size(),
+            static_cast<size_t>(0));
+}
 
-        ASSERT_EQ(TestParameterExtractor::get_m_timedCValues(&extractor).size(), static_cast<size_t>(1));
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor).count(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)),
-                static_cast<size_t>(1));
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor)
-                        .at(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0))
-                        .size(),
-                static_cast<size_t>(0));
-    }
-
+TEST_F(ParameterExtractorConstructorTest, SomeCovariatesNoParameters)
+{
     // Some covariates, no parameters. Weird, but should throw no error. The timed covariate values map should be
     // correctly filled nonetheless.
-    {
-        CovariateDefinitions cDefinitions;
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
+    CovariateDefinitions cDefinitions;
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
+    ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
-        CovariateSeries cSeries;
-        // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-        cSeries.push_back(
-                CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
-        // Events in interval time span.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
-        // This one is past _end -> should be discarded.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+    CovariateSeries cSeries;
+    // These events are before _start -> should be pushed forward at the parameter's interval beginning.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+    // Events in interval time span.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+    // This one is past _end -> should be discarded.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
-        ParameterDefinitions pDef;
-        MyParameterDefinitionIterator itDefinitions(pDef.begin(), pDef.end());
-        ASSERT_NO_THROW(ParametersExtractor(
-                cSeries,
-                itDefinitions,
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)));
+    ParameterDefinitions pDef;
+    MyParameterDefinitionIterator itDefinitions(pDef.begin(), pDef.end());
 
-        ParametersExtractor extractor = ParametersExtractor(
-                cSeries, itDefinitions, DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
+    ASSERT_NO_THROW(ParametersExtractor(
+            cSeries, itDefinitions, DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)));
 
-        //        printCovariateSeries(TestParameterExtractor::get_m_timedCValues(&extractor));
+    ParametersExtractor extractor = ParametersExtractor(
+            cSeries, itDefinitions, DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
 
-        ASSERT_EQ(TestParameterExtractor::get_m_timedCValues(&extractor).size(), static_cast<size_t>(2));
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor).count(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)),
-                static_cast<size_t>(1));
-        // Events pushed forward.
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor)
-                        .at(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0))
-                        .size(),
-                static_cast<size_t>(3));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Gist",
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                varToValue(false),
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Weight",
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                15,
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Height",
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                111,
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_EQ(TestParameterExtractor::get_m_timedCValues(&extractor).size(), static_cast<size_t>(2));
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).count(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)),
+            static_cast<size_t>(1));
+    // Events pushed forward.
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).at(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)).size(),
+            static_cast<size_t>(3));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Gist",
+            DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+            varToValue(false),
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Weight",
+            DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+            15,
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Height",
+            DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+            111,
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
 
-        // Events in the correct time span.
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor)
-                        .at(DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0))
-                        .size(),
-                static_cast<size_t>(2));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Gist",
-                DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
-                varToValue(true),
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Height",
-                DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
-                123,
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-    }
+    // Events in the correct time span.
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).at(DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0)).size(),
+            static_cast<size_t>(2));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Gist",
+            DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+            varToValue(true),
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Height",
+            DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+            123,
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
+}
 
+TEST_F(ParameterExtractorConstructorTest, NoCovariatesSomeParameters)
+{
     // No covariates, some parameters. This can happen if the parameters do not depend on covariates, and should
     // throw no error.
-    {
-        CovariateDefinitions cDefinitions;
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
+    auto itDefinitions = makeIterator();
 
-        CovariateSeries cSeries;
-        // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-        cSeries.push_back(
-                CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
-        // Events in interval time span.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
-        // This one is past _end -> should be discarded.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+    ASSERT_NO_THROW(ParametersExtractor(
+            CovariateSeries(),
+            itDefinitions,
+            DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+            DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)));
 
-        ASSERT_NO_THROW(ParametersExtractor(
-                CovariateSeries(),
-                itDefinitions,
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)));
+    ParametersExtractor extractor = ParametersExtractor(
+            CovariateSeries(),
+            itDefinitions,
+            DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+            DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
 
-        ParametersExtractor extractor = ParametersExtractor(
-                CovariateSeries(),
-                itDefinitions,
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
+    ASSERT_EQ(TestParameterExtractor::get_m_timedCValues(&extractor).size(), static_cast<size_t>(1));
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).count(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)),
+            static_cast<size_t>(1));
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).at(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)).size(),
+            static_cast<size_t>(0));
+}
 
-        ASSERT_EQ(TestParameterExtractor::get_m_timedCValues(&extractor).size(), static_cast<size_t>(1));
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor).count(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)),
-                static_cast<size_t>(1));
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor)
-                        .at(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0))
-                        .size(),
-                static_cast<size_t>(0));
-    }
-
+TEST_F(ParameterExtractorConstructorTest, CovariatesAndParameters)
+{
     // Covariates and parameters available.
-    {
-        CovariateDefinitions cDefinitions;
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
+    auto itDefinitions = makeIterator();
 
-        CovariateSeries cSeries;
-        // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-        cSeries.push_back(
-                CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
-        // Events in interval time span.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
-        // This one is past _end -> should be discarded.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+    CovariateDefinitions cDefinitions;
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
+    ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
-        ParametersExtractor extractor = ParametersExtractor(
-                cSeries, itDefinitions, DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
+    CovariateSeries cSeries;
+    // These events are before _start -> should be pushed forward at the parameter's interval beginning.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+    // Events in interval time span.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+    // This one is past _end -> should be discarded.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
-        //        printCovariateSeries(TestParameterExtractor::get_m_timedCValues(&extractor));
+    ParametersExtractor extractor = ParametersExtractor(
+            cSeries, itDefinitions, DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
 
-        ASSERT_EQ(TestParameterExtractor::get_m_timedCValues(&extractor).size(), static_cast<size_t>(2));
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor).count(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)),
-                static_cast<size_t>(1));
-        // Events pushed forward.
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor)
-                        .at(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0))
-                        .size(),
-                static_cast<size_t>(3));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Gist",
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                varToValue(false),
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Weight",
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                15,
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Height",
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                111,
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_EQ(TestParameterExtractor::get_m_timedCValues(&extractor).size(), static_cast<size_t>(2));
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).count(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)),
+            static_cast<size_t>(1));
+    // Events pushed forward.
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).at(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)).size(),
+            static_cast<size_t>(3));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Gist",
+            DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+            varToValue(false),
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Weight",
+            DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+            15,
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Height",
+            DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+            111,
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
 
-        // Events in the correct time span.
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor)
-                        .at(DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0))
-                        .size(),
-                static_cast<size_t>(2));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Gist",
-                DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
-                varToValue(true),
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Height",
-                DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
-                123,
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-    }
+    // Events in the correct time span.
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).at(DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0)).size(),
+            static_cast<size_t>(2));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Gist",
+            DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+            varToValue(true),
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Height",
+            DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+            123,
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
+}
 
+TEST_F(ParameterExtractorConstructorTest, AllEventsAfterStart)
+{
     // Covariates and parameters available, but all at a precise moment after m_start.
-    {
-        CovariateDefinitions cDefinitions;
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
+    auto itDefinitions = makeIterator();
 
-        CovariateSeries cSeries;
-        // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-        cSeries.push_back(
-                CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
-        // Events in interval time span.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 123));
-        // This one is past _end -> should be discarded.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+    CovariateDefinitions cDefinitions;
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
+    ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
-        ParametersExtractor extractor = ParametersExtractor(
-                cSeries, itDefinitions, DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
+    CovariateSeries cSeries;
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
+    // Events in interval time span.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 123));
+    // This one is past _end -> should be discarded.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
-        //            printCovariateSeries(TestParameterExtractor::get_m_timedCValues(&extractor));
+    ParametersExtractor extractor = ParametersExtractor(
+            cSeries, itDefinitions, DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
 
-        ASSERT_EQ(TestParameterExtractor::get_m_timedCValues(&extractor).size(), static_cast<size_t>(2));
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor).count(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)),
-                static_cast<size_t>(0));
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor).count(DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0)),
-                static_cast<size_t>(1));
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor)
-                        .at(DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0))
-                        .size(),
-                static_cast<size_t>(3));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Gist",
-                DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
-                varToValue(false),
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Weight",
-                DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
-                15,
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Height",
-                DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
-                111,
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_EQ(TestParameterExtractor::get_m_timedCValues(&extractor).size(), static_cast<size_t>(2));
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).count(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)),
+            static_cast<size_t>(0));
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).count(DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0)),
+            static_cast<size_t>(1));
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).at(DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0)).size(),
+            static_cast<size_t>(3));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Gist",
+            DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+            varToValue(false),
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Weight",
+            DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+            15,
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Height",
+            DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+            111,
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
 
-        // Later events.
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor)
-                        .at(DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0))
-                        .size(),
-                static_cast<size_t>(2));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Gist",
-                DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0),
-                varToValue(true),
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Height",
-                DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0),
-                123,
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-    }
+    // Later events.
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).at(DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)).size(),
+            static_cast<size_t>(2));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Gist",
+            DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0),
+            varToValue(true),
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Height",
+            DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0),
+            123,
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
+}
 
+TEST_F(ParameterExtractorConstructorTest, OneEventBeforeStartFails)
+{
     // Covariates and parameters available, but all at a precise moment after m_start except one which is before
     // m_start. This should fail.
-    {
-        CovariateDefinitions cDefinitions;
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
-        ADD_CDEF_NO_R(Foobar, 123, Standard, Double, Linear, cDefinitions);
+    auto itDefinitions = makeIterator();
 
-        CovariateSeries cSeries;
-        // Event before m_start that should make everything fail.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[3]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 143));
-        // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-        cSeries.push_back(
-                CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
-        // Events in interval time span.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 123));
-        // This one is past _end -> should be discarded.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+    CovariateDefinitions cDefinitions;
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
+    ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
+    ADD_CDEF_NO_R(Foobar, 123, Standard, Double, Linear, cDefinitions);
 
-        ASSERT_THROW(
-                ParametersExtractor(
-                        cSeries,
-                        itDefinitions,
-                        DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                        DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)),
-                std::runtime_error);
-    }
+    CovariateSeries cSeries;
+    // Event before m_start that should make everything fail.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[3]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 143));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
+    // Events in interval time span.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 123));
+    // This one is past _end -> should be discarded.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
+    ASSERT_THROW(
+            ParametersExtractor(
+                    cSeries,
+                    itDefinitions,
+                    DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+                    DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)),
+            std::runtime_error);
+}
+
+TEST_F(ParameterExtractorConstructorTest, OneEventSlightlyLateFails)
+{
     // Covariates and parameters available, but all at a precise moment after m_start except one which is slightly
     // late. This should fail.
-    {
-        CovariateDefinitions cDefinitions;
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
-        ADD_CDEF_NO_R(Foobar, 123, Standard, Double, Linear, cDefinitions);
+    auto itDefinitions = makeIterator();
 
-        CovariateSeries cSeries;
-        // Event slightly in late that should make everything fail.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[3]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 1, 0), 143));
-        // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-        cSeries.push_back(
-                CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
-        // Events in interval time span.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 123));
-        // This one is past _end -> should be discarded.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+    CovariateDefinitions cDefinitions;
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
+    ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
+    ADD_CDEF_NO_R(Foobar, 123, Standard, Double, Linear, cDefinitions);
 
-        ASSERT_THROW(
-                ParametersExtractor(
-                        cSeries,
-                        itDefinitions,
-                        DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                        DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)),
-                std::runtime_error);
-    }
+    CovariateSeries cSeries;
+    // Event slightly late that should make everything fail.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[3]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 1, 0), 143));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(false)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 15));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 111));
+    // Events in interval time span.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), varToValue(true)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 123));
+    // This one is past _end -> should be discarded.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
 
+    ASSERT_THROW(
+            ParametersExtractor(
+                    cSeries,
+                    itDefinitions,
+                    DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+                    DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0)),
+            std::runtime_error);
+}
+
+TEST_F(ParameterExtractorConstructorTest, MultiplePreStartValues)
+{
     // Covariates and parameters available. Multiple values for a covariate before the start, all discarded except
     // the most recent.
-    {
-        CovariateDefinitions cDefinitions;
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
+    auto itDefinitions = makeIterator();
 
-        CovariateSeries cSeries;
-        // These events are before _start -> should be pushed forward at the parameter's interval beginning.
-        cSeries.push_back(
-                CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
-        // Events in interval time span.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
-        // This one is past _end -> should be discarded.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
-        // Additional events before _start.
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 30, 0), 19));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 45, 0), 21));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 13, 8, 45, 0), 33));
-        cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 14, 8, 45, 0), 44));
+    CovariateDefinitions cDefinitions;
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
+    ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
-        ParametersExtractor extractor = ParametersExtractor(
-                cSeries, itDefinitions, DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
+    CovariateSeries cSeries;
+    // These events are before _start -> should be pushed forward at the parameter's interval beginning.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), varToValue(false)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 15));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 111));
+    // Events in interval time span.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[0]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), varToValue(true)));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 123));
+    // This one is past _end -> should be discarded.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[2]), DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 143));
+    // Additional events before _start.
+    cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 30, 0), 19));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 12, 8, 45, 0), 21));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 13, 8, 45, 0), 33));
+    cSeries.push_back(CovariateEvent(*(cDefinitions[1]), DATE_TIME_NO_VAR(2017, 8, 14, 8, 45, 0), 44));
 
-        //        printCovariateSeries(TestParameterExtractor::get_m_timedCValues(&extractor));
+    ParametersExtractor extractor = ParametersExtractor(
+            cSeries, itDefinitions, DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0));
 
-        ASSERT_EQ(TestParameterExtractor::get_m_timedCValues(&extractor).size(), static_cast<size_t>(3));
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor).count(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)),
-                static_cast<size_t>(1));
-        // Events pushed forward.
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor)
-                        .at(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0))
-                        .size(),
-                static_cast<size_t>(3));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Gist",
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                varToValue(false),
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Weight",
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                33,
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Height",
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
-                111,
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_EQ(TestParameterExtractor::get_m_timedCValues(&extractor).size(), static_cast<size_t>(3));
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).count(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)),
+            static_cast<size_t>(1));
+    // Events pushed forward.
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).at(DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0)).size(),
+            static_cast<size_t>(3));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Gist",
+            DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+            varToValue(false),
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Weight",
+            DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+            33,
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Height",
+            DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0),
+            111,
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
 
-        // Events in the correct time span.
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor)
-                        .at(DATE_TIME_NO_VAR(2017, 8, 14, 8, 45, 0))
-                        .size(),
-                static_cast<size_t>(1));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Weight",
-                DATE_TIME_NO_VAR(2017, 8, 14, 8, 45, 0),
-                44,
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
+    // Events in the correct time span.
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).at(DATE_TIME_NO_VAR(2017, 8, 14, 8, 45, 0)).size(),
+            static_cast<size_t>(1));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Weight",
+            DATE_TIME_NO_VAR(2017, 8, 14, 8, 45, 0),
+            44,
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
 
-        ASSERT_EQ(
-                TestParameterExtractor::get_m_timedCValues(&extractor)
-                        .at(DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0))
-                        .size(),
-                static_cast<size_t>(2));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Gist",
-                DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
-                varToValue(true),
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-        ASSERT_TRUE(covariateEventIsPresent(
-                "Height",
-                DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
-                123,
-                TestParameterExtractor::get_m_timedCValues(&extractor)));
-    }
+    ASSERT_EQ(
+            TestParameterExtractor::get_m_timedCValues(&extractor).at(DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0)).size(),
+            static_cast<size_t>(2));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Gist",
+            DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+            varToValue(true),
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
+    ASSERT_TRUE(covariateEventIsPresent(
+            "Height",
+            DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0),
+            123,
+            TestParameterExtractor::get_m_timedCValues(&extractor)));
 }
 
 TEST(Core_TestParameterExtractor, PE_extract1_0)

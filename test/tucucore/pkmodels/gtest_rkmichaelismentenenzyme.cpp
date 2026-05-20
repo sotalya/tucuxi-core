@@ -834,7 +834,7 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten2compBolus)
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
             Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue(500));
+    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue{500});
 
     {
 
@@ -866,9 +866,9 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten2compBolus)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "rifampicin");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -899,9 +899,9 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten2compBolus)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "rifampicin");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -932,7 +932,7 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtra)
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
             Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue(500));
+    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue{500});
 
     {
 
@@ -964,9 +964,9 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtra)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "rifampicin");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -998,9 +998,9 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtra)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }
@@ -1027,7 +1027,7 @@ TEST(Core_TestMichaelisMentenEnzyme1comp, MichaelisMenten1compExtraPercentilesAp
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
             Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue(500));
+    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue{500});
 
     {
 

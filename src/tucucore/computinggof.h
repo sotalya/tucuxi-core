@@ -158,11 +158,11 @@ protected:
             Value& _meanAbsolutePredictionError);
 
     /// Machine-epsilon for the Value type.
-    inline static constexpr Value m_valueEps = std::numeric_limits<Value>::epsilon();
+    inline static constexpr Value VALUE_EPS = std::numeric_limits<Value>::epsilon();
     /// Positive inifinity constant for the Value type.
-    inline static constexpr Value m_plusInf = std::numeric_limits<Value>::infinity();
+    inline static constexpr Value PLUS_INF = std::numeric_limits<Value>::infinity();
     /// Negative inifinity constant for the Value type.
-    inline static constexpr Value m_negInf = -std::numeric_limits<Value>::infinity();
+    inline static constexpr Value NEG_INF = -std::numeric_limits<Value>::infinity();
 };
 
 } // namespace Core

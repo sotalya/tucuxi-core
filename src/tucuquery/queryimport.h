@@ -59,7 +59,7 @@ public:
     ///
     QueryImport();
 
-    virtual ~QueryImport();
+    ~QueryImport() override;
 
     ///
     /// \brief importFromFile
@@ -147,6 +147,8 @@ protected:
     Tucuxi::Core::TargetExtractionOption getChildTargetExtractionOptionEnum(
             Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     Tucuxi::Core::FormulationAndRouteSelectionOption getChildFormulationAndRouteSelectionOptionEnum(
+            Common::XmlNodeIterator _rootIterator, const std::string& _childName);
+    Tucuxi::Core::AdjustmentWithCurrentDosageOption getChildAdjustmentWithCurrentDosageOptionEnum(
             Common::XmlNodeIterator _rootIterator, const std::string& _childName);
 
 private:

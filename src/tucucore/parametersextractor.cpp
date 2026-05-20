@@ -47,18 +47,18 @@ ParametersExtractor::ParametersExtractor(
 
     // Create a list of time instants at which to compute the parameters, together with the covariate values that have
     // to be set at those instants.
-    //std::cout << "New" << std::endl;
+    //std::cout << "New" << '\n';
     for (const auto& cv : _covariates) {
         const DateTime dt = cv.getEventTime();
 
 
-        //std::cout << dt.month() << " " << dt.day() << " " << dt.hour() << " " << dt.minute() << std::endl;
+        //std::cout << dt.month() << " " << dt.day() << " " << dt.hour() << " " << dt.minute() << '\n';
 
         //if (dt <= m_end) {
-        //    std::cout << "In" << std::endl;
+        //    std::cout << "In" << '\n';
         //}
         //else {
-        //    std::cout << "Out" << std::endl;
+        //    std::cout << "Out" << '\n';
         //}
 
         // Covariate events past _end are discarded.
@@ -217,7 +217,7 @@ ComputingStatus ParametersExtractor::extract(ParameterSetSeries& _series)
                         tcv.first,
                         cv.second));
 
-                // std::cout << "Covariate " << cv.first << " : " << cv.second << std::endl;
+                // std::cout << "Covariate " << cv.first << " : " << cv.second << '\n';
                 m_ogm.registerInput(event, cv.first);
                 cEvMap.insert(std::make_pair(cv.first, event));
             }
@@ -227,7 +227,7 @@ ComputingStatus ParametersExtractor::extract(ParameterSetSeries& _series)
         else {
             // Just set the covariate values that are scheduled at this time instant.
             for (const auto& cv : tcv.second) {
-                // std::cout << "Covariate " << cv.first << " : " << cv.second << std::endl;
+                // std::cout << "Covariate " << cv.first << " : " << cv.second << '\n';
                 cEvMap.at(cv.first)->setValue(cv.second);
             }
         }

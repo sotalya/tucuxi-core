@@ -35,7 +35,7 @@ std::ostream& operator<<(std::ostream& _stream, const ComputingStatus& _e)
 
 
 
-std::string errorMessage(Tucuxi::Core::ComputingStatus _computingStatus)
+std::string errorMessage(Tucuxi::Core::ComputingStatus _status)
 {
     // Duplicate of what we have in the QueryResponseExport
     static std::map<Tucuxi::Core::ComputingStatus, std::pair<std::string, std::string>> m = {
@@ -106,7 +106,7 @@ std::string errorMessage(Tucuxi::Core::ComputingStatus _computingStatus)
             {Tucuxi::Core::ComputingStatus::NoDosageHistory, {"NoDosageHistory", "48"}},
             {Tucuxi::Core::ComputingStatus::SampleBeforeTreatmentStart, {"SampleBeforeTreatmentStart", "49"}}};
 
-    auto it = m.find(_computingStatus);
+    auto it = m.find(_status);
     if (it != m.end()) {
         std::pair<std::string, std::string> m2 = it->second;
         return m2.first;

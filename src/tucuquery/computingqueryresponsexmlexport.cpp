@@ -402,7 +402,7 @@ bool ComputingQueryResponseXmlExport::exportSinglePrediction(
 
     // Retrieve Goodness-of-Fit statistics and export them.
     auto gof = _prediction->getGof();
-    if (gof) {
+    if (gof != nullptr) {
         Tucuxi::Common::XmlNode gofNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "goodnessOfFit");
         _rootNode.addChild(gofNode);
         addNode(gofNode, "unit", gof->getUnit().toString());
@@ -476,7 +476,7 @@ bool ComputingQueryResponseXmlExport::exportSinglePoints(
 
     // Retrieve Goodness-of-Fit statistics and export them.
     auto gof = _prediction->getGof();
-    if (gof) {
+    if (gof != nullptr) {
         Tucuxi::Common::XmlNode gofNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "goodnessOfFit");
         _rootNode.addChild(gofNode);
         addNode(gofNode, "unit", gof->getUnit().toString());

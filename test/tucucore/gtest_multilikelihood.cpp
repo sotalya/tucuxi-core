@@ -45,7 +45,7 @@ TEST(Core_TestMultiLikeliHood, oneAnalyte1Sample)
 {
     //first scenario: Only a single analyte and one sample (Using ConstantEliminationBolus intakes)
 #if GTEST_VERBOSE
-    std::cout << __FUNCTION__ << std::endl;
+    std::cout << __FUNCTION__ << '\n';
 #endif
 
     Tucuxi::Core::OmegaMatrix omega;
@@ -94,7 +94,7 @@ TEST(Core_TestMultiLikeliHood, oneAnalyte1Sample)
                     date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
             Duration(),
-            DoseValue(200.0),
+            DoseValue{200.0},
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
@@ -106,7 +106,7 @@ TEST(Core_TestMultiLikeliHood, oneAnalyte1Sample)
                     date::year_month_day(date::year(2017), date::month(6), date::day(7)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
             Duration(),
-            DoseValue(200.0),
+            DoseValue{200.0},
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
@@ -164,7 +164,7 @@ TEST(Core_TestMultiLikeliHood, oneAnalyte3Samples)
 {
     //Second scenario: A single analyte and 3 samples
 #if GTEST_VERBOSE
-    std::cout << __FUNCTION__ << std::endl;
+    std::cout << __FUNCTION__ << '\n';
 #endif
 
     Tucuxi::Core::OmegaMatrix omega;
@@ -224,7 +224,7 @@ TEST(Core_TestMultiLikeliHood, oneAnalyte3Samples)
                     date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
             Duration(),
-            DoseValue(200.0),
+            DoseValue{200.0},
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
@@ -236,7 +236,7 @@ TEST(Core_TestMultiLikeliHood, oneAnalyte3Samples)
                     date::year_month_day(date::year(2017), date::month(6), date::day(7)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
             Duration(),
-            DoseValue(200.0),
+            DoseValue{200.0},
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
@@ -296,7 +296,7 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte1)
 {
     // Third scenario: A 2-analyte with one sample on analyte 1 (using MultiConstantEliminationBolus)
 #if GTEST_VERBOSE
-    std::cout << __FUNCTION__ << std::endl;
+    std::cout << __FUNCTION__ << '\n';
 #endif
 
     Tucuxi::Core::OmegaMatrix omega;
@@ -354,7 +354,7 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte1)
                     date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
             Duration(),
-            DoseValue(200.0),
+            DoseValue{200.0},
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
@@ -366,7 +366,7 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte1)
                     date::year_month_day(date::year(2017), date::month(6), date::day(7)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
             Duration(),
-            DoseValue(200.0),
+            DoseValue{200.0},
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
@@ -441,7 +441,7 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte2)
 {
     //A 2-analyte with one sample on analyte 2
 #if GTEST_VERBOSE
-    std::cout << __FUNCTION__ << std::endl;
+    std::cout << __FUNCTION__ << '\n';
 #endif
 
     Tucuxi::Core::OmegaMatrix omega;
@@ -500,7 +500,7 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte2)
                     date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
             Duration(),
-            DoseValue(200.0),
+            DoseValue{200.0},
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
@@ -512,7 +512,7 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes1SampleOnAnalyte2)
                     date::year_month_day(date::year(2017), date::month(6), date::day(7)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
             Duration(),
-            DoseValue(200.0),
+            DoseValue{200.0},
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
@@ -580,7 +580,7 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesDifferentTimes)
 {
 //A 2-analyte with one sample per analytes at different times
 #if GTEST_VERBOSE
-    std::cout << __FUNCTION__ << std::endl;
+    std::cout << __FUNCTION__ << '\n';
 #endif
 
 
@@ -643,7 +643,7 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesDifferentTimes)
                     date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
             Duration(),
-            DoseValue(200.0),
+            DoseValue{200.0},
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
@@ -655,7 +655,7 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesDifferentTimes)
                     date::year_month_day(date::year(2017), date::month(6), date::day(7)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
             Duration(),
-            DoseValue(200.0),
+            DoseValue{200.0},
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
@@ -730,7 +730,7 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesSameTime)
 {
     //A 2-analyte with one sample per analytes at the same time
 #if GTEST_VERBOSE
-    std::cout << __FUNCTION__ << std::endl;
+    std::cout << __FUNCTION__ << '\n';
 #endif
 
     Tucuxi::Core::OmegaMatrix omega;
@@ -793,7 +793,7 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesSameTime)
                     date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
             Duration(),
-            DoseValue(200.0),
+            DoseValue{200.0},
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
@@ -805,7 +805,7 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes2SamplesSameTime)
                     date::year_month_day(date::year(2017), date::month(6), date::day(7)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
             Duration(),
-            DoseValue(200.0),
+            DoseValue{200.0},
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
@@ -875,7 +875,7 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes6Samples)
 {
     //A 2-analyte with three samples per analyte, with one of them at the same time, the others at different times.
 #if GTEST_VERBOSE
-    std::cout << __FUNCTION__ << std::endl;
+    std::cout << __FUNCTION__ << '\n';
 #endif
 
     Tucuxi::Core::OmegaMatrix omega;
@@ -966,7 +966,7 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes6Samples)
                     date::year_month_day(date::year(2017), date::month(6), date::day(6)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
             Duration(),
-            DoseValue(200.0),
+            DoseValue{200.0},
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),
@@ -978,7 +978,7 @@ TEST(Core_TestMultiLikeliHood, DISABLED_twoAnalytes6Samples)
                     date::year_month_day(date::year(2017), date::month(6), date::day(7)),
                     Duration(std::chrono::hours(8), std::chrono::minutes(30), std::chrono::seconds(0))),
             Duration(),
-            DoseValue(200.0),
+            DoseValue{200.0},
             TucuUnit("mg"),
             Duration(std::chrono::hours(24)),
             getBolusFormulationAndRoute(),

@@ -776,14 +776,14 @@ static std::unique_ptr<DrugTreatment> buildDrugTreatmentMix(
     //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
     // Add a treatment intake every ten days in June
     // 200mg via a intravascular at 08h30, starting the 01.06
-    LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), _route1, Duration(), Duration(std::chrono::hours(6)));
+    LastingDose periodicDose(DoseValue{200.0}, TucuUnit("mg"), _route1, Duration(), Duration(std::chrono::hours(6)));
     DosageRepeat repeatedDose(periodicDose, 16);
     auto sept2018 = std::make_unique<DosageTimeRange>(startSept2018, repeatedDose);
 
 
     drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
 
-    LastingDose periodicDose2(DoseValue(200.0), TucuUnit("mg"), _route2, Duration(), Duration(std::chrono::hours(6)));
+    LastingDose periodicDose2(DoseValue{200.0}, TucuUnit("mg"), _route2, Duration(), Duration(std::chrono::hours(6)));
     DosageRepeat repeatedDose2(periodicDose2, 16);
     auto second =
             std::make_unique<DosageTimeRange>(startSept2018 + Duration(std::chrono::hours(6 * 16)), repeatedDose2);
@@ -812,21 +812,21 @@ static std::unique_ptr<DrugTreatment> buildDrugTreatmentMix3(
     //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
     // Add a treatment intake every ten days in June
     // 200mg via a intravascular at 08h30, starting the 01.06
-    LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), _route1, Duration(), Duration(std::chrono::hours(24)));
+    LastingDose periodicDose(DoseValue{200.0}, TucuUnit("mg"), _route1, Duration(), Duration(std::chrono::hours(24)));
     DosageRepeat repeatedDose(periodicDose, 2);
     auto sept2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startSept2018, repeatedDose);
 
 
     drugTreatment->getModifiableDosageHistory().addTimeRange(*sept2018);
 
-    LastingDose periodicDose2(DoseValue(200.0), TucuUnit("mg"), _route2, Duration(), Duration(std::chrono::hours(24)));
+    LastingDose periodicDose2(DoseValue{200.0}, TucuUnit("mg"), _route2, Duration(), Duration(std::chrono::hours(24)));
     DosageRepeat repeatedDose2(periodicDose2, 1);
     auto second = std::make_unique<Tucuxi::Core::DosageTimeRange>(
             startSept2018 + Duration(std::chrono::hours(2 * 24)), repeatedDose2);
 
     drugTreatment->getModifiableDosageHistory().addTimeRange(*second);
 
-    LastingDose periodicDose3(DoseValue(200.0), TucuUnit("mg"), _route3, Duration(), Duration(std::chrono::hours(24)));
+    LastingDose periodicDose3(DoseValue{200.0}, TucuUnit("mg"), _route3, Duration(), Duration(std::chrono::hours(24)));
     DosageRepeat repeatedDose3(periodicDose3, 1);
     auto third = std::make_unique<Tucuxi::Core::DosageTimeRange>(
             startSept2018 + Duration(std::chrono::hours(3 * 24)), repeatedDose3);
@@ -890,9 +890,9 @@ TEST(Core_TestMichaelisMenten2comp, Bolus)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -923,9 +923,9 @@ TEST(Core_TestMichaelisMenten2comp, Bolus)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }
@@ -984,9 +984,9 @@ TEST(Core_TestMichaelisMenten2comp, Infusion)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -1017,9 +1017,9 @@ TEST(Core_TestMichaelisMenten2comp, Infusion)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }
@@ -1075,9 +1075,9 @@ TEST(Core_TestMichaelisMenten2comp, Extra)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -1108,9 +1108,9 @@ TEST(Core_TestMichaelisMenten2comp, Extra)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }
@@ -1167,9 +1167,9 @@ TEST(Core_TestMichaelisMenten2comp, ExtraLag)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -1200,9 +1200,9 @@ TEST(Core_TestMichaelisMenten2comp, ExtraLag)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }
@@ -1259,9 +1259,9 @@ TEST(Core_TestMichaelisMenten2comp, Mix)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -1292,9 +1292,9 @@ TEST(Core_TestMichaelisMenten2comp, Mix)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }
@@ -1353,9 +1353,9 @@ TEST(Core_TestMichaelisMenten2comp, MixPercentiles)
         //            ASSERT_EQ(resp->getIds().size(), static_cast<size_t>(1));
         //            ASSERT_EQ(resp->getIds()[0], "analyte");
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }

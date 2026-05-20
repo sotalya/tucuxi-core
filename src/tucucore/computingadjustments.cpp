@@ -193,11 +193,11 @@ std::vector<DosageAdjustment> ComputingAdjustments::sortAndFilterCandidates(
     std::sort(_candidates.rbegin(), _candidates.rend(), compareCandidates);
 
 #if 0
-    std::cout << "Sorted..." << std::endl;
+    std::cout << "Sorted..." << '\n';
     // For debugging purpose only
     for (const auto & candidates : dosageCandidates)
     {
-        std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
+        std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << '\n';
     }
 #endif // 0
 
@@ -331,7 +331,7 @@ ComputingStatus ComputingAdjustments::computeCandidate(
         std::map<AnalyteGroupId, std::shared_ptr<PkModel> >& _pkModel,
         std::vector<AnalyteGroupId>& _allGroupIds,
         std::map<AnalyteGroupId, Etas> _etas,
-        std::vector<DosageAdjustment>& allAdjustments,
+        std::vector<DosageAdjustment>& _allAdjustments,
         DateTime& _calculationStartTime,
         bool& _isValidCandidate,
         std::vector<ConcentrationPredictionPtr>& _analytesPredictions,
@@ -633,6 +633,17 @@ ComputingStatus ComputingAdjustments::compute(
                 _traits, _request, *resp, pkModel, allGroupIds, etas, targetSeries, calculationStartTime);
     }
 
+    if (_traits->getAdjustmentWithCurrentDosageOption() == AdjustmentWithCurrentDosageOption::DontAdjustIfCurrentInRange
+        && resp->isCurrentInRange()) {
+        std::vector<DosageAdjustment> currentAsAdjustment;
+        currentAsAdjustment.push_back(resp->getCurrentDosageWithScore());
+        resp->setAdjustments(currentAsAdjustment);
+
+        ComputingComponent::setCompartmentInfo(_traits, _request, *resp);
+        _response->addResponse(std::move(resp));
+        return ComputingStatus::Ok;
+    }
+
     std::vector<DosageAdjustment> dosageCandidates;
 
     // A vector of vector because each adjustment candidate can have various targets
@@ -786,14 +797,14 @@ ComputingStatus ComputingAdjustments::compute(
     {
         for (const auto & targetEvaluationResult : evaluationResult) {
             std::cout << "Evaluation. Score : " << targetEvaluationResult.getScore() <<
-                         " . Value : " << targetEvaluationResult.getValue() << std::endl;
+                         " . Value : " << targetEvaluationResult.getValue() << '\n';
         }
     }
 
     // For debugging purpose only
     for (const auto & candidates : dosageCandidates)
     {
-        std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
+        std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << '\n';
     }
 #endif // 0
 
@@ -1913,7 +1924,7 @@ ComputingStatus ComputingAdjustments::evaluateCurrentDosageHistory(
     {
         for (const auto & targetEvaluationResult : evaluationResult) {
             std::cout << "Evaluation. Score : " << targetEvaluationResult.getScore() <<
-                         " . Value : " << targetEvaluationResult.getValue() << std::endl;
+                         " . Value : " << targetEvaluationResult.getValue() << '\n';
         }
     }
 #endif // 0

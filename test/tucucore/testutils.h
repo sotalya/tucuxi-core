@@ -25,6 +25,7 @@
 
 #include "tucucommon/timeofday.h"
 
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
 /// \brief Create a DateTime temporary variable (without creating an explicit named variable for this).
 /// \param YY Year in 4 digits format.
 /// \param MM Month in 2 digits format.
@@ -65,7 +66,7 @@
         auto tmp = std::make_unique<CovariateDefinition>(                                                            \
                 #NAME, Tucuxi::Common::Utils::varToString(VALUE), nullptr, CovariateType::C_TYPE, DataType::D_TYPE); \
         tmp->setInterpolationType(InterpolationType::INTER_TYPE);                                                    \
-        CD_VEC.push_back(std::move(tmp));                                                                            \
+        (CD_VEC).push_back(std::move(tmp));                                                                          \
     } while (0);
 
 
@@ -82,7 +83,7 @@
         auto tmp = std::make_unique<CovariateDefinition>(                                                           \
                 NAME, Tucuxi::Common::Utils::varToString(VALUE), nullptr, CovariateType::C_TYPE, DataType::D_TYPE); \
         tmp->setInterpolationType(InterpolationType::INTER_TYPE);                                                   \
-        CD_VEC.push_back(std::move(tmp));                                                                           \
+        (CD_VEC).push_back(std::move(tmp));                                                                         \
     } while (0);
 
 
@@ -100,7 +101,7 @@
                 #NAME, Tucuxi::Common::Utils::varToString(VALUE), nullptr, CovariateType::C_TYPE, DataType::D_TYPE); \
         tmp->setInterpolationType(InterpolationType::INTER_TYPE);                                                    \
         tmp->setUnit(Unit(UNIT));                                                                                    \
-        CD_VEC.push_back(std::move(tmp));                                                                            \
+        (CD_VEC).push_back(std::move(tmp));                                                                          \
     } while (0);
 
 
@@ -119,7 +120,7 @@
                 #NAME, Tucuxi::Common::Utils::varToString(VALUE), nullptr, CovariateType::C_TYPE, DataType::D_TYPE); \
         tmp->setInterpolationType(InterpolationType::INTER_TYPE);                                                    \
         tmp->setRefreshPeriod(REFR_INT);                                                                             \
-        CD_VEC.push_back(std::move(tmp));                                                                            \
+        (CD_VEC).push_back(std::move(tmp));                                                                          \
     } while (0);
 
 
@@ -139,7 +140,7 @@
         tmp->setInterpolationType(InterpolationType::INTER_TYPE);                                                    \
         tmp->setRefreshPeriod(REFR_INT);                                                                             \
         tmp->setUnit(Unit(UNIT));                                                                                    \
-        CD_VEC.push_back(std::move(tmp));                                                                            \
+        (CD_VEC).push_back(std::move(tmp));                                                                          \
     } while (0);
 
 
@@ -153,7 +154,7 @@
     do {                                                                                           \
         auto tmp = std::make_unique<PatientCovariate>(                                             \
                 #NAME, Tucuxi::Common::Utils::varToString(VALUE), DataType::D_TYPE, Unit(), DATE); \
-        PV_VEC.push_back(std::move(tmp));                                                          \
+        (PV_VEC).push_back(std::move(tmp));                                                        \
     } while (0);
 
 
@@ -168,7 +169,7 @@
     do {                                                                                               \
         auto tmp = std::make_unique<PatientCovariate>(                                                 \
                 #NAME, Tucuxi::Common::Utils::varToString(VALUE), DataType::D_TYPE, Unit(UNIT), DATE); \
-        PV_VEC.push_back(std::move(tmp));                                                              \
+        (PV_VEC).push_back(std::move(tmp));                                                            \
     } while (0);
 
 
@@ -185,7 +186,7 @@
                 OPERATION,                                                                                             \
                 OperationInputList{OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)});   \
         auto tmp = std::make_unique<CovariateDefinition>(#NAME, Tucuxi::Common::Utils::varToString(0), std::move(op)); \
-        CD_VEC.push_back(std::move(tmp));                                                                              \
+        (CD_VEC).push_back(std::move(tmp));                                                                            \
     } while (0);
 
 /// \brief Add a computed covariate definition to a given covariate definitions vector.
@@ -201,7 +202,7 @@
                 EXPRESSION,                                                                                            \
                 OperationInputList{OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)});   \
         auto tmp = std::make_unique<CovariateDefinition>(#NAME, Tucuxi::Common::Utils::varToString(0), std::move(op)); \
-        CD_VEC.push_back(std::move(tmp));                                                                              \
+        (CD_VEC).push_back(std::move(tmp));                                                                            \
     } while (0);
 
 
@@ -222,7 +223,7 @@
                         OperationInput(OP2, InputType::DOUBLE),                                                        \
                         OperationInput(OP3, InputType::DOUBLE)});                                                      \
         auto tmp = std::make_unique<CovariateDefinition>(#NAME, Tucuxi::Common::Utils::varToString(0), std::move(op)); \
-        CD_VEC.push_back(std::move(tmp));                                                                              \
+        (CD_VEC).push_back(std::move(tmp));                                                                            \
     } while (0);
 
 /// \brief Add a computed covariate definition to a given covariate definitions vector.
@@ -242,7 +243,7 @@
                         OperationInput(OP2, InputType::DOUBLE),                                                        \
                         OperationInput(OP3, InputType::DOUBLE)});                                                      \
         auto tmp = std::make_unique<CovariateDefinition>(#NAME, Tucuxi::Common::Utils::varToString(0), std::move(op)); \
-        CD_VEC.push_back(std::move(tmp));                                                                              \
+        (CD_VEC).push_back(std::move(tmp));                                                                            \
     } while (0);
 
 /// \brief Check a refresh map for the presence of a given covariate at a specified time.
@@ -268,7 +269,7 @@
                 OPERATION,                                                                                           \
                 OperationInputList{OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)}); \
         auto tmp = std::make_unique<ParameterDefinition>(#NAME, 0, std::move(op), ParameterVariabilityType::None);   \
-        PD_VEC.push_back(std::move(tmp));                                                                            \
+        (PD_VEC).push_back(std::move(tmp));                                                                          \
     } while (0);
 
 /// \brief Add a computed parameter definition to a given parameter definitions vector.
@@ -284,6 +285,9 @@
                 EXPRESSION,                                                                                          \
                 OperationInputList{OperationInput(OP1, InputType::DOUBLE), OperationInput(OP2, InputType::DOUBLE)}); \
         auto tmp = std::make_unique<ParameterDefinition>(#NAME, 0, std::move(op), ParameterVariabilityType::None);   \
-        PD_VEC.push_back(std::move(tmp));                                                                            \
+        (PD_VEC).push_back(std::move(tmp));                                                                          \
     } while (0);
+
+// NOLINTEND(cppcoreguidelines-macro-usage)
+
 #endif // TESTUTILS_H

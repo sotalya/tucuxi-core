@@ -37,12 +37,10 @@ int double_fuzzy_compare(double a, double b, double relative_tolerance, double a
             // Fuzzy equality (via abs. tol. only)
             return 0;
         }
-        else if (a > b) {
+        if (a > b) {
             return 1; // Fuzzy greater than
         }
-        else {
-            return -1; // Fuzzy less than
-        }
+        return -1; // Fuzzy less than
     }
 
     const double diff = std::fabs(a - b);
@@ -51,12 +49,10 @@ int double_fuzzy_compare(double a, double b, double relative_tolerance, double a
     if (diff <= absolute_tolerance || diff / average <= relative_tolerance) {
         return 0; // Fuzzy equality.
     }
-    else if (a > b) {
+    if (a > b) {
         return 1; // Fuzzy greater than
     }
-    else {
-        return -1; // Fuzzy less than
-    }
+    return -1; // Fuzzy less than
 }
 
 bool double_eq_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance)
@@ -111,7 +107,7 @@ Tucuxi::Core::AbsorptionModel getExtraAbsorptionModel()
 */
 std::unique_ptr<DrugTreatment> buildDrugTreatment(
         const FormulationAndRoute& _route,
-        const DateTime _startDateTime,
+        const DateTime& _startDateTime,
         DoseValue _doseValue,
         TucuUnit _unit,
         int _interval,
@@ -135,7 +131,7 @@ std::unique_ptr<DrugTreatment> buildDrugTreatment(
 
 std::unique_ptr<DosageTimeRange> buildDosageTimeRange(
         const FormulationAndRoute& _route,
-        const DateTime _startDateTime,
+        const DateTime& _startDateTime,
         DoseValue _doseValue,
         const TucuUnit& _unit,
         int _interval,

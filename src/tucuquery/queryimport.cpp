@@ -43,8 +43,8 @@ namespace Tucuxi {
 namespace Query {
 
 
-static const char* DATE_FORMAT = "%Y-%m-%dT%H:%M:%S";  // NOLINT(readability-identifier-naming)
-static const char* DATE_FORMAT2 = "%Y-%m-%d %H:%M:%S"; // NOLINT(readability-identifier-naming)
+static const char* const DATE_FORMAT = "%Y-%m-%dT%H:%M:%S";  // NOLINT(readability-identifier-naming)
+static const char* const DATE_FORMAT2 = "%Y-%m-%d %H:%M:%S"; // NOLINT(readability-identifier-naming)
 
 
 QueryImport::QueryImport() = default;
@@ -215,17 +215,17 @@ std::unique_ptr<Core::PatientCovariate> QueryImport::createCovariateData(
     if (dataTypeString == "int") {
         dataType = Core::DataType::Int;
     }
-    else if (dataTypeString == "double") {
-        dataType = Core::DataType::Double;
-    }
     else if (dataTypeString == "bool") {
         dataType = Core::DataType::Bool;
     }
     else if (dataTypeString == "date") {
         dataType = Core::DataType::Date;
     }
+    // else if (dataTypeString == "double") {
+    //    dataType = Core::DataType::Double;
+    //}
     else {
-        // TODO : there is an error to notify
+        // TODO : there is an error to notify if it is not "double"
         dataType = Core::DataType::Double;
     }
 
@@ -554,7 +554,7 @@ std::unique_ptr<Core::Dosage> QueryImport::createDosage(Common::XmlNodeIterator&
             }
             return std::make_unique<Core::DosageLoop>(*pDosageBounded);
         }
-        else if (dosageIterator->getName() == SINGLE_DOSE_AT_TIME_LIST_NODE_NAME) {
+        if (dosageIterator->getName() == SINGLE_DOSE_AT_TIME_LIST_NODE_NAME) {
             std::unique_ptr<Core::DosageBounded> pDosageBounded = createDosageBounded(_dosageRootIterator);
 
             if (!pDosageBounded) {
@@ -563,14 +563,12 @@ std::unique_ptr<Core::Dosage> QueryImport::createDosage(Common::XmlNodeIterator&
 
             if (auto* pSingleDoseAtTimeList = dynamic_cast<Core::SingleDoseAtTimeList*>(pDosageBounded.get())) {
                 std::unique_ptr<Core::SingleDoseAtTimeList> upSingleDoseAtTimeList(pSingleDoseAtTimeList);
-                pDosageBounded.release();
+                static_cast<void>(pDosageBounded.release());
                 return upSingleDoseAtTimeList;
             }
-            else {
-                return nullptr;
-            }
+            return nullptr;
         }
-        else if (dosageIterator->getName() == SIMPLE_DOSE_LIST_NODE_NAME) {
+        if (dosageIterator->getName() == SIMPLE_DOSE_LIST_NODE_NAME) {
             std::unique_ptr<Core::DosageBounded> pDosageBounded = createDosageBounded(_dosageRootIterator);
 
             if (!pDosageBounded) {
@@ -579,12 +577,10 @@ std::unique_ptr<Core::Dosage> QueryImport::createDosage(Common::XmlNodeIterator&
 
             if (auto* pSimpleDoseList = dynamic_cast<Core::SimpleDoseList*>(pDosageBounded.get())) {
                 std::unique_ptr<Core::SimpleDoseList> upSimpleDoseList(pSimpleDoseList);
-                pDosageBounded.release();
+                static_cast<void>(pDosageBounded.release());
                 return upSimpleDoseList;
             }
-            else {
-                return nullptr;
-            }
+            return nullptr;
         }
     }
 
@@ -1186,6 +1182,8 @@ std::unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> QueryImport::getChildCom
     Tucuxi::Core::FormulationAndRouteSelectionOption formulationAndRouteSelectionOption =
             getChildFormulationAndRouteSelectionOptionEnum(_rootIterator, OPTIONS);
 
+    Tucuxi::Core::AdjustmentWithCurrentDosageOption adjustmentWithCurrentDosageOption =
+            getChildAdjustmentWithCurrentDosageOptionEnum(_rootIterator, OPTIONS);
 
     return std::make_unique<Tucuxi::Core::ComputingTraitAdjustment>(
             _requestResponseId,
@@ -1199,7 +1197,8 @@ std::unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> QueryImport::getChildCom
             restPeriodOption,
             steadyStateTargetOption,
             targetExtractionOption,
-            formulationAndRouteSelectionOption);
+            formulationAndRouteSelectionOption,
+            adjustmentWithCurrentDosageOption);
 }
 
 
@@ -1366,6 +1365,34 @@ Tucuxi::Core::FormulationAndRouteSelectionOption QueryImport::getChildFormulatio
     setNodeError(formulationAndRouteSelectionOptioneRootIterator);
 
     return Tucuxi::Core::FormulationAndRouteSelectionOption::LastFormulationAndRoute;
+}
+
+
+Tucuxi::Core::AdjustmentWithCurrentDosageOption QueryImport::getChildAdjustmentWithCurrentDosageOptionEnum(
+        Common::XmlNodeIterator _rootIterator, const std::string& _childName)
+{
+    static const std::string NODE = "adjustmentWithCurrentDosageOption";
+
+    Common::XmlNodeIterator optionsRootIterator = _rootIterator->getChildren(_childName);
+    Common::XmlNodeIterator nodeIterator = optionsRootIterator->getChildren(NODE);
+
+    if (nodeIterator == Common::XmlNodeIterator::none()) {
+        return Tucuxi::Core::AdjustmentWithCurrentDosageOption::AlwaysAdjust;
+    }
+
+    static std::map<std::string, Tucuxi::Core::AdjustmentWithCurrentDosageOption> m = {
+            {"alwaysAdjust", Tucuxi::Core::AdjustmentWithCurrentDosageOption::AlwaysAdjust},
+            {"dontAdjustIfCurrentInRange",
+             Tucuxi::Core::AdjustmentWithCurrentDosageOption::DontAdjustIfCurrentInRange}};
+
+    std::string value = nodeIterator->getValue();
+    auto it = m.find(value);
+    if (it != m.end()) {
+        return it->second;
+    }
+
+    setNodeError(nodeIterator);
+    return Tucuxi::Core::AdjustmentWithCurrentDosageOption::AlwaysAdjust;
 }
 
 

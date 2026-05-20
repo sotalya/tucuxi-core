@@ -20,7 +20,13 @@
  */
 
 
+#include <cstdio>
 #include <memory>
+
+#ifdef __linux__
+#include <fcntl.h>
+#include <unistd.h>
+#endif // __linux__
 
 #include <gtest/gtest.h>
 
@@ -36,7 +42,7 @@ class DiffOperation : public HardcodedOperation
 public:
     /// \brief Implementation of the inherited clone operation.
     /// \return Pointer to a new object of subclass' type.
-    virtual std::unique_ptr<Operation> clone() const
+    std::unique_ptr<Operation> clone() const override
     {
         return std::make_unique<DiffOperation>(*this);
     }
@@ -49,7 +55,7 @@ protected:
     /// \return true if the operation could be performed (that is, inputs can be successfully retrieved), false
     ///         otherwise.
     /// \pre check(_inputs) == true
-    virtual bool compute(const OperationInputList& _inputs, double& _result) const
+    bool compute(const OperationInputList& _inputs, double& _result) const override
     {
         double a;
         int b;
@@ -65,7 +71,7 @@ protected:
 
 
     /// \brief Fill the vector of required inputs.
-    virtual void fillRequiredInputs()
+    void fillRequiredInputs() override
     {
         OperationInput a("a", InputType::DOUBLE);
         OperationInput b("b", InputType::INTEGER);
@@ -267,7 +273,17 @@ TEST(Core_TestOperation, JSOperationIfEqual)
             return theta_4;
             )",
             {OperationInput("flu", InputType::INTEGER), OperationInput("gsta1", InputType::INTEGER)});
-    // Operation ok ?
+    // The JS expressions below use = instead of == in conditions, which causes
+    // tiny-js to print "Trying to assign to an un-named type" via its TRACE
+    // macro (printf). Suppress stdout to keep test output clean.
+#ifdef __linux__
+    std::fflush(stdout);
+    int savedStdout = dup(fileno(stdout));
+    int devNull = open("/dev/null", O_WRONLY);
+    dup2(devNull, fileno(stdout));
+    close(devNull);
+#endif // __linux__
+
     rc = jsOp2.evaluate({OperationInput("flu", 0), OperationInput("gsta1", 1)}, res);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(1, res);
@@ -280,6 +296,12 @@ TEST(Core_TestOperation, JSOperationIfEqual)
     rc = jsOp2.evaluate({OperationInput("flu", 1), OperationInput("gsta1", 3)}, res);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(0.92, res);
+
+#ifdef __linux__
+    std::fflush(stdout);
+    dup2(savedStdout, fileno(stdout));
+    close(savedStdout);
+#endif // __linux__
 }
 
 TEST(Core_TestOperation, DynamicOperation)

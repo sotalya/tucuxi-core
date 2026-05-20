@@ -84,7 +84,7 @@ TEST(Core_TestConstantEliminationBolus, Test0)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -94,7 +94,7 @@ TEST(Core_TestConstantEliminationBolus, Test0)
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component.get())->setPkModelCollection(collection);
+    dynamic_cast<ComputingComponent*>(component.get())->setPkModelCollection(collection);
 
 
     {
@@ -248,7 +248,7 @@ TEST(Core_TestConstantEliminationBolus, Test1)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -410,7 +410,7 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelAdditive)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -508,7 +508,7 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelExponential)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -605,7 +605,7 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelProportional)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -701,7 +701,7 @@ TEST(Core_TestConstantEliminationBolus, ResidualErrorModelMixed)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -808,7 +808,7 @@ TEST(Core_TestConstantEliminationBolus, ParamAdditive)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -915,7 +915,7 @@ TEST(Core_TestConstantEliminationBolus, ParamAdditiveResidualErrorModelAdditive)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -1023,7 +1023,7 @@ TEST(Core_TestConstantEliminationBolus, ParamExponentialResidualErrorModelExpone
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -1132,7 +1132,7 @@ TEST(Core_TestConstantEliminationBolus, ParamProportionalResidualErrorModelPropo
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -1201,7 +1201,7 @@ TEST(Core_TestConstantEliminationBolus, ParamProportionalResidualErrorModelPropo
             //double newStd = std::sqrt(1.0 / ( 1.0 /std::pow(0.2, 2) + 1.0 / std::pow(0.3, 2)));
             // double newStd = std::sqrt(std::pow(0.2, 2) * std::pow(0.3, 2) / ( std::pow(0.2, 2) + std::pow(0.3, 2)));
             //double newStd = std::sqrt(std::pow(0.2, 2) * std::pow(0.3, 2) / ( std::pow(0.2, 2) + std::pow(0.3, 2)));
-            //std::cout << newStd << std::endl;
+            //std::cout << newStd << '\n';
 
 
             // Multiply the Inv CDF by the new standard deviation
@@ -1258,7 +1258,7 @@ TEST(Core_TestConstantEliminationBolus, Adjustments)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -1397,7 +1397,7 @@ TEST(Core_TestConstantEliminationBolus, Adjustments2)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used

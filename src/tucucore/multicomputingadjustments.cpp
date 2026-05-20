@@ -235,11 +235,11 @@ std::vector<DosageAdjustment> MultiComputingAdjustments::sortAndFilterCandidates
     });
 
 #if 0
-    std::cout << "Sorted..." << std::endl;
+    std::cout << "Sorted..." << '\n';
     // For debugging purpose only
     for (const auto & candidates : dosageCandidates)
     {
-        std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
+        std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << '\n';
     }
 #endif // 0
 
@@ -779,14 +779,14 @@ ComputingStatus MultiComputingAdjustments::compute(
     {
         for (const auto & targetEvaluationResult : evaluationResult) {
             std::cout << "Evaluation. Score : " << targetEvaluationResult.getScore() <<
-                         " . Value : " << targetEvaluationResult.getValue() << std::endl;
+                         " . Value : " << targetEvaluationResult.getValue() << '\n';
         }
     }
 
     // For debugging purpose only
     for (const auto & candidates : dosageCandidates)
     {
-        std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << std::endl;
+        std::cout << "Evaluation. Score : " << candidates.getGlobalScore()  << '\n';
     }
 #endif // 0
 

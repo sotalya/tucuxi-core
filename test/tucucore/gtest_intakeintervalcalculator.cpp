@@ -55,7 +55,7 @@ static void testSteadyState(
         const Tucuxi::Core::ParameterSetEvent& _microParameters,
         const Tucuxi::Core::ParameterSetEvent& _macroParameters,
         double _dose,
-        Tucuxi::Core::AbsorptionModel _route,
+        Tucuxi::Core::AbsorptionModel /*_route*/,
         std::chrono::hours _interval,
         std::chrono::seconds _infusionTime,
         size_t _nbPoints)
@@ -86,7 +86,6 @@ static void testSteadyState(
             TucuUnit("mg"),
             interval,
             Tucuxi::Core::FormulationAndRoute(),
-            //_route,
             infusionTime,
             _nbPoints);
 
@@ -131,7 +130,7 @@ static void testSteadyState(
             std::cout << inMicroResiduals[i] << ":" << outMicroResiduals[i] << " " << inMacroResiduals[i] << ":"
                       << outMacroResiduals[i] << " ";
         }
-        std::cout << std::endl;
+        std::cout << '\n';
 #endif
     }
 
@@ -149,7 +148,7 @@ static void testSingleVsMultiple(
         const Tucuxi::Core::ParameterSetEvent& _microParameters,
         const Tucuxi::Core::ParameterSetEvent& _macroParameters,
         double _dose,
-        Tucuxi::Core::AbsorptionModel _route,
+        Tucuxi::Core::AbsorptionModel /*_route*/,
         std::chrono::hours _interval,
         std::chrono::seconds _infusionTime,
         CycleSize _nbPoints)
@@ -205,9 +204,9 @@ static void testSingleVsMultiple(
             concentrations, times, intakeEvent, _microParameters, firstInResidual, isAll, outMicroMultiResiduals, true);
 
 #if GTEST_VERBOSE
-    std::cout << "[Micro Class Calculation]" << std::endl;
+    std::cout << "[Micro Class Calculation]" << '\n';
     for (unsigned int i = 0; i < residualSize; i++) {
-        std::cout << "Multiple Out residual[" << i << "] = " << outMicroMultiResiduals[i] << std::endl;
+        std::cout << "Multiple Out residual[" << i << "] = " << outMicroMultiResiduals[i] << '\n';
     }
 #endif
 
@@ -224,7 +223,7 @@ static void testSingleVsMultiple(
 
 #if GTEST_VERBOSE
     for (unsigned int i = 0; i < residualSize; i++) {
-        std::cout << "Single   Out residual[" << i << "] = " << outMicroSingleResiduals[i] << std::endl;
+        std::cout << "Single   Out residual[" << i << "] = " << outMicroSingleResiduals[i] << '\n';
     }
 #endif
 
@@ -235,9 +234,9 @@ static void testSingleVsMultiple(
             concentrations, times, intakeEvent, _macroParameters, firstInResidual, isAll, outMacroMultiResiduals, true);
 
 #if GTEST_VERBOSE
-    std::cout << "\n[Macro Class Calculation]" << std::endl;
+    std::cout << "\n[Macro Class Calculation]" << '\n';
     for (unsigned int i = 0; i < residualSize; i++) {
-        std::cout << "Multiple Out residual[" << i << "] = " << outMacroMultiResiduals[i] << std::endl;
+        std::cout << "Multiple Out residual[" << i << "] = " << outMacroMultiResiduals[i] << '\n';
     }
 #endif
 
@@ -256,7 +255,7 @@ static void testSingleVsMultiple(
 
 #if GTEST_VERBOSE
     for (unsigned int i = 0; i < residualSize; i++) {
-        std::cout << "Single   Out residual[" << i << "] = " << outMacroSingleResiduals[i] << std::endl;
+        std::cout << "Single   Out residual[" << i << "] = " << outMacroSingleResiduals[i] << '\n';
     }
 #endif
 
@@ -304,9 +303,9 @@ static void testSingleVsMultiple(
             true);
 
 #if GTEST_VERBOSE
-    std::cout << "\n[Macro Class Calculation]" << std::endl;
+    std::cout << "\n[Macro Class Calculation]" << '\n';
     for (unsigned int i = 0; i < residualSize; i++) {
-        std::cout << "Multiple Out residual[" << i << "] = " << outMacroMultiResiduals[i] << std::endl;
+        std::cout << "Multiple Out residual[" << i << "] = " << outMacroMultiResiduals[i] << '\n';
     }
 #endif
 
@@ -398,7 +397,7 @@ static void testCompare(
 
     if (res == Tucuxi::Core::ComputingStatus::Ok) {
         for (unsigned int i = 0; i < static_cast<unsigned int>(_nbPoints); i++) {
-            //                std::cout << i << " : " << concentrations0[0][i] << " , " << concentrations1[0][i] << std::endl;
+            //                std::cout << i << " : " << concentrations0[0][i] << " , " << concentrations1[0][i] << '\n';
             ASSERT_PRED4(double_eq_rel_abs, concentrations0[0][i], concentrations1[0][i], 0.0001, 0.0);
         }
 

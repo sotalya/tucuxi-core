@@ -116,7 +116,7 @@ bool OneCompartmentInfusionMicro::computeConcentrations(
     _outResiduals[firstCompartment] = concentrations[m_nbPoints - 1];
 
     // Return concentraions of first compartment
-    _concentrations[firstCompartment].assign(concentrations.data(), concentrations.data() + concentrations.size());
+    _concentrations[firstCompartment].assign(concentrations.cbegin(), concentrations.cend());
     // Only one compartment is existed.
     TMP_UNUSED_PARAMETER(_isAll);
 

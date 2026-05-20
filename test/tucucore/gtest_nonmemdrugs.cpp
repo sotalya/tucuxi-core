@@ -71,7 +71,7 @@ static void testNonmemCalculator(
 
         bool isAll = false;
 
-        // std::cout << typeid(calculator).name() << std::endl;
+        // std::cout << typeid(calculator).name() << '\n';
 
         {
             Tucuxi::Core::Residuals inResiduals;
@@ -110,7 +110,7 @@ static void testNonmemCalculator(
         for (size_t i = 0; i < _nbPoints; i++) {
             Tucuxi::Core::Concentrations concentration2;
             concentration2 = predictionPtr->getValues()[0];
-            // std::cout << i <<  " :: " << concentrations[i] << " : " << concentration2[i] << std::endl;
+            // std::cout << i <<  " :: " << concentrations[i] << " : " << concentration2[i] << '\n';
             ASSERT_DOUBLE_EQ(concentrations[i], concentration2[i]);
         }
     }

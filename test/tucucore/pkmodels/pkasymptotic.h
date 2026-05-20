@@ -195,7 +195,7 @@ protected:
         bOK &= checkValidValue(m_R, "The convergence rate");
 
         // We have to set the time to peak to allow a correct calculation of times
-        static_cast<PertinentTimesCalculatorAsymptotic*>(this->m_pertinentTimesCalculator.get())->setTPeak(m_TPeak);
+        dynamic_cast<PertinentTimesCalculatorAsymptotic*>(this->m_pertinentTimesCalculator.get())->setTPeak(m_TPeak);
         return bOK;
     }
 
@@ -222,7 +222,7 @@ protected:
         _outResiduals[firstCompartment] = concentrations[m_nbPoints - 1];
 
         // Return concentraions of first compartment
-        _concentrations[firstCompartment].assign(concentrations.data(), concentrations.data() + concentrations.size());
+        _concentrations[firstCompartment].assign(concentrations.cbegin(), concentrations.cend());
         // Only one compartment is existed.
         TMP_UNUSED_PARAMETER(_isAll);
 

@@ -372,20 +372,20 @@ ComputingStatus MultiComputingComponent::compute( //HAY QUE PROGRAMAR ESTA FUNCI
         return ComputingStatus::RecordedIntakesSizeError;
     }
 
-    // std::cout << "Start Time : " << _traits->getStart() << std::endl;
+    // std::cout << "Start Time : " << _traits->getStart() << '\n';
     for (size_t i = 0; i < recordedIntakes.size(); i++) {
 
         TimeOffsets times = analytesPredictions[0]->getTimes()[i];
         DateTime start = recordedIntakes[i].getEventTime();
-        // std::cout << "Time index " << i << " : " << start << std::endl;
+        // std::cout << "Time index " << i << " : " << start << '\n';
         // times values are in hours
         std::chrono::milliseconds ms = std::chrono::milliseconds(static_cast<long long>(times.back() * 3600 * 1000));
         Duration ds(ms);
         DateTime end = start + ds;
-        // std::cout << "End Time index " << i << " : " << end << std::endl;
+        // std::cout << "End Time index " << i << " : " << end << '\n';
 
         if (end > _traits->getStart()) {
-            // std::cout << "Selected Time index " << i << " : " << start << std::endl;
+            // std::cout << "Selected Time index " << i << " : " << start << '\n';
             ComputingStatus recordStatus = recordCycle(
                     _traits,
                     _request,

@@ -154,7 +154,7 @@ public:
 
     static void setStaticNumberPatients(const unsigned int _nbPatients)
     {
-        sm_nbPatients = _nbPatients;
+        globalNbPatients() = _nbPatients;
     }
 
     void setNumberPatients(const size_t _nbPatients)
@@ -233,7 +233,11 @@ public:
 private:
     size_t m_nbPatients{0};
 
-    static size_t sm_nbPatients; // NOLINT(readability-identifier-naming)
+    static size_t& globalNbPatients()
+    {
+        static size_t value{0};
+        return value;
+    }
 };
 
 

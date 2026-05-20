@@ -73,7 +73,7 @@ TEST(Core_TestPkAsymptotic, test0)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -229,7 +229,7 @@ TEST(Core_TestPkAsymptotic, Adjustments)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -366,7 +366,7 @@ TEST(Core_TestPkAsymptotic, AdjustmentsSlowRate)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -503,7 +503,7 @@ TEST(Core_TestPkAsymptotic, AdjustmentsLoadingDose)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -601,14 +601,14 @@ TEST(Core_TestPkAsymptotic, AdjustmentsLoadingDose)
                 //                        const LastingDose *dosage = dynamic_cast<const LastingDose*>(dosageRepeat->getDosage());
                 //                        double interval0 = dosage->getTimeStep().toHours();
                 //                        double dose0 = dosage->getDose();
-                //                        std::cout << interval0 << "\t" << dose0 << "\t" << r << std::endl;
+                //                        std::cout << interval0 << "\t" << dose0 << "\t" << r << '\n';
             }
 
             const auto& timeRange = adjustment.m_history.getDosageTimeRanges().back();
             const DosageRepeat* dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
             ASSERT_TRUE(dosageRepeat != nullptr);
             const LastingDose* dosage = dynamic_cast<const LastingDose*>(dosageRepeat->getDosage());
-            //                    std::cout << dosage->getTimeStep().toHours() << "\t" << dosage->getDose() << "\t" << adjustment.m_data.back().m_concentrations[0].back() << std::endl;
+            //                    std::cout << dosage->getTimeStep().toHours() << "\t" << dosage->getDose() << "\t" << adjustment.m_data.back().m_concentrations[0].back() << '\n';
 
 
             ASSERT_TRUE(dosage != nullptr);
@@ -662,7 +662,7 @@ TEST(Core_TestPkAsymptotic, AdjustmentsFirstDose)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -798,7 +798,7 @@ TEST(Core_TestPkAsymptotic, AdjustmentsLoadingDoseFirstDose)
     ASSERT_TRUE(checkerResult.m_ok);
 
     if (!checkerResult.m_ok) {
-        std::cout << checkerResult.m_errorMessage << std::endl;
+        std::cout << checkerResult.m_errorMessage << '\n';
     }
 
     // Now the drug model is ready to be used
@@ -896,14 +896,14 @@ TEST(Core_TestPkAsymptotic, AdjustmentsLoadingDoseFirstDose)
                 //                        const LastingDose *dosage = dynamic_cast<const LastingDose*>(dosageRepeat->getDosage());
                 //                        double interval0 = dosage->getTimeStep().toHours();
                 //                        double dose0 = dosage->getDose();
-                //                        std::cout << interval0 << "\t" << dose0 << "\t" << r << std::endl;
+                //                        std::cout << interval0 << "\t" << dose0 << "\t" << r << '\n';
             }
 
             const auto& timeRange = adjustment.m_history.getDosageTimeRanges().back();
             const DosageRepeat* dosageRepeat = dynamic_cast<const DosageRepeat*>(timeRange->getDosage());
             ASSERT_TRUE(dosageRepeat != nullptr);
             const LastingDose* dosage = dynamic_cast<const LastingDose*>(dosageRepeat->getDosage());
-            //                    std::cout << dosage->getTimeStep().toHours() << "\t" << dosage->getDose() << "\t" << adjustment.m_data.back().m_concentrations[0].back() << std::endl;
+            //                    std::cout << dosage->getTimeStep().toHours() << "\t" << dosage->getDose() << "\t" << adjustment.m_data.back().m_concentrations[0].back() << '\n';
 
 
             ASSERT_TRUE(dosage != nullptr);

@@ -74,7 +74,7 @@ const std::string& CovariateData::getNature() const
 PatientData::PatientData(std::vector<std::unique_ptr<Tucuxi::Core::PatientCovariate> >& _covariates)
     : m_covariates(std::move(_covariates))
 {
-    if (m_covariates.size() == 0) {
+    if (m_covariates.empty()) {
         return;
     }
     Tucuxi::Common::LoggerHelper logHelper;

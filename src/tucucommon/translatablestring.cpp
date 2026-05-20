@@ -28,13 +28,17 @@
 
 using namespace Tucuxi::Common;
 
-std::string TranslatableString::sm_language = "en"; // NOLINT(readability-identifier-naming)
+std::string& TranslatableString::defaultLanguage()
+{
+    static std::string lang = "en";
+    return lang;
+}
 
 TranslatableString::TranslatableString() = default;
 
 TranslatableString::TranslatableString(std::string _string)
 {
-    m_map[sm_language] = std::move(_string);
+    m_map[defaultLanguage()] = std::move(_string);
 }
 
 TranslatableString::TranslatableString(std::string _string, const std::string& _language)
@@ -44,7 +48,7 @@ TranslatableString::TranslatableString(std::string _string, const std::string& _
 
 void TranslatableString::setString(std::string _string)
 {
-    m_map[sm_language] = std::move(_string);
+    m_map[defaultLanguage()] = std::move(_string);
 }
 
 void TranslatableString::setString(std::string _string, const std::string& _language)
@@ -54,7 +58,7 @@ void TranslatableString::setString(std::string _string, const std::string& _lang
 
 void TranslatableString::setDefaultLanguage(std::string _language)
 {
-    sm_language = std::move(_language);
+    defaultLanguage() = std::move(_language);
 }
 
 
@@ -69,14 +73,14 @@ std::string TranslatableString::getString(const std::string& _language) const
 
 std::string TranslatableString::getString() const
 {
-    return getString(sm_language);
+    return getString(defaultLanguage());
 }
 
 std::vector<std::string> TranslatableString::getLanguages() const
 {
     std::vector<std::string> languages;
     languages.reserve(m_map.size());
-    
+
     for (const auto& pair : m_map) {
         languages.push_back(pair.first);
     }

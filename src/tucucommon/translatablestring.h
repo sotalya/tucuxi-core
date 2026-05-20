@@ -103,9 +103,11 @@ protected:
     /// A map of <language, text> to store a string for each language
     std::map<std::string, std::string> m_map;
 
-    /// A static variable storing the default language used by every instance of
-    /// TranslatableString
-    static std::string sm_language; // NOLINT(readability-identifier-naming)
+private:
+    /// Returns a reference to the default language, lazily initialized to "en".
+    /// Using a function-local static avoids the static initialization order fiasco
+    /// and guarantees thread-safe initialization (C++11).
+    static std::string& defaultLanguage();
 };
 
 } // namespace Common

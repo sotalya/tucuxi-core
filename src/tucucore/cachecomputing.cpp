@@ -42,7 +42,7 @@ ComputingStatus CacheComputing::compute(const ComputingRequest& _request, std::u
 
     if (getFromCache(_request, _response)) {
         m_isLastCallaHit = true;
-        //        std::cout << "Using the cache" << std::endl;
+        //        std::cout << "Using the cache" << '\n';
         return ComputingStatus::Ok;
     }
 
@@ -65,7 +65,7 @@ ComputingStatus CacheComputing::compute(const ComputingRequest& _request, std::u
 
 void CacheComputing::clear()
 {
-    //    std::cout << "Clearing the cache" << std::endl;
+    //    std::cout << "Clearing the cache" << '\n';
     m_data.clear();
 }
 

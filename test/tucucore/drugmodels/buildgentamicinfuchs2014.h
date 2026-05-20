@@ -31,7 +31,7 @@
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugmodelimport.h"
 
-static const std::string gentamicinFuchs2014_tdd = R"(<?xml version="1.0" encoding="UTF-8"?>
+static const std::string GENTAMICIN_FUCHS2014_TDD = R"(<?xml version="1.0" encoding="UTF-8"?>
 <model version='0.6' xsi:noNamespaceSchemaLocation='drugfile.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
     <history>
         <revisions>
@@ -185,7 +185,7 @@ static const std::string gentamicinFuchs2014_tdd = R"(<?xml version="1.0" encodi
                     </constraint>
                 </constraints>
             </domain>)"
-                                                   R"(
+                                                    R"(
             <covariates>
                         <covariate>
                             <covariateId>age</covariateId>
@@ -370,7 +370,7 @@ static const std::string gentamicinFuchs2014_tdd = R"(<?xml version="1.0" encodi
                         </comments>
                     </covariate>
                 </covariates>)"
-                                                   R"(
+                                                    R"(
                 <activeMoieties>
                     <activeMoiety>
                         <activeMoietyId>gentamicin</activeMoietyId>
@@ -674,7 +674,7 @@ static const std::string gentamicinFuchs2014_tdd = R"(<?xml version="1.0" encodi
                         </dispositionParameters>
                     </analyteGroup>
                 </analyteGroups>)"
-                                                   R"(
+                                                    R"(
                 <formulationAndRoutes default='id0'>
                     <formulationAndRoute>
                         <formulationAndRouteId>id0</formulationAndRouteId>
@@ -780,7 +780,7 @@ public:
 
         std::unique_ptr<Tucuxi::Core::DrugModel> drugModel;
 
-        auto status = importer.importFromString(drugModel, gentamicinFuchs2014_tdd);
+        auto status = importer.importFromString(drugModel, GENTAMICIN_FUCHS2014_TDD);
         EXPECT_EQ(status, Tucuxi::Core::DrugModelImport::Status::Ok);
 
         EXPECT_NE(drugModel, nullptr);

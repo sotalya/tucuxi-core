@@ -548,6 +548,20 @@ enum class FormulationAndRouteSelectionOption
 };
 
 ///
+/// \brief The AdjustmentWithCurrentDosageOption enum.
+/// This enum controls whether the adjustment engine should search for a better dosage when the current one already
+/// yields concentrations within the target range.
+///
+enum class AdjustmentWithCurrentDosageOption
+{
+    /// Always search for the optimal dosage, even if the current one is already within the target range
+    AlwaysAdjust = 0,
+
+    /// If the current dosage yields concentrations within the target range, keep it and skip the adjustment search
+    DontAdjustIfCurrentInRange
+};
+
+///
 /// \brief The ComputingTraitAdjustment class.
 /// This class embeds all information required for computing adjustments. It can return
 /// potential dosages, and future concentration calculations, depending on the options.
@@ -572,6 +586,7 @@ public:
     /// \param _steadyStateTargetOption Indicates if the targets have to be evaluated at steady state
     /// \param _targetExtractionOption Target extraction options
     /// \param _formulationAndRouteSelectionOption Selection of the formulation and route options
+    /// \param _adjustmentWithCurrentDosageOption Whether to skip adjustment if current dosage is in range
     ///
     /// If _nbPointsPerHour = 0, then no curve will be returned by the computation, only the dosages
     ///
@@ -587,7 +602,9 @@ public:
             RestPeriodOption _restPeriodOption,
             SteadyStateTargetOption _steadyStateTargetOption,
             TargetExtractionOption _targetExtractionOption,
-            FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption);
+            FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption,
+            AdjustmentWithCurrentDosageOption _adjustmentWithCurrentDosageOption =
+                    AdjustmentWithCurrentDosageOption::AlwaysAdjust);
 
     ///
     /// \brief Gets the time of adjustment
@@ -631,6 +648,12 @@ public:
     ///
     TargetExtractionOption getTargetExtractionOption() const;
 
+    ///
+    /// \brief Gets the option about adjusting when the current dosage is in range
+    /// \return The adjustment with current dosage option
+    ///
+    AdjustmentWithCurrentDosageOption getAdjustmentWithCurrentDosageOption() const;
+
 protected:
     //! Date of the adjustment
     Tucuxi::Common::DateTime m_adjustmentTime;
@@ -652,6 +675,9 @@ protected:
 
     //! What formulation and route have to be used for generating candidates
     FormulationAndRouteSelectionOption m_formulationAndRouteSelectionOption;
+
+    //! Whether to skip adjustment when the current dosage is in range
+    AdjustmentWithCurrentDosageOption m_adjustmentWithCurrentDosageOption;
 
 private:
     ///

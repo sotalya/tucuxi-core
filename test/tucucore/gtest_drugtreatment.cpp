@@ -46,7 +46,7 @@ using namespace Tucuxi::Core;
 static std::unique_ptr<DosageTimeRange> buildSimpleTimeRange(const Tucuxi::Common::DateTime& _start)
 {
     FormulationAndRoute route(Formulation::Test, AdministrationRoute::IntravenousBolus);
-    LastingDose dose(DoseValue(100), TucuUnit("mg"), route, Duration(), Duration(std::chrono::hours(6)));
+    LastingDose dose(DoseValue{100}, TucuUnit("mg"), route, Duration(), Duration(std::chrono::hours(6)));
     DosageRepeat repeated(dose, 4);
     return std::make_unique<DosageTimeRange>(_start, repeated);
 }

@@ -174,11 +174,9 @@ bool OperationInput::setValue(const double& _value)
     return false;
 }
 
-std::string Operation::sm_errorMessage; // NOLINT(readability-identifier-naming)
-
 std::string Operation::getLastErrorMessage() const
 {
-    return sm_errorMessage;
+    return m_errorMessage;
 }
 
 Operation::Operation(OperationInputList _requiredInputs) : m_requiredInputs{std::move(_requiredInputs)} {}
@@ -336,6 +334,7 @@ std::unique_ptr<Operation> JSOperation::clone() const
 
 
 // Add the variable according to the given data type
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define ADD_VAR_CASE(CASE_VAR, DATA_TYPE)                             \
     case CASE_VAR: {                                                  \
         DATA_TYPE value;                                              \
@@ -408,7 +407,7 @@ bool JSOperation::evaluate(const OperationInputList& _inputs, double& _result)
         _result = std::stod(resAsString);
     }
     catch (const CScriptException* e) {
-        sm_errorMessage = e->text;
+        m_errorMessage = e->text;
         delete e;
         Tucuxi::Common::LoggerHelper logger;
         logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
@@ -465,7 +464,7 @@ bool JSOperation::checkOperation(const OperationInputList& _inputs)
             exp = exp.substr(0, pos);
         }
         else {
-            sm_errorMessage = "Missing a return statement at the end of the script.";
+            m_errorMessage = "Missing a return statement at the end of the script.";
             return false;
         }
 
@@ -486,7 +485,7 @@ bool JSOperation::checkOperation(const OperationInputList& _inputs)
 */
     }
     catch (const CScriptException* e) {
-        sm_errorMessage = e->text;
+        m_errorMessage = e->text;
         delete e;
         //        Tucuxi::Common::LoggerHelper logger;
         //        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);
@@ -535,7 +534,7 @@ bool JSOperation::checkOperation(const OperationInputList& _inputs)
 */
     }
     catch (const CScriptException* e) {
-        sm_errorMessage = e->text;
+        m_errorMessage = e->text;
         delete e;
         //        Tucuxi::Common::LoggerHelper logger;
         //        logger.error("Error with the execution of the JSOperation : {}\n\n{}", m_expression, e->text);

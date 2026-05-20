@@ -265,7 +265,8 @@ protected:
     /// \brief List of required inputs.
     OperationInputList m_requiredInputs;
 
-    static std::string sm_errorMessage; // NOLINT(readability-identifier-naming)
+    /// \brief Last error message.
+    std::string m_errorMessage;
 };
 
 

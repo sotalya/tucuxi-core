@@ -517,9 +517,9 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1comp)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 
@@ -549,9 +549,9 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1comp)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "analyte");
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
-        //std::cout << "A priori parameters : " << std::endl;
+        //std::cout << "A priori parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }
@@ -579,7 +579,7 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes)
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
             Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue(200), TucuUnit("mg"), 6, 16);
+    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue{200}, TucuUnit("mg"), 6, 16);
 
     const FormulationAndRoute route2(Formulation::OralSolution, AdministrationRoute::Oral);
 
@@ -619,9 +619,9 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes)
         ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoietyAndAnalyte);
 
         //for (size_t i = 0; i < resp->getData().size(); i++) {
-        //    std::cout << "Cycle " << i << std::endl;
+        //    std::cout << "Cycle " << i << '\n';
         //    for (const auto& p : resp->getData()[i].m_parameters) {
-        //        std::cout << p.m_parameterId << " : " << p.m_value << std::endl;
+        //        std::cout << p.m_parameterId << " : " << p.m_value << '\n';
         //    }
         //}
 
@@ -635,9 +635,9 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes)
         // Ka
         ASSERT_EQ(resp->getData()[0].m_parameters[1].m_value, 0.7);
 
-        //std::cout << "Population parameters : " << std::endl;
+        //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
-        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << std::endl;
+        //    std::cout << "Param " << parameter.m_parameterId << " : " << parameter.m_value << '\n';
         //}
     }
 }

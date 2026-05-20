@@ -30,7 +30,7 @@
 
 using namespace Tucuxi::Core;
 
-static const std::string tobramycin_tdd = R"(<?xml version="1.0" encoding="UTF-8"?>
+static const std::string TOBRAMYCIN_TDD = R"(<?xml version="1.0" encoding="UTF-8"?>
                                     <model version='0.6' xsi:noNamespaceSchemaLocation='drug2.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
                                         <history>
                                             <revisions>
@@ -827,7 +827,7 @@ TEST(Core_TestDrugTobramycin, Tobramycin)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto status = importer.importFromString(drugModel, tobramycin_tdd);
+    auto status = importer.importFromString(drugModel, TOBRAMYCIN_TDD);
     ASSERT_EQ(status, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);

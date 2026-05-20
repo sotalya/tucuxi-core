@@ -36,39 +36,41 @@
 
 using namespace Tucuxi::Core;
 
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define ADD_CALCULATOR_FACTORIES(_PK_MODEL, _COMP_NO_LIT, _TYPE_NAME)                                                  \
     do {                                                                                                               \
         bool rc;                                                                                                       \
-        rc = _PK_MODEL->addIntakeIntervalCalculatorFactory(                                                            \
+        rc = (_PK_MODEL)->addIntakeIntervalCalculatorFactory(                                                          \
                 AbsorptionModel::Extravascular,                                                                        \
                 Tucuxi::Core::_COMP_NO_LIT##CompartmentExtra##_TYPE_NAME::getCreator());                               \
         ASSERT_TRUE(rc);                                                                                               \
-        rc = _PK_MODEL->addIntakeIntervalCalculatorFactory(                                                            \
+        rc = (_PK_MODEL)->addIntakeIntervalCalculatorFactory(                                                          \
                 AbsorptionModel::Intravascular,                                                                        \
                 Tucuxi::Core::_COMP_NO_LIT##CompartmentBolus##_TYPE_NAME::getCreator());                               \
         ASSERT_TRUE(rc);                                                                                               \
         /* Avoid duplicate insertion */                                                                                \
-        rc = _PK_MODEL->addIntakeIntervalCalculatorFactory(                                                            \
+        rc = (_PK_MODEL)->addIntakeIntervalCalculatorFactory(                                                          \
                 AbsorptionModel::Intravascular,                                                                        \
                 Tucuxi::Core::_COMP_NO_LIT##CompartmentBolus##_TYPE_NAME::getCreator());                               \
         ASSERT_FALSE(rc);                                                                                              \
-        rc = _PK_MODEL->addIntakeIntervalCalculatorFactory(                                                            \
+        rc = (_PK_MODEL)->addIntakeIntervalCalculatorFactory(                                                          \
                 AbsorptionModel::Infusion, Tucuxi::Core::_COMP_NO_LIT##CompartmentInfusion##_TYPE_NAME::getCreator()); \
         ASSERT_TRUE(rc);                                                                                               \
     } while (0);
 
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define CHECK_CALCULATOR_TYPE(_PK_MODEL, _COMP_NO_LIT, _TYPE_NAME)                                \
     do {                                                                                          \
         std::shared_ptr<IntakeIntervalCalculator> CExtraCalc =                                    \
-                _PK_MODEL->getCalculatorForRoute(AbsorptionModel::Extravascular);                 \
+                (_PK_MODEL)->getCalculatorForRoute(AbsorptionModel::Extravascular);               \
         auto CExtra = CExtraCalc.get();                                                           \
         ASSERT_TRUE(typeid(*CExtra) == typeid(_COMP_NO_LIT##CompartmentExtra##_TYPE_NAME));       \
         std::shared_ptr<IntakeIntervalCalculator> CBolusCalc =                                    \
-                _PK_MODEL->getCalculatorForRoute(AbsorptionModel::Intravascular);                 \
+                (_PK_MODEL)->getCalculatorForRoute(AbsorptionModel::Intravascular);               \
         auto CBolus = CBolusCalc.get();                                                           \
         ASSERT_TRUE(typeid(*CBolus) == typeid(_COMP_NO_LIT##CompartmentBolus##_TYPE_NAME));       \
         std::shared_ptr<IntakeIntervalCalculator> CInfusionCalc =                                 \
-                _PK_MODEL->getCalculatorForRoute(AbsorptionModel::Infusion);                      \
+                (_PK_MODEL)->getCalculatorForRoute(AbsorptionModel::Infusion);                    \
         auto CInfusion = CInfusionCalc.get();                                                     \
         ASSERT_TRUE(typeid(*CInfusion) == typeid(_COMP_NO_LIT##CompartmentInfusion##_TYPE_NAME)); \
     } while (0);

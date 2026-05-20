@@ -117,6 +117,124 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllD
     ASSERT_GT(resp->getCurrentDosageWithScore().m_targetsEvaluation[0].getValue(), 2000);
 }
 
+TEST(Core_TestComputingComponentAdjusements, DontAdjustIfCurrentInRange_WhenInRange)
+{
+    auto component = ComputingComponentFactory::createComputingService();
+    ASSERT_TRUE(component != nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_TRUE(drugModel != nullptr);
+
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
+
+    DateTime startSept2018(
+            date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+            Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+
+    // 100mg q6h: linear model, half of 200mg q6h (~2032)
+    // gives ~1016 ug/l, within target [750, 1500]
+    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue{100}, TucuUnit("mg"), 6, 16);
+
+    RequestResponseId requestResponseId = "1";
+    Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+    Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+    double nbPointsPerHour = 10.0;
+    ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+    Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
+    BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
+    auto adjustmentsTraits = std::make_unique<ComputingTraitAdjustment>(
+            requestResponseId,
+            start,
+            end,
+            nbPointsPerHour,
+            computingOption,
+            adjustmentTime,
+            adjustmentOption,
+            LoadingOption::NoLoadingDose,
+            RestPeriodOption::NoRestPeriod,
+            SteadyStateTargetOption::WithinTreatmentTimeRange,
+            TargetExtractionOption::PopulationValues,
+            FormulationAndRouteSelectionOption::LastFormulationAndRoute,
+            AdjustmentWithCurrentDosageOption::DontAdjustIfCurrentInRange);
+
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
+
+    auto response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ComputingStatus result = component->compute(request, response);
+    ASSERT_EQ(result, ComputingStatus::Ok);
+
+    const ComputedData* responseData = response->getData();
+    ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+
+    const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
+    // The current dosage should be in range.
+    ASSERT_TRUE(resp->isCurrentInRange());
+
+    // With DontAdjustIfCurrentInRange, we expect exactly one adjustment: the current dosage itself.
+    ASSERT_EQ(resp->getAdjustments().size(), static_cast<size_t>(1));
+}
+
+TEST(Core_TestComputingComponentAdjusements, DontAdjustIfCurrentInRange_WhenOutOfRange)
+{
+    auto component = ComputingComponentFactory::createComputingService();
+    ASSERT_TRUE(component != nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_TRUE(drugModel != nullptr);
+
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
+
+    DateTime startSept2018(
+            date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+            Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+
+    // 200mg q6h gives trough ~2000, well above [750, 1500]
+    auto drugTreatment = buildDrugTreatment(route, startSept2018);
+
+    RequestResponseId requestResponseId = "1";
+    Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+    Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+    double nbPointsPerHour = 10.0;
+    ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+    Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
+    BestCandidatesOption adjustmentOption = BestCandidatesOption::AllDosages;
+    auto adjustmentsTraits = std::make_unique<ComputingTraitAdjustment>(
+            requestResponseId,
+            start,
+            end,
+            nbPointsPerHour,
+            computingOption,
+            adjustmentTime,
+            adjustmentOption,
+            LoadingOption::NoLoadingDose,
+            RestPeriodOption::NoRestPeriod,
+            SteadyStateTargetOption::WithinTreatmentTimeRange,
+            TargetExtractionOption::PopulationValues,
+            FormulationAndRouteSelectionOption::LastFormulationAndRoute,
+            AdjustmentWithCurrentDosageOption::DontAdjustIfCurrentInRange);
+
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(adjustmentsTraits));
+
+    auto response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ComputingStatus result = component->compute(request, response);
+    ASSERT_EQ(result, ComputingStatus::Ok);
+
+    const ComputedData* responseData = response->getData();
+    ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+
+    const AdjustmentData* resp = dynamic_cast<const AdjustmentData*>(responseData);
+    // The current dosage is NOT in range (trough ~2000).
+    ASSERT_FALSE(resp->isCurrentInRange());
+
+    // Even with DontAdjustIfCurrentInRange, since the current dosage is out of range, we still get the normal set of
+    // adjustment candidates
+    ASSERT_GT(resp->getAdjustments().size(), static_cast<size_t>(1));
+}
+
 TEST(Core_TestComputingComponentAdjusements, ImatinibDefaultFormulationAndRouteAllDosages)
 {
     auto component = ComputingComponentFactory::createComputingService();
@@ -683,7 +801,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibLastFormulationAndRouteAllD
     //const FormulationAndRoute route("formulation", AdministrationRoute::IntravenousBolus, AbsorptionModel::Intravascular);
     // Add a treatment intake every ten days in June
     // 200mg via a intravascular at 08h30, starting the 01.06
-    LastingDose periodicDose(DoseValue(200.0), TucuUnit("mg"), route, Duration(), Duration(std::chrono::hours(24)));
+    LastingDose periodicDose(DoseValue{200.0}, TucuUnit("mg"), route, Duration(), Duration(std::chrono::hours(24)));
     DosageRepeat repeatedDose(periodicDose, 300);
     auto jun2018 = std::make_unique<Tucuxi::Core::DosageTimeRange>(startJun2018, repeatedDose);
 
@@ -818,7 +936,7 @@ TEST(Core_TestComputingComponentAdjusements, ImatinibAllFormulationAndRouteBestD
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
             Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue(20000));
+    auto drugTreatment = buildDrugTreatment(route, startSept2018, DoseValue{20000});
 
 
     // Construct the adjustment traits object

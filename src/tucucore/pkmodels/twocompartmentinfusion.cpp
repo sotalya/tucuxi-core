@@ -145,10 +145,9 @@ bool TwoCompartmentInfusionMicro::computeConcentrations(
     _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
 
     // Return concentrations of comp1
-    _concentrations[firstCompartment].assign(concentrations1.data(), concentrations1.data() + concentrations1.size());
+    _concentrations[firstCompartment].assign(concentrations1.cbegin(), concentrations1.cend());
     if (_isAll) {
-        _concentrations[secondCompartment].assign(
-                concentrations2.data(), concentrations2.data() + concentrations2.size());
+        _concentrations[secondCompartment].assign(concentrations2.cbegin(), concentrations2.cend());
     }
 
     for (auto& val : _concentrations[firstCompartment]) {
@@ -353,7 +352,7 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
 
     // if (m_Tinf == 1.0) {
-    //     std::cout << "O" << std::endl;
+    //     std::cout << "O" << '\n';
     // }
 
     // Only used for debugging purpose
@@ -430,7 +429,7 @@ bool TwoCompartmentInfusionMacroRatios::checkInputs(
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
 
     // if (m_Tinf == 1.0) {
-    //     std::cout << "O" << std::endl;
+    //     std::cout << "O" << '\n';
     // }
 
     // Only used for debugging purpose

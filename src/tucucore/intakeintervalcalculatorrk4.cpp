@@ -68,7 +68,7 @@ ComputingStatus IntakeIntervalCalculatorRK4::calculateIntakePoints(
     }
 
     times = times.array() + _intakeEvent.getOffsetTime().toHours();
-    _times.assign(times.data(), times.data() + times.size());
+    _times.assign(times.cbegin(), times.cend());
 
     return ComputingStatus::Ok;
 }
