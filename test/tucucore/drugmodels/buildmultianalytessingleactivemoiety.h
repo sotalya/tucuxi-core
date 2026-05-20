@@ -288,28 +288,24 @@ public:
                 ActiveMoietyId("activeMoietyMulti"), TucuUnit("ug/l"), analyteList, std::move(activeMoietyOperation));
 
         Tucuxi::Common::TranslatableString activeMoietyName;
-        activeMoietyName.setString("Active moiety name 2");
+        activeMoietyName.setString("Test MASA Active moiety");
         activeMoiety->setName(activeMoietyName);
 
         // I removed the targets from the build, to let tests define various targets
         /*
         // Add targets
-        std::unique_ptr<SubTargetDefinition> cMin(new SubTargetDefinition("cMin", 750.0, nullptr));
-        std::unique_ptr<SubTargetDefinition> cMax(new SubTargetDefinition("cMax", 1500.0, nullptr));
-        std::unique_ptr<SubTargetDefinition> cBest(new SubTargetDefinition("cBest", 1000.0, nullptr));
-        TargetDefinition *target = new TargetDefinition(TargetType::Residual,
+        auto target = std::make_unique<TargetDefinition>(TargetType::Residual,
                                                         Unit("mg/l"),
                                                         "analyte",
-                                                        std::move(cMin),
-                                                        std::move(cMax),
-                                                        std::move(cBest),
-                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("mic", 0.0, nullptr)),
-                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("tMin", 1000.0, nullptr)),
-                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("tMax", 1000.0, nullptr)),
-                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("tBest", 1000.0, nullptr)),
-                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("toxicity", 10000.0, nullptr)),
-                                                        std::unique_ptr<SubTargetDefinition>(new SubTargetDefinition("inefficacy", 000.0, nullptr)));
-
+                                                        std::make_unique<SubTargetDefinition>("cMin", 750.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("cMax", 1500.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("cBest", 1000.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("mic", 0.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("tMin", 1000.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("tMax", 1000.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("tBest", 1000.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
+                                                        std::make_unique<SubTargetDefinition>("inefficacy", 000.0, nullptr));
 
         activeMoiety->addTarget(std::unique_ptr<TargetDefinition>(target));
 */
