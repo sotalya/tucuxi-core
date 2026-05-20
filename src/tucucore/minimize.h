@@ -39,7 +39,8 @@ namespace Core {
 /// For documentation just check out the link here: http://www.boost.org/doc/libs/1_60_0/libs/math/doc/html/math_toolkit/roots/brent_minima.html
 struct Bracketmethod
 {
-    double ax, bx, cx, fa, fb, fc; // NOLINT(readability-isolate-declaration)
+    // NOLINTNEXTLINE(readability-isolate-declaration,clang-analyzer-optin.cplusplus.UninitializedObject)
+    double ax, bx, cx, fa, fb, fc;
     template<class T>
     void bracket(const double a, const double b, T& func)
     {
@@ -121,7 +122,7 @@ struct Bracketmethod
 
 struct Dbrent : Bracketmethod
 {
-    double xmin, fmin;
+    double xmin{}, fmin{};
     const double tol;
     Dbrent(const double toll = 3.0e-8) : tol(toll) {} // NOLINT(cppcoreguidelines-pro-type-member-init)
     template<class T>
@@ -291,7 +292,7 @@ template<typename T>
 struct Frprmn : Dlinemethod<T>
 {
     //int iter;
-    double fret;
+    double fret{}; // Not sure it should be a member variable
     using Dlinemethod<T>::func;
     using Dlinemethod<T>::linmin;
     using Dlinemethod<T>::p;
@@ -331,12 +332,13 @@ struct Frprmn : Dlinemethod<T>
                     return p;
                 }
             }
-            if (fret == fp) {
-                equal = true;
-            }
-            else {
-                equal = false;
-            }
+            equal = (fret == fp);
+            // if (fret == fp) {
+            //     equal = true;
+            // }
+            // else {
+            //     equal = false;
+            // }
 
             fp = fret;
             func.df(p, xi);

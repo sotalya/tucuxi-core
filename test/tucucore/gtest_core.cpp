@@ -24,55 +24,55 @@
 
 #include "gtest_core.h"
 
-int double_fuzzy_compare(double a, double b, double relative_tolerance, double absolute_tolerance)
+int double_fuzzy_compare(double _a, double _b, double _relativeTolerance, double _absoluteTolerance)
 {
-    if (a == b) {
+    if (_a == _b) {
         return 0;
     }
 
-    if (a == -b) {
+    if (_a == -_b) {
         // Special case: Relative difference
-        if (std::fabs(a - b) <= absolute_tolerance) {
+        if (std::fabs(_a - _b) <= _absoluteTolerance) {
             // is "infinite"
             // Fuzzy equality (via abs. tol. only)
             return 0;
         }
-        if (a > b) {
+        if (_a > _b) {
             return 1; // Fuzzy greater than
         }
         return -1; // Fuzzy less than
     }
 
-    const double diff = std::fabs(a - b);
-    const double average = std::fabs((a + b) / 2.0);
+    const double diff = std::fabs(_a - _b);
+    const double average = std::fabs((_a + _b) / 2.0);
 
-    if (diff <= absolute_tolerance || diff / average <= relative_tolerance) {
+    if (diff <= _absoluteTolerance || diff / average <= _relativeTolerance) {
         return 0; // Fuzzy equality.
     }
-    if (a > b) {
+    if (_a > _b) {
         return 1; // Fuzzy greater than
     }
     return -1; // Fuzzy less than
 }
 
-bool double_eq_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance)
+bool double_eq_rel_abs(double _a, double _b, double _relativeTolerance, double _absoluteTolerance)
 {
-    return double_fuzzy_compare(a, b, relative_tolerance, absolute_tolerance) == 0;
+    return double_fuzzy_compare(_a, _b, _relativeTolerance, _absoluteTolerance) == 0;
 }
 
-bool double_ge_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance)
+bool double_ge_rel_abs(double _a, double _b, double _relativeTolerance, double _absoluteTolerance)
 {
-    return double_fuzzy_compare(a, b, relative_tolerance, absolute_tolerance) >= 0;
+    return double_fuzzy_compare(_a, _b, _relativeTolerance, _absoluteTolerance) >= 0;
 }
 
-bool double_le_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance)
+bool double_le_rel_abs(double _a, double _b, double _relativeTolerance, double _absoluteTolerance)
 {
-    return double_fuzzy_compare(a, b, relative_tolerance, absolute_tolerance) <= 0;
+    return double_fuzzy_compare(_a, _b, _relativeTolerance, _absoluteTolerance) <= 0;
 }
 
-bool double_ne_rel_abs(double a, double b, double relative_tolerance, double absolute_tolerance)
+bool double_ne_rel_abs(double _a, double _b, double _relativeTolerance, double _absoluteTolerance)
 {
-    return double_fuzzy_compare(a, b, relative_tolerance, absolute_tolerance) != 0;
+    return double_fuzzy_compare(_a, _b, _relativeTolerance, _absoluteTolerance) != 0;
 }
 
 Tucuxi::Core::FormulationAndRoute getInfusionFormulationAndRoute()
@@ -109,7 +109,7 @@ std::unique_ptr<DrugTreatment> buildDrugTreatment(
         const FormulationAndRoute& _route,
         const DateTime& _startDateTime,
         DoseValue _doseValue,
-        TucuUnit _unit,
+        const TucuUnit& _unit,
         int _interval,
         unsigned int _nbrDoses,
         Duration _infusionTime)

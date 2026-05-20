@@ -420,6 +420,7 @@ TEST(Core_TestComputingGof, MeasurePredErrorsTinyComputed)
 // computeGofStatistics
 // ============================================================
 
+// NOLINTBEGIN(bugprone-unchecked-optional-access)
 TEST(Core_TestComputingGof, GofStatisticsPopulatesOptional)
 {
     // Verify the output optional is populated after a successful call.
@@ -598,3 +599,5 @@ TEST(Core_TestComputingGof, FindValueAtWrongAnalyteIndex)
             year_month_day(year(2018), month(9), day(1)), Tucuxi::Common::Duration(std::chrono::hours(10)));
     EXPECT_FALSE(ComputingGofExposer::findValueAt({cycle}, queryTime, unit, 1).has_value());
 }
+
+// NOLINTEND(bugprone-unchecked-optional-access)

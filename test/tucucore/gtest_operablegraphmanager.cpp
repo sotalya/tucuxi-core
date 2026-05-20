@@ -59,15 +59,15 @@ TEST(Core_TestOpGraph, OperableFunctions)
     ASSERT_DOUBLE_EQ(ret, 1.234 * 3);
 
     // Reuse the previous operation, giving it a name, as input for another one.
-    std::shared_ptr<JSOperation> jsOp1_bis = std::make_shared<JSOperation>(JSExpression(
+    std::shared_ptr<JSOperation> jsOp1Bis = std::make_shared<JSOperation>(JSExpression(
             "a*(b+c)",
             {OperationInput("a", InputType::DOUBLE),
              OperationInput("b", InputType::DOUBLE),
              OperationInput("c", InputType::DOUBLE)}));
-    std::shared_ptr<OperableImpl> op1_bis = std::make_shared<OperableImpl>(OperableImpl(jsOp1_bis));
-    ASSERT_TRUE(ogm.registerOperable(op1_bis, "op1_bis"));
+    std::shared_ptr<OperableImpl> op1Bis = std::make_shared<OperableImpl>(OperableImpl(jsOp1Bis));
+    ASSERT_TRUE(ogm.registerOperable(op1Bis, "op1_bis"));
     // Check that we cannot register it twice.
-    ASSERT_FALSE(ogm.registerOperable(op1_bis, "op1_bis"));
+    ASSERT_FALSE(ogm.registerOperable(op1Bis, "op1_bis"));
 
     std::shared_ptr<JSOperation> jsOp2 = std::make_shared<JSOperation>(JSExpression(
             "op1_bis - d", {OperationInput("op1_bis", InputType::DOUBLE), OperationInput("d", InputType::DOUBLE)}));
@@ -84,7 +84,7 @@ TEST(Core_TestOpGraph, OperableFunctions)
     // Check that previous value unaltered.
     ret = op1->getValue();
     ASSERT_DOUBLE_EQ(ret, 1.234 * 3);
-    ASSERT_DOUBLE_EQ(op1->getValue(), op1_bis->getValue());
+    ASSERT_DOUBLE_EQ(op1->getValue(), op1Bis->getValue());
     // Check that new value correct
     ret = op2->getValue();
     ASSERT_DOUBLE_EQ(ret, 1.234 * 3 - 4.321);
@@ -134,20 +134,20 @@ TEST(Core_TestOpGraph, OperableCockcroftGaultIBW)
     std::shared_ptr<OperableImpl> opIBW = std::make_shared<OperableImpl>(jsIBW);
     ASSERT_TRUE(ogm.registerOperable(opIBW, "IBW"));
 
-    std::shared_ptr<JSOperation> jsCG_IBW = std::make_shared<JSOperation>(JSExpression(
+    std::shared_ptr<JSOperation> jsCgIbw = std::make_shared<JSOperation>(JSExpression(
             "(140 - age) * (bodyweight * (bodyweight < IBW) + IBW * (bodyweight >= IBW)) / creatinine * (1.23 * (isMale > 0.5) + 1.04 * (!(isMale > 0.5)))",
             {OperationInput("bodyweight", InputType::DOUBLE),
              OperationInput("IBW", InputType::DOUBLE),
              OperationInput("age", InputType::DOUBLE),
              OperationInput("creatinine", InputType::DOUBLE),
              OperationInput("isMale", InputType::DOUBLE)}));
-    std::shared_ptr<OperableImpl> opCG_IBW = std::make_shared<OperableImpl>(jsCG_IBW);
-    ASSERT_TRUE(ogm.registerOperable(opCG_IBW));
+    std::shared_ptr<OperableImpl> opCgIbw = std::make_shared<OperableImpl>(jsCgIbw);
+    ASSERT_TRUE(ogm.registerOperable(opCgIbw));
 
     ASSERT_TRUE(ogm.evaluate());
 
     ASSERT_DOUBLE_EQ(61.25, opIBW->getValue());
-    ASSERT_DOUBLE_EQ(292.979167, opCG_IBW->getValue());
+    ASSERT_DOUBLE_EQ(292.979167, opCgIbw->getValue());
 }
 
 TEST(Core_TestOpGraph, OperableCyclic)

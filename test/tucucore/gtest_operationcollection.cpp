@@ -31,12 +31,14 @@ using namespace Tucuxi::Core;
 
 /// \brief Get an operation from a collection and check its type.
 /// \param _TYPE Type of the operation to get.
+// NOLINTBEGIN(cppcoreguidelines-macro-usage, bugprone-macro-parentheses)
 #define TEST_GET_OPERATION(_TYPE)                                                     \
     do {                                                                              \
         std::shared_ptr<Operation> operation = collection.getOperationFromId(#_TYPE); \
         ASSERT_TRUE(operation != nullptr);                                            \
         ASSERT_TRUE(dynamic_cast<_TYPE*>(operation.get()) != nullptr);                \
     } while (0);
+// NOLINTEND(cppcoreguidelines-macro-usage, bugprone-macro-parentheses)
 
 TEST(Core_TestOperationCollection, OperationCollection)
 {

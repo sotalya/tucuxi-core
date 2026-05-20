@@ -64,7 +64,7 @@ static void testNonmemCalculator(
                 _dose,
                 Tucuxi::Common::TucuUnit("mg"),
                 interval,
-                _formulationAndRoute,
+                std::move(_formulationAndRoute),
                 _route,
                 infusionTime,
                 _nbPoints);

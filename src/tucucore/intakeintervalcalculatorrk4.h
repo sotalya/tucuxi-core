@@ -173,7 +173,7 @@ protected:
     {
         MultiCompConcentrations concentrations;
         for (unsigned int i = 0; i < ResidualSize; i++) {
-            concentrations.push_back(Concentrations(m_nbPoints));
+            concentrations.push_back(Concentrations(m_nbPoints)); // NOLINT(google-readability-casting)
         }
 
         // compute concentrations
@@ -211,7 +211,7 @@ protected:
     {
         MultiCompConcentrations concentrations;
         for (size_t i = 0; i < ResidualSize; i++) {
-            concentrations.push_back(Concentrations(m_nbPoints));
+            concentrations.push_back(Concentrations(m_nbPoints)); // NOLINT(google-readability-casting)
         }
 
         size_t atTime = static_cast<int>(SingleConcentrations::AtTime);

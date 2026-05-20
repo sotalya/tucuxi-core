@@ -339,7 +339,7 @@ static void testSingleVsMultiple(
 
 template<class CalculatorClass0, class CalculatorClass1>
 static void testCompare(
-        const Tucuxi::Core::ParameterSetEvent& _Parameters,
+        const Tucuxi::Core::ParameterSetEvent& _parameters,
         double _dose,
         Tucuxi::Core::AbsorptionModel _route,
         std::chrono::hours _interval,
@@ -381,7 +381,7 @@ static void testCompare(
 
     // Calculation of first Class
     res = calculator0.calculateIntakePoints(
-            concentrations0, times, intakeEvent, _Parameters, inResiduals, isAll, outResiduals0, true);
+            concentrations0, times, intakeEvent, _parameters, inResiduals, isAll, outResiduals0, true);
 
     ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::Ok);
 
@@ -391,7 +391,7 @@ static void testCompare(
 
     // Calculation of second Class
     res = calculator1.calculateIntakePoints(
-            concentrations1, times, intakeEvent, _Parameters, inResiduals, isAll, outResiduals1, true);
+            concentrations1, times, intakeEvent, _parameters, inResiduals, isAll, outResiduals1, true);
 
     ASSERT_EQ(res, Tucuxi::Core::ComputingStatus::Ok);
 

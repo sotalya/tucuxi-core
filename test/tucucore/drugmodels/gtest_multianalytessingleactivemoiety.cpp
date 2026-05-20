@@ -92,7 +92,7 @@ TEST(Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoiety)
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    dynamic_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
 
     {
@@ -238,7 +238,7 @@ TEST(Core_TestMultiAnalytesSingleActiveMoiety, MultiAnalytesSingleActiveMoietyCo
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    dynamic_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
 
     {
@@ -430,7 +430,7 @@ TEST(Core_TestMultiAnalytesSingleActiveMoiety, Adjustments)
 
     ASSERT_TRUE(component != nullptr);
 
-    static_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
+    dynamic_cast<ComputingComponent*>(component)->setPkModelCollection(collection);
 
 
     {

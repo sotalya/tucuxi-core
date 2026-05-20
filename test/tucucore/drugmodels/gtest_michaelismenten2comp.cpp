@@ -46,7 +46,7 @@ using namespace date;
 using namespace Tucuxi::Core;
 
 
-static const std::string test_mm_2comp_tdd = R"(
+static const std::string TEST_MM_2COMP_TDD = R"(
 <?xml version="1.0" encoding="UTF-8"?>
 <model version='0.6' xsi:noNamespaceSchemaLocation='drug2.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
     <history>
@@ -842,7 +842,7 @@ TEST(Core_TestMichaelisMenten2comp, Bolus)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_2COMP_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);
@@ -936,7 +936,7 @@ TEST(Core_TestMichaelisMenten2comp, Infusion)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_2COMP_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);
@@ -1030,7 +1030,7 @@ TEST(Core_TestMichaelisMenten2comp, Extra)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_2COMP_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);
@@ -1121,7 +1121,7 @@ TEST(Core_TestMichaelisMenten2comp, ExtraLag)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_2COMP_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);
@@ -1213,7 +1213,7 @@ TEST(Core_TestMichaelisMenten2comp, Mix)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_2COMP_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);
@@ -1305,7 +1305,7 @@ TEST(Core_TestMichaelisMenten2comp, MixPercentiles)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_2comp_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_2COMP_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);

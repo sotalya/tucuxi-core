@@ -35,6 +35,8 @@
 using namespace Tucuxi::Core;
 using namespace Tucuxi::Common::Utils;
 
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
+
 /// \brief Add a constraint to a drug model domain.
 ///        The operation has 2 inputs whose names are specified as parameters.
 /// \param DOMAIN DrugModelDomain in which the constraint will be added.
@@ -52,7 +54,7 @@ using namespace Tucuxi::Common::Utils;
         c->addRequiredCovariateId(OP2);                                                                              \
         c->setType(TYPE);                                                                                            \
         c->setCheckOperation(std::move(op));                                                                         \
-        DOMAIN.addConstraint(std::move(c));                                                                          \
+        (DOMAIN).addConstraint(std::move(c));                                                                        \
     } while (0);
 
 /// \brief Add a constraint to a drug model domain.
@@ -72,7 +74,7 @@ using namespace Tucuxi::Common::Utils;
         c->addRequiredCovariateId(OP2);                                                                              \
         c->setType(TYPE);                                                                                            \
         c->setCheckOperation(std::move(op));                                                                         \
-        DOMAIN->addConstraint(std::move(c));                                                                         \
+        (DOMAIN)->addConstraint(std::move(c));                                                                       \
     } while (0);
 
 #define ADD_OP1_CONSTRAINT(DOMAIN, OPERATION, OP1, TYPE)                                                              \
@@ -83,8 +85,10 @@ using namespace Tucuxi::Common::Utils;
         c->addRequiredCovariateId(OP1);                                                                               \
         c->setType(TYPE);                                                                                             \
         c->setCheckOperation(std::move(op));                                                                          \
-        DOMAIN->addConstraint(std::move(c));                                                                          \
+        (DOMAIN)->addConstraint(std::move(c));                                                                        \
     } while (0);
+
+// NOLINTEND(cppcoreguidelines-macro-usage)
 
 enum class DataIntegrity
 {
@@ -316,8 +320,8 @@ static std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluateUni
 
 static void compatibleTests(ConstraintType _firstConstraintType, ConstraintType _secondConstraintType)
 {
-    const Result RESULT_TYPE = Result::Compatible;
-    const DrugDomainConstraintsEvaluator::Result CONSTRAINTS_RESULT_TYPE =
+    constexpr Result RESULT_TYPE = Result::Compatible;
+    constexpr DrugDomainConstraintsEvaluator::Result CONSTRAINTS_RESULT_TYPE =
             DrugDomainConstraintsEvaluator::Result::Compatible;
 
     uint8_t nbConstraints = 2;
@@ -350,8 +354,8 @@ static void compatibleTests(ConstraintType _firstConstraintType, ConstraintType 
 
 static void computationErrorTests(ConstraintType _firstConstraintType, ConstraintType _secondConstraintType)
 {
-    const Result RESULT_TYPE = Result::ComputationError;
-    const DrugDomainConstraintsEvaluator::Result CONSTRAINTS_RESULT_TYPE =
+    constexpr Result RESULT_TYPE = Result::ComputationError;
+    constexpr DrugDomainConstraintsEvaluator::Result CONSTRAINTS_RESULT_TYPE =
             DrugDomainConstraintsEvaluator::Result::ComputationError;
 
     uint8_t nbConstraints = 2;

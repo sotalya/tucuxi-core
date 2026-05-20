@@ -45,7 +45,7 @@ using namespace date;
 using namespace Tucuxi::Core;
 
 
-static const std::string test_mm_1comp_bolus_tdd = R"(<?xml version="1.0" encoding="UTF-8"?>
+static const std::string TEST_MM_1COMP_BOLUS_TDD = R"(<?xml version="1.0" encoding="UTF-8"?>
 <model version='0.6' xsi:noNamespaceSchemaLocation='drug2.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
     <history>
         <revisions>
@@ -473,7 +473,7 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1comp)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_1comp_bolus_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_1COMP_BOLUS_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);
@@ -563,7 +563,7 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes)
 
     std::unique_ptr<DrugModel> drugModel;
 
-    auto importStatus = importer.importFromString(drugModel, test_mm_1comp_bolus_tdd);
+    auto importStatus = importer.importFromString(drugModel, TEST_MM_1COMP_BOLUS_TDD);
     ASSERT_EQ(importStatus, DrugModelImport::Status::Ok);
 
     ASSERT_TRUE(drugModel != nullptr);
@@ -583,11 +583,11 @@ TEST(Core_TestMichaelisMenten1comp, MichaelisMenten1compMixedRoutes)
 
     const FormulationAndRoute route2(Formulation::OralSolution, AdministrationRoute::Oral);
 
-    DateTime startSept2018_2(
+    DateTime startSept2018after4days(
             date::year_month_day(date::year(2018), date::month(9), date::day(5)),
             Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
 
-    drugTreatment->addDosageTimeRange(buildDosageTimeRange(route2, startSept2018_2));
+    drugTreatment->addDosageTimeRange(buildDosageTimeRange(route2, startSept2018after4days));
     {
 
         RequestResponseId requestResponseId = "1";

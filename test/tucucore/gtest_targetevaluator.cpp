@@ -49,13 +49,13 @@ public:
     /// \param maxValue : maximum asked concentration value
     /// \return Concentrations (Concentration vector)
     ///
-    static Concentrations fillGrowingConcentrations(double minValue, double maxValue)
+    static Concentrations fillGrowingConcentrations(double _minValue, double _maxValue)
     {
         Concentrations concentrations;
 
-        double concentrationInterval = (maxValue - minValue) / static_cast<double>(NB_ARRAY_ELEMENTS);
+        double concentrationInterval = (_maxValue - _minValue) / static_cast<double>(NB_ARRAY_ELEMENTS);
 
-        for (double i = minValue; i < maxValue; i += concentrationInterval) {
+        for (double i = _minValue; i < _maxValue; i += concentrationInterval) {
             concentrations.push_back(i);
             if (concentrations.size() > NB_ARRAY_ELEMENTS) {
                 concentrations.pop_back();
@@ -70,13 +70,13 @@ public:
     /// \param lastTime : maximum asked time value
     /// \return TimeOffsets (TimeOffset vector)
     ///
-    static TimeOffsets fillTimeOffsets(double lastTime)
+    static TimeOffsets fillTimeOffsets(double _lastTime)
     {
         TimeOffsets timeOffsets;
 
-        double timeInterval = lastTime / static_cast<double>(NB_ARRAY_ELEMENTS);
+        double timeInterval = _lastTime / static_cast<double>(NB_ARRAY_ELEMENTS);
 
-        for (double i = 0; i < lastTime; i += timeInterval) {
+        for (double i = 0; i < _lastTime; i += timeInterval) {
             timeOffsets.push_back(i);
             if (timeOffsets.size() > NB_ARRAY_ELEMENTS) {
                 timeOffsets.pop_back();
@@ -282,7 +282,7 @@ TEST(Core_TestTargetEvaluator, Auc)
 
     Concentrations concentrations = {17, 18, 19, 18, 17};
 
-    double expectedValue = 4 * 17 + ((4 * (19 - 17)) / 2);
+    double expectedValue = 4.0 * 17.0 + ((4.0 * (19.0 - 17.0)) / 2.0);
 
     ConcentrationPrediction concentrationPrediction;
     concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -327,8 +327,8 @@ TEST(Core_TestTargetEvaluator, Auc24)
 
     Concentrations concentrations = {17, 18, 19, 18, 17};
 
-    double empiriqueAuc = 4 * 17 + ((4 * (19 - 17)) / 2);
-    double expectedValue = empiriqueAuc * 24 / 4; // * 24heures / intervale
+    double empiriqueAuc = 4.0 * 17.0 + ((4.0 * (19.0 - 17.0)) / 2.0);
+    double expectedValue = empiriqueAuc * 24.0 / 4.0; // * 24heures / intervale
 
     ConcentrationPrediction concentrationPrediction;
     concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -372,7 +372,7 @@ TEST(Core_TestTargetEvaluator, CumulativeAuc)
 
     Concentrations concentrations = {17, 18, 19, 18, 17};
 
-    double expectedValue = 4 * 17 + ((4 * (19 - 17)) / 2); // Demander Yann
+    double expectedValue = 4.0 * 17.0 + ((4.0 * (19.0 - 17.0)) / 2.0);
 
     ConcentrationPrediction concentrationPrediction;
     concentrationPrediction.appendConcentrations(timeOffsets, concentrations);
@@ -687,7 +687,7 @@ TEST(Core_TestTargetEvaluator, AucDividedByMic)
 
     Concentrations concentrations = {17, 18, 19, 18, 17};
 
-    double expectedValue = (4 * 17 + ((4 * (19 - 17)) / 2)) / 15.0; // auc / mic
+    double expectedValue = (4.0 * 17.0 + ((4.0 * (19.0 - 17.0)) / 2.0)) / 15.0; // auc / mic
 
     ConcentrationPrediction concentrationPrediction;
     concentrationPrediction.appendConcentrations(timeOffsets, concentrations);

@@ -75,6 +75,9 @@ std::vector<Duration> TimeAfterDoseCalculator::calculateDurations(
     ComputingStatus result = extractor.extract(
             _dosageHistory, firstDate, lastDate, 1, TucuUnit("mg"), intakes, ExtractionOption::ForceCycle);
 
+    if (result != ComputingStatus::Ok) {
+        return durations;
+    }
 
     for (const auto& sample : _samples) {
         DateTime sampleTime = sample->getDate();

@@ -95,6 +95,9 @@ SingleDoseAtTimeList::~SingleDoseAtTimeList() {}
 std::vector<Duration> SingleDoseAtTimeList::getTimeStepList(DateTime const& _intervalStart) const
 {
     std::vector<Duration> timeStepList;
+    if (m_dosageList.empty()) {
+        return timeStepList;
+    }
     if (m_dosageList.size() == 1) {
         if (m_dosageList.at(0)->getDateTime() >= _intervalStart) {
             // Dosage time is ok, but we have nothing to compare against, so
@@ -113,7 +116,7 @@ std::vector<Duration> SingleDoseAtTimeList::getTimeStepList(DateTime const& _int
             }
             avgVal += (next->getDateTime() - current->getDateTime()).toMilliseconds();
         }
-        avgVal /= (m_dosageList.size() - 1);
+        avgVal /= static_cast<int64_t>(m_dosageList.size() - 1);
         if (m_dosageList.back()->getDateTime() >= _intervalStart) {
             timeStepList.emplace_back(Duration(std::chrono::milliseconds(avgVal)));
         }
@@ -220,7 +223,7 @@ std::vector<Duration> SimpleDoseList::getTimeStepList(DateTime const& _intervalS
             }
             avgVal += (next->getDateTime() - current->getDateTime()).toMilliseconds();
         }
-        avgVal /= (m_dosageList.size() - 1);
+        avgVal /= static_cast<int64_t>(m_dosageList.size() - 1);
         if (m_dosageList.back()->getDateTime() >= _intervalStart) {
             timeStepList.emplace_back(Duration(std::chrono::milliseconds(avgVal)));
         }

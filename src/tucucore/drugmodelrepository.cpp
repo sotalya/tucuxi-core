@@ -141,7 +141,8 @@ void read_directory(const std::string& _name, std::vector<std::string>& _v)
     }
     struct dirent* dp;
     while ((dp = readdir(dirp)) != nullptr) {
-        _v.push_back(std::string(dp->d_name));
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
+        _v.emplace_back(dp->d_name, strnlen(dp->d_name, sizeof(dp->d_name)));
     }
     closedir(dirp);
 }

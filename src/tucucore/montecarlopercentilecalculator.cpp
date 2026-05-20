@@ -342,7 +342,7 @@ ComputingStatus MonteCarloPercentileCalculatorBase::computePredictions(
     IntakeSeries newIntakes;
     cloneIntakeSeries(_intakes, newIntakes);
 #endif // TUCU_SINGLETHREADEDPERCENTILECOMPUTATION
-            size_t start = threadIndex * nbPatientsPerThread;
+            size_t start = static_cast<size_t>(threadIndex) * static_cast<size_t>(nbPatientsPerThread);
             size_t end = std::min(static_cast<size_t>((threadIndex + 1) * nbPatientsPerThread), _nbPatients);
 
             for (size_t patient = start; patient < end; patient++) {
@@ -831,6 +831,7 @@ ComputingStatus AprioriMonteCarloPercentileCalculator::calculateEtasAndEpsilons(
 
             // Cholesky is applied here to get correlated random deviates
             EigenVector matrixX = choleskyMatrix * matrixY;
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
             _etas[patient].assign(&matrixX(0), &matrixX(0) + omegaRank);
 
             for (unsigned int eta = 0; eta < _initialEtas.size(); eta++) {
@@ -1075,7 +1076,7 @@ ComputingStatus AposterioriMonteCarloPercentileCalculator::calculateEtasAndEpsil
                     _omega, _residualErrorModel, _samples, newIntakes, _parameters, _concentrationCalculator);
 
 
-            Eigen::Index start = static_cast<Eigen::Index>(thread * nbSamplePerThread);
+            Eigen::Index start = static_cast<Eigen::Index>(thread) * static_cast<Eigen::Index>(nbSamplePerThread);
             Eigen::Index end = static_cast<Eigen::Index>(
                     std::min((thread + 1) * nbSamplePerThread, static_cast<unsigned int>(nbInitialSamples)));
             for (Eigen::Index sample = start; sample < end; sample++) {

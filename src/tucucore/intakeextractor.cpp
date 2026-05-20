@@ -205,7 +205,7 @@ int IntakeExtractor::extract(
     EXTRACT_PRECONDITIONS(_start, _end, _series);
 
     int nbIntakes = 0;
-    DateTime iEnd = _end.isUndefined() ? DateTime::now() : _end;
+    // DateTime iEnd = _end.isUndefined() ? DateTime::now() : _end;
 
     std::vector<SingleDoseAtTime> doses = _singleDoseAtTimeList.getDosageList(_start);
     std::vector<Duration> timeSteps = _singleDoseAtTimeList.getTimeStepList(_start);
@@ -249,7 +249,7 @@ int IntakeExtractor::extract(
     EXTRACT_PRECONDITIONS(_start, _end, _series);
 
     int nbIntakes = 0;
-    DateTime iEnd = _end.isUndefined() ? DateTime::now() : _end;
+    // DateTime iEnd = _end.isUndefined() ? DateTime::now() : _end;
 
     std::vector<SimpleDose> doses = _simpleDoseList.getDosageList(_start);
     std::vector<Duration> timeSteps = _simpleDoseList.getTimeStepList(_start);
