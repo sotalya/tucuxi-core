@@ -59,6 +59,7 @@ class ActiveMoiety;
 class ComputingAdjustments;
 class ComputingUtils;
 class PercentilesPrediction;
+class ComputingComponentComparator;
 
 
 ///
@@ -192,7 +193,9 @@ private:
     friend class ComputingTraitConcentration;
     friend class ComputingTraitPercentiles;
     friend class ComputingAdjustments;
+    template<typename T>
     friend class ComputingComponentTestHelper;
+    friend class ComputingComponentComparator;
 };
 
 } // namespace Core

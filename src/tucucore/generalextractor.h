@@ -57,7 +57,7 @@ public:
 
     ComputingStatus checkSamplesValidity(const DosageHistory& _dosageHistory, const Samples& _samples);
 
-    ComputingStatus extractAposterioriEtas(
+    virtual ComputingStatus extractAposterioriEtas(
             Etas& _etas,
             const ComputingRequest& _request,
             PredictionParameterType _parameterType,
@@ -75,7 +75,7 @@ public:
             std::vector<const FullFormulationAndRoute*>& _formulationAndRoutes,
             OmegaMatrix& _omega);
 
-    ComputingStatus generalExtractions(
+    virtual ComputingStatus generalExtractions(
             const Tucuxi::Core::ComputingTraitStandard* _traits,
             const DrugModel& _drugModel,
             const DosageHistory& _dosageHistory,
@@ -89,7 +89,7 @@ public:
             Common::DateTime& _calculationStartTime,
             const Common::DateTime& _covariateEndTime = Common::DateTime::undefinedDateTime());
 
-    ComputingStatus generalExtractions(
+    virtual ComputingStatus generalExtractions(
             const Tucuxi::Core::ComputingTraitStandard* _traits,
             const ComputingRequest& _request,
             const PkModelCollection* _modelCollection,
@@ -103,7 +103,7 @@ public:
     std::vector<const FullFormulationAndRoute*> extractFormulationAndRoutes(
             const DrugModel& _drugModel, const IntakeSeries& _intakeSeries);
 
-    ComputingStatus convertAnalytes(
+    virtual ComputingStatus convertAnalytes(
             IntakeSeries& _intakeSeries, const DrugModel& _drugModel, const AnalyteSet* _analyteGroup);
     /*
     ComputingStatus extractParameters(

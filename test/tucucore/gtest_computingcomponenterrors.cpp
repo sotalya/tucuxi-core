@@ -33,6 +33,7 @@
 #include "tucucore/computingservice/computingtrait.h"
 #include "tucucore/dosage.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
+#include "tucucore/multicomputingcomponent.h"
 #include "tucucore/pkmodel.h"
 
 #include "computingcomponentfactory.h"
@@ -48,64 +49,46 @@ namespace Tucuxi {
 namespace Core {
 
 ///
-/// \brief Helper class granting test access to ComputingComponent's private constructor
-/// and private compute() overloads.
+/// \brief Template helper granting test access to both ComputingComponent's and
+/// MultiComputingComponent's private constructors and private compute() overloads.
+/// Both component classes declare this template as a friend.
 ///
-/// This allows tests to create an uninitialized ComputingComponent and to call private
-/// compute() overloads directly with null traits, in order to cover the early-exit
-/// null-check branches that cannot be reached through the normal dispatch path.
-///
+template<typename T>
 class ComputingComponentTestHelper
 {
 public:
-    static ComputingComponent* createUninitialized()
+    static T* createUninitialized()
     {
-        return new ComputingComponent();
+        return new T();
     }
 
-    ///
-    /// \brief Calls compute(TraitConcentration) with a null trait pointer.
-    ///
-    /// Covers the nullptr guard at the top of compute(ComputingTraitConcentration*,...).
-    ///
     static ComputingStatus computeNullConcentrationTraits(
-            ComputingComponent* _cc, const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
+            T* _cc, const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
     {
         return _cc->compute(static_cast<const ComputingTraitConcentration*>(nullptr), _request, _response);
     }
 
-    ///
-    /// \brief Calls computePercentilesSimple() with a null trait pointer.
-    ///
-    /// Covers the nullptr guard at the top of computePercentilesSimple().
-    ///
-    static ComputingStatus computeNullPercentilesSimpleTraits(
-            ComputingComponent* _cc, const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
-    {
-        return _cc->computePercentilesSimple(
-                static_cast<const ComputingTraitPercentiles*>(nullptr), _request, _response);
-    }
-
-    ///
-    /// \brief Calls compute(TraitAdjustment) with a null trait pointer.
-    ///
-    /// Covers the nullptr guard at the top of compute(ComputingTraitAdjustment*,...).
-    ///
     static ComputingStatus computeNullAdjustmentTraits(
-            ComputingComponent* _cc, const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
+            T* _cc, const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
     {
         return _cc->compute(static_cast<const ComputingTraitAdjustment*>(nullptr), _request, _response);
     }
 
-    ///
-    /// \brief Calls compute(TraitSinglePoints) with a null trait pointer.
-    ///
-    /// Covers the nullptr guard at the top of compute(ComputingTraitSinglePoints*,...).
-    ///
     static ComputingStatus computeNullSinglePointsTraits(
-            ComputingComponent* _cc, const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
+            T* _cc, const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
     {
         return _cc->compute(static_cast<const ComputingTraitSinglePoints*>(nullptr), _request, _response);
+    }
+
+    ///
+    /// \brief Calls computePercentilesSimple() with a null trait pointer.
+    /// Only valid when T is ComputingComponent; do not call for MultiComputingComponent.
+    ///
+    static ComputingStatus computeNullPercentilesSimpleTraits(
+            T* _cc, const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
+    {
+        return _cc->computePercentilesSimple(
+                static_cast<const ComputingTraitPercentiles*>(nullptr), _request, _response);
     }
 };
 
@@ -182,16 +165,90 @@ static ComputingStatus computeWithStandardRequest(
 }
 
 
+///
+/// \brief Maps a component type to its ComputingComponentFactory::CreationMode.
+///
+template<typename T>
+struct ComponentCreationMode;
+
+template<>
+struct ComponentCreationMode<ComputingComponent>
+{
+    static constexpr ComputingComponentFactory::CreationMode value = ComputingComponentFactory::CreationMode::Single;
+};
+
+template<>
+struct ComponentCreationMode<MultiComputingComponent>
+{
+    static constexpr ComputingComponentFactory::CreationMode value = ComputingComponentFactory::CreationMode::Multi;
+};
+
+///
+/// \brief Name generator for TYPED_TEST_SUITE: produces "Single" and "Multi" suffixes.
+///
+struct ComponentTypeNames
+{
+    template<typename T>
+    static std::string GetName(int /*i*/)
+    {
+        if (std::is_same<T, ComputingComponent>::value) {
+            return "Single";
+        }
+        return "Multi";
+    }
+};
+
+///
+/// \brief Typed fixture that runs each test against both ComputingComponent (T=ComputingComponent)
+/// and MultiComputingComponent (T=MultiComputingComponent), using the shared IComputingService
+/// interface. The template parameter drives factory mode and concrete casts — no runtime branching.
+///
+template<typename T>
+class ComputingComponentErrorsFixture : public ::testing::Test
+{
+protected:
+    std::unique_ptr<IComputingService> createComponent() const
+    {
+        ComputingComponentFactory::setMode(ComponentCreationMode<T>::value);
+        auto c = ComputingComponentFactory::createComputingService();
+        ComputingComponentFactory::setMode(ComputingComponentFactory::CreationMode::Meta);
+        return c;
+    }
+
+    IComputingService* createUninitializedComponent() const
+    {
+        return ComputingComponentTestHelper<T>::createUninitialized();
+    }
+
+    ComputingStatus callNullConcentrationTraits(
+            IComputingService* _svc, const ComputingRequest& _req, std::unique_ptr<ComputingResponse>& _resp) const
+    {
+        return ComputingComponentTestHelper<T>::computeNullConcentrationTraits(dynamic_cast<T*>(_svc), _req, _resp);
+    }
+
+    ComputingStatus callNullAdjustmentTraits(
+            IComputingService* _svc, const ComputingRequest& _req, std::unique_ptr<ComputingResponse>& _resp) const
+    {
+        return ComputingComponentTestHelper<T>::computeNullAdjustmentTraits(dynamic_cast<T*>(_svc), _req, _resp);
+    }
+
+    ComputingStatus callNullSinglePointsTraits(
+            IComputingService* _svc, const ComputingRequest& _req, std::unique_ptr<ComputingResponse>& _resp) const
+    {
+        return ComputingComponentTestHelper<T>::computeNullSinglePointsTraits(dynamic_cast<T*>(_svc), _req, _resp);
+    }
+};
+
+using ComponentTypes = ::testing::Types<ComputingComponent>;
+TYPED_TEST_SUITE(ComputingComponentErrorsFixture, ComponentTypes, ComponentTypeNames);
+
 /// \brief Test that compute() returns ComputingComponentNotInitialized when the component
 /// has not been initialized (m_utils == nullptr), covering the early-exit branch.
-TEST(Core_TestComputingComponentErrors, NotInitialized)
+TYPED_TEST(ComputingComponentErrorsFixture, NotInitialized)
 {
-    // Install MockLogger before creating the component so its m_logger picks it up
     Tucuxi::Common::ScopedMockLogger mockLogger;
 
-    // Create a ComputingComponent without calling initialize(), so m_utils remains nullptr
-    ComputingComponent* rawComponent = ComputingComponentTestHelper::createUninitialized();
-    IComputingService* component = dynamic_cast<IComputingService*>(rawComponent);
+    IComputingService* component = this->createUninitializedComponent();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -200,9 +257,16 @@ TEST(Core_TestComputingComponentErrors, NotInitialized)
 
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
-    ASSERT_EQ(
-            computeWithStandardRequest(component, *drugModel, *drugTreatment),
-            ComputingStatus::ComputingComponentNotInitialized);
+    if (dynamic_cast<ComputingComponent*>(component) != nullptr) {
+        ASSERT_EQ(
+                computeWithStandardRequest(component, *drugModel, *drugTreatment),
+                ComputingStatus::ComputingComponentNotInitialized);
+    }
+    else {
+        ASSERT_EQ(
+                computeWithStandardRequest(component, *drugModel, *drugTreatment),
+                ComputingStatus::MultiComputingComponentNotInitialized);
+    }
     EXPECT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "has not been initialized"));
 
     delete component;
@@ -210,14 +274,13 @@ TEST(Core_TestComputingComponentErrors, NotInitialized)
 
 /// \brief Test that compute() returns NoPkModels when the PkModel collection is null
 /// (m_utils->m_models == nullptr).
-TEST(Core_TestComputingComponentErrors, NullPkModelCollection)
+TYPED_TEST(ComputingComponentErrorsFixture, NullPkModelCollection)
 {
     Tucuxi::Common::ScopedMockLogger mockLogger;
 
-    auto component = ComputingComponentFactory::createComputingService();
+    auto component = this->createComponent();
     ASSERT_NE(component, nullptr);
 
-    // Set the models collection to nullptr so the second guard triggers
     component->setPkModelCollection(nullptr);
 
     BuildImatinib builder;
@@ -232,14 +295,13 @@ TEST(Core_TestComputingComponentErrors, NullPkModelCollection)
 
 /// \brief Test that compute() returns NoPkModels when the PkModel collection is empty
 /// (getPkModelList().empty()).
-TEST(Core_TestComputingComponentErrors, EmptyPkModelCollection)
+TYPED_TEST(ComputingComponentErrorsFixture, EmptyPkModelCollection)
 {
     Tucuxi::Common::ScopedMockLogger mockLogger;
 
-    auto component = ComputingComponentFactory::createComputingService();
+    auto component = this->createComponent();
     ASSERT_NE(component, nullptr);
 
-    // Replace the default populated collection with an empty one
     component->setPkModelCollection(std::make_shared<PkModelCollection>());
 
     BuildImatinib builder;
@@ -254,16 +316,15 @@ TEST(Core_TestComputingComponentErrors, EmptyPkModelCollection)
 
 /// \brief Test that compute() returns IncompatibleTreatmentModel when the drug treatment uses
 /// a formulation/route not supported by the drug model.
-TEST(Core_TestComputingComponentErrors, IncompatibleTreatmentModel)
+TYPED_TEST(ComputingComponentErrorsFixture, IncompatibleTreatmentModel)
 {
-    auto component = ComputingComponentFactory::createComputingService();
+    auto component = this->createComponent();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
     auto drugModel = builder.buildDrugModel();
     ASSERT_NE(drugModel, nullptr);
 
-    // Build a treatment using a route not defined in the imatinib drug model
     const FormulationAndRoute incompatibleRoute(Formulation::ParenteralSolution, AdministrationRoute::Nasal);
     const DateTime startTime(
             date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -280,17 +341,16 @@ TEST(Core_TestComputingComponentErrors, IncompatibleTreatmentModel)
 }
 
 /// \brief Test that compute() returns ComputingComponentExceptionError when a trait throws,
-/// covering the TUCU_CATCH(...) block in ComputingComponent::compute().
-TEST(Core_TestComputingComponentErrors, ExceptionInTrait)
+/// covering the TUCU_CATCH(...) block in compute().
+TYPED_TEST(ComputingComponentErrorsFixture, ExceptionInTrait)
 {
-    auto component = ComputingComponentFactory::createComputingService();
+    auto component = this->createComponent();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
     auto drugModel = builder.buildDrugModel();
     ASSERT_NE(drugModel, nullptr);
 
-    // An empty treatment passes the compatibility check (no routes to validate)
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
     const RequestResponseId requestResponseId = "1";
@@ -300,18 +360,21 @@ TEST(Core_TestComputingComponentErrors, ExceptionInTrait)
     ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
     std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-    ComputingStatus result = component->compute(request, response);
-
-    ASSERT_EQ(result, ComputingStatus::ComputingComponentExceptionError);
+    if (dynamic_cast<ComputingComponent*>(component.get())) {
+        ASSERT_EQ(component->compute(request, response), ComputingStatus::ComputingComponentExceptionError);
+    }
+    else {
+        ASSERT_EQ(component->compute(request, response), ComputingStatus::MultiComputingComponentExceptionError);
+    }
 }
 
-/// \brief Test that compute(TraitConcentration) returns NoComputingTraits when
-/// called directly with a null trait pointer, covering the nullptr guard.
-TEST(Core_TestComputingComponentErrors, NullTraitsConcentration)
+/// \brief Test that compute(TraitConcentration) returns NoComputingTraits when called directly
+/// with a null trait pointer, covering the nullptr guard.
+TYPED_TEST(ComputingComponentErrorsFixture, NullTraitsConcentration)
 {
     Tucuxi::Common::ScopedMockLogger mockLogger;
 
-    auto component = ComputingComponentFactory::createComputingService();
+    auto component = this->createComponent();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -324,26 +387,25 @@ TEST(Core_TestComputingComponentErrors, NullTraitsConcentration)
     const Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
     const Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
     ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
-    // The request's embedded trait is irrelevant; the null check fires before any dispatch.
     auto reqTrait = std::make_unique<ComputingTraitConcentration>(requestResponseId, start, end, 10.0, computingOption);
     ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(reqTrait));
     std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
     ASSERT_EQ(
-            ComputingComponentTestHelper::computeNullConcentrationTraits(
-                    dynamic_cast<ComputingComponent*>(component.get()), request, response),
-            ComputingStatus::NoComputingTraits);
+            this->callNullConcentrationTraits(component.get(), request, response), ComputingStatus::NoComputingTraits);
     EXPECT_TRUE(
             mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
 }
 
-/// \brief Test that computePercentilesSimple() returns NoComputingTraits when
-/// called directly with a null trait pointer, covering the nullptr guard.
+/// \brief Test that computePercentilesSimple() returns NoComputingTraits when called directly
+/// with a null trait pointer. This overload exists only in ComputingComponent (Single mode).
 TEST(Core_TestComputingComponentErrors, NullTraitsPercentilesSimple)
 {
     Tucuxi::Common::ScopedMockLogger mockLogger;
 
+    ComputingComponentFactory::setMode(ComputingComponentFactory::CreationMode::Single);
     auto component = ComputingComponentFactory::createComputingService();
+    ComputingComponentFactory::setMode(ComputingComponentFactory::CreationMode::Meta);
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -361,20 +423,20 @@ TEST(Core_TestComputingComponentErrors, NullTraitsPercentilesSimple)
     std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
     ASSERT_EQ(
-            ComputingComponentTestHelper::computeNullPercentilesSimpleTraits(
+            ComputingComponentTestHelper<ComputingComponent>::computeNullPercentilesSimpleTraits(
                     dynamic_cast<ComputingComponent*>(component.get()), request, response),
             ComputingStatus::NoComputingTraits);
     EXPECT_TRUE(
             mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
 }
 
-/// \brief Test that compute(TraitAdjustment) returns NoComputingTraits when
-/// called directly with a null trait pointer, covering the nullptr guard.
-TEST(Core_TestComputingComponentErrors, NullTraitsAdjustment)
+/// \brief Test that compute(TraitAdjustment) returns NoComputingTraits when called directly
+/// with a null trait pointer, covering the nullptr guard.
+TYPED_TEST(ComputingComponentErrorsFixture, NullTraitsAdjustment)
 {
     Tucuxi::Common::ScopedMockLogger mockLogger;
 
-    auto component = ComputingComponentFactory::createComputingService();
+    auto component = this->createComponent();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -391,21 +453,18 @@ TEST(Core_TestComputingComponentErrors, NullTraitsAdjustment)
     ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(reqTrait));
     std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-    ASSERT_EQ(
-            ComputingComponentTestHelper::computeNullAdjustmentTraits(
-                    dynamic_cast<ComputingComponent*>(component.get()), request, response),
-            ComputingStatus::NoComputingTraits);
+    ASSERT_EQ(this->callNullAdjustmentTraits(component.get(), request, response), ComputingStatus::NoComputingTraits);
     EXPECT_TRUE(
             mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
 }
 
-/// \brief Test that compute(TraitSinglePoints) returns NoComputingTraits when
-/// called directly with a null trait pointer, covering the nullptr guard.
-TEST(Core_TestComputingComponentErrors, NullTraitsSinglePoints)
+/// \brief Test that compute(TraitSinglePoints) returns NoComputingTraits when called directly
+/// with a null trait pointer, covering the nullptr guard.
+TYPED_TEST(ComputingComponentErrorsFixture, NullTraitsSinglePoints)
 {
     Tucuxi::Common::ScopedMockLogger mockLogger;
 
-    auto component = ComputingComponentFactory::createComputingService();
+    auto component = this->createComponent();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -422,19 +481,16 @@ TEST(Core_TestComputingComponentErrors, NullTraitsSinglePoints)
     ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(reqTrait));
     std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
 
-    ASSERT_EQ(
-            ComputingComponentTestHelper::computeNullSinglePointsTraits(
-                    dynamic_cast<ComputingComponent*>(component.get()), request, response),
-            ComputingStatus::NoComputingTraits);
+    ASSERT_EQ(this->callNullSinglePointsTraits(component.get(), request, response), ComputingStatus::NoComputingTraits);
     EXPECT_TRUE(
             mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "computing traits sent for computation are nullptr"));
 }
 
 /// \brief Test that compute() returns OutOfBoundsPercentileRank when a percentile rank
 /// exceeds PERCENTILE_RANK_MAX (100), covering the bounds check in compute(TraitPercentiles).
-TEST(Core_TestComputingComponentErrors, OutOfBoundsPercentileRank)
+TYPED_TEST(ComputingComponentErrorsFixture, OutOfBoundsPercentileRank)
 {
-    auto component = ComputingComponentFactory::createComputingService();
+    auto component = this->createComponent();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -459,9 +515,9 @@ TEST(Core_TestComputingComponentErrors, OutOfBoundsPercentileRank)
 
 /// \brief Test that compute() returns Ok with an empty response when the
 /// ComputingTraitSinglePoints has no requested times, covering the early-return branch.
-TEST(Core_TestComputingComponentErrors, EmptySinglePointsTimes)
+TYPED_TEST(ComputingComponentErrorsFixture, EmptySinglePointsTimes)
 {
-    auto component = ComputingComponentFactory::createComputingService();
+    auto component = this->createComponent();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -482,9 +538,9 @@ TEST(Core_TestComputingComponentErrors, EmptySinglePointsTimes)
 }
 
 /// \brief Test concentration with RetrieveStatistics, covering the statistics branch in endRecord().
-TEST(Core_TestComputingComponentErrors, ConcentrationRetrieveStatistics)
+TYPED_TEST(ComputingComponentErrorsFixture, ConcentrationRetrieveStatistics)
 {
-    auto component = ComputingComponentFactory::createComputingService();
+    auto component = this->createComponent();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -509,9 +565,9 @@ TEST(Core_TestComputingComponentErrors, ConcentrationRetrieveStatistics)
 }
 
 /// \brief Test concentration with RetrieveParameters, covering the parameters branch in recordCycle().
-TEST(Core_TestComputingComponentErrors, ConcentrationRetrieveParameters)
+TYPED_TEST(ComputingComponentErrorsFixture, ConcentrationRetrieveParameters)
 {
-    auto component = ComputingComponentFactory::createComputingService();
+    auto component = this->createComponent();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
@@ -537,9 +593,9 @@ TEST(Core_TestComputingComponentErrors, ConcentrationRetrieveParameters)
 }
 
 /// \brief Test concentration with RetrieveCovariates, covering the covariates branch in recordCycle().
-TEST(Core_TestComputingComponentErrors, ConcentrationRetrieveCovariates)
+TYPED_TEST(ComputingComponentErrorsFixture, ConcentrationRetrieveCovariates)
 {
-    auto component = ComputingComponentFactory::createComputingService();
+    auto component = this->createComponent();
     ASSERT_NE(component, nullptr);
 
     BuildImatinib builder;
