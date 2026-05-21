@@ -94,7 +94,7 @@ TEST(Core_TestConstantEliminationBolus, Test0)
 
     ASSERT_TRUE(component != nullptr);
 
-    dynamic_cast<ComputingComponent*>(component.get())->setPkModelCollection(collection);
+    dynamic_cast<IComputingService*>(component.get())->setPkModelCollection(collection);
 
 
     {

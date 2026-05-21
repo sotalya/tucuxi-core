@@ -229,6 +229,34 @@ public:
         }
     }
 
+    ///
+    /// \brief Converts a specific unit type to another unit of the same type on a vector
+    /// \param _value
+    /// \param _initialUnit
+    /// \param _finalUnit
+    ///
+    template<UnitType unitType, typename TVector>
+    static void updateAndConvertToUnitVec2(TVector& _value, const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
+    {
+        const auto conversionMap = getConversionMap().at(unitType);
+
+        std::string initialKey = _initialUnit.toString();
+        std::string finalKey = _finalUnit.toString();
+
+        if ((conversionMap.count(initialKey) == 0) || (conversionMap.count(finalKey) == 0)) {
+            logConversionError(_initialUnit, _finalUnit);
+            throw std::invalid_argument("Error in unit conversion");
+        }
+
+        double factor = 1.0 / conversionMap.at(finalKey) * conversionMap.at(initialKey);
+
+        for (size_t i = 0; i < _value.size(); i++) {
+            for (size_t j = 0; j < _value[i].size(); j++) {
+                _value[i][j] = _value[i][j] * factor;
+            }
+        }
+    }
+
     /*
      *
     ///
