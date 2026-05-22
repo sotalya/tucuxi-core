@@ -5,7 +5,7 @@
 
 #include <string>
 
-static const std::string busulfan1 = R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+static const std::string BUSULFAN1 = R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?>
                                <?xml-stylesheet href="drugsmodel.xsl" type="text/xsl" ?>
                                <model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.6" xsi:noNamespaceSchemaLocation="drug2.xsd">
                                    <!-- Drug history -->
@@ -496,7 +496,7 @@ static const std::string busulfan1 = R"(<?xml version="1.0" encoding="UTF-8" sta
         )";
 
 
-static const std::string drug1 =
+static const std::string DRUG1 =
         R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?>
                            <?xml-stylesheet href="drugsmodel.xsl" type="text/xsl" ?>
                            <model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.6" xsi:noNamespaceSchemaLocation="drug2.xsd">
@@ -1078,7 +1078,7 @@ static const std::string drug1 =
 )";
 
 
-const std::string operationXml = R"(
+const std::string OPERATION_XML = R"(
         <something>
             <softFormula>
                                         <inputs>

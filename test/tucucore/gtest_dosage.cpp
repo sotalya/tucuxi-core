@@ -56,24 +56,24 @@ TEST(Core_TestDosage, SingleDoseAtTime)
     ASSERT_TRUE(sd.getDoseUnit() == unit);
 
     // Check copy constructor is fine.
-    SingleDoseAtTime sd_copy = sd;
-    ASSERT_TRUE(sd_copy.getDateTime() == dateTime);
-    ASSERT_TRUE(sd_copy.getFormulationAndRoute() == routePerfusion);
-    ASSERT_TRUE(sd_copy.getInfusionTime() == validInfusionTime);
-    ASSERT_TRUE(sd_copy.getDoseValue() == validDose);
-    ASSERT_TRUE(sd_copy.getDoseUnit() == unit);
+    SingleDoseAtTime sdCopy = sd; // NOLINT(performance-unnecessary-copy-initialization)
+    ASSERT_TRUE(sdCopy.getDateTime() == dateTime);
+    ASSERT_TRUE(sdCopy.getFormulationAndRoute() == routePerfusion);
+    ASSERT_TRUE(sdCopy.getInfusionTime() == validInfusionTime);
+    ASSERT_TRUE(sdCopy.getDoseValue() == validDose);
+    ASSERT_TRUE(sdCopy.getDoseUnit() == unit);
 
     // Check clone operation is fine.
-    SingleDoseAtTime sd_clone = sd.clone();
-    ASSERT_TRUE(sd_clone.getDateTime() == dateTime);
-    ASSERT_TRUE(sd_clone.getFormulationAndRoute() == routePerfusion);
-    ASSERT_TRUE(sd_clone.getInfusionTime() == validInfusionTime);
-    ASSERT_TRUE(sd_clone.getDoseValue() == validDose);
-    ASSERT_TRUE(sd_clone.getDoseUnit() == unit);
+    SingleDoseAtTime sdClone = sd.clone();
+    ASSERT_TRUE(sdClone.getDateTime() == dateTime);
+    ASSERT_TRUE(sdClone.getFormulationAndRoute() == routePerfusion);
+    ASSERT_TRUE(sdClone.getInfusionTime() == validInfusionTime);
+    ASSERT_TRUE(sdClone.getDoseValue() == validDose);
+    ASSERT_TRUE(sdClone.getDoseUnit() == unit);
 
     // Check equality/inequality operators.
-    ASSERT_TRUE(sd == sd_copy);
-    ASSERT_FALSE(sd != sd_copy);
+    ASSERT_TRUE(sd == sdCopy);
+    ASSERT_FALSE(sd != sdCopy);
 }
 
 
@@ -89,21 +89,21 @@ TEST(Core_TestDosage, SingleDoseAtTimeList)
     SingleDoseAtTime sd1(dateTime1, routePerfusion1, infusionTime, dose1, unit1);
 
     // This is identical to (1) --- should just give a warning but be ignored.
-    DateTime const dateTime1_bis(
+    DateTime const dateTime1Bis(
             date::year_month_day(date::year(2017), date::month(7), date::day(17)), std::chrono::hours(12));
-    FormulationAndRoute const routePerfusion1_bis(Formulation::Test, AdministrationRoute::IntravenousDrip);
-    DoseValue const dose1_bis = 100.0;
-    TucuUnit unit1_bis = TucuUnit("mg");
-    SingleDoseAtTime sd1_bis(dateTime1_bis, routePerfusion1_bis, infusionTime, dose1_bis, unit1_bis);
+    FormulationAndRoute const routePerfusion1Bis(Formulation::Test, AdministrationRoute::IntravenousDrip);
+    DoseValue const dose1Bis = 100.0;
+    TucuUnit unit1Bis = TucuUnit("mg");
+    SingleDoseAtTime sd1Bis(dateTime1Bis, routePerfusion1Bis, infusionTime, dose1Bis, unit1Bis);
 
     // This is identical to (1) except for the value --- should throw an
     // exception when inserted.
-    DateTime const dateTime1_tris(
+    DateTime const dateTime1Tris(
             date::year_month_day(date::year(2017), date::month(7), date::day(17)), std::chrono::hours(12));
-    FormulationAndRoute const routePerfusion1_tris(Formulation::Test, AdministrationRoute::IntravenousDrip);
-    DoseValue const dose1_tris = 200.0;
-    TucuUnit unit1_tris = TucuUnit("mg");
-    SingleDoseAtTime sd1_tris(dateTime1_tris, routePerfusion1_tris, infusionTime, dose1_tris, unit1_tris);
+    FormulationAndRoute const routePerfusion1Tris(Formulation::Test, AdministrationRoute::IntravenousDrip);
+    DoseValue const dose1Tris = 200.0;
+    TucuUnit unit1Tris = TucuUnit("mg");
+    SingleDoseAtTime sd1Tris(dateTime1Tris, routePerfusion1Tris, infusionTime, dose1Tris, unit1Tris);
 
     DateTime const dateTime2(
             date::year_month_day(date::year(2017), date::month(7), date::day(7)), std::chrono::seconds(0));
@@ -120,73 +120,73 @@ TEST(Core_TestDosage, SingleDoseAtTimeList)
     SingleDoseAtTime sd3(dateTime3, routePerfusion3, infusionTime, dose3, unit3);
 
     ASSERT_NO_THROW({ Tucuxi::Core::SingleDoseAtTimeList sdl1(sd1); });
-    ASSERT_NO_THROW({ Tucuxi::Core::SingleDoseAtTimeList sdl1(sd1_bis); });
-    ASSERT_NO_THROW({ Tucuxi::Core::SingleDoseAtTimeList sdl1(sd1_tris); });
+    ASSERT_NO_THROW({ Tucuxi::Core::SingleDoseAtTimeList sdl1(sd1Bis); });
+    ASSERT_NO_THROW({ Tucuxi::Core::SingleDoseAtTimeList sdl1(sd1Tris); });
     ASSERT_NO_THROW({ Tucuxi::Core::SingleDoseAtTimeList sdl2(sd2); });
     ASSERT_NO_THROW({ Tucuxi::Core::SingleDoseAtTimeList sdl3(sd3); });
 
     Tucuxi::Core::SingleDoseAtTimeList sdl1(sd1);
-    Tucuxi::Core::SingleDoseAtTimeList sdl1_copy = sdl1;
-    Tucuxi::Core::SingleDoseAtTimeList sdl1_bis(sd1_bis);
+    Tucuxi::Core::SingleDoseAtTimeList sdl1Copy = sdl1;
+    Tucuxi::Core::SingleDoseAtTimeList sdl1Bis(sd1Bis);
 
-    DateTime const dateTime_before1(
+    DateTime const dateTimeBefore1(
             date::year_month_day(date::year(2017), date::month(7), date::day(16)), std::chrono::seconds(0));
-    DateTime const dateTime_before2(
+    DateTime const dateTimeBefore2(
             date::year_month_day(date::year(2017), date::month(7), date::day(6)), std::chrono::seconds(0));
-    DateTime const dateTime_before3(
+    DateTime const dateTimeBefore3(
             date::year_month_day(date::year(2017), date::month(7), date::day(8)), std::chrono::seconds(0));
 
-    ASSERT_TRUE(sdl1 == sdl1_bis);
-    ASSERT_FALSE(sdl1 != sdl1_bis);
+    ASSERT_TRUE(sdl1 == sdl1Bis);
+    ASSERT_FALSE(sdl1 != sdl1Bis);
     // Duplicate insertion prints a warning to stderr. Capture it so it does not
     // pollute test output, and verify the message is actually emitted.
     {
         std::streambuf* origBuf = std::cerr.rdbuf();
         std::ostringstream sink;
         std::cerr.rdbuf(sink.rdbuf());
-        ASSERT_NO_THROW(sdl1.addDosage(sd1_bis));
+        ASSERT_NO_THROW(sdl1.addDosage(sd1Bis));
         std::cerr.rdbuf(origBuf);
         EXPECT_NE(sink.str().find("Duplicate insertion detected"), std::string::npos);
     }
-    ASSERT_TRUE(sdl1 == sdl1_copy);
+    ASSERT_TRUE(sdl1 == sdl1Copy);
     ASSERT_TRUE(sdl1.getFormulationAndRouteList().size() == 1);
     ASSERT_TRUE(sdl1.getLastFormulationAndRoute() == routePerfusion1);
-    ASSERT_TRUE(sdl1.getTimeStepList(dateTime_before1).size() == 1);
-    ASSERT_TRUE(sdl1.getDosageList(dateTime_before1).size() == 1);
-    ASSERT_THROW(sdl1.addDosage(sd1_tris), std::runtime_error);
-    ASSERT_NO_THROW(sdl1_copy.addDosage(sd2));
-    ASSERT_TRUE(sdl1_copy.getFormulationAndRouteList().size() == 2);
-    ASSERT_TRUE(sdl1_copy.getLastFormulationAndRoute() == routePerfusion2);
-    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before1).size() == 1);
-    ASSERT_TRUE(sdl1_copy.getDosageList(dateTime_before1).size() == 1);
-    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before2).size() == 2);
-    ASSERT_TRUE(sdl1_copy.getDosageList(dateTime_before2).size() == 2);
-    ASSERT_NO_THROW(sdl1_copy.addDosage(sd3));
-    ASSERT_TRUE(sdl1_copy.getFormulationAndRouteList().size() == 3);
-    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before1).size() == 1);
-    ASSERT_TRUE(sdl1_copy.getDosageList(dateTime_before1).size() == 1);
-    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before2).size() == 3);
-    ASSERT_TRUE(sdl1_copy.getDosageList(dateTime_before2).size() == 3);
-    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before3).size() == 2);
-    ASSERT_TRUE(sdl1_copy.getDosageList(dateTime_before3).size() == 2);
+    ASSERT_TRUE(sdl1.getTimeStepList(dateTimeBefore1).size() == 1);
+    ASSERT_TRUE(sdl1.getDosageList(dateTimeBefore1).size() == 1);
+    ASSERT_THROW(sdl1.addDosage(sd1Tris), std::runtime_error);
+    ASSERT_NO_THROW(sdl1Copy.addDosage(sd2));
+    ASSERT_TRUE(sdl1Copy.getFormulationAndRouteList().size() == 2);
+    ASSERT_TRUE(sdl1Copy.getLastFormulationAndRoute() == routePerfusion2);
+    ASSERT_TRUE(sdl1Copy.getTimeStepList(dateTimeBefore1).size() == 1);
+    ASSERT_TRUE(sdl1Copy.getDosageList(dateTimeBefore1).size() == 1);
+    ASSERT_TRUE(sdl1Copy.getTimeStepList(dateTimeBefore2).size() == 2);
+    ASSERT_TRUE(sdl1Copy.getDosageList(dateTimeBefore2).size() == 2);
+    ASSERT_NO_THROW(sdl1Copy.addDosage(sd3));
+    ASSERT_TRUE(sdl1Copy.getFormulationAndRouteList().size() == 3);
+    ASSERT_TRUE(sdl1Copy.getTimeStepList(dateTimeBefore1).size() == 1);
+    ASSERT_TRUE(sdl1Copy.getDosageList(dateTimeBefore1).size() == 1);
+    ASSERT_TRUE(sdl1Copy.getTimeStepList(dateTimeBefore2).size() == 3);
+    ASSERT_TRUE(sdl1Copy.getDosageList(dateTimeBefore2).size() == 3);
+    ASSERT_TRUE(sdl1Copy.getTimeStepList(dateTimeBefore3).size() == 2);
+    ASSERT_TRUE(sdl1Copy.getDosageList(dateTimeBefore3).size() == 2);
 
-    std::vector<SingleDoseAtTime> ret_list = sdl1_copy.getDosageList(dateTime_before2);
+    std::vector<SingleDoseAtTime> retList = sdl1Copy.getDosageList(dateTimeBefore2);
     // Check that they are in the proper order and returned in full.
-    ASSERT_TRUE(ret_list.at(0) == sd2);
-    ASSERT_TRUE(ret_list.at(1) == sd3);
-    ASSERT_TRUE(ret_list.at(2) == sd1);
-    ASSERT_TRUE(ret_list.at(0).getInfusionTime() == infusionTime);
-    ASSERT_TRUE(ret_list.at(1).getInfusionTime() == infusionTime);
-    ASSERT_TRUE(ret_list.at(2).getInfusionTime() == infusionTime);
+    ASSERT_TRUE(retList.at(0) == sd2);
+    ASSERT_TRUE(retList.at(1) == sd3);
+    ASSERT_TRUE(retList.at(2) == sd1);
+    ASSERT_TRUE(retList.at(0).getInfusionTime() == infusionTime);
+    ASSERT_TRUE(retList.at(1).getInfusionTime() == infusionTime);
+    ASSERT_TRUE(retList.at(2).getInfusionTime() == infusionTime);
     // Now check the individual components.
-    std::vector<FormulationAndRoute> far_list = sdl1_copy.getFormulationAndRouteList();
-    ASSERT_TRUE(ret_list.at(0).getFormulationAndRoute() == sd2.getFormulationAndRoute());
-    ASSERT_TRUE(ret_list.at(1).getFormulationAndRoute() == sd3.getFormulationAndRoute());
-    ASSERT_TRUE(ret_list.at(2).getFormulationAndRoute() == sd1.getFormulationAndRoute());
+    std::vector<FormulationAndRoute> farList = sdl1Copy.getFormulationAndRouteList();
+    ASSERT_TRUE(retList.at(0).getFormulationAndRoute() == sd2.getFormulationAndRoute());
+    ASSERT_TRUE(retList.at(1).getFormulationAndRoute() == sd3.getFormulationAndRoute());
+    ASSERT_TRUE(retList.at(2).getFormulationAndRoute() == sd1.getFormulationAndRoute());
 
-    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before2).at(0) == Duration(std::chrono::hours(48)));
-    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before2).at(1) == Duration(std::chrono::hours(204)));
-    ASSERT_TRUE(sdl1_copy.getTimeStepList(dateTime_before2).at(2) == Duration(std::chrono::hours(126)));
+    ASSERT_TRUE(sdl1Copy.getTimeStepList(dateTimeBefore2).at(0) == Duration(std::chrono::hours(48)));
+    ASSERT_TRUE(sdl1Copy.getTimeStepList(dateTimeBefore2).at(1) == Duration(std::chrono::hours(204)));
+    ASSERT_TRUE(sdl1Copy.getTimeStepList(dateTimeBefore2).at(2) == Duration(std::chrono::hours(126)));
 }
 
 
@@ -271,23 +271,23 @@ TEST(Core_TestDosage, DailyDose)
     // Specified time of day falls before the intake time -> expect to get the intake time
     DateTime dtBefore(
             date::year_month_day(date::year(2017), date::month(7), date::day(20)), std::chrono::seconds(12340));
-    DateTime dtBefore_Correct(
+    DateTime dtBeforeCorrect(
             date::year_month_day(date::year(2017), date::month(7), date::day(20)), std::chrono::seconds(12345));
-    ASSERT_EQ(ptr->getFirstIntakeInterval(dtBefore), dtBefore_Correct);
+    ASSERT_EQ(ptr->getFirstIntakeInterval(dtBefore), dtBeforeCorrect);
 
     // Specified time of day falls exactly on the intake time -> expect to get the intake time
     DateTime dtEqual(
             date::year_month_day(date::year(2017), date::month(7), date::day(20)), std::chrono::seconds(12345));
-    DateTime dtEqual_Correct(
+    DateTime dtEqualCorrect(
             date::year_month_day(date::year(2017), date::month(7), date::day(20)), std::chrono::seconds(12345));
-    ASSERT_EQ(ptr->getFirstIntakeInterval(dtEqual), dtEqual_Correct);
+    ASSERT_EQ(ptr->getFirstIntakeInterval(dtEqual), dtEqualCorrect);
 
     // Specified time of day falls past the intake time -> expect to get the intake time, but the day after
     DateTime dtAfter(
             date::year_month_day(date::year(2017), date::month(7), date::day(20)), std::chrono::seconds(12350));
-    DateTime dtAfter_Correct(
+    DateTime dtAfterCorrect(
             date::year_month_day(date::year(2017), date::month(7), date::day(21)), std::chrono::seconds(12345));
-    ASSERT_EQ(ptr->getFirstIntakeInterval(dtAfter), dtAfter_Correct);
+    ASSERT_EQ(ptr->getFirstIntakeInterval(dtAfter), dtAfterCorrect);
 }
 
 /// \brief Test the instantiation of a WeeklyDose.
@@ -312,7 +312,7 @@ TEST(Core_TestDosage, WeeklyDose)
         const DayOfWeek validDayOfWeek5(unsigned{SATURDAY});
         const DayOfWeek validDayOfWeek6(unsigned{SUNDAY});
 
-        std::vector<unsigned> c_encoding = {
+        std::vector<unsigned> cEncoding = {
                 validDayOfWeek0.c_encoding(),
                 validDayOfWeek1.c_encoding(),
                 validDayOfWeek2.c_encoding(),
@@ -321,7 +321,7 @@ TEST(Core_TestDosage, WeeklyDose)
                 validDayOfWeek5.c_encoding(),
                 validDayOfWeek6.c_encoding()};
 
-        std::vector<unsigned> iso_encoding = {
+        std::vector<unsigned> isoEncoding = {
                 validDayOfWeek0.iso_encoding(),
                 validDayOfWeek1.iso_encoding(),
                 validDayOfWeek2.iso_encoding(),
@@ -370,67 +370,67 @@ TEST(Core_TestDosage, WeeklyDose)
     // 16.07.2017 = Sunday
 
     // Good day of the week, before the time of day
-    DateTime goodDay_beforeTOD(
+    DateTime goodDayBeforeTod(
             date::year_month_day(date::year(2017), date::month(7), date::day(16)), std::chrono::seconds(1234));
-    DateTime goodDay_beforeTOD_correct(
+    DateTime goodDayBeforeTodCorrect(
             date::year_month_day(date::year(2017), date::month(7), date::day(16)), std::chrono::seconds(12345));
-    ASSERT_EQ(ptr->getFirstIntakeInterval(goodDay_beforeTOD), goodDay_beforeTOD_correct);
+    ASSERT_EQ(ptr->getFirstIntakeInterval(goodDayBeforeTod), goodDayBeforeTodCorrect);
 
     // Good day of the week, good time of day
-    DateTime goodDay_goodTOD(
+    DateTime goodDayGoodTod(
             date::year_month_day(date::year(2017), date::month(7), date::day(16)), std::chrono::seconds(12345));
-    DateTime goodDay_goodTOD_correct(
+    DateTime goodDayGoodTodCorrect(
             date::year_month_day(date::year(2017), date::month(7), date::day(16)), std::chrono::seconds(12345));
-    ASSERT_EQ(ptr->getFirstIntakeInterval(goodDay_goodTOD), goodDay_goodTOD_correct);
+    ASSERT_EQ(ptr->getFirstIntakeInterval(goodDayGoodTod), goodDayGoodTodCorrect);
 
     // Good day of the week, after the time of day
-    DateTime goodDay_afterTOD(
+    DateTime goodDayAfterTod(
             date::year_month_day(date::year(2017), date::month(7), date::day(16)), std::chrono::seconds(54321));
-    DateTime goodDay_afterTOD_correct(
+    DateTime goodDayAfterTodCorrect(
             date::year_month_day(date::year(2017), date::month(7), date::day(23)), std::chrono::seconds(12345));
-    ASSERT_EQ(ptr->getFirstIntakeInterval(goodDay_afterTOD), goodDay_afterTOD_correct);
+    ASSERT_EQ(ptr->getFirstIntakeInterval(goodDayAfterTod), goodDayAfterTodCorrect);
 
     // Day before the good day of the week, before the time of day
-    DateTime beforeDay_beforeTOD(
+    DateTime beforeDayBeforeTod(
             date::year_month_day(date::year(2017), date::month(7), date::day(15)), std::chrono::seconds(1234));
-    DateTime beforeDay_beforeTOD_correct(
+    DateTime beforeDayBeforeTodCorrect(
             date::year_month_day(date::year(2017), date::month(7), date::day(16)), std::chrono::seconds(12345));
-    ASSERT_EQ(ptr->getFirstIntakeInterval(beforeDay_beforeTOD), beforeDay_beforeTOD_correct);
+    ASSERT_EQ(ptr->getFirstIntakeInterval(beforeDayBeforeTod), beforeDayBeforeTodCorrect);
 
     // Day before the good day of the week, good time of day
-    DateTime beforeDay_goodTOD(
+    DateTime beforeDayGoodTod(
             date::year_month_day(date::year(2017), date::month(7), date::day(15)), std::chrono::seconds(12345));
-    DateTime beforeDay_goodTOD_correct(
+    DateTime beforeDayGoodTodCorrect(
             date::year_month_day(date::year(2017), date::month(7), date::day(16)), std::chrono::seconds(12345));
-    ASSERT_EQ(ptr->getFirstIntakeInterval(beforeDay_goodTOD), beforeDay_goodTOD_correct);
+    ASSERT_EQ(ptr->getFirstIntakeInterval(beforeDayGoodTod), beforeDayGoodTodCorrect);
 
     // Day before the good day of the week, after the time of day
-    DateTime beforeDay_afterTOD(
+    DateTime beforeDayAfterTod(
             date::year_month_day(date::year(2017), date::month(7), date::day(15)), std::chrono::seconds(54321));
-    DateTime beforeDay_afterTOD_correct(
+    DateTime beforeDayAfterTodCorrect(
             date::year_month_day(date::year(2017), date::month(7), date::day(16)), std::chrono::seconds(12345));
-    ASSERT_EQ(ptr->getFirstIntakeInterval(beforeDay_afterTOD), beforeDay_afterTOD_correct);
+    ASSERT_EQ(ptr->getFirstIntakeInterval(beforeDayAfterTod), beforeDayAfterTodCorrect);
 
     // Day after the good day of the week, before the time of day
-    DateTime afterDay_beforeTOD(
+    DateTime afterDayBeforeTod(
             date::year_month_day(date::year(2017), date::month(7), date::day(17)), std::chrono::seconds(1234));
-    DateTime afterDay_beforeTOD_correct(
+    DateTime afterDayBeforeTodCorrect(
             date::year_month_day(date::year(2017), date::month(7), date::day(23)), std::chrono::seconds(12345));
-    ASSERT_EQ(ptr->getFirstIntakeInterval(afterDay_beforeTOD), afterDay_beforeTOD_correct);
+    ASSERT_EQ(ptr->getFirstIntakeInterval(afterDayBeforeTod), afterDayBeforeTodCorrect);
 
     // Day after the good day of the week, good time of day
-    DateTime afterDay_goodTOD(
+    DateTime afterDayGoodTod(
             date::year_month_day(date::year(2017), date::month(7), date::day(17)), std::chrono::seconds(12345));
-    DateTime afterDay_goodTOD_correct(
+    DateTime afterDayGoodTodCorrect(
             date::year_month_day(date::year(2017), date::month(7), date::day(23)), std::chrono::seconds(12345));
-    ASSERT_EQ(ptr->getFirstIntakeInterval(afterDay_goodTOD), afterDay_goodTOD_correct);
+    ASSERT_EQ(ptr->getFirstIntakeInterval(afterDayGoodTod), afterDayGoodTodCorrect);
 
     // Day after the good day of the week, after the time of day
-    DateTime afterDay_afterTOD(
+    DateTime afterDayAfterTod(
             date::year_month_day(date::year(2017), date::month(7), date::day(17)), std::chrono::seconds(54321));
-    DateTime afterDay_afterTOD_correct(
+    DateTime afterDayAfterTodCorrect(
             date::year_month_day(date::year(2017), date::month(7), date::day(23)), std::chrono::seconds(12345));
-    ASSERT_EQ(ptr->getFirstIntakeInterval(afterDay_afterTOD), afterDay_afterTOD_correct);
+    ASSERT_EQ(ptr->getFirstIntakeInterval(afterDayAfterTod), afterDayAfterTodCorrect);
 }
 
 /// \brief Test a time range, checking that overlaps are properly detected.

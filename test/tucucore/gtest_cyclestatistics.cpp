@@ -27,6 +27,8 @@
 
 #include "gtest_core.h"
 
+using namespace Tucuxi::Core;
+
 // TODO : Add a test for residual value CycleStatisticType::Residual
 
 TEST(Core_TestCycleStatistics, CycleStatistics)

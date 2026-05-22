@@ -82,8 +82,8 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
     sharedPkModel->addParameterList(AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
 
     std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
-    defaultPopulate(*collection.get());
-    //        collection->addPkModel(sharedPkModel);
+    defaultPopulate(*collection);
+    collection->addPkModel(sharedPkModel);
     DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
     ASSERT_TRUE(checkerResult.m_ok);
@@ -129,6 +129,24 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
         drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
                 "covM1", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covS2", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covA2", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covR2", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covM2", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covS3", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covA3", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covR3", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covM3", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+
 
         RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
@@ -165,32 +183,37 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
                 return;
             }
 
-            ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(5));
-            ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "activeMoietyMulti");
+            ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(6));
+            ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "activeMoietyMulti0");
             ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoiety);
-            ASSERT_EQ(resp->getCompartmentInfos()[1].getId(), "analyte0");
-            ASSERT_EQ(resp->getCompartmentInfos()[1].getType(), CompartmentInfo::CompartmentType::Analyte);
-            ASSERT_EQ(resp->getCompartmentInfos()[2].getId(), "analyte1");
+            ASSERT_EQ(resp->getCompartmentInfos()[1].getId(), "activeMoietyMulti1");
+            ASSERT_EQ(resp->getCompartmentInfos()[1].getType(), CompartmentInfo::CompartmentType::ActiveMoiety);
+            ASSERT_EQ(resp->getCompartmentInfos()[2].getId(), "analyte0");
             ASSERT_EQ(resp->getCompartmentInfos()[2].getType(), CompartmentInfo::CompartmentType::Analyte);
-            ASSERT_EQ(resp->getCompartmentInfos()[3].getId(), "analyte2");
+            ASSERT_EQ(resp->getCompartmentInfos()[3].getId(), "analyte1");
             ASSERT_EQ(resp->getCompartmentInfos()[3].getType(), CompartmentInfo::CompartmentType::Analyte);
-            ASSERT_EQ(resp->getCompartmentInfos()[4].getId(), "analyte3");
+            ASSERT_EQ(resp->getCompartmentInfos()[4].getId(), "analyte2");
             ASSERT_EQ(resp->getCompartmentInfos()[4].getType(), CompartmentInfo::CompartmentType::Analyte);
+            ASSERT_EQ(resp->getCompartmentInfos()[5].getId(), "analyte3");
+            ASSERT_EQ(resp->getCompartmentInfos()[5].getType(), CompartmentInfo::CompartmentType::Analyte);
 
 
             std::vector<CycleData> data = resp->getData();
             ASSERT_EQ(data.size(), static_cast<size_t>(16));
-            ASSERT_EQ(data[0].m_concentrations.size(), static_cast<size_t>(5));
-            ASSERT_DOUBLE_EQ(data[0].m_concentrations[0][0], 800000.0);
-            ASSERT_DOUBLE_EQ(data[0].m_concentrations[1][0], 200000.0);
+            ASSERT_EQ(data[0].m_concentrations.size(), static_cast<size_t>(6));
+            ASSERT_DOUBLE_EQ(data[0].m_concentrations[0][0], 400000.0);
+            ASSERT_DOUBLE_EQ(data[0].m_concentrations[1][0], 400000.0);
             ASSERT_DOUBLE_EQ(data[0].m_concentrations[2][0], 200000.0);
             ASSERT_DOUBLE_EQ(data[0].m_concentrations[3][0], 200000.0);
             ASSERT_DOUBLE_EQ(data[0].m_concentrations[4][0], 200000.0);
+            ASSERT_DOUBLE_EQ(data[0].m_concentrations[5][0], 200000.0);
             ASSERT_EQ(data[0].m_concentrations[0].size(), static_cast<size_t>(61));
             ASSERT_EQ(data[0].m_concentrations[1].size(), static_cast<size_t>(61));
             ASSERT_EQ(data[0].m_concentrations[2].size(), static_cast<size_t>(61));
             ASSERT_EQ(data[0].m_concentrations[3].size(), static_cast<size_t>(61));
             ASSERT_EQ(data[0].m_concentrations[4].size(), static_cast<size_t>(61));
+            ASSERT_EQ(data[0].m_concentrations[5].size(), static_cast<size_t>(61));
+
 
             DateTime startSept2018(
                     date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -203,28 +226,62 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
 
             DateTime statTime = DateTime::now();
             Value statValue;
-            data[2].m_statistics.getStatistic(2, CycleStatisticType::AUC).getValue(statTime, statValue);
+
+            data[0].m_statistics.getStatistic(0, CycleStatisticType::CycleInterval).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 6, 0.01, 0.01);
+
+            data[1].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 400000.0 * 6.0, 0.01, 0.01);
+            data[1].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 400000.0 * 6.0 * 2, 0.01, 0.01);
+            data[1].m_statistics.getStatistic(0, CycleStatisticType::Peak).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 400000.0, 0.01, 0.01);
+            data[1].m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 400000.0, 0.01, 0.01);
+
+            data[2].m_statistics.getStatistic(1, CycleStatisticType::AUC).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 400000.0 * 6.0, 0.01, 0.01);
+            data[2].m_statistics.getStatistic(1, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 400000.0 * 6.0 * 3.0, 0.01, 0.01);
+            data[2].m_statistics.getStatistic(1, CycleStatisticType::Peak).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 400000.0, 0.01, 0.01);
+            data[2].m_statistics.getStatistic(1, CycleStatisticType::Mean).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 400000.0, 0.01, 0.01);
+
+            data[3].m_statistics.getStatistic(2, CycleStatisticType::AUC).getValue(statTime, statValue);
             ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0, 0.01, 0.01);
-
-            data[2].m_statistics.getStatistic(2, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
-            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 3.0, 0.01, 0.01);
-
-            data[2].m_statistics.getStatistic(2, CycleStatisticType::Peak).getValue(statTime, statValue);
+            data[3].m_statistics.getStatistic(2, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 4.0, 0.01, 0.01);
+            data[3].m_statistics.getStatistic(2, CycleStatisticType::Peak).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0, 0.01, 0.01);
+            data[3].m_statistics.getStatistic(2, CycleStatisticType::Mean).getValue(statTime, statValue);
             ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0, 0.01, 0.01);
 
-            data[2].m_statistics.getStatistic(2, CycleStatisticType::Mean).getValue(statTime, statValue);
-            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0, 0.01, 0.01);
-
-            data[1].m_statistics.getStatistic(2, CycleStatisticType::AUC).getValue(statTime, statValue);
+            data[4].m_statistics.getStatistic(3, CycleStatisticType::AUC).getValue(statTime, statValue);
             ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0, 0.01, 0.01);
-
-            data[1].m_statistics.getStatistic(2, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
-            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 12.0, 0.01, 0.01);
-
-            data[1].m_statistics.getStatistic(2, CycleStatisticType::Peak).getValue(statTime, statValue);
+            data[4].m_statistics.getStatistic(3, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 5.0, 0.01, 0.01);
+            data[4].m_statistics.getStatistic(3, CycleStatisticType::Peak).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0, 0.01, 0.01);
+            data[4].m_statistics.getStatistic(3, CycleStatisticType::Mean).getValue(statTime, statValue);
             ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0, 0.01, 0.01);
 
-            data[1].m_statistics.getStatistic(2, CycleStatisticType::Mean).getValue(statTime, statValue);
+            data[5].m_statistics.getStatistic(4, CycleStatisticType::AUC).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0, 0.01, 0.01);
+            data[5].m_statistics.getStatistic(4, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 6.0, 0.01, 0.01);
+            data[5].m_statistics.getStatistic(4, CycleStatisticType::Peak).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0, 0.01, 0.01);
+            data[5].m_statistics.getStatistic(4, CycleStatisticType::Mean).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0, 0.01, 0.01);
+
+            data[15].m_statistics.getStatistic(5, CycleStatisticType::AUC).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0, 0.01, 0.01);
+            data[15].m_statistics.getStatistic(5, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 16.0, 0.01, 0.01);
+            data[15].m_statistics.getStatistic(5, CycleStatisticType::Peak).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0, 0.01, 0.01);
+            data[15].m_statistics.getStatistic(5, CycleStatisticType::Mean).getValue(statTime, statValue);
             ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0, 0.01, 0.01);
         }
     }
@@ -325,7 +382,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
 TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiveMoietiesConversion)
 {
     BuildMultiAnalytesMultiActiveMoieties builder;
-    auto drugModel = builder.buildDrugModel(0.3, 0.5);
+    auto drugModel = builder.buildDrugModel(0.3, 0.5, 0.2, 0.4);
 
     ASSERT_TRUE(drugModel != nullptr);
 
@@ -334,7 +391,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
     DrugModelChecker checker;
 
     std::shared_ptr<PkModel> sharedPkModel;
-    sharedPkModel = std::make_shared<PkModel>("test.constantelimination", PkModel::AllowMultipleRoutes::No);
+    sharedPkModel = std::make_shared<PkModel>("test.multiconstantelimination", PkModel::AllowMultipleRoutes::No);
 
     bool addResult = sharedPkModel->addIntakeIntervalCalculatorFactory(
             AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getCreator());
@@ -342,7 +399,8 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
     sharedPkModel->addParameterList(AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
 
     std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
-    collection->addPkModel(sharedPkModel);
+    defaultPopulate(*collection.get());
+    //collection->addPkModel(sharedPkModel);
     DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
     ASSERT_TRUE(checkerResult.m_ok);
@@ -388,6 +446,25 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
                 "covR1", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
         drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
                 "covM1", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covS2", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covA2", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covR2", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covM2", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covS3", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covA3", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covR3", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covM3", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+
 
         RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
@@ -413,32 +490,49 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
 
         const ComputedData* responseData = response->getData();
 
-        ASSERT_TRUE(responseData != nullptr);
-        if (responseData == nullptr) {
-            return;
-        }
-
         {
+            ASSERT_TRUE(responseData != nullptr);
+            if (responseData == nullptr) {
+                return;
+            }
+
             ASSERT_TRUE(dynamic_cast<const SinglePredictionData*>(responseData) != nullptr);
             const SinglePredictionData* resp = dynamic_cast<const SinglePredictionData*>(responseData);
+            ASSERT_TRUE(resp != nullptr);
+            if (resp == nullptr) {
+                return;
+            }
 
-            ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(3));
-            ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "activeMoietyMulti");
+            ASSERT_EQ(resp->getCompartmentInfos().size(), static_cast<size_t>(6));
+            ASSERT_EQ(resp->getCompartmentInfos()[0].getId(), "activeMoietyMulti0");
             ASSERT_EQ(resp->getCompartmentInfos()[0].getType(), CompartmentInfo::CompartmentType::ActiveMoiety);
-            ASSERT_EQ(resp->getCompartmentInfos()[1].getId(), "analyte0");
-            ASSERT_EQ(resp->getCompartmentInfos()[1].getType(), CompartmentInfo::CompartmentType::Analyte);
-            ASSERT_EQ(resp->getCompartmentInfos()[2].getId(), "analyte1");
+            ASSERT_EQ(resp->getCompartmentInfos()[1].getId(), "activeMoietyMulti1");
+            ASSERT_EQ(resp->getCompartmentInfos()[1].getType(), CompartmentInfo::CompartmentType::ActiveMoiety);
+            ASSERT_EQ(resp->getCompartmentInfos()[2].getId(), "analyte0");
             ASSERT_EQ(resp->getCompartmentInfos()[2].getType(), CompartmentInfo::CompartmentType::Analyte);
+            ASSERT_EQ(resp->getCompartmentInfos()[3].getId(), "analyte1");
+            ASSERT_EQ(resp->getCompartmentInfos()[3].getType(), CompartmentInfo::CompartmentType::Analyte);
+            ASSERT_EQ(resp->getCompartmentInfos()[4].getId(), "analyte2");
+            ASSERT_EQ(resp->getCompartmentInfos()[4].getType(), CompartmentInfo::CompartmentType::Analyte);
+            ASSERT_EQ(resp->getCompartmentInfos()[5].getId(), "analyte3");
+            ASSERT_EQ(resp->getCompartmentInfos()[5].getType(), CompartmentInfo::CompartmentType::Analyte);
 
             std::vector<CycleData> data = resp->getData();
             ASSERT_EQ(data.size(), static_cast<size_t>(16));
-            ASSERT_EQ(data[0].m_concentrations.size(), static_cast<size_t>(3));
+            ASSERT_EQ(data[0].m_concentrations.size(), static_cast<size_t>(6));
             ASSERT_DOUBLE_EQ(data[0].m_concentrations[0][0], 200000.0 * 0.8);
-            ASSERT_DOUBLE_EQ(data[0].m_concentrations[1][0], 200000.0 * 0.3);
-            ASSERT_DOUBLE_EQ(data[0].m_concentrations[2][0], 200000.0 * 0.5);
+            ASSERT_DOUBLE_EQ(data[0].m_concentrations[1][0], 200000.0 * 0.6);
+            ASSERT_DOUBLE_EQ(data[0].m_concentrations[2][0], 200000.0 * 0.3);
+            ASSERT_DOUBLE_EQ(data[0].m_concentrations[3][0], 200000.0 * 0.5);
+            ASSERT_DOUBLE_EQ(data[0].m_concentrations[4][0], 200000.0 * 0.2);
+            ASSERT_DOUBLE_EQ(data[0].m_concentrations[5][0], 200000.0 * 0.4);
+
             ASSERT_EQ(data[0].m_concentrations[0].size(), static_cast<size_t>(61));
             ASSERT_EQ(data[0].m_concentrations[1].size(), static_cast<size_t>(61));
             ASSERT_EQ(data[0].m_concentrations[2].size(), static_cast<size_t>(61));
+            ASSERT_EQ(data[0].m_concentrations[3].size(), static_cast<size_t>(61));
+            ASSERT_EQ(data[0].m_concentrations[4].size(), static_cast<size_t>(61));
+            ASSERT_EQ(data[0].m_concentrations[5].size(), static_cast<size_t>(61));
 
             DateTime startSept2018(
                     date::year_month_day(date::year(2018), date::month(9), date::day(1)),
@@ -451,55 +545,63 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_MultiAnalytesMultiActiv
 
             DateTime statTime = DateTime::now();
             Value statValue;
-            data[0].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
-            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 0.8, 0.01, 0.01);
 
-            data[0].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
-            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 0.8, 0.01, 0.01);
-
-            data[0].m_statistics.getStatistic(0, CycleStatisticType::Peak).getValue(statTime, statValue);
-            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.8, 0.01, 0.01);
-
-            data[0].m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
-            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.8, 0.01, 0.01);
-
+            data[0].m_statistics.getStatistic(0, CycleStatisticType::CycleInterval).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 6, 0.01, 0.01);
 
             data[1].m_statistics.getStatistic(0, CycleStatisticType::AUC).getValue(statTime, statValue);
             ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 0.8, 0.01, 0.01);
-
             data[1].m_statistics.getStatistic(0, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
-            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 0.8 * 2.0, 0.01, 0.01);
-
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 2 * 0.8, 0.01, 0.01);
             data[1].m_statistics.getStatistic(0, CycleStatisticType::Peak).getValue(statTime, statValue);
             ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.8, 0.01, 0.01);
-
             data[1].m_statistics.getStatistic(0, CycleStatisticType::Mean).getValue(statTime, statValue);
             ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.8, 0.01, 0.01);
 
+            data[2].m_statistics.getStatistic(1, CycleStatisticType::AUC).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 0.6, 0.01, 0.01);
+            data[2].m_statistics.getStatistic(1, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 3.0 * 0.6, 0.01, 0.01);
+            data[2].m_statistics.getStatistic(1, CycleStatisticType::Peak).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.6, 0.01, 0.01);
+            data[2].m_statistics.getStatistic(1, CycleStatisticType::Mean).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.6, 0.01, 0.01);
 
-            data[1].m_statistics.getStatistic(1, CycleStatisticType::AUC).getValue(statTime, statValue);
+            data[3].m_statistics.getStatistic(2, CycleStatisticType::AUC).getValue(statTime, statValue);
             ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 0.3, 0.01, 0.01);
-
-            data[1].m_statistics.getStatistic(1, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
-            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 12.0 * 0.3, 0.01, 0.01);
-
-            data[1].m_statistics.getStatistic(1, CycleStatisticType::Peak).getValue(statTime, statValue);
+            data[3].m_statistics.getStatistic(2, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 4.0 * 0.3, 0.01, 0.01);
+            data[3].m_statistics.getStatistic(2, CycleStatisticType::Peak).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.3, 0.01, 0.01);
+            data[3].m_statistics.getStatistic(2, CycleStatisticType::Mean).getValue(statTime, statValue);
             ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.3, 0.01, 0.01);
 
-            data[1].m_statistics.getStatistic(1, CycleStatisticType::Mean).getValue(statTime, statValue);
-            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.3, 0.01, 0.01);
-
-            data[0].m_statistics.getStatistic(2, CycleStatisticType::AUC).getValue(statTime, statValue);
+            data[4].m_statistics.getStatistic(3, CycleStatisticType::AUC).getValue(statTime, statValue);
             ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 0.5, 0.01, 0.01);
-
-            data[0].m_statistics.getStatistic(2, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
-            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 0.5, 0.01, 0.01);
-
-            data[0].m_statistics.getStatistic(2, CycleStatisticType::Peak).getValue(statTime, statValue);
+            data[4].m_statistics.getStatistic(3, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 5.0 * 0.5, 0.01, 0.01);
+            data[4].m_statistics.getStatistic(3, CycleStatisticType::Peak).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.5, 0.01, 0.01);
+            data[4].m_statistics.getStatistic(3, CycleStatisticType::Mean).getValue(statTime, statValue);
             ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.5, 0.01, 0.01);
 
-            data[0].m_statistics.getStatistic(2, CycleStatisticType::Mean).getValue(statTime, statValue);
-            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.5, 0.01, 0.01);
+            data[5].m_statistics.getStatistic(4, CycleStatisticType::AUC).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 0.2, 0.01, 0.01);
+            data[5].m_statistics.getStatistic(4, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 6.0 * 0.2, 0.01, 0.01);
+            data[5].m_statistics.getStatistic(4, CycleStatisticType::Peak).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.2, 0.01, 0.01);
+            data[5].m_statistics.getStatistic(4, CycleStatisticType::Mean).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.2, 0.01, 0.01);
+
+            data[15].m_statistics.getStatistic(5, CycleStatisticType::AUC).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 0.4, 0.01, 0.01);
+            data[15].m_statistics.getStatistic(5, CycleStatisticType::CumulativeAuc).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 6.0 * 16.0 * 0.4, 0.01, 0.01);
+            data[15].m_statistics.getStatistic(5, CycleStatisticType::Peak).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.4, 0.01, 0.01);
+            data[15].m_statistics.getStatistic(5, CycleStatisticType::Mean).getValue(statTime, statValue);
+            ASSERT_PRED4(double_eq_rel_abs, statValue, 200000.0 * 0.4, 0.01, 0.01);
         }
     }
 
@@ -516,7 +618,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_Adjustments)
 
 
     // Add targets
-    TargetDefinition* target = new TargetDefinition(
+    auto target = std::make_unique<TargetDefinition>(
             TargetType::Residual,
             Unit("mg/l"),
             ActiveMoietyId("analyte"),
@@ -530,7 +632,7 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_Adjustments)
             std::make_unique<SubTargetDefinition>("toxicity", 10000.0, nullptr),
             std::make_unique<SubTargetDefinition>("inefficacy", 000.0, nullptr));
 
-    drugModel->m_activeMoieties[0]->addTarget(std::unique_ptr<TargetDefinition>(target));
+    drugModel->m_activeMoieties[0]->addTarget(std::move(target));
 
     ASSERT_TRUE(drugModel->checkInvariants());
 
@@ -545,7 +647,8 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_Adjustments)
     sharedPkModel->addParameterList(AbsorptionModel::Extravascular, MultiConstantEliminationBolus::getParametersId());
 
     std::shared_ptr<PkModelCollection> collection = std::make_shared<PkModelCollection>();
-    collection->addPkModel(sharedPkModel);
+    defaultPopulate(*collection.get());
+    //collection->addPkModel(sharedPkModel);
     DrugModelChecker::CheckerResult_t checkerResult = checker.checkDrugModel(drugModel.get(), collection.get());
 
     ASSERT_TRUE(checkerResult.m_ok);
@@ -591,6 +694,24 @@ TEST(Core_TestMultiAnalytesMultiActiveMoieties, DISABLED_Adjustments)
                 "covR1", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
         drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
                 "covM1", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covS2", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covA2", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covR2", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covM2", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covS3", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covA3", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covR3", "0.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
+        drugTreatment->addCovariate(std::make_unique<PatientCovariate>(
+                "covM3", "1.0", DataType::Double, TucuUnit(""), DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0)));
 
         RequestResponseId requestResponseId = "1";
         Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);

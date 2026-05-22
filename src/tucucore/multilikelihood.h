@@ -32,7 +32,6 @@
 #include "parameter.h"
 #include "sampleevent.h"
 
-using namespace std;
 namespace Tucuxi {
 namespace Core {
 
@@ -193,12 +192,14 @@ private:
     ///
     typedef struct
     {
+        // NOLINTBEGIN(readability-identifier-naming)
         /// Analyte index
         size_t analyteIndex;
         /// Sample index for its analyte
         size_t sampleIndex;
         /// Index in the merged array
         size_t mergedIndex;
+        // NOLINTEND(readability-identifier-naming)
     } SampleSorting_t;
 
     /// A vector of indices to link the samples to the times required for concentration calculation

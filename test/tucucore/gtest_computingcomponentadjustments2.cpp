@@ -44,20 +44,20 @@ using namespace date;
 
 std::unique_ptr<DrugTreatment> buildDrugTreatmentForAdjustments(
         const FormulationAndRoute& _route,
-        const DateTime startDateTime,
+        const DateTime _startDateTime,
         DoseValue _doseValue = DoseValue{200},
-        TucuUnit _unit = TucuUnit("mg"),
-        int interval = 6,
-        unsigned int nbrDoses = 16)
+        const TucuUnit& _unit = TucuUnit("mg"),
+        int _interval = 6,
+        unsigned int _nbrDoses = 16)
 {
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
-    LastingDose periodicDose(_doseValue, _unit, _route, Duration(), Duration(std::chrono::hours(interval)));
-    DosageRepeat repeatedDose(periodicDose, nbrDoses);
-    auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(startDateTime, repeatedDose);
+    LastingDose periodicDose(_doseValue, _unit, _route, Duration(), Duration(std::chrono::hours(_interval)));
+    DosageRepeat repeatedDose(periodicDose, _nbrDoses);
+    auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(_startDateTime, repeatedDose);
 
     drugTreatment->getModifiableDosageHistory().addTimeRange(*dosageTimeRange);
 
@@ -66,11 +66,9 @@ std::unique_ptr<DrugTreatment> buildDrugTreatmentForAdjustments(
 
 std::unique_ptr<DrugTreatment> buildDrugTreatmentForAdjustmentsDaily(
         const FormulationAndRoute& _route,
-        const DateTime startDateTime,
+        const DateTime _startDateTime,
         DoseValue _doseValue = DoseValue{200},
-        TucuUnit _unit = TucuUnit("mg"),
-        int interval = 6,
-        unsigned int nbrDoses = 16)
+        const TucuUnit& _unit = TucuUnit("mg"))
 {
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
@@ -81,7 +79,7 @@ std::unique_ptr<DrugTreatment> buildDrugTreatmentForAdjustmentsDaily(
             _doseValue, _unit, _route, Duration(std::chrono::hours(1)), TimeOfDay(Duration(std::chrono::hours(8))));
     DosageLoop loop(dailyDose);
 
-    auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(startDateTime, loop);
+    auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(_startDateTime, loop);
 
     drugTreatment->getModifiableDosageHistory().addTimeRange(*dosageTimeRange);
 
@@ -90,20 +88,20 @@ std::unique_ptr<DrugTreatment> buildDrugTreatmentForAdjustmentsDaily(
 
 std::unique_ptr<DosageTimeRange> buildDosageTimeRangeForAdjustments(
         const FormulationAndRoute& _route,
-        const DateTime startDateTime,
+        const DateTime _startDateTime,
         DoseValue _doseValue,
-        TucuUnit _unit,
-        int interval,
-        unsigned int nbrDoses)
+        const TucuUnit& _unit,
+        int _interval,
+        unsigned int _nbrDoses)
 {
     auto drugTreatment = std::make_unique<DrugTreatment>();
 
     // List of time ranges that will be pushed into the history
     DosageTimeRangeList timeRangeList;
 
-    LastingDose periodicDose(_doseValue, _unit, _route, Duration(), Duration(std::chrono::hours(interval)));
-    DosageRepeat repeatedDose(periodicDose, nbrDoses);
-    auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(startDateTime, repeatedDose);
+    LastingDose periodicDose(_doseValue, _unit, _route, Duration(), Duration(std::chrono::hours(_interval)));
+    DosageRepeat repeatedDose(periodicDose, _nbrDoses);
+    auto dosageTimeRange = std::make_unique<Tucuxi::Core::DosageTimeRange>(_startDateTime, repeatedDose);
     return dosageTimeRange;
 }
 

@@ -34,6 +34,7 @@
 #include "tucucore/drugtreatment/drugtreatment.h"
 #include "tucucore/montecarlopercentilecalculator.h"
 
+#include "computingcomponentfactory.h"
 #include "drugmodels/buildconstantelimination.h"
 #include "drugmodels/buildimatinib.h"
 #include "gtest_core.h"
@@ -72,7 +73,7 @@ TEST(Core_TestComputingComponentPercentiles, Imatinib1)
     // We reduce the number of patients to speed up the tests
     MonteCarloPercentileCalculatorBase::setStaticNumberPatients(1000);
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -166,8 +167,6 @@ TEST(Core_TestComputingComponentPercentiles, Imatinib1)
             }
         }
 */
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 TEST(Core_TestComputingComponentPercentiles, ImatinibSteadyState)
@@ -175,7 +174,7 @@ TEST(Core_TestComputingComponentPercentiles, ImatinibSteadyState)
     // We reduce the number of patients to speed up the tests
     MonteCarloPercentileCalculatorBase::setStaticNumberPatients(1000);
 
-    IComputingService* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    auto component = ComputingComponentFactory::createComputingService();
 
     ASSERT_TRUE(component != nullptr);
 
@@ -268,8 +267,6 @@ TEST(Core_TestComputingComponentPercentiles, ImatinibSteadyState)
             }
         }
 */
-    // Delete all dynamically allocated objects
-    delete component;
 }
 
 class AposterioriPercentilesTest : public ::testing::Test
@@ -279,7 +276,7 @@ protected:
     {
         MonteCarloPercentileCalculatorBase::setStaticNumberPatients(1000);
 
-        m_component.reset(dynamic_cast<IComputingService*>(ComputingComponent::createComponent()));
+        m_component = std::move(ComputingComponentFactory::createComputingService());
         ASSERT_TRUE(m_component != nullptr);
 
         BuildConstantElimination builder;

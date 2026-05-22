@@ -64,12 +64,10 @@ Tucuxi::Common::Interface* ComputingComponent::createComponent()
     return dynamic_cast<IComputingService*>(cmp);
 }
 
-
 Tucuxi::Common::Interface* ComputingComponent::getInterface(const std::string& _name)
 {
     return Tucuxi::Common::Component::getInterfaceImpl(_name);
 }
-
 
 ComputingComponent::ComputingComponent()
 {
@@ -90,7 +88,6 @@ bool ComputingComponent::initialize()
     return true;
 }
 
-
 void ComputingComponent::setPkModelCollection(std::shared_ptr<PkModelCollection> _collection)
 {
     m_utils->m_models = std::move(_collection);
@@ -101,7 +98,6 @@ std::string ComputingComponent::getErrorString() const
 {
     return "Error message function not yet implemented";
 }
-
 
 ComputingStatus ComputingComponent::compute(
         const ComputingRequest& _request, std::unique_ptr<ComputingResponse>& _response)
@@ -142,7 +138,7 @@ ComputingStatus ComputingComponent::compute(
             if (internalResult != ComputingStatus::Ok) {
                 result = internalResult;
             }
-            ++it;
+            it++;
         }
 
         // Record end time
@@ -236,7 +232,6 @@ ComputingStatus ComputingComponent::recordCycle(
     return ComputingStatus::Ok;
 }
 
-
 void ComputingComponent::endRecord(
         const ComputingTraitStandard* _traits, const ComputingRequest& _request, ConcentrationData& _concentrationData)
 {
@@ -247,7 +242,6 @@ void ComputingComponent::endRecord(
         c.calculate(_concentrationData.getModifiableData());
     }
 }
-
 
 void ComputingComponent::setCompartmentInfo(
         const ComputingTraitStandard* _traits, const ComputingRequest& _request, ConcentrationData& _data)
@@ -270,7 +264,6 @@ void ComputingComponent::setCompartmentInfo(
     }
 }
 
-
 void ComputingComponent::setCompartmentInfo(
         const ComputingTraitStandard* _traits, const ComputingRequest& _request, PercentilesData& _data)
 {
@@ -291,7 +284,6 @@ void ComputingComponent::setCompartmentInfo(
         }
     }
 }
-
 
 void ComputingComponent::setCompartmentInfo(
         const ComputingTraitSinglePoints* _traits, const ComputingRequest& _request, SinglePointsData& _data)
@@ -506,7 +498,6 @@ ComputingStatus ComputingComponent::compute(
     return computePercentilesSimple(_traits, _request, _response);
 }
 
-
 ComputingStatus ComputingComponent::computePercentilesMulti(
         const ComputingTraitPercentiles* _traits,
         const ComputingRequest& _request,
@@ -705,7 +696,6 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
             _traits, _request, _response, intakeSeries, pPrediction, percentiles, percentileRanks);
 }
 
-
 ComputingStatus ComputingComponent::computePercentilesSimple(
         const ComputingTraitPercentiles* _traits,
         const ComputingRequest& _request,
@@ -887,7 +877,6 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
             _traits, _request, _response, intakeSeries, pPrediction, percentiles, percentileRanks);
 }
 
-
 ComputingStatus ComputingComponent::preparePercentilesResponse(
         const ComputingTraitPercentiles* _traits,
         const ComputingRequest& _request,
@@ -1014,11 +1003,8 @@ ComputingStatus ComputingComponent::compute(
     ComputingTraitSinglePoints traits(_request.getId(), sampleTimes, _traits->getComputingOption());
 
     // And start the calculation
-    ComputingStatus cs = compute(&traits, _request, _response);
-
-    return cs;
+    return compute(&traits, _request, _response);
 }
-
 
 ComputingStatus ComputingComponent::compute(
         const ComputingTraitSinglePoints* _traits,
@@ -1193,7 +1179,6 @@ ComputingStatus ComputingComponent::compute(
             return computingResult;
         }
     }
-
     return ComputingStatus::Ok;
 }
 

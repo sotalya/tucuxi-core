@@ -24,6 +24,8 @@
 
 #include "gtest_core.h"
 
+using namespace Tucuxi::Core;
+
 int double_fuzzy_compare(double _a, double _b, double _relativeTolerance, double _absoluteTolerance)
 {
     if (_a == _b) {

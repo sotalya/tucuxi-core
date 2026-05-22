@@ -83,6 +83,16 @@ public:
         return m_unit;
     }
 
+    bool isAnalyte() const
+    {
+        for (const auto& analyteId : m_analyteIds) {
+            if (analyteId.toString() == m_id.toString()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     INVARIANTS(std::string id = m_id.toString();
                INVARIANT(Invariants::INV_ACTIVEMOIETY_0001, (!m_id.empty()), "An active moiety has no Id");
                INVARIANT(

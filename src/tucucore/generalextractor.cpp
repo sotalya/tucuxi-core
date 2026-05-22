@@ -716,7 +716,6 @@ ComputingStatus GeneralExtractor::convertAnalytes(
         if (formulation == nullptr) {
             return ComputingStatus::AnalyteConversionError;
         }
-        // TODO : Here we only support one analyte. To be modified once
         const AnalyteConversion* analyteConversion =
                 formulation->getAnalyteConversion(_analyteGroup->getAnalytes()[0]->getAnalyteId());
         if (analyteConversion != nullptr) {

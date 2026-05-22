@@ -48,7 +48,7 @@
 using namespace Tucuxi::Core;
 using namespace std::chrono_literals;
 
-static const unsigned int maxResidualSize = 3;
+static const unsigned int MAX_RESIDUAL_SIZE = 3;
 
 template<class CalculatorMicroClass, class CalculatorMacroClass>
 static void testSteadyState(
@@ -72,7 +72,7 @@ static void testSteadyState(
 
     unsigned int residualSize = (microCalculator.getResidualSize() == microCalculator.getResidualSize())
                                         ? microCalculator.getResidualSize()
-                                        : maxResidualSize;
+                                        : MAX_RESIDUAL_SIZE;
     bool isAll = false;
 
     MultiCompConcentrations concentrations;
@@ -91,8 +91,10 @@ static void testSteadyState(
 
     // Checking if steady state is reached by iterative 100 times a calculation and
     // passing residuals to the next iteration
-    Tucuxi::Core::Residuals inMicroResiduals(residualSize), inMacroResiduals(residualSize),
-            outMicroResiduals(residualSize), outMacroResiduals(residualSize);
+    Tucuxi::Core::Residuals inMicroResiduals(residualSize);
+    Tucuxi::Core::Residuals inMacroResiduals(residualSize);
+    Tucuxi::Core::Residuals outMicroResiduals(residualSize);
+    Tucuxi::Core::Residuals outMacroResiduals(residualSize);
 
     std::fill(outMicroResiduals.begin(), outMicroResiduals.end(), 0);
     std::fill(outMacroResiduals.begin(), outMacroResiduals.end(), 0);
@@ -164,7 +166,7 @@ static void testSingleVsMultiple(
 
     unsigned int residualSize = (microCalculator.getResidualSize() == microCalculator.getResidualSize())
                                         ? microCalculator.getResidualSize()
-                                        : maxResidualSize;
+                                        : MAX_RESIDUAL_SIZE;
     bool isAll = false;
 
     MultiCompConcentrations concentrations;
@@ -341,7 +343,6 @@ template<class CalculatorClass0, class CalculatorClass1>
 static void testCompare(
         const Tucuxi::Core::ParameterSetEvent& _parameters,
         double _dose,
-        Tucuxi::Core::AbsorptionModel _route,
         std::chrono::hours _interval,
         std::chrono::seconds _infusionTime,
         size_t _nbPoints)
@@ -357,7 +358,7 @@ static void testCompare(
 
     unsigned int residualSize = (calculator0.getResidualSize() == calculator0.getResidualSize())
                                         ? calculator0.getResidualSize()
-                                        : maxResidualSize;
+                                        : MAX_RESIDUAL_SIZE;
     bool isAll = false;
 
     MultiCompConcentrations concentrations0;
@@ -639,7 +640,7 @@ TEST(Core_TestIntervalCalculator, oneCompExtraAnalyticalVsRk4)
     Tucuxi::Core::ParameterSetEvent microParameters(DateTime::now(), microParameterDefs);
 
     testCompare<Tucuxi::Core::OneCompartmentExtraMicro, Tucuxi::Core::RK4OneCompartmentExtraMicro>(
-            microParameters, 400.0, Tucuxi::Core::AbsorptionModel::Extravascular, 12h, 0s, CYCLE_SIZE);
+            microParameters, 400.0, 12h, 0s, CYCLE_SIZE);
 }
 
 /// \brief Test the concentration calculation of erlang transit compartments.
@@ -884,7 +885,6 @@ TEST(Core_TestIntervalCalculator, twoCompExtraLagAnalyticalVsRk4)
     testCompare<Tucuxi::Core::TwoCompartmentExtraLagMicro, Tucuxi::Core::RK4TwoCompartmentExtraLagMicro>(
             microParameters,
             400.0,
-            Tucuxi::Core::AbsorptionModel::ExtravascularLag,
             12h,
             0s,
             241); // 241 allows to be aligned on the hours, else the test fails because of RK4 lag time

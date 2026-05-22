@@ -121,7 +121,7 @@ enum class Result
 static std::unique_ptr<DrugModelDomain> howManyConstraints(
         ConstraintType _firstConstraintType, ConstraintType _secondConstraintType, uint8_t _nbConstraint = 1)
 {
-    const int NB_CASE = 2;
+    constexpr int NB_CASE = 2;
 
     std::unique_ptr<DrugModelDomain> domain = std::make_unique<DrugModelDomain>();
 
@@ -149,7 +149,7 @@ static std::unique_ptr<DrugModelDomain> howManyConstraints(
 
 static DrugModel howManyCovariateDefinition(uint8_t _nbCovariateDefinition)
 {
-    const int NB_CASE = 4;
+    constexpr int NB_CASE = 4;
 
     DrugModel drugModel;
 
@@ -193,7 +193,7 @@ static DrugModel howManyCovariateDefinition(uint8_t _nbCovariateDefinition)
 static DrugTreatment howManyPatientCovariate(
         uint8_t _nbPatientCovariate, DataIntegrity _dataIntegrity = DataIntegrity::GoodDataGoodFormat)
 {
-    const int NB_CASE = 5;
+    constexpr int NB_CASE = 5;
 
     DrugTreatment drugTreatment;
 
@@ -281,7 +281,7 @@ static DrugTreatment howManyPatientCovariate(
 
 
 static std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluateUniqueResult(
-        DrugModel& _drugModel, DrugTreatment& _drugTreatment, Result result)
+        DrugModel& _drugModel, DrugTreatment& _drugTreatment, Result _result)
 {
     DrugDomainConstraintsEvaluator evaluator;
 
@@ -296,7 +296,7 @@ static std::vector<DrugDomainConstraintsEvaluator::EvaluationResult> evaluateUni
             DATE_TIME_NO_VAR(2020, 6, 12, 8, 0, 0),
             evaluationResults);
 
-    switch (result) {
+    switch (_result) {
 
     case Result::Compatible:
         EXPECT_TRUE(rc == DrugDomainConstraintsEvaluator::Result::Compatible);
@@ -388,8 +388,8 @@ static void computationErrorTests(ConstraintType _firstConstraintType, Constrain
 static void incompatibleTests(ConstraintType _firstConstraintType, ConstraintType _secondConstraintType)
 {
 
-    const Result RESULT_TYPE = Result::Incompatible;
-    const DrugDomainConstraintsEvaluator::Result CONSTRAINTS_RESULT_TYPE =
+    constexpr Result RESULT_TYPE = Result::Incompatible;
+    constexpr DrugDomainConstraintsEvaluator::Result CONSTRAINTS_RESULT_TYPE =
             DrugDomainConstraintsEvaluator::Result::Incompatible;
 
     uint8_t nbConstraints = 2;
@@ -427,12 +427,12 @@ static void incompatibleTests(ConstraintType _firstConstraintType, ConstraintTyp
 
 static void partiallyCompatibleTests()
 {
-    const Result RESULT_TYPE = Result::PartiallyCompatible;
-    const DrugDomainConstraintsEvaluator::Result CONSTRAINTS_RESULT_TYPE =
+    constexpr Result RESULT_TYPE = Result::PartiallyCompatible;
+    constexpr DrugDomainConstraintsEvaluator::Result CONSTRAINTS_RESULT_TYPE =
             DrugDomainConstraintsEvaluator::Result::PartiallyCompatible;
 
-    ConstraintType _firstConstraint = ConstraintType::SOFT;
-    ConstraintType _secondConstraint = ConstraintType::SOFT;
+    ConstraintType firstConstraint = ConstraintType::SOFT;
+    ConstraintType secondConstraint = ConstraintType::SOFT;
 
     uint8_t nbConstraints = 2;
     uint8_t nbCovariateDefinition = 2;
@@ -442,7 +442,7 @@ static void partiallyCompatibleTests()
     DrugModel drugModel;
     DrugTreatment drugTreatment;
 
-    domain = howManyConstraints(_firstConstraint, _secondConstraint, nbConstraints);
+    domain = howManyConstraints(firstConstraint, secondConstraint, nbConstraints);
 
     drugModel = howManyCovariateDefinition(nbCovariateDefinition);
 

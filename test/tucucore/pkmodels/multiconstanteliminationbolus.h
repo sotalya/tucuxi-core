@@ -45,10 +45,14 @@ enum class MultiConstantEliminationBolusCompartments : int
 /// \brief Intake interval calculator for tests. It is a bolus with a linear slope
 ///
 /// 4 parameters:
-///     - A
-///     - S
-///     - R
-///     - M
+///     - A0
+///     - S0
+///     - R0
+///     - M0
+///     - A1
+///     - S1
+///     - R1
+///     - M1
 /// The equation is the following:
 /// C0(t) = max(0.0 , (D + residual * R0) * ( 1 - t * S0) * M0 + A0)
 /// C1(t) = max(0.0 , (D + residual * R1) * ( 1 - t * S1) * M1 + A1)
@@ -162,7 +166,7 @@ protected:
         // Compute concentrations
         compute(_inResiduals, concentrations1, concentrations2);
 
-        // Return finla residual
+        // Return final residual
         _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
         _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
 
