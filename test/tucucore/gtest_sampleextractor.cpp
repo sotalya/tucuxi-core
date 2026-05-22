@@ -25,6 +25,7 @@
 #include <date/date.h>
 #include <gtest/gtest.h>
 
+#include "tucucore/drugmodel/analyte.h"
 #include "tucucore/sampleextractor.h"
 
 #include "mocklogger.h"
@@ -32,6 +33,21 @@
 
 using namespace Tucuxi::Common::Utils;
 using namespace Tucuxi::Core;
+
+namespace {
+
+AnalyteSet makeAnalyteSet(std::initializer_list<const char*> _analyteIds)
+{
+    AnalyteSet analyteSet;
+    for (const char* analyteId : _analyteIds) {
+        auto analyte = std::make_unique<Analyte>();
+        analyte->setAnalyteId(analyteId);
+        analyteSet.addAnalyte(std::move(analyte));
+    }
+    return analyteSet;
+}
+
+} // namespace
 
 TEST(Core_TestSampleExtractor, Standard)
 {
@@ -150,4 +166,72 @@ TEST(Core_TestSampleExtractor, Standard)
         ASSERT_EQ(series.size(), static_cast<size_t>(0));
         ASSERT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "Sample unit not handled"));
     }
+}
+
+TEST(Core_TestSampleExtractor, ExtractWithAnalyteSetInvalidUnitReturnsOkAndLogs)
+{
+    SampleExtractor extractor;
+    Samples samples;
+    DateTime start = DATE_TIME_NO_VAR(2018, 01, 01, 8, 00, 00);
+    DateTime end = DATE_TIME_NO_VAR(2018, 01, 03, 8, 00, 00);
+    SampleSeries series;
+
+    AnalyteSet analyteSet = makeAnalyteSet({"theAnalyte"});
+
+    samples.push_back(std::make_unique<Sample>(
+            DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), AnalyteId("theAnalyte"), 12.0, TucuUnit("invalid")));
+
+    Tucuxi::Common::ScopedMockLogger mockLogger;
+
+    ComputingStatus result = extractor.extract(samples, &analyteSet, start, end, TucuUnit("ug/l"), series);
+
+    ASSERT_EQ(result, ComputingStatus::Ok);
+    ASSERT_EQ(series.size(), static_cast<size_t>(0));
+    ASSERT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "Sample unit not handled"));
+}
+
+TEST(Core_TestSampleExtractor, ExtractWithAnalyteSetRejectsMultiAnalyteSamples)
+{
+    SampleExtractor extractor;
+    Samples samples;
+    DateTime start = DATE_TIME_NO_VAR(2018, 01, 01, 8, 00, 00);
+    DateTime end = DATE_TIME_NO_VAR(2018, 01, 05, 8, 00, 00);
+    SampleSeries series;
+
+    AnalyteSet analyteSet = makeAnalyteSet({"analyteA", "analyteB"});
+
+    samples.push_back(std::make_unique<Sample>(
+            DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), AnalyteId("analyteA"), 10.0, TucuUnit("ug/l")));
+    samples.push_back(std::make_unique<Sample>(
+            DATE_TIME_NO_VAR(2018, 01, 03, 8, 00, 00), AnalyteId("analyteB"), 11.0, TucuUnit("ug/l")));
+
+    Tucuxi::Common::ScopedMockLogger mockLogger;
+
+    ComputingStatus result = extractor.extract(samples, &analyteSet, start, end, TucuUnit("ug/l"), series);
+
+    ASSERT_EQ(result, ComputingStatus::SampleExtractionError);
+    ASSERT_EQ(series.size(), static_cast<size_t>(2));
+    ASSERT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "Multi-analytes measures are not yet supported"));
+}
+
+TEST(Core_TestSampleExtractor, ExtractRejectsMultiAnalyteSamples)
+{
+    SampleExtractor extractor;
+    Samples samples;
+    DateTime start = DATE_TIME_NO_VAR(2018, 01, 01, 8, 00, 00);
+    DateTime end = DATE_TIME_NO_VAR(2018, 01, 05, 8, 00, 00);
+    SampleSeries series;
+
+    samples.push_back(std::make_unique<Sample>(
+            DATE_TIME_NO_VAR(2018, 01, 02, 8, 00, 00), AnalyteId("analyteA"), 10.0, TucuUnit("ug/l")));
+    samples.push_back(std::make_unique<Sample>(
+            DATE_TIME_NO_VAR(2018, 01, 03, 8, 00, 00), AnalyteId("analyteB"), 11.0, TucuUnit("ug/l")));
+
+    Tucuxi::Common::ScopedMockLogger mockLogger;
+
+    ComputingStatus result = extractor.extract(samples, start, end, TucuUnit("ug/l"), series);
+
+    ASSERT_EQ(result, ComputingStatus::SampleExtractionError);
+    ASSERT_EQ(series.size(), static_cast<size_t>(2));
+    ASSERT_TRUE(mockLogger.hasEntry(Tucuxi::Common::LogLevel::Error, "Multi-analytes measures are not yet supported"));
 }

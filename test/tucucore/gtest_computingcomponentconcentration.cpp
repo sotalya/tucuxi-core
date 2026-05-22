@@ -30,6 +30,7 @@
 #include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/computingservice/computingresponse.h"
 #include "tucucore/computingservice/computingtrait.h"
+#include "tucucore/drugmodel/covariatedefinition.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
 
 #include "computingcomponentfactory.h"
@@ -455,4 +456,41 @@ TEST(Core_TestComputingComponentConcentration, Gof)
 
     // Delete all dynamically allocated objects
     delete component;
+}
+
+TEST(Core_TestComputingComponentConcentration, PopulationWithDoseCovariate)
+{
+    auto component = ComputingComponentFactory::createComputingService();
+    ASSERT_TRUE(component != nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_TRUE(drugModel != nullptr);
+
+    auto doseCovariate =
+            std::make_unique<CovariateDefinition>("dose", "0", nullptr, CovariateType::Dose, DataType::Double);
+    doseCovariate->setUnit(TucuUnit("mg"));
+    drugModel->addCovariate(std::move(doseCovariate));
+
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
+    DateTime startSept2018(
+            date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+            Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+    auto drugTreatment = buildDrugTreatment(route, startSept2018);
+
+    RequestResponseId requestResponseId = "1";
+    Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+    Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+    double nbPointsPerHour = 10.0;
+    ComputingOption computingOption(PredictionParameterType::Population, CompartmentsOption::MainCompartment);
+    std::unique_ptr<ComputingTraitConcentration> traits = std::make_unique<ComputingTraitConcentration>(
+            requestResponseId, start, end, nbPointsPerHour, computingOption);
+
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+    std::unique_ptr<ComputingResponse> response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ComputingStatus result = component->compute(request, response);
+
+    ASSERT_EQ(result, ComputingStatus::Ok);
+    ASSERT_TRUE(response->getData() != nullptr);
 }
