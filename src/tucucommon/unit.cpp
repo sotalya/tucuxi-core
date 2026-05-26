@@ -245,7 +245,7 @@ const std::map<UnitManager::UnitType, std::map<std::string, double>>& UnitManage
 
 void UnitManager::logConversionError(const TucuUnit& _initialUnit, const TucuUnit& _finalUnit)
 {
-    static Tucuxi::Common::LoggerHelper logHelper;
+    Tucuxi::Common::LoggerHelper logHelper;
     logHelper.error(
             "Error in unit conversion. No known conversion from {} to {}",
             _initialUnit.toString(),
