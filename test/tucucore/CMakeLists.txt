@@ -88,6 +88,7 @@ file(GLOB TUCUTESTCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computingcomponenterrors.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computingcomponentpercentiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computinggof.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/gtest_computingutils.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_concentrationcalculator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_covariateextractor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_cyclestatistics.cpp
@@ -98,6 +99,7 @@ file(GLOB TUCUTESTCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/gtest_drugmodels.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_drugtreatment.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_formulationandroute.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/gtest_generalextractor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_intakeextractor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_intakeintervalcalculator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_likelihood.cpp
