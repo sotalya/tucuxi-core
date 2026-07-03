@@ -741,7 +741,12 @@ bool CovariateExtractor::interpolateValues(
         break;
     case InterpolationType::Backward:
         // Use the value of the next measurement (look forward, not backward).
-        _valRes = _val2;
+        if (_dateRes <= _date1) {
+            _valRes = _val1;
+        }
+        else {
+            _valRes = _val2;
+        }
         break;
     case InterpolationType::Linear: {
         // Angular coefficient.
