@@ -139,6 +139,11 @@ private:
             const ComputingRequest& _request,
             std::unique_ptr<ComputingResponse>& _response);
 
+    ComputingStatus compute(
+            const ComputingTraitEtoda* _traits,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response);
+
     ComputingStatus computePercentilesSimple(
             const ComputingTraitPercentiles* _traits,
             const ComputingRequest& _request,
@@ -192,6 +197,7 @@ private:
     friend class ComputingTraitAdjustment;
     friend class ComputingTraitConcentration;
     friend class ComputingTraitPercentiles;
+    friend class ComputingTraitEtoda;
     friend class ComputingAdjustments;
     template<typename T>
     friend class ComputingComponentTestHelper;

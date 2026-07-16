@@ -38,11 +38,12 @@ ComputingOption::ComputingOption(
         RetrieveParametersOption _retrieveParameters,
         RetrieveCovariatesOption _retrieveCovariates,
         ForceUgPerLiterOption _forceUgPerLiter,
-        ComputeGoodnessOfFitOption _computeGoodnessOfFit)
+        ComputeGoodnessOfFitOption _computeGoodnessOfFit,
+        ComputeEtodaOption _computeEtoda)
     : m_parameterType(_parameterType), m_compartmentsOption(_compartmentsOption),
       m_retrieveStatistics(_retrieveStatistics), m_retrieveParameters(_retrieveParameters),
       m_retrieveCovariates(_retrieveCovariates), m_forceUgPerLiterOption(_forceUgPerLiter),
-      m_computeGoodnessOfFit(_computeGoodnessOfFit)
+      m_computeGoodnessOfFit(_computeGoodnessOfFit), m_computeEtoda(_computeEtoda)
 {
 }
 
@@ -295,6 +296,14 @@ ComputingStatus ComputingTraitSinglePoints::compute(
     return _computingComponent.compute(this, _request, _response);
 }
 
+ComputingStatus ComputingTraitEtoda::compute(
+        ComputingComponent& _computingComponent,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response) const
+{
+    return _computingComponent.compute(this, _request, _response);
+}
+
 
 ComputingStatus ComputingTraitConcentration::compute(
         MultiComputingComponent& _computingComponent,
@@ -333,6 +342,14 @@ ComputingStatus ComputingTraitAtMeasures::compute(
 
 
 ComputingStatus ComputingTraitSinglePoints::compute(
+        MultiComputingComponent& _computingComponent,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response) const
+{
+    return _computingComponent.compute(this, _request, _response);
+}
+
+ComputingStatus ComputingTraitEtoda::compute(
         MultiComputingComponent& _computingComponent,
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response) const

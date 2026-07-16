@@ -110,6 +110,14 @@ enum class ComputeGoodnessOfFitOption
     DoNotComputeGoodnessOfFit //!< Do not perform GoF computations
 };
 
+/// @brief The ComputeEtodaOption enum
+/// This enum allows to request the computation of ETODA Error Tolerance statistics.
+enum class ComputeEtodaOption
+{
+    ComputeEtoda = 0, //!< Perform ETODA computations and retrieve results
+    DoNotComputeEtoda //!< Do not perform ETODA computations
+};
+
 
 ///
 /// \brief The ComputingOption class.
@@ -129,6 +137,7 @@ public:
     /// \param _retrieveCovariates Indicates if covariate values have to be retrieved
     /// \param _forceUgPerLiter Indicates if the results should be forced in ug/l
     /// \param _computeGoodnessOfFit Indicates whether GoF statistics should be computed
+    /// \param _computeEtoda Indicates whether ETODA statistics should be computed
     ///
     ComputingOption(
             PredictionParameterType _parameterType,
@@ -137,7 +146,8 @@ public:
             RetrieveParametersOption _retrieveParameters = RetrieveParametersOption::DoNotRetrieveParameters,
             RetrieveCovariatesOption _retrieveCovariates = RetrieveCovariatesOption::DoNotRetrieveCovariates,
             ForceUgPerLiterOption _forceUgPerLiter = ForceUgPerLiterOption::Force,
-            ComputeGoodnessOfFitOption _computeGoodnessOfFit = ComputeGoodnessOfFitOption::DoNotComputeGoodnessOfFit);
+            ComputeGoodnessOfFitOption _computeGoodnessOfFit = ComputeGoodnessOfFitOption::DoNotComputeGoodnessOfFit,
+            ComputeEtodaOption _computeEtoda = ComputeEtodaOption::DoNotComputeEtoda);
 
     ///
     /// \brief getParametersType Gets the type of parameters
@@ -202,6 +212,15 @@ public:
         return m_computeGoodnessOfFit;
     }
 
+    ///
+    /// \brief computeEtoda Indicates if the ETODA statistics should be computed or not
+    /// \return ComputeEtodaOption::ComputeEtoda if it should be computed
+    ///
+    ComputeEtodaOption computeEtoda() const
+    {
+        return m_computeEtoda;
+    }
+
 protected:
     //! Type of parameters
     PredictionParameterType m_parameterType;
@@ -223,6 +242,9 @@ protected:
 
     //! Shall compute the Goodness-of-Fit statistics.
     ComputeGoodnessOfFitOption m_computeGoodnessOfFit;
+
+    //! Shall compute the ETODA statistics.
+    ComputeEtodaOption m_computeEtoda;
 };
 
 
@@ -792,6 +814,56 @@ private:
 
     //! An aborter to cancel current computing
     ComputingAborter* m_aborter;
+
+    ///
+    /// \brief Calls the compute() method in ComputingComponent
+    /// \param _computingComponent The computing component that will do the computing job
+    /// \param _request The request that has to be processed
+    /// \param _response The response list in which we will add the new response
+    /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
+    ///
+    ComputingStatus compute(
+            ComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
+
+    ComputingStatus compute(
+            MultiComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
+};
+
+///
+/// @brief The ComputingTraitEtoda class.
+/// This class embeds all information for calculating ETODA statistics.
+///
+class ComputingTraitEtoda : public ComputingTraitStandard
+{
+public:
+    ///
+    /// \brief ComputingTraitEtoda Simple constructor
+    /// \param _id Id of the request
+    /// \param _start Start time of the range to be calculated
+    /// \param _end End time of the range to be calculated
+    /// \param _nbPointsPerHour Requested number of points per hour
+    /// \param _computingOption Some computing options
+    /// \param _samplingHours The sampling hours for the computation
+    /// \param _ranks The percentile ranks as a vector of double
+    ComputingTraitEtoda(
+            RequestResponseId _id,
+            Tucuxi::Common::DateTime _start,
+            Tucuxi::Common::DateTime _end,
+            double _nbPointsPerHour,
+            ComputingOption _computingOption,
+            Tucuxi::Core::TimeOffsets _samplingHours,
+            PercentileRanks _ranks);
+
+private:
+    //! A vector of sampling hours
+    Tucuxi::Core::TimeOffsets m_samplingHours;
+
+    //! A vector of percentile ranks
+    PercentileRanks m_ranks;
 
     ///
     /// \brief Calls the compute() method in ComputingComponent

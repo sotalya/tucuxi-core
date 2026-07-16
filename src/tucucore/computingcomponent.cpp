@@ -1182,6 +1182,13 @@ ComputingStatus ComputingComponent::compute(
     return ComputingStatus::Ok;
 }
 
+ComputingStatus ComputingComponent::compute(
+        const ComputingTraitEtoda* _traits,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response)
+{
+    return ComputingStatus::Undefined;
+}
 
 } // namespace Core
 } // namespace Tucuxi
