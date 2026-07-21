@@ -575,6 +575,47 @@ protected:
     bool m_isCurrentInRange{false};
 };
 
+struct EtodaPointResult
+{
+    double m_measuredConc{0.0};
+    double m_trueConc{0.0};
+    double m_samplingHour{0.0};
+
+    bool m_adjustmentFound{false};
+    int m_zoneLabel{0};
+    double m_metricValue{0.0};
+};
+
+struct EtodaHourResult
+{
+    double m_samplingHour{0.0};
+    std::vector<EtodaPointResult> m_points;
+};
+
+class EtodaData : public ComputedData
+{
+public:
+    EtodaData(RequestResponseId _id) : ComputedData(std::move(_id)) {}
+
+    void addEtodaHourResult(const Tucuxi::Core::EtodaHourResult& _result)
+    {
+        m_results.push_back(_result);
+    }
+
+    void setEtodaResults(const std::vector<EtodaHourResult>& _results)
+    {
+        m_results = _results;
+    }
+
+    const std::vector<EtodaHourResult>& getEtodaResults() const
+    {
+        return m_results;
+    }
+
+private:
+    std::vector<EtodaHourResult> m_results;
+};
+
 ///
 /// \brief The PercentilesResponse class
 /// It shall contain different percentiles, for a certain period of time.

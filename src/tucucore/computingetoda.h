@@ -34,23 +34,6 @@
 namespace Tucuxi {
 namespace Core {
 
-struct EtodaPointResult
-{
-    double m_measuredConc{0.0};
-    double m_trueConc{0.0};
-    double m_samplingHour{0.0};
-
-    bool m_adjustmentFound{false};
-    int m_zoneLabel{0};
-    double m_metricValue{0.0};
-};
-
-struct EtodaHourResult
-{
-    double m_samplingHour{0.0};
-    std::vector<EtodaPointResult> m_points;
-};
-
 struct EtodaOptions
 {
     std::vector<double> m_samplingHours{0.0, 2.0};
@@ -75,6 +58,8 @@ public:
             std::unique_ptr<ComputingResponse>& _response);
 
 private:
+    [[nodiscard]] DrugTreatment cloneDrugTreatment(const DrugTreatment& _drugTreatment);
+
     [[nodiscard]] int computeConcentrationRange(
             const Tucuxi::Common::DateTime _dosageStart,
             const Tucuxi::Common::DateTime _dosageEnd,
@@ -83,12 +68,28 @@ private:
             double& _minConc,
             double& _maxConc);
 
-    [[nodiscard]] EtodaPointResult evaluatePair(
-            double _measuredConc, double _trueConc, const Tucuxi::Common::DateTime& _sampleDate);
+    [[nodiscard]] std::vector<EtodaPointResult> evaluateAdjustment(
+            const DrugModel& _drugModel,
+            const DrugTreatment& _drugTreatment,
+            const std::unique_ptr<AdjustmentData>& _adjustmentData,
+            double _measuredConc,
+            double _sampleHour,
+            const Tucuxi::Common::DateTime _dosageStart,
+            const Tucuxi::Common::DateTime _adjustmentEnd,
+            const Tucuxi::Core::TimeOffsets _concList);
 
-    [[nodiscard]] int classifyMetric(double _metricValue) const;
+    [[nodiscard]] std::unique_ptr<AdjustmentData> findAdjustement(
+            const Tucuxi::Common::DateTime _dosageStart,
+            const Tucuxi::Common::DateTime _dosageEnd,
+            double _measuredConc,
+            const Tucuxi::Common::DateTime& _sampleDate,
+            const DrugModel& _drugModel,
+            const DrugTreatment& _drugTreatment);
+
+    [[nodiscard]] int classifyMetric(const DrugModel& _drugModel, double _metricValue) const;
 
     [[nodiscard]] bool extractMetric(
+            const DrugModel& _drugModel,
             const Tucuxi::Core::SinglePredictionData& _predData,
             const std::string& _cycleUnit,
             double& _metricValue) const;
