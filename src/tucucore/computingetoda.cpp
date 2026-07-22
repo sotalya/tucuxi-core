@@ -23,9 +23,66 @@
 
 #include "tucucore/computingcomponent.h"
 #include "tucucore/computingservice/computingrequest.h"
+#include "tucucore/overloadevaluator.h"
 
 namespace Tucuxi {
 namespace Core {
+
+Tucuxi::Common::Duration ComputingEtoda::extractDefaultInterval(const DrugModel& _drugModel) const
+{
+    // ── Default formulation and route ─────────────────────────────────────────
+    const FormulationAndRoutes& fars = _drugModel.getFormulationAndRoutes();
+    const FullFormulationAndRoute* defaultFar = fars.getDefault();
+
+    if (defaultFar == nullptr) {
+        throw std::runtime_error("Drug model has no default formulation and route");
+    }
+
+    // ── Default dose interval ─────────────────────────────────────────────────
+    const ValidDurations* validIntervals = defaultFar->getValidIntervals();
+    if (validIntervals == nullptr) {
+        throw std::runtime_error("Drug model has no valid intervals");
+    }
+    double intervalValue = validIntervals->getDefaultValue();
+    std::string intervalUnit = validIntervals->getUnit().toString();
+    double intervalSeconds = 0.0;
+    if (intervalUnit == "min" || intervalUnit == "minutes") {
+        intervalSeconds = intervalValue * 60.0;
+    }
+    else {
+        // Assume hours
+        intervalSeconds = intervalValue * 3600.0;
+    }
+
+    return Duration(std::chrono::seconds(static_cast<long long>(intervalSeconds)));
+}
+
+DrugTreatment ComputingEtoda::cloneDrugTreatment(const DrugTreatment& _drugTreatment)
+{
+    DrugTreatment clonedTreatment;
+
+    // Clone covariates
+    for (const auto& covariate : _drugTreatment.getCovariates()) {
+        clonedTreatment.addCovariate(std::make_unique<PatientCovariate>(*covariate));
+    }
+
+    // Clone dosage time ranges
+    for (const auto& timeRange : _drugTreatment.getDosageHistory().getDosageTimeRanges()) {
+        clonedTreatment.addDosageTimeRange(std::make_unique<DosageTimeRange>(*timeRange));
+    }
+
+    // Clone targets
+    for (const auto& target : _drugTreatment.getTargets()) {
+        clonedTreatment.addTarget(std::make_unique<Target>(*target));
+    }
+
+    // Clone samples
+    for (const auto& sample : _drugTreatment.getSamples()) {
+        clonedTreatment.addSample(std::make_unique<Sample>(*sample));
+    }
+
+    return clonedTreatment;
+}
 
 int ComputingEtoda::computeConcentrationRange(
         const Tucuxi::Common::DateTime _dosageStart,
@@ -51,11 +108,15 @@ int ComputingEtoda::computeConcentrationRange(
         ranks.push_back(i);
     }
 
+    DateTime rangeStart = _dosageEnd - extractDefaultInterval(_drugModel);
+
     auto trait = std::make_unique<ComputingTraitPercentiles>(
-            "rangePercentiles", _dosageStart, _dosageEnd, ranks, m_options.m_pointPerHour, option);
+            "rangePercentiles", rangeStart, _dosageEnd, ranks, m_options.m_pointPerHour, option);
 
     ComputingRequest request("rangePercentiles", _drugModel, _drugTreatment, std::move(trait));
     auto response = std::make_unique<ComputingResponse>("rangePercentiles");
+
+    SingleOverloadEvaluator::getInstance()->setValues(100000, 5000, 10000);
 
     auto* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
     if (component == nullptr) {
@@ -91,13 +152,77 @@ int ComputingEtoda::computeConcentrationRange(
     return 0;
 }
 
+std::unique_ptr<AdjustmentData> ComputingEtoda::findAdjustement(
+        const Tucuxi::Common::DateTime _dosageStart,
+        const Tucuxi::Common::DateTime _dosageEnd,
+        const Tucuxi::Common::DateTime _adjustmentEnd,
+        double _measuredConc,
+        const Tucuxi::Common::DateTime& _sampleDate,
+        const DrugModel& _drugModel,
+        const DrugTreatment& _drugTreatment)
+{
+    // Create Drug Treatment with the measured concentration as a sample
+
+    DrugTreatment treatmentWithSample = cloneDrugTreatment(_drugTreatment);
+
+    AnalyteId analyteId(_drugModel.getDrugId());
+    auto sample = std::make_unique<Sample>(_sampleDate, analyteId, _measuredConc, TucuUnit("ug/l"));
+    treatmentWithSample.addSample(std::move(sample));
+
+    // Create adjustment computing request
+
+    ComputingOption adjOption(
+            PredictionParameterType::Aposteriori,
+            CompartmentsOption::AllActiveMoieties,
+            RetrieveStatisticsOption::RetrieveStatistics,
+            RetrieveParametersOption::DoNotRetrieveParameters,
+            RetrieveCovariatesOption::DoNotRetrieveCovariates,
+            ForceUgPerLiterOption::Force);
+
+    auto adjTrait = std::make_unique<ComputingTraitAdjustment>(
+            "adjustment",
+            _dosageEnd,
+            _adjustmentEnd,
+            m_options.m_pointPerHour,
+            adjOption,
+            _dosageEnd,
+            BestCandidatesOption::BestDosage,
+            LoadingOption::NoLoadingDose,
+            RestPeriodOption::NoRestPeriod,
+            SteadyStateTargetOption::AtSteadyState,
+            TargetExtractionOption::PopulationValues,
+            FormulationAndRouteSelectionOption::LastFormulationAndRoute);
+
+    ComputingRequest adjRequest("adjustment", _drugModel, treatmentWithSample, std::move(adjTrait));
+    auto adjResponse = std::make_unique<ComputingResponse>("adjustment");
+
+    auto* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+
+    ComputingStatus adjStatus = component->compute(adjRequest, adjResponse);
+    delete component;
+
+    if (adjStatus != ComputingStatus::Ok) {
+        return nullptr;
+    }
+
+    const auto* adjData = dynamic_cast<const AdjustmentData*>(adjResponse->getData());
+
+    if (adjData == nullptr) {
+        return nullptr;
+    }
+
+    return std::make_unique<AdjustmentData>(*adjData);
+}
+
 std::vector<EtodaPointResult> ComputingEtoda::evaluateAdjustment(
         const DrugModel& _drugModel,
         const DrugTreatment& _drugTreatment,
-        const std::unique_ptr<AdjustmentData>& _adjustmentData,
+        std::unique_ptr<AdjustmentData>& _adjustmentData,
         double _measuredConc,
         double _sampleHour,
+        const Tucuxi::Common::DateTime& _sampleDate,
         const Tucuxi::Common::DateTime _dosageStart,
+        const Tucuxi::Common::DateTime _dosageEnd,
         const Tucuxi::Common::DateTime _adjustmentEnd,
         const Tucuxi::Core::TimeOffsets _concList)
 {
@@ -118,6 +243,16 @@ std::vector<EtodaPointResult> ComputingEtoda::evaluateAdjustment(
         const DosageAdjustment& bestAdj = _adjustmentData->getAdjustments()[0];
         const DosageHistory& adjHistory = bestAdj.m_history;
 
+        DrugTreatment treatmentWithSample = cloneDrugTreatment(_drugTreatment);
+
+        for (const auto& timeRange : adjHistory.getDosageTimeRanges()) {
+            treatmentWithSample.getModifiableDosageHistory().addTimeRange(*timeRange);
+        }
+
+        AnalyteId analyteId(_drugModel.getDrugId());
+        auto sample = std::make_unique<Sample>(_sampleDate, analyteId, trueConc, TucuUnit("ug/l"));
+        treatmentWithSample.addSample(std::move(sample));
+
         ComputingOption predOption(
                 PredictionParameterType::Aposteriori,
                 CompartmentsOption::AllActiveMoieties,
@@ -129,7 +264,7 @@ std::vector<EtodaPointResult> ComputingEtoda::evaluateAdjustment(
         auto predTrait = std::make_unique<ComputingTraitConcentration>(
                 "prediction", _dosageStart, _adjustmentEnd, m_options.m_pointPerHour, predOption);
 
-        ComputingRequest predRequest("prediction", _drugModel, _drugTreatment, std::move(predTrait));
+        ComputingRequest predRequest("prediction", _drugModel, treatmentWithSample, std::move(predTrait));
         auto predResponse = std::make_unique<ComputingResponse>("prediction");
 
         auto* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
@@ -167,131 +302,6 @@ std::vector<EtodaPointResult> ComputingEtoda::evaluateAdjustment(
     }
 
     return results;
-}
-
-DrugTreatment ComputingEtoda::cloneDrugTreatment(const DrugTreatment& _drugTreatment)
-{
-    DrugTreatment clonedTreatment;
-
-    // Clone covariates
-    for (const auto& covariate : _drugTreatment.getCovariates()) {
-        clonedTreatment.addCovariate(std::make_unique<PatientCovariate>(*covariate));
-    }
-
-    // Clone dosage time ranges
-    for (const auto& timeRange : _drugTreatment.getDosageHistory().getDosageTimeRanges()) {
-        clonedTreatment.addDosageTimeRange(std::make_unique<DosageTimeRange>(*timeRange));
-    }
-
-    // Clone targets
-    for (const auto& target : _drugTreatment.getTargets()) {
-        clonedTreatment.addTarget(std::make_unique<Target>(*target));
-    }
-
-    // Clone samples
-    for (const auto& sample : _drugTreatment.getSamples()) {
-        clonedTreatment.addSample(std::make_unique<Sample>(*sample));
-    }
-
-    return clonedTreatment;
-}
-
-std::unique_ptr<AdjustmentData> ComputingEtoda::findAdjustement(
-        const Tucuxi::Common::DateTime _dosageStart,
-        const Tucuxi::Common::DateTime _dosageEnd,
-        double _measuredConc,
-        const Tucuxi::Common::DateTime& _sampleDate,
-        const DrugModel& _drugModel,
-        const DrugTreatment& _drugTreatment)
-{
-    // Create Drug Treatment with the measured concentration as a sample
-
-    DrugTreatment treatmentWithSample = cloneDrugTreatment(_drugTreatment);
-
-    AnalyteId analyteId(_drugModel.getDrugId());
-    auto sample = std::make_unique<Sample>(_sampleDate, analyteId, _measuredConc, TucuUnit("ug/l"));
-    treatmentWithSample.addSample(std::move(sample));
-
-    // Create adjustment computing request
-
-    ComputingOption adjOption(
-            PredictionParameterType::Aposteriori,
-            CompartmentsOption::AllActiveMoieties,
-            RetrieveStatisticsOption::RetrieveStatistics,
-            RetrieveParametersOption::DoNotRetrieveParameters,
-            RetrieveCovariatesOption::DoNotRetrieveCovariates,
-            ForceUgPerLiterOption::Force);
-
-    // Get the end date of the last dosage
-    auto dosageEnd = _drugTreatment.getDosageHistory().getDosageTimeRanges().back().get()->getEndDate();
-    auto adjustmentEnd = dosageEnd + Duration(std::chrono::hours(24));
-
-    auto adjTrait = std::make_unique<ComputingTraitAdjustment>(
-            "adjustment",
-            dosageEnd,
-            adjustmentEnd,
-            m_options.m_pointPerHour,
-            adjOption,
-            dosageEnd,
-            BestCandidatesOption::BestDosage,
-            LoadingOption::NoLoadingDose,
-            RestPeriodOption::NoRestPeriod,
-            SteadyStateTargetOption::AtSteadyState,
-            TargetExtractionOption::PopulationValues,
-            FormulationAndRouteSelectionOption::LastFormulationAndRoute);
-
-    ComputingRequest adjRequest("adjustment", _drugModel, _drugTreatment, std::move(adjTrait));
-    auto adjResponse = std::make_unique<ComputingResponse>("adjustment");
-
-    auto* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
-
-    ComputingStatus adjStatus = component->compute(adjRequest, adjResponse);
-    delete component;
-
-    if (adjStatus != ComputingStatus::Ok) {
-        return nullptr;
-    }
-
-    const auto* adjData = dynamic_cast<const AdjustmentData*>(adjResponse->getData());
-
-    if (adjData == nullptr) {
-        return nullptr;
-    }
-
-    return std::make_unique<AdjustmentData>(*adjData);
-}
-
-int ComputingEtoda::classifyMetric(const DrugModel& _drugModel, double _metricValue) const
-{
-    const ActiveMoieties& activeMoieties = _drugModel.getActiveMoieties();
-    const ActiveMoiety& moiety = *activeMoieties[0];
-    const auto& targetDefinitions = moiety.getTargetDefinitions();
-
-    if (targetDefinitions.empty()) {
-        return 0;
-    }
-
-    const auto& t = targetDefinitions[0];
-
-    // threshold_range = [[0, inefficacy], [inefficacy, min], [min, max], [max, toxicity], [toxicity, inf]]
-    // threshold_label = [-2, -1, 0, 1, 2]
-    if (_metricValue >= 0.0 && _metricValue < t->getInefficacyAlarm().getValue()) {
-        return -2;
-    }
-    if (_metricValue >= t->getInefficacyAlarm().getValue() && _metricValue < t->getCMin().getValue()) {
-        return -1;
-    }
-    if (_metricValue >= t->getCMin().getValue() && _metricValue < t->getCMax().getValue()) {
-        return 0;
-    }
-    if (_metricValue >= t->getCMax().getValue() && _metricValue < t->getToxicityAlarm().getValue()) {
-        return 1;
-    }
-    if (_metricValue >= t->getToxicityAlarm().getValue()) {
-        return 2;
-    }
-
-    return 0; // fallback (negative values not expected in PK metrics)
 }
 
 bool ComputingEtoda::extractMetric(
@@ -409,11 +419,46 @@ bool ComputingEtoda::extractMetric(
     return true;
 }
 
+int ComputingEtoda::classifyMetric(const DrugModel& _drugModel, double _metricValue) const
+{
+    const ActiveMoieties& activeMoieties = _drugModel.getActiveMoieties();
+    const ActiveMoiety& moiety = *activeMoieties[0];
+    const auto& targetDefinitions = moiety.getTargetDefinitions();
+
+    if (targetDefinitions.empty()) {
+        return 0;
+    }
+
+    const auto& t = targetDefinitions[0];
+
+    // threshold_range = [[0, inefficacy], [inefficacy, min], [min, max], [max, toxicity], [toxicity, inf]]
+    // threshold_label = [-2, -1, 0, 1, 2]
+    if (_metricValue >= 0.0 && _metricValue < t->getInefficacyAlarm().getValue()) {
+        return -2;
+    }
+    if (_metricValue >= t->getInefficacyAlarm().getValue() && _metricValue < t->getCMin().getValue()) {
+        return -1;
+    }
+    if (_metricValue >= t->getCMin().getValue() && _metricValue < t->getCMax().getValue()) {
+        return 0;
+    }
+    if (_metricValue >= t->getCMax().getValue() && _metricValue < t->getToxicityAlarm().getValue()) {
+        return 1;
+    }
+    if (_metricValue >= t->getToxicityAlarm().getValue()) {
+        return 2;
+    }
+
+    return 0; // fallback (negative values not expected in PK metrics)
+}
+
 ComputingStatus ComputingEtoda::compute(
         const ComputingTraitEtoda* _traits,
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response)
 {
+    SingleOverloadEvaluator::getInstance()->setValues(100000, 5000, 10000);
+
     const DrugModel& drugModel = _request.getDrugModel();
     const DrugTreatment& drugTreatment = _request.getDrugTreatment();
 
@@ -424,7 +469,6 @@ ComputingStatus ComputingEtoda::compute(
         != 0) {
         return ComputingStatus::ComputingComponentExceptionError;
     }
-
 
     // Build the concentration list (linspace equivalent)
     std::vector<double> concList(static_cast<size_t>(m_options.m_numConcentrationPoints));
@@ -439,7 +483,7 @@ ComputingStatus ComputingEtoda::compute(
     for (double hour : m_options.m_samplingHours) {
         EtodaHourResult hourResult;
         hourResult.m_samplingHour = hour;
-        DateTime sampleDate = _traits->getStart() + Duration(std::chrono::hours(static_cast<int>(hour)));
+        DateTime sampleDate = _traits->getSampleDate() + Duration(std::chrono::hours(static_cast<int>(hour)));
 
         // Loop over the full (measuredConc × trueConc) grid
         size_t total = concList.size() * concList.size();
@@ -447,20 +491,28 @@ ComputingStatus ComputingEtoda::compute(
 
         for (double measured : concList) {
             auto adjustmentData = findAdjustement(
-                    _traits->getStart(), _traits->getEnd(), measured, sampleDate, drugModel, drugTreatment);
+                    _traits->getStart(),
+                    _traits->getEnd(),
+                    _traits->getAdjustmentEnd(),
+                    measured,
+                    sampleDate,
+                    drugModel,
+                    drugTreatment);
+
             std::vector<EtodaPointResult> pointResults = evaluateAdjustment(
                     drugModel,
                     drugTreatment,
                     adjustmentData,
                     measured,
                     hour,
+                    sampleDate,
                     _traits->getStart(),
                     _traits->getEnd(),
+                    _traits->getAdjustmentEnd(),
                     concList);
 
             hourResult.m_points.insert(hourResult.m_points.end(), pointResults.begin(), pointResults.end());
         }
-        std::cout << "\n";
 
         results->addEtodaHourResult(hourResult);
     }
@@ -474,6 +526,7 @@ ComputingStatus ComputingEtoda::compute(
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response)
 {
+    return ComputingStatus::Undefined;
 }
 
 } // namespace Core

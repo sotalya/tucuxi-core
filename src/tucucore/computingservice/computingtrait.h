@@ -855,12 +855,49 @@ public:
             Tucuxi::Common::DateTime _end,
             double _nbPointsPerHour,
             ComputingOption _computingOption,
+            Tucuxi::Common::DateTime _adjustmentEnd,
+            Tucuxi::Common::DateTime _sampleDate,
             Tucuxi::Core::TimeOffsets _samplingHours,
+            int _nbConcentrationPoints,
             PercentileRanks _ranks);
 
+    const Tucuxi::Common::DateTime& getAdjustmentEnd() const
+    {
+        return m_adjustmentEnd;
+    }
+
+    const Tucuxi::Common::DateTime& getSampleDate() const
+    {
+        return m_sampleDate;
+    }
+
+    const Tucuxi::Core::TimeOffsets& getSamplingHours() const
+    {
+        return m_samplingHours;
+    }
+
+    int getNbConcentrationPoints() const
+    {
+        return m_nbConcentrationPoints;
+    }
+
+    const PercentileRanks& getRanks() const
+    {
+        return m_ranks;
+    }
+
 private:
+    //! The end time of the adjustment period
+    Tucuxi::Common::DateTime m_adjustmentEnd;
+
+    //! The sample date
+    Tucuxi::Common::DateTime m_sampleDate;
+
     //! A vector of sampling hours
     Tucuxi::Core::TimeOffsets m_samplingHours;
+
+    //! The number of concentration points
+    int m_nbConcentrationPoints;
 
     //! A vector of percentile ranks
     PercentileRanks m_ranks;

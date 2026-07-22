@@ -71,16 +71,19 @@ private:
     [[nodiscard]] std::vector<EtodaPointResult> evaluateAdjustment(
             const DrugModel& _drugModel,
             const DrugTreatment& _drugTreatment,
-            const std::unique_ptr<AdjustmentData>& _adjustmentData,
+            std::unique_ptr<AdjustmentData>& _adjustmentData,
             double _measuredConc,
             double _sampleHour,
+            const Tucuxi::Common::DateTime& _sampleDate,
             const Tucuxi::Common::DateTime _dosageStart,
+            const Tucuxi::Common::DateTime _dosageEnd,
             const Tucuxi::Common::DateTime _adjustmentEnd,
             const Tucuxi::Core::TimeOffsets _concList);
 
     [[nodiscard]] std::unique_ptr<AdjustmentData> findAdjustement(
             const Tucuxi::Common::DateTime _dosageStart,
             const Tucuxi::Common::DateTime _dosageEnd,
+            const Tucuxi::Common::DateTime _adjustmentEnd,
             double _measuredConc,
             const Tucuxi::Common::DateTime& _sampleDate,
             const DrugModel& _drugModel,
@@ -94,6 +97,7 @@ private:
             const std::string& _cycleUnit,
             double& _metricValue) const;
 
+    [[nodiscard]] Tucuxi::Common::Duration extractDefaultInterval(const DrugModel& _drugModel) const;
 
     EtodaOptions m_options;
 };

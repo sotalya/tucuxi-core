@@ -233,6 +233,24 @@ ComputingTraitPercentiles::ComputingTraitPercentiles(
 }
 
 
+ComputingTraitEtoda::ComputingTraitEtoda(
+        RequestResponseId _id,
+        Tucuxi::Common::DateTime _start,
+        Tucuxi::Common::DateTime _end,
+        double _nbPointsPerHour,
+        ComputingOption _computingOption,
+        Tucuxi::Common::DateTime _adjustmentEnd,
+        Tucuxi::Common::DateTime _sampleDate,
+        Tucuxi::Core::TimeOffsets _samplingHours,
+        int _nbConcentrationPoints,
+        PercentileRanks _ranks)
+    : ComputingTraitStandard(std::move(_id), _start, _end, _nbPointsPerHour, _computingOption),
+      m_adjustmentEnd(_adjustmentEnd), m_sampleDate(_sampleDate), m_samplingHours(std::move(_samplingHours)),
+      m_ranks(std::move(_ranks)), m_nbConcentrationPoints(_nbConcentrationPoints)
+{
+}
+
+
 ComputingTraitAtMeasures::ComputingTraitAtMeasures(RequestResponseId _id, ComputingOption _computingOption)
     : ComputingTrait(std::move(_id), _computingOption)
 {

@@ -42,6 +42,7 @@
 #include "tucucore/sampleextractor.h"
 //#include "tucucore/overloadevaluator.h"
 #include "tucucore/computingadjustments.h"
+#include "tucucore/computingetoda.h"
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/computingutils.h"
 #include "tucucore/cyclestatisticscalculator.h"
@@ -1187,7 +1188,20 @@ ComputingStatus ComputingComponent::compute(
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response)
 {
-    return ComputingStatus::Undefined;
+    if (_traits == nullptr) {
+        m_logger.error("The computing traits sent for computation are nullptr");
+        return ComputingStatus::NoComputingTraits;
+    }
+
+    EtodaOptions options{
+            .m_samplingHours = _traits->getSamplingHours(),
+            .m_numConcentrationPoints = _traits->getNbConcentrationPoints(),
+            .m_percentileRanks = _traits->getRanks(),
+            .m_pointPerHour = _traits->getNbPointsPerHour(),
+    };
+
+    ComputingEtoda computer(options);
+    return computer.compute(_traits, _request, _response);
 }
 
 } // namespace Core
