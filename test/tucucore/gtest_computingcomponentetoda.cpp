@@ -105,3 +105,69 @@ TEST(Core_TestComputingComponentEtoda, ImatinibEtoda)
     ASSERT_DOUBLE_EQ(hourResults[0].m_points[0].m_samplingHour, hourResults[0].m_samplingHour);
     ASSERT_DOUBLE_EQ(hourResults[1].m_points[0].m_samplingHour, hourResults[1].m_samplingHour);
 }
+
+TEST(Core_TestComputingComponentEtoda, ImatinibEtodaFromAdjustmentRequest)
+{
+    auto component = ComputingComponentFactory::createComputingService();
+    ASSERT_TRUE(component != nullptr);
+
+    BuildImatinib builder;
+    auto drugModel = builder.buildDrugModel();
+    ASSERT_TRUE(drugModel != nullptr);
+
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
+    DateTime startSept2018(
+            date::year_month_day(date::year(2018), date::month(9), date::day(1)),
+            Duration(std::chrono::hours(8), std::chrono::minutes(0), std::chrono::seconds(0)));
+    auto drugTreatment = buildDrugTreatment(route, startSept2018);
+
+    // ETODA over adjustments requires at least one measured sample.
+    drugTreatment->addSample(std::make_unique<Sample>(
+            Tucuxi::Common::DateTime(2018_y / sep / 4, 8h + 0min),
+            AnalyteId(drugModel->getDrugId()),
+            1000.0,
+            TucuUnit("ug/l")));
+
+    RequestResponseId requestResponseId = "2";
+    Tucuxi::Common::DateTime start(2018_y / sep / 1, 8h + 0min);
+    Tucuxi::Common::DateTime end(2018_y / sep / 5, 8h + 0min);
+    double nbPointsPerHour = 10.0;
+    ComputingOption computingOption(PredictionParameterType::Aposteriori, CompartmentsOption::MainCompartment);
+    Tucuxi::Common::DateTime adjustmentTime(2018_y / sep / 4, 8h + 0min);
+
+    auto traits = std::make_unique<ComputingTraitAdjustment>(
+            requestResponseId,
+            start,
+            end,
+            nbPointsPerHour,
+            computingOption,
+            adjustmentTime,
+            BestCandidatesOption::BestDosage,
+            LoadingOption::NoLoadingDose,
+            RestPeriodOption::NoRestPeriod,
+            SteadyStateTargetOption::WithinTreatmentTimeRange,
+            TargetExtractionOption::PopulationValues,
+            FormulationAndRouteSelectionOption::LastFormulationAndRoute,
+            AdjustmentWithCurrentDosageOption::AlwaysAdjust,
+            AdjustmentWithEtodaOption::WithEtoda);
+
+    ComputingRequest request(requestResponseId, *drugModel, *drugTreatment, std::move(traits));
+    auto response = std::make_unique<ComputingResponse>(requestResponseId);
+
+    ComputingStatus result = component->compute(request, response);
+    ASSERT_EQ(result, ComputingStatus::Ok);
+
+    const auto* responseData = response->getData();
+    ASSERT_TRUE(dynamic_cast<const AdjustmentData*>(responseData) != nullptr);
+    const auto* adjustmentData = dynamic_cast<const AdjustmentData*>(responseData);
+
+    ASSERT_FALSE(adjustmentData->getAdjustments().empty());
+
+    const auto& bestAdjustment = adjustmentData->getAdjustments().front();
+    ASSERT_TRUE(bestAdjustment.getEtodaData().has_value());
+
+    const auto& etodaResults = bestAdjustment.getEtodaData()->getEtodaResults();
+    ASSERT_EQ(etodaResults.size(), static_cast<size_t>(1));
+    ASSERT_DOUBLE_EQ(etodaResults[0].m_samplingHour, 0.0);
+    ASSERT_EQ(etodaResults[0].m_points.size(), static_cast<size_t>(10));
+}

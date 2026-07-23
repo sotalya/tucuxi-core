@@ -110,14 +110,6 @@ enum class ComputeGoodnessOfFitOption
     DoNotComputeGoodnessOfFit //!< Do not perform GoF computations
 };
 
-/// @brief The ComputeEtodaOption enum
-/// This enum allows to request the computation of ETODA Error Tolerance statistics.
-enum class ComputeEtodaOption
-{
-    ComputeEtoda = 0, //!< Perform ETODA computations and retrieve results
-    DoNotComputeEtoda //!< Do not perform ETODA computations
-};
-
 
 ///
 /// \brief The ComputingOption class.
@@ -137,7 +129,6 @@ public:
     /// \param _retrieveCovariates Indicates if covariate values have to be retrieved
     /// \param _forceUgPerLiter Indicates if the results should be forced in ug/l
     /// \param _computeGoodnessOfFit Indicates whether GoF statistics should be computed
-    /// \param _computeEtoda Indicates whether ETODA statistics should be computed
     ///
     ComputingOption(
             PredictionParameterType _parameterType,
@@ -146,8 +137,7 @@ public:
             RetrieveParametersOption _retrieveParameters = RetrieveParametersOption::DoNotRetrieveParameters,
             RetrieveCovariatesOption _retrieveCovariates = RetrieveCovariatesOption::DoNotRetrieveCovariates,
             ForceUgPerLiterOption _forceUgPerLiter = ForceUgPerLiterOption::Force,
-            ComputeGoodnessOfFitOption _computeGoodnessOfFit = ComputeGoodnessOfFitOption::DoNotComputeGoodnessOfFit,
-            ComputeEtodaOption _computeEtoda = ComputeEtodaOption::DoNotComputeEtoda);
+            ComputeGoodnessOfFitOption _computeGoodnessOfFit = ComputeGoodnessOfFitOption::DoNotComputeGoodnessOfFit);
 
     ///
     /// \brief getParametersType Gets the type of parameters
@@ -212,15 +202,6 @@ public:
         return m_computeGoodnessOfFit;
     }
 
-    ///
-    /// \brief computeEtoda Indicates if the ETODA statistics should be computed or not
-    /// \return ComputeEtodaOption::ComputeEtoda if it should be computed
-    ///
-    ComputeEtodaOption computeEtoda() const
-    {
-        return m_computeEtoda;
-    }
-
 protected:
     //! Type of parameters
     PredictionParameterType m_parameterType;
@@ -242,9 +223,6 @@ protected:
 
     //! Shall compute the Goodness-of-Fit statistics.
     ComputeGoodnessOfFitOption m_computeGoodnessOfFit;
-
-    //! Shall compute the ETODA statistics.
-    ComputeEtodaOption m_computeEtoda;
 };
 
 
@@ -583,6 +561,12 @@ enum class AdjustmentWithCurrentDosageOption
     DontAdjustIfCurrentInRange
 };
 
+enum class AdjustmentWithEtodaOption
+{
+    NoEtoda = 0,
+    WithEtoda
+};
+
 ///
 /// \brief The ComputingTraitAdjustment class.
 /// This class embeds all information required for computing adjustments. It can return
@@ -626,7 +610,8 @@ public:
             TargetExtractionOption _targetExtractionOption,
             FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption,
             AdjustmentWithCurrentDosageOption _adjustmentWithCurrentDosageOption =
-                    AdjustmentWithCurrentDosageOption::AlwaysAdjust);
+                    AdjustmentWithCurrentDosageOption::AlwaysAdjust,
+            AdjustmentWithEtodaOption _adjustmentWithEtodaOption = AdjustmentWithEtodaOption::NoEtoda);
 
     ///
     /// \brief Gets the time of adjustment
@@ -676,6 +661,8 @@ public:
     ///
     AdjustmentWithCurrentDosageOption getAdjustmentWithCurrentDosageOption() const;
 
+    AdjustmentWithEtodaOption getAdjustmentWithEtodaOption() const;
+
 protected:
     //! Date of the adjustment
     Tucuxi::Common::DateTime m_adjustmentTime;
@@ -700,6 +687,9 @@ protected:
 
     //! Whether to skip adjustment when the current dosage is in range
     AdjustmentWithCurrentDosageOption m_adjustmentWithCurrentDosageOption;
+
+    //! Whether to compute ETODA statistics for the adjustment
+    AdjustmentWithEtodaOption m_adjustmentWithEtodaOption;
 
 private:
     ///

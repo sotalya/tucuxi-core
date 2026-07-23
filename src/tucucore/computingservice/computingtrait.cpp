@@ -38,12 +38,11 @@ ComputingOption::ComputingOption(
         RetrieveParametersOption _retrieveParameters,
         RetrieveCovariatesOption _retrieveCovariates,
         ForceUgPerLiterOption _forceUgPerLiter,
-        ComputeGoodnessOfFitOption _computeGoodnessOfFit,
-        ComputeEtodaOption _computeEtoda)
+        ComputeGoodnessOfFitOption _computeGoodnessOfFit)
     : m_parameterType(_parameterType), m_compartmentsOption(_compartmentsOption),
       m_retrieveStatistics(_retrieveStatistics), m_retrieveParameters(_retrieveParameters),
       m_retrieveCovariates(_retrieveCovariates), m_forceUgPerLiterOption(_forceUgPerLiter),
-      m_computeGoodnessOfFit(_computeGoodnessOfFit), m_computeEtoda(_computeEtoda)
+      m_computeGoodnessOfFit(_computeGoodnessOfFit)
 {
 }
 
@@ -149,13 +148,15 @@ ComputingTraitAdjustment::ComputingTraitAdjustment(
         SteadyStateTargetOption _steadyStateTargetOption,
         TargetExtractionOption _targetExtractionOption,
         FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption,
-        AdjustmentWithCurrentDosageOption _adjustmentWithCurrentDosageOption)
+        AdjustmentWithCurrentDosageOption _adjustmentWithCurrentDosageOption,
+        AdjustmentWithEtodaOption _adjustmentWithEtodaOption)
     : ComputingTraitStandard(std::move(_id), _start, _end, _nbPointsPerHour, _computingOption),
       m_adjustmentTime(_adjustmentTime), m_bestCandidatesOption(_candidatesOption), m_loadingOption(_loadingOption),
       m_restPeriodOption(_restPeriodOption), m_steadyStateTargetOption(_steadyStateTargetOption),
       m_targetExtractionOption(_targetExtractionOption),
       m_formulationAndRouteSelectionOption(_formulationAndRouteSelectionOption),
-      m_adjustmentWithCurrentDosageOption(_adjustmentWithCurrentDosageOption)
+      m_adjustmentWithCurrentDosageOption(_adjustmentWithCurrentDosageOption),
+      m_adjustmentWithEtodaOption(_adjustmentWithEtodaOption)
 {
 }
 
@@ -207,6 +208,10 @@ AdjustmentWithCurrentDosageOption ComputingTraitAdjustment::getAdjustmentWithCur
     return m_adjustmentWithCurrentDosageOption;
 }
 
+AdjustmentWithEtodaOption ComputingTraitAdjustment::getAdjustmentWithEtodaOption() const
+{
+    return m_adjustmentWithEtodaOption;
+}
 
 ComputingTraitConcentration::ComputingTraitConcentration(
         RequestResponseId _id,

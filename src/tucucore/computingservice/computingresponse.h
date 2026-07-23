@@ -484,6 +484,49 @@ protected:
     Value m_logLikelihood{0.0};
 };
 
+struct EtodaPointResult
+{
+    double m_measuredConc{0.0};
+    double m_trueConc{0.0};
+    double m_samplingHour{0.0};
+
+    bool m_adjustmentFound{false};
+    int m_zoneLabel{0};
+    double m_metricValue{0.0};
+};
+
+struct EtodaHourResult
+{
+    double m_samplingHour{0.0};
+    int m_nbPointsMeasured{0};
+    int m_nbPointsTrue{0};
+    std::vector<EtodaPointResult> m_points;
+};
+
+class EtodaData : public ComputedData
+{
+public:
+    EtodaData(RequestResponseId _id) : ComputedData(std::move(_id)) {}
+
+    void addEtodaHourResult(const Tucuxi::Core::EtodaHourResult& _result)
+    {
+        m_results.push_back(_result);
+    }
+
+    void setEtodaResults(const std::vector<EtodaHourResult>& _results)
+    {
+        m_results = _results;
+    }
+
+    const std::vector<EtodaHourResult>& getEtodaResults() const
+    {
+        return m_results;
+    }
+
+private:
+    std::vector<EtodaHourResult> m_results;
+};
+
 ///
 /// \brief The DosageAdjustment class
 /// This class embeds all information about a potential dosage adjustment:
@@ -512,8 +555,21 @@ public:
         return m_history;
     }
 
+    void setEtodaData(const EtodaData& _etodaData)
+    {
+        m_etodaData = _etodaData;
+    }
+
+    const std::optional<EtodaData>& getEtodaData() const
+    {
+        return m_etodaData;
+    }
+
     DosageHistory m_history;
     std::vector<TargetEvaluationResult> m_targetsEvaluation;
+
+    // Optional ETODA data if the ETODA computation has been requested in the adjustment request
+    std::optional<EtodaData> m_etodaData;
 };
 
 ///
@@ -573,47 +629,6 @@ protected:
 
     /// Indicates if the current dosage is in the targets range
     bool m_isCurrentInRange{false};
-};
-
-struct EtodaPointResult
-{
-    double m_measuredConc{0.0};
-    double m_trueConc{0.0};
-    double m_samplingHour{0.0};
-
-    bool m_adjustmentFound{false};
-    int m_zoneLabel{0};
-    double m_metricValue{0.0};
-};
-
-struct EtodaHourResult
-{
-    double m_samplingHour{0.0};
-    std::vector<EtodaPointResult> m_points;
-};
-
-class EtodaData : public ComputedData
-{
-public:
-    EtodaData(RequestResponseId _id) : ComputedData(std::move(_id)) {}
-
-    void addEtodaHourResult(const Tucuxi::Core::EtodaHourResult& _result)
-    {
-        m_results.push_back(_result);
-    }
-
-    void setEtodaResults(const std::vector<EtodaHourResult>& _results)
-    {
-        m_results = _results;
-    }
-
-    const std::vector<EtodaHourResult>& getEtodaResults() const
-    {
-        return m_results;
-    }
-
-private:
-    std::vector<EtodaHourResult> m_results;
 };
 
 ///

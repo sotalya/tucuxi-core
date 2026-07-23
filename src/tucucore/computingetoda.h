@@ -57,6 +57,17 @@ public:
             const ComputingRequest& _request,
             std::unique_ptr<ComputingResponse>& _response);
 
+    [[nodiscard]] std::vector<EtodaPointResult> evaluateAdjustment(
+            const DrugModel& _drugModel,
+            const DrugTreatment& _drugTreatment,
+            const DosageAdjustment* _adjustment,
+            double _measuredConc,
+            double _sampleHour,
+            const Tucuxi::Common::DateTime& _sampleDate,
+            const Tucuxi::Common::DateTime _dosageStart,
+            const Tucuxi::Common::DateTime _adjustmentEnd,
+            const Tucuxi::Core::TimeOffsets _concList);
+
 private:
     [[nodiscard]] DrugTreatment cloneDrugTreatment(const DrugTreatment& _drugTreatment);
 
@@ -67,18 +78,6 @@ private:
             const DrugTreatment& _drugTreatment,
             double& _minConc,
             double& _maxConc);
-
-    [[nodiscard]] std::vector<EtodaPointResult> evaluateAdjustment(
-            const DrugModel& _drugModel,
-            const DrugTreatment& _drugTreatment,
-            std::unique_ptr<AdjustmentData>& _adjustmentData,
-            double _measuredConc,
-            double _sampleHour,
-            const Tucuxi::Common::DateTime& _sampleDate,
-            const Tucuxi::Common::DateTime _dosageStart,
-            const Tucuxi::Common::DateTime _dosageEnd,
-            const Tucuxi::Common::DateTime _adjustmentEnd,
-            const Tucuxi::Core::TimeOffsets _concList);
 
     [[nodiscard]] std::unique_ptr<AdjustmentData> findAdjustement(
             const Tucuxi::Common::DateTime _dosageStart,

@@ -977,7 +977,17 @@ ComputingStatus ComputingComponent::compute(
     }
 
     ComputingAdjustments computer(m_utils.get());
-    return computer.compute(_traits, _request, _response);
+    ComputingStatus status = computer.compute(_traits, _request, _response);
+
+    if (_traits->getAdjustmentWithEtodaOption() == AdjustmentWithEtodaOption::WithEtoda) {
+        EtodaOptions options{
+                .m_samplingHours = {0.0},
+        };
+        ComputingEtoda etodaComputer(options);
+        status = etodaComputer.compute(_traits, _request, _response);
+    }
+
+    return status;
 }
 
 

@@ -217,12 +217,11 @@ std::unique_ptr<AdjustmentData> ComputingEtoda::findAdjustement(
 std::vector<EtodaPointResult> ComputingEtoda::evaluateAdjustment(
         const DrugModel& _drugModel,
         const DrugTreatment& _drugTreatment,
-        std::unique_ptr<AdjustmentData>& _adjustmentData,
+        const DosageAdjustment* _adjustment,
         double _measuredConc,
         double _sampleHour,
         const Tucuxi::Common::DateTime& _sampleDate,
         const Tucuxi::Common::DateTime _dosageStart,
-        const Tucuxi::Common::DateTime _dosageEnd,
         const Tucuxi::Common::DateTime _adjustmentEnd,
         const Tucuxi::Core::TimeOffsets _concList)
 {
@@ -234,14 +233,13 @@ std::vector<EtodaPointResult> ComputingEtoda::evaluateAdjustment(
         pointResult.m_trueConc = trueConc;
         pointResult.m_samplingHour = _sampleHour;
 
-        if (_adjustmentData == nullptr || _adjustmentData->getAdjustments().empty()) {
+        if (_adjustment == nullptr) {
             pointResult.m_adjustmentFound = false;
             continue;
         }
 
         pointResult.m_adjustmentFound = true;
-        const DosageAdjustment& bestAdj = _adjustmentData->getAdjustments()[0];
-        const DosageHistory& adjHistory = bestAdj.m_history;
+        const DosageHistory& adjHistory = _adjustment->getDosageHistory();
 
         DrugTreatment treatmentWithSample = cloneDrugTreatment(_drugTreatment);
 
@@ -462,7 +460,7 @@ ComputingStatus ComputingEtoda::compute(
     const DrugModel& drugModel = _request.getDrugModel();
     const DrugTreatment& drugTreatment = _request.getDrugTreatment();
 
-    // ── Determine concentration grid ─────────────────────────────────────────
+    // Determine concentration grid
     double minConc = 0.0;
     double maxConc = 0.0;
     if (computeConcentrationRange(_traits->getStart(), _traits->getEnd(), drugModel, drugTreatment, minConc, maxConc)
@@ -470,18 +468,20 @@ ComputingStatus ComputingEtoda::compute(
         return ComputingStatus::ComputingComponentExceptionError;
     }
 
-    // Build the concentration list (linspace equivalent)
+    // Build the concentration list
     std::vector<double> concList(static_cast<size_t>(m_options.m_numConcentrationPoints));
     double step = (maxConc - minConc) / (m_options.m_numConcentrationPoints - 1);
     for (int i = 0; i < m_options.m_numConcentrationPoints; ++i) {
         concList[static_cast<size_t>(i)] = minConc + i * step;
     }
 
-    // ── Loop over sampling hours ──────────────────────────────────────────────
+    // Loop over sampling hours
     std::unique_ptr<EtodaData> results = std::make_unique<EtodaData>(_traits->getId());
 
     for (double hour : m_options.m_samplingHours) {
         EtodaHourResult hourResult;
+        hourResult.m_nbPointsMeasured = m_options.m_numConcentrationPoints;
+        hourResult.m_nbPointsTrue = m_options.m_numConcentrationPoints;
         hourResult.m_samplingHour = hour;
         DateTime sampleDate = _traits->getSampleDate() + Duration(std::chrono::hours(static_cast<int>(hour)));
 
@@ -499,15 +499,18 @@ ComputingStatus ComputingEtoda::compute(
                     drugModel,
                     drugTreatment);
 
+            const DosageAdjustment* bestAdj = (adjustmentData != nullptr && !adjustmentData->getAdjustments().empty())
+                                                      ? &adjustmentData->getAdjustments()[0]
+                                                      : nullptr;
+
             std::vector<EtodaPointResult> pointResults = evaluateAdjustment(
                     drugModel,
                     drugTreatment,
-                    adjustmentData,
+                    bestAdj,
                     measured,
                     hour,
                     sampleDate,
                     _traits->getStart(),
-                    _traits->getEnd(),
                     _traits->getAdjustmentEnd(),
                     concList);
 
@@ -526,7 +529,66 @@ ComputingStatus ComputingEtoda::compute(
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response)
 {
-    return ComputingStatus::Undefined;
+    // Adjustment computation should already be done before entering ETODA computation
+    const auto* adjData = dynamic_cast<const AdjustmentData*>(_response->getData());
+    if (adjData == nullptr) {
+        return ComputingStatus::Aborted;
+    }
+
+    auto adjDataCopy = std::make_unique<AdjustmentData>(*adjData);
+
+    SingleOverloadEvaluator::getInstance()->setValues(100000, 5000, 10000);
+
+    const DrugModel& drugModel = _request.getDrugModel();
+    const DrugTreatment& drugTreatment = _request.getDrugTreatment();
+    const auto& lastSample = drugTreatment.getSamples().back();
+
+    // Determine concentration grid
+    double minConc = 0.0;
+    double maxConc = 0.0;
+    if (computeConcentrationRange(_traits->getStart(), _traits->getEnd(), drugModel, drugTreatment, minConc, maxConc)
+        != 0) {
+        return ComputingStatus::ComputingComponentExceptionError;
+    }
+
+    // Build the concentration list
+    std::vector<double> concList(static_cast<size_t>(m_options.m_numConcentrationPoints));
+    double step = (maxConc - minConc) / (m_options.m_numConcentrationPoints - 1);
+    for (int i = 0; i < m_options.m_numConcentrationPoints; ++i) {
+        concList[static_cast<size_t>(i)] = minConc + i * step;
+    }
+
+    std::unique_ptr<EtodaData> results = std::make_unique<EtodaData>(_request.getId());
+
+    auto adjustments = adjDataCopy->getAdjustments();
+    for (auto& adj : adjustments) {
+        auto result = evaluateAdjustment(
+                drugModel,
+                drugTreatment,
+                &adj,
+                lastSample->getValue(),
+                0.0,
+                lastSample->getDate(),
+                _traits->getStart(),
+                _traits->getEnd(),
+                concList);
+
+        EtodaHourResult etodaHourResult;
+        etodaHourResult.m_samplingHour = 0.0;
+        etodaHourResult.m_nbPointsMeasured = 1;
+        etodaHourResult.m_nbPointsTrue = 10;
+        etodaHourResult.m_points = result;
+
+        EtodaData etodaData(_request.getId());
+        etodaData.addEtodaHourResult(etodaHourResult);
+
+        adj.setEtodaData(etodaData);
+    }
+
+    adjDataCopy->setAdjustments(adjustments);
+    _response->addResponse(std::move(adjDataCopy));
+
+    return ComputingStatus::Ok;
 }
 
 } // namespace Core
