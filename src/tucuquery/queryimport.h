@@ -130,6 +130,8 @@ protected:
             Common::XmlNodeIterator _rootIterator, const std::string&);
     std::unique_ptr<Tucuxi::Core::ComputingTraitAtMeasures> getChildComputingTraitAtMeasures(
             Common::XmlNodeIterator _rootIterator, const std::string&);
+    std::unique_ptr<Tucuxi::Core::ComputingTraitEtoda> getChildComputingTraitEtoda(
+            Common::XmlNodeIterator _rootIterator, const std::string&);
     Tucuxi::Core::ComputingOption getChildComputingOption(
             Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     Tucuxi::Core::PredictionParameterType getChildParametersTypeEnum(
@@ -145,6 +147,8 @@ protected:
     Tucuxi::Core::SteadyStateTargetOption getChildSteadyStateTargetOptionEnum(
             Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     Tucuxi::Core::TargetExtractionOption getChildTargetExtractionOptionEnum(
+            Common::XmlNodeIterator _rootIterator, const std::string& _childName);
+    Tucuxi::Core::AdjustmentWithEtodaOption getChildAdjustmentWithEtodaOptionEnum(
             Common::XmlNodeIterator _rootIterator, const std::string& _childName);
     Tucuxi::Core::FormulationAndRouteSelectionOption getChildFormulationAndRouteSelectionOptionEnum(
             Common::XmlNodeIterator _rootIterator, const std::string& _childName);

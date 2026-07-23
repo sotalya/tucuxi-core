@@ -113,6 +113,8 @@ protected:
 
     std::string toString(ForceUgPerLiterOption _nodeValue);
 
+    std::string toString(AdjustmentWithEtodaOption _nodeValue);
+
     std::string toString(bool _nodeValue);
 
     ///

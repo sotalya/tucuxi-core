@@ -274,6 +274,7 @@ bool ComputingRequestXmlExport::exportToString(const ComputingRequest& _computin
             addNode(options,
                     "formulationAndRouteSelectionOption",
                     predictionTrait->getFormulationAndRouteSelectionOption());
+            addNode(options, "adjustmentWithEtodaOption", predictionTrait->getAdjustmentWithEtodaOption());
         }
         else if (dynamic_cast<const Tucuxi::Core::ComputingTraitAtMeasures*>(trait.get()) != nullptr) {
             auto predictionTrait = dynamic_cast<const Tucuxi::Core::ComputingTraitAtMeasures*>(trait.get());
@@ -295,6 +296,38 @@ bool ComputingRequestXmlExport::exportToString(const ComputingRequest& _computin
             prediction.addChild(dates);
             for (const auto& d : predictionTrait->getTimes()) {
                 addNode(dates, "date", dateTimeToString(d));
+            }
+        }
+        else if (dynamic_cast<const Tucuxi::Core::ComputingTraitEtoda*>(trait.get()) != nullptr) {
+            auto predictionTrait = dynamic_cast<const Tucuxi::Core::ComputingTraitEtoda*>(trait.get());
+            Tucuxi::Common::XmlNode prediction = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "etodaTraits");
+            requestNode.addChild(prediction);
+
+            exportComputingOption(predictionTrait->getComputingOption(), prediction);
+
+            addNode(prediction, "nbPointsPerHour", static_cast<int>(predictionTrait->getNbPointsPerHour()));
+            Tucuxi::Common::XmlNode dateInterval =
+                    m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dateInterval");
+            prediction.addChild(dateInterval);
+            addNode(dateInterval, "start", dateTimeToString(predictionTrait->getStart()));
+            addNode(dateInterval, "end", dateTimeToString(predictionTrait->getEnd()));
+
+            addNode(prediction, "adjustmentEnd", dateTimeToString(predictionTrait->getAdjustmentEnd()));
+            addNode(prediction, "sampleDate", dateTimeToString(predictionTrait->getSampleDate()));
+
+            Tucuxi::Common::XmlNode samplingHours =
+                    m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "samplingHours");
+            prediction.addChild(samplingHours);
+            for (const auto h : predictionTrait->getSamplingHours()) {
+                addNode(samplingHours, "hour", h);
+            }
+
+            addNode(prediction, "nbConcentrationPoints", predictionTrait->getNbConcentrationPoints());
+
+            Tucuxi::Common::XmlNode ranks = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "ranks");
+            prediction.addChild(ranks);
+            for (const auto r : predictionTrait->getRanks()) {
+                addNode(ranks, "rank", r);
             }
         }
 
@@ -729,6 +762,19 @@ std::string ComputingRequestXmlExport::toString(FormulationAndRouteSelectionOpti
     }
     return "Undefined";
 }
+
+std::string ComputingRequestXmlExport::toString(AdjustmentWithEtodaOption _nodeValue)
+{
+    static const std::map<AdjustmentWithEtodaOption, std::string> M = {
+            {AdjustmentWithEtodaOption::NoEtoda, "noEtoda"}, {AdjustmentWithEtodaOption::WithEtoda, "withEtoda"}};
+    std::string str;
+    auto it = M.find(_nodeValue);
+    if (it != M.end()) {
+        return it->second;
+    }
+    return "Undefined";
+}
+
 
 std::string ComputingRequestXmlExport::toString(RetrieveStatisticsOption _nodeValue)
 {
