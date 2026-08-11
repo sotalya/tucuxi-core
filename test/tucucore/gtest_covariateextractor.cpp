@@ -1955,12 +1955,38 @@ TEST(Core_TestCovariateExtractor, CE_interpolateValues)
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(valRes, 5.0);
 
+    // Test direct backward interpolation (on _date1).
+    rc = TestCovariateExtractor::test_interpolateValues(
+            5,
+            DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+            10,
+            DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
+            DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+            InterpolationType::Backward,
+            valRes,
+            &extractor);
+    ASSERT_TRUE(rc);
+    ASSERT_DOUBLE_EQ(valRes, 5.0);
+
     // Test direct backward interpolation (between _date1 and _date2).
     rc = TestCovariateExtractor::test_interpolateValues(
             5,
             DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
             10,
             DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0),
+            DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
+            InterpolationType::Backward,
+            valRes,
+            &extractor);
+    ASSERT_TRUE(rc);
+    ASSERT_DOUBLE_EQ(valRes, 10.0);
+
+    // Test direct backward interpolation (on _date2).
+    rc = TestCovariateExtractor::test_interpolateValues(
+            5,
+            DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
+            10,
+            DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
             DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
             InterpolationType::Backward,
             valRes,
