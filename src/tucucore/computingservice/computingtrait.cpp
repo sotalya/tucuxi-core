@@ -148,13 +148,15 @@ ComputingTraitAdjustment::ComputingTraitAdjustment(
         SteadyStateTargetOption _steadyStateTargetOption,
         TargetExtractionOption _targetExtractionOption,
         FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption,
-        AdjustmentWithCurrentDosageOption _adjustmentWithCurrentDosageOption)
+        AdjustmentWithCurrentDosageOption _adjustmentWithCurrentDosageOption,
+        AdjustmentWithEtodaOption _adjustmentWithEtodaOption)
     : ComputingTraitStandard(std::move(_id), _start, _end, _nbPointsPerHour, _computingOption),
       m_adjustmentTime(_adjustmentTime), m_bestCandidatesOption(_candidatesOption), m_loadingOption(_loadingOption),
       m_restPeriodOption(_restPeriodOption), m_steadyStateTargetOption(_steadyStateTargetOption),
       m_targetExtractionOption(_targetExtractionOption),
       m_formulationAndRouteSelectionOption(_formulationAndRouteSelectionOption),
-      m_adjustmentWithCurrentDosageOption(_adjustmentWithCurrentDosageOption)
+      m_adjustmentWithCurrentDosageOption(_adjustmentWithCurrentDosageOption),
+      m_adjustmentWithEtodaOption(_adjustmentWithEtodaOption)
 {
 }
 
@@ -206,6 +208,10 @@ AdjustmentWithCurrentDosageOption ComputingTraitAdjustment::getAdjustmentWithCur
     return m_adjustmentWithCurrentDosageOption;
 }
 
+AdjustmentWithEtodaOption ComputingTraitAdjustment::getAdjustmentWithEtodaOption() const
+{
+    return m_adjustmentWithEtodaOption;
+}
 
 ComputingTraitConcentration::ComputingTraitConcentration(
         RequestResponseId _id,
@@ -228,6 +234,24 @@ ComputingTraitPercentiles::ComputingTraitPercentiles(
         ComputingAborter* _aborter)
     : ComputingTraitStandard(std::move(_id), _start, _end, _nbPointsPerHour, _computingOption),
       m_ranks(std::move(_ranks)), m_aborter(_aborter)
+{
+}
+
+
+ComputingTraitEtoda::ComputingTraitEtoda(
+        RequestResponseId _id,
+        Tucuxi::Common::DateTime _start,
+        Tucuxi::Common::DateTime _end,
+        double _nbPointsPerHour,
+        ComputingOption _computingOption,
+        Tucuxi::Common::DateTime _adjustmentEnd,
+        Tucuxi::Common::DateTime _sampleDate,
+        Tucuxi::Core::TimeOffsets _samplingHours,
+        int _nbConcentrationPoints,
+        PercentileRanks _ranks)
+    : ComputingTraitStandard(std::move(_id), _start, _end, _nbPointsPerHour, _computingOption),
+      m_adjustmentEnd(_adjustmentEnd), m_sampleDate(_sampleDate), m_samplingHours(std::move(_samplingHours)),
+      m_ranks(std::move(_ranks)), m_nbConcentrationPoints(_nbConcentrationPoints)
 {
 }
 
@@ -295,6 +319,14 @@ ComputingStatus ComputingTraitSinglePoints::compute(
     return _computingComponent.compute(this, _request, _response);
 }
 
+ComputingStatus ComputingTraitEtoda::compute(
+        ComputingComponent& _computingComponent,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response) const
+{
+    return _computingComponent.compute(this, _request, _response);
+}
+
 
 ComputingStatus ComputingTraitConcentration::compute(
         MultiComputingComponent& _computingComponent,
@@ -333,6 +365,14 @@ ComputingStatus ComputingTraitAtMeasures::compute(
 
 
 ComputingStatus ComputingTraitSinglePoints::compute(
+        MultiComputingComponent& _computingComponent,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response) const
+{
+    return _computingComponent.compute(this, _request, _response);
+}
+
+ComputingStatus ComputingTraitEtoda::compute(
         MultiComputingComponent& _computingComponent,
         const ComputingRequest& _request,
         std::unique_ptr<ComputingResponse>& _response) const

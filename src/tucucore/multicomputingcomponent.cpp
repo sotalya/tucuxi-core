@@ -717,7 +717,13 @@ ComputingStatus MultiComputingComponent::compute(
     return computer.compute(_traits, _request, _response);
 }
 
-
+ComputingStatus MultiComputingComponent::compute(
+        const ComputingTraitEtoda* _traits,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response)
+{
+    return ComputingStatus::Undefined;
+}
 
 ComputingStatus MultiComputingComponent::compute(
         const ComputingTraitAtMeasures* _traits,

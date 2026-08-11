@@ -979,6 +979,7 @@ std::unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeI
     static const std::string COMPUTING_TRAIT_PERCENTILES_NAME = "percentilesTraits";
     static const std::string COMPUTING_TRAIT_SINGLE_POINT_NAME = "predictionAtTimesTraits";
     static const std::string COMPUTING_TRAIT_AT_MESURE_NAME = "predictionAtSampleTimesTraits";
+    static const std::string COMPUTING_TRAIT_ETODA_NAME = "etodaTraits";
 
     std::string requestId = getChildString(_requestRootIterator, REQUEST_ID_NODE_NAME);
     std::string drugId = getChildString(_requestRootIterator, DRUG_ID_NODE_NAME);
@@ -1018,6 +1019,13 @@ std::unique_ptr<RequestData> QueryImport::createRequest(Tucuxi::Common::XmlNodeI
 
     if (computingTraitAtMeasuresRootIterator != Common::XmlNodeIterator::none()) {
         computingTrait = getChildComputingTraitAtMeasures(computingTraitAtMeasuresRootIterator, requestId);
+    }
+
+    Common::XmlNodeIterator computingTraitEtodaRootIterator =
+            _requestRootIterator->getChildren(COMPUTING_TRAIT_ETODA_NAME);
+
+    if (computingTraitEtodaRootIterator != Common::XmlNodeIterator::none()) {
+        computingTrait = getChildComputingTraitEtoda(computingTraitEtodaRootIterator, requestId);
     }
 
     if (computingTrait == nullptr) {
@@ -1185,6 +1193,9 @@ std::unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> QueryImport::getChildCom
     Tucuxi::Core::AdjustmentWithCurrentDosageOption adjustmentWithCurrentDosageOption =
             getChildAdjustmentWithCurrentDosageOptionEnum(_rootIterator, OPTIONS);
 
+    Tucuxi::Core::AdjustmentWithEtodaOption adjustmentWithEtodaOption =
+            getChildAdjustmentWithEtodaOptionEnum(_rootIterator, OPTIONS);
+
     return std::make_unique<Tucuxi::Core::ComputingTraitAdjustment>(
             _requestResponseId,
             start,
@@ -1201,7 +1212,59 @@ std::unique_ptr<Tucuxi::Core::ComputingTraitAdjustment> QueryImport::getChildCom
             adjustmentWithCurrentDosageOption);
 }
 
+std::unique_ptr<Tucuxi::Core::ComputingTraitEtoda> QueryImport::getChildComputingTraitEtoda(
+        Common::XmlNodeIterator _rootIterator, const std::string& _requestResponseId)
+{
+    static const std::string NB_POINTS_PER_HOUR = "nbPointsPerHour";
+    static const std::string DATE_INTERVAL_NODE_NAME = "dateInterval";
+    static const std::string DATE_INTERVAL_START_NODE_NAME = "start";
+    static const std::string DATE_INTERVAL_END_NODE_NAME = "end";
+    static const std::string DATE_ADJUSTMENT_END_NODE_NAME = "adjustmentEnd";
+    static const std::string COMPUTING_OPTION = "computingOption";
+    static const std::string SAMPLE_DATE_NODE_NAME = "sampleDate";
+    static const std::string SAMPLING_HOURS_NODE_NAME = "samplingHours";
+    static const std::string SAMPLING_HOURS_HOUR_NODE_NAME = "hour";
+    static const std::string NB_CONCENTRATION_POINTS_NODE_NAME = "nbConcentrationPoints";
+    static const std::string RANKS_NODE_NAME = "ranks";
+    static const std::string RANKS_RANK_NODE_NAME = "rank";
 
+    Common::XmlNodeIterator dateIntervalRootIterator = _rootIterator->getChildren(DATE_INTERVAL_NODE_NAME);
+    Common::DateTime start = getChildDateTime(dateIntervalRootIterator, DATE_INTERVAL_START_NODE_NAME);
+    Common::DateTime end = getChildDateTime(dateIntervalRootIterator, DATE_INTERVAL_END_NODE_NAME);
+
+    double nbPointsPerHour = getChildDouble(_rootIterator, NB_POINTS_PER_HOUR);
+
+    Tucuxi::Core::ComputingOption computingOption = getChildComputingOption(_rootIterator, COMPUTING_OPTION);
+
+    Common::DateTime adjustmentEnd = getChildDateTime(_rootIterator, DATE_ADJUSTMENT_END_NODE_NAME);
+
+    Common::DateTime sampleDate = getChildDateTime(_rootIterator, SAMPLE_DATE_NODE_NAME);
+
+    int nbConcentrationPoints = getChildInt(_rootIterator, NB_CONCENTRATION_POINTS_NODE_NAME);
+
+    Common::XmlNodeIterator samplingHoursIt = _rootIterator->getChildren(SAMPLING_HOURS_NODE_NAME);
+    Tucuxi::Core::TimeOffsets samplingHours;
+    while (samplingHoursIt != Common::XmlNodeIterator::none()) {
+        double hour = extractDouble(samplingHoursIt);
+        samplingHours.push_back(hour);
+        samplingHoursIt++;
+    }
+
+    Common::XmlNodeIterator ranksRootIterator = _rootIterator->getChildren(RANKS_NODE_NAME);
+    Tucuxi::Core::PercentileRanks ranks = getChildPercentileRanks(ranksRootIterator, RANKS_RANK_NODE_NAME);
+
+    return std::make_unique<Tucuxi::Core::ComputingTraitEtoda>(
+            _requestResponseId,
+            start,
+            end,
+            nbPointsPerHour,
+            computingOption,
+            adjustmentEnd,
+            sampleDate,
+            samplingHours,
+            nbConcentrationPoints,
+            ranks);
+}
 
 Tucuxi::Core::BestCandidatesOption QueryImport::getChildBestCandidatesOptionEnum(
         Common::XmlNodeIterator _rootIterator, const std::string& _childName)
@@ -1395,6 +1458,31 @@ Tucuxi::Core::AdjustmentWithCurrentDosageOption QueryImport::getChildAdjustmentW
     return Tucuxi::Core::AdjustmentWithCurrentDosageOption::AlwaysAdjust;
 }
 
+Tucuxi::Core::AdjustmentWithEtodaOption QueryImport::getChildAdjustmentWithEtodaOptionEnum(
+        Common::XmlNodeIterator _rootIterator, const std::string& _childName)
+{
+    static const std::string NODE = "adjustmentWithEtodaOption";
+
+    Common::XmlNodeIterator optionsRootIterator = _rootIterator->getChildren(_childName);
+    Common::XmlNodeIterator nodeIterator = optionsRootIterator->getChildren(NODE);
+
+    if (nodeIterator == Common::XmlNodeIterator::none()) {
+        return Tucuxi::Core::AdjustmentWithEtodaOption::NoEtoda;
+    }
+
+    static std::map<std::string, Tucuxi::Core::AdjustmentWithEtodaOption> m = {
+            {"noEtoda", Tucuxi::Core::AdjustmentWithEtodaOption::NoEtoda},
+            {"withEtoda", Tucuxi::Core::AdjustmentWithEtodaOption::WithEtoda}};
+
+    std::string value = nodeIterator->getValue();
+    auto it = m.find(value);
+    if (it != m.end()) {
+        return it->second;
+    }
+
+    setNodeError(nodeIterator);
+    return Tucuxi::Core::AdjustmentWithEtodaOption::NoEtoda;
+}
 
 Tucuxi::Core::ComputingOption QueryImport::getChildComputingOption(
         Common::XmlNodeIterator _rootIterator, const std::string& _childName)

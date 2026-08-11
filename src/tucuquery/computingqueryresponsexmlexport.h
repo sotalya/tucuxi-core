@@ -56,6 +56,8 @@ public:
 protected:
     bool exportAdjustment(const Tucuxi::Core::AdjustmentData* _prediction, Tucuxi::Common::XmlNode& _rootNode);
 
+    bool exportEtodaData(const Tucuxi::Core::EtodaData* _prediction, Tucuxi::Common::XmlNode& _rootNode);
+
     bool exportSinglePrediction(
             const Tucuxi::Core::SinglePredictionData* _prediction, Tucuxi::Common::XmlNode& _rootNode);
 

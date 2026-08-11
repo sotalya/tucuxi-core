@@ -178,6 +178,22 @@ bool ComputingQueryResponseXmlExport::exportToString(
             }
             responseNode.addChild(dataNode);
         }
+        else if (dynamic_cast<const Tucuxi::Core::EtodaData*>(response.m_computingResponse->getData()) != nullptr) {
+
+            Tucuxi::Common::XmlNode dataNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "dataEtoda");
+
+            Tucuxi::Common::XmlNode requestType =
+                    m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "requestType", "etoda");
+            responseNode.addChild(requestType);
+
+            const auto prediction =
+                    dynamic_cast<const Tucuxi::Core::EtodaData*>(response.m_computingResponse->getData());
+
+            if (!exportEtodaData(prediction, dataNode)) {
+                //Error
+            }
+            responseNode.addChild(dataNode);
+        }
         else if (
                 dynamic_cast<const Tucuxi::Core::SinglePredictionData*>(response.m_computingResponse->getData())
                 != nullptr) {
@@ -384,6 +400,45 @@ bool ComputingQueryResponseXmlExport::exportAdjustment(
         }
         if (!exportCycleDatas(adj.getData(), adjustment)) {
             return false;
+        }
+
+        if (adj.getEtodaData().has_value()) {
+            Tucuxi::Common::XmlNode etodaDataNode =
+                    m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "etodaData");
+            adjustment.addChild(etodaDataNode);
+            if (!exportEtodaData(&adj.getEtodaData().value(), etodaDataNode)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+bool ComputingQueryResponseXmlExport::exportEtodaData(
+        const Tucuxi::Core::EtodaData* _prediction, Tucuxi::Common::XmlNode& _rootNode)
+{
+    Tucuxi::Common::XmlNode hourResults = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "hourResults");
+    _rootNode.addChild(hourResults);
+
+    for (const auto& hourResult : _prediction->getEtodaResults()) {
+        Tucuxi::Common::XmlNode hourResultNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "hourResult");
+        hourResults.addChild(hourResultNode);
+        addNode(hourResultNode, "hour", hourResult.m_samplingHour);
+        addNode(hourResultNode, "nbPointsMeasured", hourResult.m_nbPointsMeasured);
+        addNode(hourResultNode, "nbPointsTrue", hourResult.m_nbPointsTrue);
+
+        Tucuxi::Common::XmlNode points = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "points");
+        hourResultNode.addChild(points);
+        for (const auto& point : hourResult.m_points) {
+            Tucuxi::Common::XmlNode pointNode = m_doc.createNode(Tucuxi::Common::EXmlNodeType::Element, "point");
+            points.addChild(pointNode);
+            addNode(pointNode, "adjustmentFound", point.m_adjustmentFound);
+            addNode(pointNode, "measuredConc", point.m_measuredConc);
+            addNode(pointNode, "trueConc", point.m_trueConc);
+            addNode(pointNode, "samplingHour", point.m_samplingHour);
+            addNode(pointNode, "metricValue", point.m_metricValue);
+            addNode(pointNode, "zoneLabel", point.m_zoneLabel);
         }
     }
 

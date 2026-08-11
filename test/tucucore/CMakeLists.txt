@@ -86,6 +86,7 @@ file(GLOB TUCUTESTCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computingcomponentattimes.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computingcomponentconcentration.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computingcomponenterrors.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/gtest_computingcomponentetoda.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computingcomponentpercentiles.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computinggof.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computingutils.cpp

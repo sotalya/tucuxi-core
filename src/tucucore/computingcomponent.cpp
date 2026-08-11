@@ -42,6 +42,7 @@
 #include "tucucore/sampleextractor.h"
 //#include "tucucore/overloadevaluator.h"
 #include "tucucore/computingadjustments.h"
+#include "tucucore/computingetoda.h"
 #include "tucucore/computingservice/computingresult.h"
 #include "tucucore/computingutils.h"
 #include "tucucore/cyclestatisticscalculator.h"
@@ -976,7 +977,17 @@ ComputingStatus ComputingComponent::compute(
     }
 
     ComputingAdjustments computer(m_utils.get());
-    return computer.compute(_traits, _request, _response);
+    ComputingStatus status = computer.compute(_traits, _request, _response);
+
+    if (_traits->getAdjustmentWithEtodaOption() == AdjustmentWithEtodaOption::WithEtoda) {
+        EtodaOptions options{
+                .m_samplingHours = {0.0},
+        };
+        ComputingEtoda etodaComputer(options);
+        status = etodaComputer.compute(_traits, _request, _response);
+    }
+
+    return status;
 }
 
 
@@ -1182,6 +1193,26 @@ ComputingStatus ComputingComponent::compute(
     return ComputingStatus::Ok;
 }
 
+ComputingStatus ComputingComponent::compute(
+        const ComputingTraitEtoda* _traits,
+        const ComputingRequest& _request,
+        std::unique_ptr<ComputingResponse>& _response)
+{
+    if (_traits == nullptr) {
+        m_logger.error("The computing traits sent for computation are nullptr");
+        return ComputingStatus::NoComputingTraits;
+    }
+
+    EtodaOptions options{
+            .m_samplingHours = _traits->getSamplingHours(),
+            .m_numConcentrationPoints = _traits->getNbConcentrationPoints(),
+            .m_percentileRanks = _traits->getRanks(),
+            .m_pointPerHour = _traits->getNbPointsPerHour(),
+    };
+
+    ComputingEtoda computer(options);
+    return computer.compute(_traits, _request, _response);
+}
 
 } // namespace Core
 } // namespace Tucuxi

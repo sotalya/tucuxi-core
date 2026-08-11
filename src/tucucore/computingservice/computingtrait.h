@@ -561,6 +561,12 @@ enum class AdjustmentWithCurrentDosageOption
     DontAdjustIfCurrentInRange
 };
 
+enum class AdjustmentWithEtodaOption
+{
+    NoEtoda = 0,
+    WithEtoda
+};
+
 ///
 /// \brief The ComputingTraitAdjustment class.
 /// This class embeds all information required for computing adjustments. It can return
@@ -604,7 +610,8 @@ public:
             TargetExtractionOption _targetExtractionOption,
             FormulationAndRouteSelectionOption _formulationAndRouteSelectionOption,
             AdjustmentWithCurrentDosageOption _adjustmentWithCurrentDosageOption =
-                    AdjustmentWithCurrentDosageOption::AlwaysAdjust);
+                    AdjustmentWithCurrentDosageOption::AlwaysAdjust,
+            AdjustmentWithEtodaOption _adjustmentWithEtodaOption = AdjustmentWithEtodaOption::NoEtoda);
 
     ///
     /// \brief Gets the time of adjustment
@@ -654,6 +661,8 @@ public:
     ///
     AdjustmentWithCurrentDosageOption getAdjustmentWithCurrentDosageOption() const;
 
+    AdjustmentWithEtodaOption getAdjustmentWithEtodaOption() const;
+
 protected:
     //! Date of the adjustment
     Tucuxi::Common::DateTime m_adjustmentTime;
@@ -678,6 +687,9 @@ protected:
 
     //! Whether to skip adjustment when the current dosage is in range
     AdjustmentWithCurrentDosageOption m_adjustmentWithCurrentDosageOption;
+
+    //! Whether to compute ETODA statistics for the adjustment
+    AdjustmentWithEtodaOption m_adjustmentWithEtodaOption;
 
 private:
     ///
@@ -792,6 +804,93 @@ private:
 
     //! An aborter to cancel current computing
     ComputingAborter* m_aborter;
+
+    ///
+    /// \brief Calls the compute() method in ComputingComponent
+    /// \param _computingComponent The computing component that will do the computing job
+    /// \param _request The request that has to be processed
+    /// \param _response The response list in which we will add the new response
+    /// \return ComputingResult::Success if everything went well, ComputingResult::Error else
+    ///
+    ComputingStatus compute(
+            ComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
+
+    ComputingStatus compute(
+            MultiComputingComponent& _computingComponent,
+            const ComputingRequest& _request,
+            std::unique_ptr<ComputingResponse>& _response) const override;
+};
+
+///
+/// @brief The ComputingTraitEtoda class.
+/// This class embeds all information for calculating ETODA statistics.
+///
+class ComputingTraitEtoda : public ComputingTraitStandard
+{
+public:
+    ///
+    /// \brief ComputingTraitEtoda Simple constructor
+    /// \param _id Id of the request
+    /// \param _start Start time of the range to be calculated
+    /// \param _end End time of the range to be calculated
+    /// \param _nbPointsPerHour Requested number of points per hour
+    /// \param _computingOption Some computing options
+    /// \param _samplingHours The sampling hours for the computation
+    /// \param _ranks The percentile ranks as a vector of double
+    ComputingTraitEtoda(
+            RequestResponseId _id,
+            Tucuxi::Common::DateTime _start,
+            Tucuxi::Common::DateTime _end,
+            double _nbPointsPerHour,
+            ComputingOption _computingOption,
+            Tucuxi::Common::DateTime _adjustmentEnd,
+            Tucuxi::Common::DateTime _sampleDate,
+            Tucuxi::Core::TimeOffsets _samplingHours,
+            int _nbConcentrationPoints,
+            PercentileRanks _ranks);
+
+    const Tucuxi::Common::DateTime& getAdjustmentEnd() const
+    {
+        return m_adjustmentEnd;
+    }
+
+    const Tucuxi::Common::DateTime& getSampleDate() const
+    {
+        return m_sampleDate;
+    }
+
+    const Tucuxi::Core::TimeOffsets& getSamplingHours() const
+    {
+        return m_samplingHours;
+    }
+
+    int getNbConcentrationPoints() const
+    {
+        return m_nbConcentrationPoints;
+    }
+
+    const PercentileRanks& getRanks() const
+    {
+        return m_ranks;
+    }
+
+private:
+    //! The end time of the adjustment period
+    Tucuxi::Common::DateTime m_adjustmentEnd;
+
+    //! The sample date
+    Tucuxi::Common::DateTime m_sampleDate;
+
+    //! A vector of sampling hours
+    Tucuxi::Core::TimeOffsets m_samplingHours;
+
+    //! The number of concentration points
+    int m_nbConcentrationPoints;
+
+    //! A vector of percentile ranks
+    PercentileRanks m_ranks;
 
     ///
     /// \brief Calls the compute() method in ComputingComponent
