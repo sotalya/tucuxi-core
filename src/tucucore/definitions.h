@@ -430,7 +430,11 @@ enum class InterpolationType
     Sigmoid,
 
     /// Tanh: between two occurrences of observed covariates, use hyperbolic tangent interpolation.
-    Tanh
+    Tanh,
+
+    /// Backward: at any point in time, apply the value of the *next* observed measurement
+    /// (i.e. the step function looks forward rather than backward as Direct does).
+    Backward
 };
 
 
