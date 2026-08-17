@@ -170,9 +170,9 @@ public:
         std::string xmlString = "<root>"
                                 "<bool>"
                                 "<bool1></bool1>"
-                                "<bool2>FALSE</bool2>"
-                                "<bool3>FASLE</bool3>"
-                                "<bool4>tRUE</bool14>"
+                                "<bool2>FASLE</bool2>"
+                                "<bool3>FALSE</bool3>"
+                                "<bool4>tRUE</bool4>"
                                 "<bool5>true</bool5>"
                                 "<bool6>True</bool6>"
                                 "<bool7>1</bool7>"
@@ -203,16 +203,15 @@ public:
             ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
 
-            ASSERT_FALSE(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_3));
-            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
-            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
-
-            ASSERT_FALSE(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_4));
-            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Error);
-            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
-
-
             //GOOD
+            ASSERT_FALSE(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_3));
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Ok);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
+            ASSERT_TRUE(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_4));
+            ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Ok);
+            xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
+
             ASSERT_TRUE(xmlImporterTestClass.getChildBool(xmlIterator, BOOL_5));
             ASSERT_EQ(xmlImporterTestClass.getStatus(), Tucuxi::Common::IImport::Status::Ok);
             xmlImporterTestClass.setStatus(Tucuxi::Common::IImport::Status::Ok);
