@@ -770,6 +770,9 @@ public:
     /// \param _nbPointsPerHour Requested number of points per hour
     /// \param _computingOption Some computing options
     /// \param _aborter An aborter objet to to cancel computation
+    /// \param _nbPatients Number of virtual patients to simulate for the Monte
+    ///        Carlo estimation. 0 (the default) leaves the choice to the engine,
+    ///        which then falls back to its own default number of patients.
     ///
     ComputingTraitPercentiles(
             RequestResponseId _id,
@@ -778,7 +781,8 @@ public:
             PercentileRanks _ranks,
             double _nbPointsPerHour,
             ComputingOption _computingOption,
-            ComputingAborter* _aborter = nullptr);
+            ComputingAborter* _aborter = nullptr,
+            size_t _nbPatients = 0);
 
     ///
     /// \brief Retrieves the vector of percentile ranks
@@ -798,6 +802,15 @@ public:
         return m_aborter;
     }
 
+    ///
+    /// \brief Retrieves the requested number of virtual patients
+    /// \return The number of patients to simulate, or 0 to use the engine default
+    ///
+    size_t getNbPatients() const
+    {
+        return m_nbPatients;
+    }
+
 private:
     //! A vector of percentile ranks
     PercentileRanks m_ranks;
@@ -805,6 +818,8 @@ private:
     //! An aborter to cancel current computing
     ComputingAborter* m_aborter;
 
+    //! Number of simulated virtual patients (0 means use the engine default)
+    size_t m_nbPatients;
     ///
     /// \brief Calls the compute() method in ComputingComponent
     /// \param _computingComponent The computing component that will do the computing job

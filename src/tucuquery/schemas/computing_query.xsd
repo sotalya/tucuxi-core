@@ -514,6 +514,7 @@ with the DosageHistory class and AbstractDosage subclasses -->
         <xs:element name="nbPointsPerHour" type="xs:int" minOccurs="0"/>
         <xs:element name="dateInterval" type="dateIntervalType" minOccurs="0"/>
         <xs:element name="ranks" type="percentileRanksType" minOccurs="0"/>
+        <xs:element name="nbPatients" type="xs:nonNegativeInteger" minOccurs="0"/>
       </xs:sequence>
     </xs:complexType>
   </xs:element>
