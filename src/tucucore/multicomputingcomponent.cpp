@@ -548,8 +548,11 @@ ComputingStatus MultiComputingComponent::compute(
             }
         }
 
-        std::unique_ptr<Tucuxi::Core::IAposterioriPercentileCalculatorMulti> calculator(
+        std::unique_ptr<Tucuxi::Core::AposterioriMonteCarloPercentileCalculatorMulti> calculator(
                 new Tucuxi::Core::AposterioriMonteCarloPercentileCalculatorMulti());
+        if (_traits->getNbPatients() != 0) {
+            calculator->setNumberPatients(_traits->getNbPatients());
+        }
         computingResult = calculator->calculate(
                 percentiles,
                 _traits->getStart(),
@@ -571,8 +574,11 @@ ComputingStatus MultiComputingComponent::compute(
             etas[analyteGroupId] = Etas(0);
         }
 
-        std::unique_ptr<Tucuxi::Core::IAprioriPercentileCalculatorMulti> calculator =
+        std::unique_ptr<Tucuxi::Core::AprioriPercentileCalculatorMulti> calculator =
                 std::make_unique<Tucuxi::Core::AprioriPercentileCalculatorMulti>();
+        if (_traits->getNbPatients() != 0) {
+            calculator->setNumberPatients(_traits->getNbPatients());
+        }
         computingResult = calculator->calculate(
                 percentiles,
                 _traits->getStart(),

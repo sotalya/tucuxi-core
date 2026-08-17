@@ -1116,6 +1116,7 @@ std::unique_ptr<Tucuxi::Core::ComputingTraitPercentiles> QueryImport::getChildCo
     static const std::string RANKS_NODE_NAME = "ranks";
     static const std::string RANKS_RANK_NODE_NAME = "rank";
     static const std::string COMPUTING_OPTION = "computingOption";
+    static const std::string NB_PATIENTS_NODE_NAME = "nbPatients";
 
     Common::XmlNodeIterator dateIntervalRootIterator = _rootIterator->getChildren(DATE_INTERVAL_NODE_NAME);
     Common::DateTime start = getChildDateTime(dateIntervalRootIterator, DATE_INTERVAL_START_NODE_NAME);
@@ -1128,8 +1129,12 @@ std::unique_ptr<Tucuxi::Core::ComputingTraitPercentiles> QueryImport::getChildCo
 
     Tucuxi::Core::ComputingOption computingOption = getChildComputingOption(_rootIterator, COMPUTING_OPTION);
 
+    // Optional number of Monte Carlo patients. Absent or 0 lets the engine use
+    // its own default number of simulated patients.
+    size_t nbPatients = static_cast<size_t>(getChildDoubleOptional(_rootIterator, NB_PATIENTS_NODE_NAME, 0.0));
+
     return std::make_unique<Tucuxi::Core::ComputingTraitPercentiles>(
-            _requestResponseId, start, end, ranks, nbPointsPerHour, computingOption);
+            _requestResponseId, start, end, ranks, nbPointsPerHour, computingOption, nullptr, nbPatients);
 }
 
 std::unique_ptr<Tucuxi::Core::ComputingTraitConcentration> QueryImport::getChildComputingTraitConcentration(
