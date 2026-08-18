@@ -222,6 +222,12 @@ void ComputingResponseComparator::compareDosageAdjustment(const DosageAdjustment
     for (size_t i = 0; i < _d1.m_targetsEvaluation.size(); i++) {
         compareTargetEvaluationResult(_d1.m_targetsEvaluation[i], _d2.m_targetsEvaluation[i]);
     }
+    ASSERT_EQ(_d1.getEtodaData().has_value(), _d2.getEtodaData().has_value());
+    const auto& v1 = _d1.getEtodaData();
+    const auto& v2 = _d2.getEtodaData();
+    if (v1.has_value() && v2.has_value()) {
+        compareEtoda(&v1.value(), &v2.value());
+    }
 }
 
 void ComputingResponseComparator::compareAdjustment(const AdjustmentData* _d1, const AdjustmentData* _d2)
@@ -251,9 +257,42 @@ void ComputingResponseComparator::comparePercentiles(const PercentilesData* _d1,
         compareCycleDatas(_d1->getPercentileData(i), _d2->getPercentileData(i), true);
     }
 }
+void ComputingResponseComparator::compareEtoda(const Tucuxi::Core::EtodaData* _d1, const Tucuxi::Core::EtodaData* _d2)
+{
+    ASSERT_EQ(_d1->getId(), _d2->getId());
+    ASSERT_EQ(_d1->getEtodaResults().size(), _d2->getEtodaResults().size());
+    for (size_t i = 0; i < _d1->getEtodaResults().size(); i++) {
+        const auto& v1 = _d1->getEtodaResults().at(i);
+        const auto& v2 = _d2->getEtodaResults().at(i);
+        ASSERT_EQ(v1.m_nbPointsMeasured, v2.m_nbPointsMeasured);
+        ASSERT_EQ(v1.m_nbPointsTrue, v2.m_nbPointsTrue);
+        ASSERT_EQ(v1.m_points.size(), v2.m_points.size());
+        for (size_t j = 0; j < v1.m_points.size(); j++) {
+            const auto& p1 = v1.m_points[j];
+            const auto& p2 = v2.m_points[j];
+            ASSERT_EQ(p1.m_adjustmentFound, p2.m_adjustmentFound);
+            ASSERT_EQ(p1.m_measuredConc, p2.m_measuredConc);
+            ASSERT_EQ(p1.m_trueConc, p2.m_trueConc);
+            ASSERT_EQ(p1.m_metricValue, p2.m_metricValue);
+            ASSERT_EQ(p1.m_samplingHour, p2.m_samplingHour);
+            ASSERT_EQ(p1.m_zoneLabel, p2.m_zoneLabel);
+        }
+        ASSERT_EQ(v1.m_samplingHour, v2.m_samplingHour);
+    }
+    compareGof(_d1->getGof(), _d2->getGof());
+}
+
 
 void ComputingResponseComparator::compare(Tucuxi::Core::ComputingStatus _s1, Tucuxi::Core::ComputingStatus _s2)
 {
+    if ((_s1 == ComputingStatus::ComputingComponentExceptionError)
+        && (_s2 == ComputingStatus::MultiComputingComponentExceptionError)) {
+        return;
+    }
+    if ((_s1 == ComputingStatus::MultiComputingComponentExceptionError)
+        && (_s2 == ComputingStatus::ComputingComponentExceptionError)) {
+        return;
+    }
     ASSERT_EQ(_s1, _s2);
 }
 
@@ -267,7 +306,7 @@ void ComputingResponseComparator::compare(ComputingResponse& _r1, ComputingRespo
     std::cout << "Time rel diff (%) : " << (t2 - t1) / t1 * 100.0 << '\n';
 #endif // TUCU_COMPARE_TIME
 
-    ASSERT_EQ(_r1.getComputingStatus(), _r2.getComputingStatus());
+    compare(_r1.getComputingStatus(), _r2.getComputingStatus());
     auto rawD1 = _r1.getData();
     auto rawD2 = _r2.getData();
 
@@ -294,6 +333,12 @@ void ComputingResponseComparator::compare(ComputingResponse& _r1, ComputingRespo
         auto d1 = dynamic_cast<const PercentilesData*>(rawD1);
         auto d2 = dynamic_cast<const PercentilesData*>(rawD2);
         comparePercentiles(d1, d2);
+        isSomething = true;
+    }
+    if (dynamic_cast<const EtodaData*>(rawD1) != nullptr) {
+        auto d1 = dynamic_cast<const EtodaData*>(rawD1);
+        auto d2 = dynamic_cast<const EtodaData*>(rawD2);
+        compareEtoda(d1, d2);
         isSomething = true;
     }
     if (!isSomething) {

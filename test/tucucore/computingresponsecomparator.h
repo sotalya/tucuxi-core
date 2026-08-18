@@ -43,6 +43,7 @@ private:
     void compareDosageAdjustment(const Tucuxi::Core::DosageAdjustment& _d1, const Tucuxi::Core::DosageAdjustment& _d2);
     void compareAdjustment(const Tucuxi::Core::AdjustmentData* _d1, const Tucuxi::Core::AdjustmentData* _d2);
     void comparePercentiles(const Tucuxi::Core::PercentilesData* _d1, const Tucuxi::Core::PercentilesData* _d2);
+    void compareEtoda(const Tucuxi::Core::EtodaData* _d1, const Tucuxi::Core::EtodaData* _d2);
 
     bool m_compareTargetScoreValue{true};
 };
