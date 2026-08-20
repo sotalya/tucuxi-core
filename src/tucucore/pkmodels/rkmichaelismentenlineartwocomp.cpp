@@ -67,6 +67,8 @@ bool RkMichaelisMentenLinearTwoCompExtraMicro::checkInputs(
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
+    m_V2 = m_V1 * m_K12 / m_K21;
+
     // check the inputs
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
@@ -116,6 +118,8 @@ bool RkMichaelisMentenLinearTwoCompExtraLagMicro::checkInputs(
     m_Tlag = _parameters.getValue(ParameterId::Tlag);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
+
+    m_V2 = m_V1 * m_K12 / m_K21;
 
     // check the inputs
     bool bOK = true;
@@ -168,6 +172,8 @@ bool RkMichaelisMentenLinearTwoCompBolusMicro::checkInputs(
     m_K21 = _parameters.getValue(ParameterId::K21);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
+
+    m_V2 = m_V1 * m_K12 / m_K21;
 
     // check the inputs
     bool bOK = true;
@@ -225,6 +231,8 @@ bool RkMichaelisMentenLinearTwoCompInfusionMicro::checkInputs(
     m_K21 = _parameters.getValue(ParameterId::K21);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
+
+    m_V2 = m_V1 * m_K12 / m_K21;
 
     // check the inputs
     bool bOK = true;
@@ -289,17 +297,18 @@ bool RkMichaelisMentenLinearTwoCompExtraMacro::checkInputs(
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
-    auto v2 = _parameters.getValue(ParameterId::V2);
+    m_V2 = _parameters.getValue(ParameterId::V2);
     auto q = _parameters.getValue(ParameterId::Q);
     auto cl = _parameters.getValue(ParameterId::CL);
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
-    m_K21 = q / v2;
+    m_K21 = q / m_V2;
 
     // check the inputs
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V1, "The volume");
+    bOK &= checkStrictlyPositiveValue(m_V2, "The volume of the second compartement");
     bOK &= checkStrictlyPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
@@ -338,17 +347,18 @@ bool RkMichaelisMentenLinearTwoCompExtraLagMacro::checkInputs(
     m_Tlag = _parameters.getValue(ParameterId::Tlag);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
-    auto v2 = _parameters.getValue(ParameterId::V2);
+    m_V2 = _parameters.getValue(ParameterId::V2);
     auto q = _parameters.getValue(ParameterId::Q);
     auto cl = _parameters.getValue(ParameterId::CL);
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
-    m_K21 = q / v2;
+    m_K21 = q / m_V2;
 
     // check the inputs
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V1, "The volume");
+    bOK &= checkStrictlyPositiveValue(m_V2, "The volume of the second compartement");
     bOK &= checkStrictlyPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
@@ -384,17 +394,18 @@ bool RkMichaelisMentenLinearTwoCompBolusMacro::checkInputs(
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
-    auto v2 = _parameters.getValue(ParameterId::V2);
+    m_V2 = _parameters.getValue(ParameterId::V2);
     auto q = _parameters.getValue(ParameterId::Q);
     auto cl = _parameters.getValue(ParameterId::CL);
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
-    m_K21 = q / v2;
+    m_K21 = q / m_V2;
 
     // check the inputs
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V1, "The volume");
+    bOK &= checkStrictlyPositiveValue(m_V2, "The volume of the second compartement");
     bOK &= checkPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");
@@ -451,17 +462,18 @@ bool RkMichaelisMentenLinearTwoCompInfusionMacro::checkInputs(
     m_Vmax = _parameters.getValue(ParameterId::Vmax);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
-    auto v2 = _parameters.getValue(ParameterId::V2);
+    m_V2 = _parameters.getValue(ParameterId::V2);
     auto q = _parameters.getValue(ParameterId::Q);
     auto cl = _parameters.getValue(ParameterId::CL);
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
-    m_K21 = q / v2;
+    m_K21 = q / m_V2;
 
     // check the inputs
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V1, "The volume");
+    bOK &= checkStrictlyPositiveValue(m_V2, "The volume of the second compartement");
     bOK &= checkPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Km, "The Michaelis Menten constant");
     bOK &= checkStrictlyPositiveValue(m_Vmax, "VMax");

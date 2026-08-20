@@ -89,6 +89,13 @@ public:
     }
 
 protected:
+    void computeOutputResiduals(
+            Residuals& _outResiduals, MultiCompConcentrations& _concentrations, size_t _index) override
+    {
+        _outResiduals[0] = _concentrations[0][_index] * m_V;
+        _outResiduals[1] = _concentrations[1][_index] * m_V;
+    }
+
     Value m_D{NAN};  /// Quantity of drug
     Value m_F{1.0};  /// bioavailability
     Value m_Ka{0.0}; /// Absorption rate constant
@@ -130,8 +137,8 @@ protected:
 
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
-        _concentrations[0] = _inResiduals[0];
-        _concentrations[1] = _inResiduals[1] + m_D / m_V * m_F;
+        _concentrations[0] = _inResiduals[0] / m_V;
+        _concentrations[1] = (_inResiduals[1] + m_D * m_F) / m_V;
     }
 };
 
@@ -155,8 +162,8 @@ protected:
 
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
-        _concentrations[0] = _inResiduals[0];
-        _concentrations[1] = _inResiduals[1];
+        _concentrations[0] = _inResiduals[0] / m_V;
+        _concentrations[1] = _inResiduals[1] / m_V;
         // Do not forget to reinitialize the flag for delivery of the drug
         m_delivered = false;
     }
@@ -182,8 +189,8 @@ protected:
 
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
-        _concentrations[0] = _inResiduals[0] + m_D / m_V;
-        _concentrations[1] = _inResiduals[1];
+        _concentrations[0] = (_inResiduals[0] + m_D) / m_V;
+        _concentrations[1] = _inResiduals[1] / m_V;
     }
 };
 
@@ -207,8 +214,8 @@ protected:
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
         m_infusionRate = m_D / m_V / m_Tinf;
-        _concentrations[0] = _inResiduals[0];
-        _concentrations[1] = _inResiduals[1];
+        _concentrations[0] = _inResiduals[0] / m_V;
+        _concentrations[1] = _inResiduals[1] / m_V;
     }
 };
 

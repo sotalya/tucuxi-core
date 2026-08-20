@@ -60,6 +60,9 @@ bool ThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, co
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
+    m_V2 = m_V1 * m_K12 / m_K21;
+    m_V3 = m_V1 * m_K13 / m_K31;
+
     Value a0 = m_Ke * m_K21 * m_K31;
     Value a1 = m_Ke * m_K31 + m_K21 * m_K31 + m_K21 * m_K13 + m_Ke * m_K21 + m_K31 * m_K12;
     Value a2 = m_Ke + m_K12 + m_K13 + m_K21 + m_K31;
@@ -131,9 +134,9 @@ bool ThreeCompartmentExtraMicro::computeConcentrations(
     compute(_inResiduals, concentrations1, concentrations2, concentrations3);
 
     // return residuals of comp1, comp2 and comp3
-    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
-    _outResiduals[secondCompartment] = concentrations2;
-    _outResiduals[thirdCompartment] = concentrations3;
+    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1] * m_V1;
+    _outResiduals[secondCompartment] = concentrations2 * m_V2;
+    _outResiduals[thirdCompartment] = concentrations3 * m_V3;
 
     // return concentration
     _concentrations[firstCompartment].assign(concentrations1.cbegin(), concentrations1.cend());
@@ -180,9 +183,9 @@ bool ThreeCompartmentExtraMicro::computeConcentration(
     }
 
     // return final residual (computation with m_Int (interval))
-    _outResiduals[firstCompartment] = concentrations1[atEndInterval];
-    _outResiduals[secondCompartment] = concentrations2;
-    _outResiduals[thirdCompartment] = concentrations3;
+    _outResiduals[firstCompartment] = concentrations1[atEndInterval] * m_V1;
+    _outResiduals[secondCompartment] = concentrations2 * m_V2;
+    _outResiduals[thirdCompartment] = concentrations3 * m_V3;
 
     bool bOK = checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
     bOK &= checkCondition(_outResiduals[secondCompartment] >= 0, "The concentration2 is negative.");
@@ -210,14 +213,14 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     Value q3 = _parameters.getValue(ParameterId::Q3);
     Value q2 = _parameters.getValue(ParameterId::Q2);
     m_V1 = _parameters.getValue(ParameterId::V1);
-    Value v2 = _parameters.getValue(ParameterId::V2);
-    Value v3 = _parameters.getValue(ParameterId::V3);
+    m_V2 = _parameters.getValue(ParameterId::V2);
+    m_V3 = _parameters.getValue(ParameterId::V3);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_Ke = cl / m_V1;
     m_K12 = q2 / m_V1;
-    m_K21 = q2 / v2;
+    m_K21 = q2 / m_V2;
     m_K13 = q3 / m_V1;
-    m_K31 = q3 / v3;
+    m_K31 = q3 / m_V3;
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -264,7 +267,8 @@ bool ThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, co
     bOK &= checkStrictlyPositiveValue(q3, "Q3");
     bOK &= checkStrictlyPositiveValue(q2, "Q2");
     bOK &= checkStrictlyPositiveValue(m_V1, "V1");
-    bOK &= checkStrictlyPositiveValue(v2, "V2");
+    bOK &= checkStrictlyPositiveValue(m_V2, "V2");
+    bOK &= checkStrictlyPositiveValue(m_V3, "V3");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkPositiveValue(m_Gamma, "Gamma");

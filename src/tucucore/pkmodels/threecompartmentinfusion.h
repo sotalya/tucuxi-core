@@ -81,6 +81,8 @@ protected:
     Value m_D{NAN};  /// Quantity of drug
     Value m_F{NAN};  /// ???
     Value m_V1{NAN}; /// Volume of the compartment 1
+    Value m_V2{NAN}; /// Volume of the compartment 2
+    Value m_V3{NAN}; /// Volume of the compartment 3
     Value m_Ke{
             NAN}; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
     Value m_K12{NAN}; /// Q/V1

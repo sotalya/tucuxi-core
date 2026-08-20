@@ -96,8 +96,8 @@ inline void OneCompartmentExtraLagMicro::compute(
         const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
     if (m_Tlag <= 0.0) {
-        Concentration resid1 = _inResiduals[0];
-        Concentration resid2 = _inResiduals[1] + m_F * m_D / m_V;
+        Concentration resid1 = _inResiduals[0] / m_V;
+        Concentration resid2 = (_inResiduals[1] + m_F * m_D) / m_V;
         Concentration part2 = m_Ka * resid2 / (-m_Ka + m_Ke);
 
         _concentrations1 = exponentials(Exponentials::Ke) * resid1
@@ -105,8 +105,8 @@ inline void OneCompartmentExtraLagMicro::compute(
         _concentrations2 = resid2 * exponentials(Exponentials::Ka);
     }
     else {
-        Concentration resid1 = _inResiduals[0];
-        Concentration resid2 = _inResiduals[1];
+        Concentration resid1 = _inResiduals[0] / m_V;
+        Concentration resid2 = _inResiduals[1] / m_V;
         Concentration part2 = m_Ka * resid2 / (-m_Ka + m_Ke);
 
         Eigen::VectorXd concentrations1 = exponentials(Exponentials::Ke) * resid1
@@ -156,8 +156,8 @@ bool OneCompartmentExtraLagMicro::computeConcentrations(
 
     // compute concenration1 and 2
     compute(_inResiduals, concentrations1, concentrations2);
-    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
-    _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
+    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1] * m_V;
+    _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1] * m_V;
 
     // Return concentrations of first compartment
     _concentrations[firstCompartment].assign(concentrations1.cbegin(), concentrations1.cend());
@@ -223,8 +223,8 @@ bool OneCompartmentExtraLagMicro::computeConcentration(
     }
 
     // Return final residual (computation with m_Int (interval))
-    _outResiduals[firstCompartment] = concentrations1[atEndInterval];
-    _outResiduals[secondCompartment] = concentrations2[atEndInterval];
+    _outResiduals[firstCompartment] = concentrations1[atEndInterval] * m_V;
+    _outResiduals[secondCompartment] = concentrations2[atEndInterval] * m_V;
 
     bool bOK = checkCondition(_outResiduals[firstCompartment] >= 0, "The final residual1 is negative.");
     bOK &= checkCondition(_outResiduals[secondCompartment] >= 0, "The final residual2 is negative.");

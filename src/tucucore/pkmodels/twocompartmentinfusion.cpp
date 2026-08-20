@@ -54,6 +54,7 @@ bool TwoCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEvent, c
     m_Ke = _parameters.getValue(ParameterId::Ke);
     m_K12 = _parameters.getValue(ParameterId::K12);
     m_K21 = _parameters.getValue(ParameterId::K21);
+    m_V2 = m_V1 * m_K12 / m_K21;
     m_SumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((m_SumK * m_SumK) - (4 * m_K21 * m_Ke));
     m_Divider = m_RootK * (-m_SumK + m_RootK) * (m_SumK + m_RootK);
@@ -141,8 +142,8 @@ bool TwoCompartmentInfusionMicro::computeConcentrations(
     compute(_inResiduals, forcesize, concentrations1, concentrations2);
 
     // Return final residuals of comp1 and comp2
-    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
-    _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
+    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1] * m_V1;
+    _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1] * m_V2;
 
     // Return concentrations of comp1
     _concentrations[firstCompartment].assign(concentrations1.cbegin(), concentrations1.cend());
@@ -310,8 +311,8 @@ bool TwoCompartmentInfusionMicro::computeConcentration(
     }
 
     // Return final residual of comp1 and comp2
-    _outResiduals[firstCompartment] = concentrations1[atEndInterval];
-    _outResiduals[secondCompartment] = concentrations2[atEndInterval];
+    _outResiduals[firstCompartment] = concentrations1[atEndInterval] * m_V1;
+    _outResiduals[secondCompartment] = concentrations2[atEndInterval] * m_V2;
 #endif
 
     // Check output
@@ -338,10 +339,10 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     Value cl = _parameters.getValue(ParameterId::CL);
     Value q = _parameters.getValue(ParameterId::Q);
     m_V1 = _parameters.getValue(ParameterId::V1);
-    Value v2 = _parameters.getValue(ParameterId::V2);
+    m_V2 = _parameters.getValue(ParameterId::V2);
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
-    m_K21 = q / v2;
+    m_K21 = q / m_V2;
     m_SumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((m_SumK * m_SumK) - (4 * m_K21 * m_Ke));
     m_Divider = m_RootK * (-m_SumK + m_RootK) * (m_SumK + m_RootK);
@@ -368,7 +369,7 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     logHelper.debug("cl: {}", cl);
     logHelper.debug("q: {}", q);
     logHelper.debug("m_V1: {}", m_V1);
-    logHelper.debug("v2: {}", v2);
+    logHelper.debug("v2: {}", m_V2);
     logHelper.debug("m_Ke: {}", m_Ke);
     logHelper.debug("m_K12: {}", m_K12);
     logHelper.debug("m_K21: {}", m_K21);
@@ -386,7 +387,7 @@ bool TwoCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEvent, c
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkStrictlyPositiveValue(q, "Q");
     bOK &= checkStrictlyPositiveValue(m_V1, "V1");
-    bOK &= checkStrictlyPositiveValue(v2, "V2");
+    bOK &= checkStrictlyPositiveValue(m_V2, "V2");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkCondition(m_Tinf >= 0, "The infusion time is negative.");
@@ -414,11 +415,11 @@ bool TwoCompartmentInfusionMacroRatios::checkInputs(
     m_V1 = _parameters.getValue(ParameterId::V1);
     Value rQCL = _parameters.getValue(ParameterId::RQCL);
     Value rV2V1 = _parameters.getValue(ParameterId::RV2V1);
-    Value v2 = m_V1 * rV2V1;
+    m_V2 = m_V1 * rV2V1;
     Value q = cl * rQCL;
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
-    m_K21 = q / v2;
+    m_K21 = q / m_V2;
     m_SumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((m_SumK * m_SumK) - (4 * m_K21 * m_Ke));
     m_Divider = m_RootK * (-m_SumK + m_RootK) * (m_SumK + m_RootK);
@@ -445,7 +446,7 @@ bool TwoCompartmentInfusionMacroRatios::checkInputs(
     logHelper.debug("cl: {}", cl);
     logHelper.debug("q: {}", q);
     logHelper.debug("m_V1: {}", m_V1);
-    logHelper.debug("v2: {}", v2);
+    logHelper.debug("v2: {}", m_V2);
     logHelper.debug("m_Ke: {}", m_Ke);
     logHelper.debug("m_K12: {}", m_K12);
     logHelper.debug("m_K21: {}", m_K21);
@@ -463,7 +464,7 @@ bool TwoCompartmentInfusionMacroRatios::checkInputs(
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkStrictlyPositiveValue(q, "Q");
     bOK &= checkStrictlyPositiveValue(m_V1, "V1");
-    bOK &= checkStrictlyPositiveValue(v2, "V2");
+    bOK &= checkStrictlyPositiveValue(m_V2, "V2");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkCondition(m_Tinf >= 0, "The infusion time is negative.");

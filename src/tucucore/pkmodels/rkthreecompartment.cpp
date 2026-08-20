@@ -65,6 +65,9 @@ bool RkThreeCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, 
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
+    m_V2 = m_V1 * m_K12 / m_K21;
+    m_V3 = m_V1 * m_K13 / m_K31;
+
     // check the inputs
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
@@ -113,6 +116,9 @@ bool RkThreeCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEven
     m_Tlag = _parameters.getValue(ParameterId::Tlag);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
+
+    m_V2 = m_V1 * m_K12 / m_K21;
+    m_V3 = m_V1 * m_K13 / m_K31;
 
     // check the inputs
     bool bOK = true;
@@ -164,6 +170,9 @@ bool RkThreeCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, 
     m_K31 = _parameters.getValue(ParameterId::K31);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
+
+    m_V2 = m_V1 * m_K12 / m_K21;
+    m_V3 = m_V1 * m_K13 / m_K31;
 
     // check the inputs
     bool bOK = true;
@@ -220,6 +229,9 @@ bool RkThreeCompartmentInfusionMicro::checkInputs(const IntakeEvent& _intakeEven
     m_K31 = _parameters.getValue(ParameterId::K31);
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
+
+    m_V2 = m_V1 * m_K12 / m_K21;
+    m_V3 = m_V1 * m_K13 / m_K31;
 
     // check the inputs
     bool bOK = true;
@@ -279,14 +291,14 @@ bool RkThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, 
     m_V1 = _parameters.getValue(ParameterId::V1);
     auto cl = _parameters.getValue(ParameterId::CL);
     m_Ke = cl / m_V1;
-    auto v2 = _parameters.getValue(ParameterId::V2);
+    m_V2 = _parameters.getValue(ParameterId::V2);
     auto q2 = _parameters.getValue(ParameterId::Q2);
     m_K12 = q2 / m_V1;
-    m_K21 = q2 / v2;
-    auto v3 = _parameters.getValue(ParameterId::V3);
+    m_K21 = q2 / m_V2;
+    m_V3 = _parameters.getValue(ParameterId::V3);
     auto q3 = _parameters.getValue(ParameterId::Q3);
     m_K13 = q3 / m_V1;
-    m_K31 = q3 / v3;
+    m_K31 = q3 / m_V3;
     m_F = _parameters.getValue(ParameterId::F);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_nbPoints = _intakeEvent.getNbPoints();
@@ -296,6 +308,8 @@ bool RkThreeCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, 
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V1, "The volume");
+    bOK &= checkStrictlyPositiveValue(m_V2, "The volume of the second compartment");
+    bOK &= checkStrictlyPositiveValue(m_V3, "The volume of the third compartement");
     bOK &= checkStrictlyPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Ka, "The absorption rate");
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
@@ -328,14 +342,14 @@ bool RkThreeCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEven
     m_V1 = _parameters.getValue(ParameterId::V1);
     auto cl = _parameters.getValue(ParameterId::CL);
     m_Ke = cl / m_V1;
-    auto v2 = _parameters.getValue(ParameterId::V2);
+    m_V2 = _parameters.getValue(ParameterId::V2);
     auto q2 = _parameters.getValue(ParameterId::Q2);
     m_K12 = q2 / m_V1;
-    m_K21 = q2 / v2;
-    auto v3 = _parameters.getValue(ParameterId::V3);
+    m_K21 = q2 / m_V2;
+    m_V3 = _parameters.getValue(ParameterId::V3);
     auto q3 = _parameters.getValue(ParameterId::Q3);
     m_K13 = q3 / m_V1;
-    m_K31 = q3 / v3;
+    m_K31 = q3 / m_V3;
     m_F = _parameters.getValue(ParameterId::F);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_Tlag = _parameters.getValue(ParameterId::Tlag);
@@ -346,6 +360,8 @@ bool RkThreeCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEven
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V1, "The volume");
+    bOK &= checkStrictlyPositiveValue(m_V2, "The volume of the second compartment");
+    bOK &= checkStrictlyPositiveValue(m_V3, "The volume of the third compartement");
     bOK &= checkStrictlyPositiveValue(m_F, "The bioavailability");
     bOK &= checkStrictlyPositiveValue(m_Ka, "The absorption rate");
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
@@ -379,14 +395,14 @@ bool RkThreeCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, 
     m_V1 = _parameters.getValue(ParameterId::V1);
     auto cl = _parameters.getValue(ParameterId::CL);
     m_Ke = cl / m_V1;
-    auto v2 = _parameters.getValue(ParameterId::V2);
+    m_V2 = _parameters.getValue(ParameterId::V2);
     auto q2 = _parameters.getValue(ParameterId::Q2);
     m_K12 = q2 / m_V1;
-    m_K21 = q2 / v2;
-    auto v3 = _parameters.getValue(ParameterId::V3);
+    m_K21 = q2 / m_V2;
+    m_V3 = _parameters.getValue(ParameterId::V3);
     auto q3 = _parameters.getValue(ParameterId::Q3);
     m_K13 = q3 / m_V1;
-    m_K31 = q3 / v3;
+    m_K31 = q3 / m_V3;
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -394,6 +410,8 @@ bool RkThreeCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, 
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V1, "The volume");
+    bOK &= checkStrictlyPositiveValue(m_V2, "The volume of the second compartment");
+    bOK &= checkStrictlyPositiveValue(m_V3, "The volume of the third compartement");
     bOK &= checkPositiveValue(m_F, "The bioavailability");
     bOK &= checkPositiveValue(m_Ka, "The absorption rate");
     bOK &= checkPositiveValue(m_Tlag, "The lag time");
@@ -447,14 +465,14 @@ bool RkThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEven
     m_V1 = _parameters.getValue(ParameterId::V1);
     auto cl = _parameters.getValue(ParameterId::CL);
     m_Ke = cl / m_V1;
-    auto v2 = _parameters.getValue(ParameterId::V2);
+    m_V2 = _parameters.getValue(ParameterId::V2);
     auto q2 = _parameters.getValue(ParameterId::Q2);
     m_K12 = q2 / m_V1;
-    m_K21 = q2 / v2;
-    auto v3 = _parameters.getValue(ParameterId::V3);
+    m_K21 = q2 / m_V2;
+    m_V3 = _parameters.getValue(ParameterId::V3);
     auto q3 = _parameters.getValue(ParameterId::Q3);
     m_K13 = q3 / m_V1;
-    m_K31 = q3 / v3;
+    m_K31 = q3 / m_V3;
     m_nbPoints = _intakeEvent.getNbPoints();
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -462,6 +480,8 @@ bool RkThreeCompartmentInfusionMacro::checkInputs(const IntakeEvent& _intakeEven
     bool bOK = true;
     bOK &= checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(m_V1, "The volume");
+    bOK &= checkStrictlyPositiveValue(m_V2, "The volume of the second compartment");
+    bOK &= checkStrictlyPositiveValue(m_V3, "The volume of the third compartement");
     bOK &= checkPositiveValue(m_F, "The bioavailability");
     bOK &= checkPositiveValue(m_Ka, "The absorption rate");
     bOK &= checkPositiveValue(m_Tlag, "The lag time");

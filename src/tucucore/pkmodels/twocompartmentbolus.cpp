@@ -57,6 +57,8 @@ bool TwoCompartmentBolusMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
+    m_V2 = m_V1 * m_K12 / m_K21;
+
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
     m_Alpha = (sumK + m_RootK) / 2;
@@ -111,8 +113,8 @@ bool TwoCompartmentBolusMicro::computeConcentrations(
     compute(_inResiduals, concentrations1, concentrations2);
 
     // return residuals of comp1 and comp2
-    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
-    _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
+    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1] * m_V1;
+    _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1] * m_V2;
 
     // return concentration of comp1
     _concentrations[firstCompartment].assign(concentrations1.cbegin(), concentrations1.cend());
@@ -160,8 +162,8 @@ bool TwoCompartmentBolusMicro::computeConcentration(
     }
 
     // return final residual (computation with m_Int (interval))
-    _outResiduals[firstCompartment] = concentrations1[atEndInterval];
-    _outResiduals[secondCompartment] = concentrations2[atEndInterval];
+    _outResiduals[firstCompartment] = concentrations1[atEndInterval] * m_V1;
+    _outResiduals[secondCompartment] = concentrations2[atEndInterval] * m_V2;
 
     bool bOK = checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration1 is negative.");
     bOK &= checkCondition(_outResiduals[secondCompartment] >= 0, "The concentration2 is negative.");
@@ -187,10 +189,10 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     Value cl = _parameters.getValue(ParameterId::CL);
     Value q = _parameters.getValue(ParameterId::Q);
     m_V1 = _parameters.getValue(ParameterId::V1);
-    Value v2 = _parameters.getValue(ParameterId::V2);
+    m_V2 = _parameters.getValue(ParameterId::V2);
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
-    m_K21 = q / v2;
+    m_K21 = q / m_V2;
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -220,7 +222,7 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkStrictlyPositiveValue(q, "Q");
     bOK &= checkStrictlyPositiveValue(m_V1, "V1");
-    bOK &= checkStrictlyPositiveValue(v2, "V2");
+    bOK &= checkStrictlyPositiveValue(m_V2, "V2");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
@@ -246,11 +248,11 @@ bool TwoCompartmentBolusMacroRatios::checkInputs(const IntakeEvent& _intakeEvent
     m_V1 = _parameters.getValue(ParameterId::V1);
     Value rQCL = _parameters.getValue(ParameterId::RQCL);
     Value rV2V1 = _parameters.getValue(ParameterId::RV2V1);
-    Value v2 = m_V1 * rV2V1;
+    Value m_V2 = m_V1 * rV2V1;
     Value q = cl * rQCL;
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
-    m_K21 = q / v2;
+    m_K21 = q / m_V2;
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -279,7 +281,7 @@ bool TwoCompartmentBolusMacroRatios::checkInputs(const IntakeEvent& _intakeEvent
     bool bOK = checkPositiveValue(m_D, "The dose");
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkStrictlyPositiveValue(m_V1, "V1");
-    bOK &= checkStrictlyPositiveValue(v2, "V2");
+    bOK &= checkStrictlyPositiveValue(m_V2, "V2");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");

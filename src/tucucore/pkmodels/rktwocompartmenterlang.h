@@ -96,10 +96,10 @@ namespace Core {
 template<typename Compartments_t, int from, int to>
 struct TransitComps
 {
-    static inline void init(const Residuals& _inResiduals, MultiCompConcentration& _concentrations)
+    static inline void init(const Residuals& _inResiduals, MultiCompConcentration& _concentrations, Value _volume)
     {
-        _concentrations[from] = _inResiduals[from];
-        TransitComps<Compartments_t, from + 1, to>::init(_inResiduals, _concentrations);
+        _concentrations[from] = _inResiduals[from] / _volume;
+        TransitComps<Compartments_t, from + 1, to>::init(_inResiduals, _concentrations, _volume);
     }
 
     static inline void derive(Value _ktr, const Compartments_t& _c, Compartments_t& _dcdt)
@@ -107,20 +107,34 @@ struct TransitComps
         _dcdt[from] = _ktr * _c[from - 1] - _ktr * _c[from];
         TransitComps<Compartments_t, from + 1, to>::derive(_ktr, _c, _dcdt);
     }
+
+    static inline void computeOutputResiduals(
+            Residuals& _outResiduals, MultiCompConcentrations& _concentrations, size_t _index, Value _volume)
+    {
+        _outResiduals[from] = _concentrations[from][_index] * _volume;
+        TransitComps<Compartments_t, from + 1, to>::computeOutputResiduals(
+                _outResiduals, _concentrations, _index, _volume);
+    }
 };
 
 // Terminal case
 template<typename Compartments_t, int from>
 struct TransitComps<Compartments_t, from, from>
 {
-    static inline void init(const Residuals& _inResiduals, MultiCompConcentration& _concentrations)
+    static inline void init(const Residuals& _inResiduals, MultiCompConcentration& _concentrations, Value _volume)
     {
-        _concentrations[from] = _inResiduals[from];
+        _concentrations[from] = _inResiduals[from] / _volume;
     }
 
     static inline void derive(Value _ktr, const Compartments_t& _c, Compartments_t& _dcdt)
     {
         _dcdt[from] = _ktr * _c[from - 1] - _ktr * _c[from];
+    }
+
+    static inline void computeOutputResiduals(
+            Residuals& _outResiduals, MultiCompConcentrations& _concentrations, size_t _index, Value _volume)
+    {
+        _outResiduals[from] = _concentrations[from][_index] * _volume;
     }
 };
 
@@ -200,6 +214,17 @@ public:
     }
 
 protected:
+    void computeOutputResiduals(
+            Residuals& _outResiduals, MultiCompConcentrations& _concentrations, size_t _index) override
+    {
+        _outResiduals[0] = _concentrations[0][_index] * m_V1;
+        _outResiduals[1] = _concentrations[1][_index] * m_V2;
+        _outResiduals[2] = _concentrations[2][_index] * m_V1;
+        TransitComps<std::array<Value, NbTransitCompartment + 3>, 3, 3 + NbTransitCompartment - 1>::
+                computeOutputResiduals(_outResiduals, _concentrations, _index, m_V1);
+    }
+
+
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
     {
         if (!this->checkCondition(_parameters.size() >= 6, "The number of parameters should be equal to 6.")) {
@@ -213,6 +238,8 @@ protected:
         m_K12 = _parameters.getValue(ParameterId::K12);
         m_K21 = _parameters.getValue(ParameterId::K21);
         m_F = _parameters.getValue(ParameterId::F);
+
+        m_V2 = m_V1 * m_K12 / m_K21;
 
         this->m_nbPoints = _intakeEvent.getNbPoints();
         this->m_Int = (_intakeEvent.getInterval()).toHours();
@@ -235,11 +262,11 @@ protected:
 
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
-        _concentrations[0] = _inResiduals[0];
-        _concentrations[1] = _inResiduals[1];
-        _concentrations[2] = _inResiduals[2] + m_D / m_V1;
+        _concentrations[0] = _inResiduals[0] / m_V1;
+        _concentrations[1] = _inResiduals[1] / m_V2;
+        _concentrations[2] = (_inResiduals[2] + m_D) / m_V1;
         TransitComps<std::array<Value, NbTransitCompartment + 3>, 3, 3 + NbTransitCompartment - 1>::init(
-                _inResiduals, _concentrations);
+                _inResiduals, _concentrations, m_V1);
         //        _concentrations[3] = _inResiduals[3];
         //        _concentrations[4] = _inResiduals[4];
         //        _concentrations[5] = _inResiduals[5];
@@ -250,6 +277,7 @@ protected:
     Value m_D{0.0};  /// Quantity of drug
     Value m_F{0.0};  /// bioavailability
     Value m_V1{0.0}; /// Volume of the central compartment
+    Value m_V2{0.0}; /// Volume of the peripheral compartment
     Value m_Ke{
             0.0}; /// Elimination constant rate = Cl/V where Cl is the clearance and V is the volume of the compartment
     Value m_K12{0.0}; /// Inter-compartment rate between central and peripheral
@@ -287,14 +315,14 @@ protected:
 
         this->m_D = _intakeEvent.getDose();
         this->m_V1 = _parameters.getValue(ParameterId::V1);
-        Value v2 = _parameters.getValue(ParameterId::V2);
+        this->m_V2 = _parameters.getValue(ParameterId::V2);
         this->m_Ktr = _parameters.getValue(ParameterId::Ktr);
         Value cl = _parameters.getValue(ParameterId::CL);
         Value q = _parameters.getValue(ParameterId::Q);
         this->m_F = _parameters.getValue(ParameterId::F);
 
         this->m_K12 = q / this->m_V1;
-        this->m_K21 = q / v2;
+        this->m_K21 = q / this->m_V2;
         this->m_Ke = cl / this->m_V1;
 
         this->m_nbPoints = _intakeEvent.getNbPoints();
@@ -304,6 +332,7 @@ protected:
         bool bOK = true;
         bOK &= this->checkPositiveValue(this->m_D, "The dose");
         bOK &= this->checkStrictlyPositiveValue(this->m_V1, "The volume");
+        bOK &= this->checkStrictlyPositiveValue(this->m_V2, "The volume of the second compartment");
         bOK &= this->checkStrictlyPositiveValue(this->m_F, "The bioavailability");
         bOK &= this->checkStrictlyPositiveValue(this->m_Ke, "The absorption constant");
         bOK &= this->checkStrictlyPositiveValue(this->m_Ktr, "The Ktr");

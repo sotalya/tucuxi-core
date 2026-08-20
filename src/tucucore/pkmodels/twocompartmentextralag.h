@@ -87,7 +87,8 @@ protected:
 
     Value m_D{NAN};  /// Quantity of drug
     Value m_F{NAN};  /// bioavailability
-    Value m_V1{NAN}; /// Volume1
+    Value m_V1{NAN}; /// Volume 1
+    Value m_V2{NAN}; /// Volume 2
     Value m_Ka{NAN}; /// Absorption rate constant
     Value m_Ke{
             NAN}; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1

@@ -93,8 +93,6 @@ inline void OneCompartmentExtraMicro::compute(
         const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
     Concentration resid1 = _inResiduals[0] / m_V;
-    //Concentration resid2 = _inResiduals[1] + m_F * m_D / m_V;
-    //Concentration part2 = m_Ka * resid2 / (-m_Ka + m_Ke);
     Concentration resid2 = (_inResiduals[1] + m_F * m_D) / m_V;
     Concentration part2 = m_Ka * resid2 / (-m_Ka + m_Ke);
 

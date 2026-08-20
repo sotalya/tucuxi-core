@@ -88,7 +88,7 @@ private:
 
 inline void OneCompartmentBolusMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations)
 {
-    _concentrations = (m_D / m_V + _inResiduals[0]) * exponentials(Exponentials::Ke);
+    _concentrations = (m_D + _inResiduals[0]) / m_V * exponentials(Exponentials::Ke);
 }
 
 class OneCompartmentBolusMacro : public OneCompartmentBolusMicro

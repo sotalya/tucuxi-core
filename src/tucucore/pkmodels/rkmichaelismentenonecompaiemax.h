@@ -75,6 +75,13 @@ public:
 
 
 protected:
+    void computeOutputResiduals(
+            Residuals& _outResiduals, MultiCompConcentrations& _concentrations, size_t _index) override
+    {
+        _outResiduals[0] = _concentrations[0][_index] * m_V;
+        _outResiduals[1] = _concentrations[1][_index] * m_V;
+    }
+
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
     Value m_D{NAN};    /// Drug quantity
@@ -129,8 +136,8 @@ public:
 
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
-        _concentrations[0] = _inResiduals[0];
-        _concentrations[1] = _inResiduals[1];
+        _concentrations[0] = _inResiduals[0] / m_V;
+        _concentrations[1] = _inResiduals[1] / m_V;
         // Do not forget to reinitialize the flag for delivery of the drug
         m_delivered = false;
     }
