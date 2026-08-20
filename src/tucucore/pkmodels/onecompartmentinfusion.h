@@ -54,6 +54,11 @@ public:
 
     typedef OneCompartmentInfusionExponentials Exponentials;
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return {_residuals[0] / m_V};
+    }
+
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 

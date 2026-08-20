@@ -188,6 +188,13 @@ public:
     ///
     unsigned int getNbAnalytes() const;
 
+    ///
+    /// \brief Converted amounts to concentrations for residuals
+    /// \param _residuals input residuals
+    /// \return Converted residuals
+    ///
+    virtual Residuals amountsToConcentrations(const Residuals& _residuals) const = 0;
+
 protected:
     /// \brief Allows derived classes to make some checks on input data
     /// \param _intakeEvent intake for the cycle (all cyles start with an intake)

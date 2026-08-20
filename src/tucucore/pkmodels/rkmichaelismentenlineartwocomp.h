@@ -104,6 +104,11 @@ public:
         _outResiduals[2] = _concentrations[2][_index] * m_V1;
     }
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return {_residuals[0] / m_V1, _residuals[1] / m_V2, _residuals[2] / m_V1};
+    }
+
 protected:
     Value m_D{NAN};  /// Quantity of drug
     Value m_F{1.0};  /// bioavailability

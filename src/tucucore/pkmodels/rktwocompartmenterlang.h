@@ -115,6 +115,12 @@ struct TransitComps
         TransitComps<Compartments_t, from + 1, to>::computeOutputResiduals(
                 _outResiduals, _concentrations, _index, _volume);
     }
+
+    static inline void computeAmountsToConcentrations(Residuals& _result, const Residuals& _amounts, Value _volume)
+    {
+        _result[from] = _amounts[from] / _volume;
+        TransitComps<Compartments_t, from + 1, to>::computeAmountsToConcentrations(_result, _amounts, _volume);
+    }
 };
 
 // Terminal case
@@ -135,6 +141,11 @@ struct TransitComps<Compartments_t, from, from>
             Residuals& _outResiduals, MultiCompConcentrations& _concentrations, size_t _index, Value _volume)
     {
         _outResiduals[from] = _concentrations[from][_index] * _volume;
+    }
+
+    static inline void computeAmountsToConcentrations(Residuals& _result, const Residuals& _amounts, Value _volume)
+    {
+        _result[from] = _amounts[from] / _volume;
     }
 };
 
@@ -212,6 +223,18 @@ public:
         FINAL_UNUSED_PARAMETER(_t);
         FINAL_UNUSED_PARAMETER(_concentrations);
     }
+
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        Residuals results(NbTransitCompartment + 3);
+        results[0] = _residuals[0] / m_V1;
+        results[1] = _residuals[1] / m_V2;
+        results[2] = _residuals[2] / m_V1;
+        TransitComps<std::array<Value, NbTransitCompartment + 3>, 3, 3 + NbTransitCompartment - 1>::
+                computeAmountsToConcentrations(results, _residuals, m_V1);
+        return results;
+    }
+
 
 protected:
     void computeOutputResiduals(

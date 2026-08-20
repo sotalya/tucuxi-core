@@ -63,6 +63,11 @@ public:
         FINAL_UNUSED_PARAMETER(_concentrations);
     }
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return {_residuals[0] / m_V, _residuals[1] / m_V};
+    }
+
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 

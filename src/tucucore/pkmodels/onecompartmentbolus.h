@@ -55,6 +55,12 @@ public:
     /// \return The list of required PK parameters Ids
     static std::vector<std::string> getParametersId();
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return {_residuals[0] / m_V};
+    }
+
+
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 

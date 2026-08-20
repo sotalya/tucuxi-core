@@ -61,6 +61,11 @@ public:
 
     typedef TwoCompartmentExtraLagExponentials Exponentials;
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return {_residuals[0] / m_V1, _residuals[1] / m_V2, _residuals[2] / m_V1};
+    }
+
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
