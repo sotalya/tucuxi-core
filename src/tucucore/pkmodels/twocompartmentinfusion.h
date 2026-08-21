@@ -62,6 +62,11 @@ public:
 
     typedef TwoCompartmentInfusionExponentials Exponentials;
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return {_residuals[0] / m_V1, _residuals[1] / m_V2};
+    }
+
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
@@ -88,6 +93,7 @@ protected:
 
     Value m_D{NAN};  /// Quantity of drug
     Value m_V1{NAN}; /// Volume of the compartment 1
+    Value m_V2{NAN}; /// Volume of the compartment 2
     Value m_Ke{
             NAN}; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
     Value m_K12{NAN};           /// Q/V1
@@ -103,7 +109,6 @@ protected:
 
     bool m_timeMaxHigherThanTinf{true};
     // Only used for debugging purpose
-    // Value m_V2;
     // Value m_Q;
     // Value m_Cl;
 
@@ -126,8 +131,8 @@ inline void TwoCompartmentInfusionMicro::compute(
     const Eigen::VectorXd& alphaPostInfLogV = exponentials(Exponentials::AlphaPostInf);
     const Eigen::VectorXd& betaPostInfLogV = exponentials(Exponentials::BetaPostInf);
 
-    Concentration resid1 = _inResiduals[0];
-    Concentration resid2 = _inResiduals[1];
+    Concentration resid1 = _inResiduals[0] / m_V1;
+    Concentration resid2 = _inResiduals[1] / m_V2;
 
     Value deltaD = (m_D / m_V1) / m_Tinf;
 

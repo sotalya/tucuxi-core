@@ -61,6 +61,11 @@ public:
 
     typedef TwoCompartmentExtraLagExponentials Exponentials;
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return {_residuals[0] / m_V1, _residuals[1] / m_V2, _residuals[2] / m_V1};
+    }
+
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
@@ -87,7 +92,8 @@ protected:
 
     Value m_D{NAN};  /// Quantity of drug
     Value m_F{NAN};  /// bioavailability
-    Value m_V1{NAN}; /// Volume1
+    Value m_V1{NAN}; /// Volume 1
+    Value m_V2{NAN}; /// Volume 2
     Value m_Ka{NAN}; /// Absorption rate constant
     Value m_Ke{
             NAN}; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1

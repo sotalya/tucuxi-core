@@ -54,6 +54,11 @@ public:
 
     typedef OneCompartmentInfusionExponentials Exponentials;
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return {_residuals[0] / m_V};
+    }
+
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
@@ -97,7 +102,7 @@ inline void OneCompartmentInfusionMicro::compute(
     Concentration part1 = m_D / (m_Tinf * m_Ke * m_V);
 
     // Calculate concentrations
-    _concentrations = Eigen::VectorXd::Constant(exponentials(Exponentials::Ke).size(), _inResiduals[0]);
+    _concentrations = Eigen::VectorXd::Constant(exponentials(Exponentials::Ke).size(), _inResiduals[0] / m_V);
     _concentrations = _concentrations.cwiseProduct(exponentials(Exponentials::Ke));
 
     if (_forceSize != 0) {

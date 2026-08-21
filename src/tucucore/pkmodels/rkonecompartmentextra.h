@@ -63,13 +63,25 @@ public:
         FINAL_UNUSED_PARAMETER(_concentrations);
     }
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return {_residuals[0] / m_V, _residuals[1] / m_V};
+    }
+
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
-        _concentrations[0] = _inResiduals[0];
-        _concentrations[1] = _inResiduals[1] + m_D / m_V;
+        _concentrations[0] = _inResiduals[0] / m_V;
+        _concentrations[1] = (_inResiduals[1] + m_D * m_F) / m_V;
+    }
+
+    void computeOutputResiduals(
+            Residuals& _outResiduals, MultiCompConcentrations& _concentrations, size_t _index) override
+    {
+        _outResiduals[0] = _concentrations[0][_index] * m_V;
+        _outResiduals[1] = _concentrations[1][_index] * m_V;
     }
 
     Value m_D{NAN};  /// Quantity of drug

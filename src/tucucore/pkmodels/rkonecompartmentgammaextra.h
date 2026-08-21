@@ -52,7 +52,7 @@ public:
 
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
-        _concentrations[0] = _inResiduals[0];
+        _concentrations[0] = _inResiduals[0] / m_V;
     }
 
     //    auto time = [&h] (const uint32_t index) -> const double {
@@ -75,8 +75,18 @@ public:
         FINAL_UNUSED_PARAMETER(_concentrations);
     }
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return {_residuals[0] / m_V};
+    }
 
 protected:
+    void computeOutputResiduals(
+            Residuals& _outResiduals, MultiCompConcentrations& _concentrations, size_t _index) override
+    {
+        _outResiduals[0] = _concentrations[0][_index] * m_V;
+    }
+
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
     Value m_D{NAN}; /// Quantity of drug

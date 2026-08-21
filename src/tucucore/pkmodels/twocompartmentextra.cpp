@@ -54,6 +54,7 @@ bool TwoCompartmentExtraMicro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_F = _parameters.getValue(ParameterId::F);
 
+    m_V2 = m_V1 * m_K12 / m_K21;
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
     m_Alpha = (sumK + m_RootK) / 2;
@@ -103,9 +104,9 @@ bool TwoCompartmentExtraMicro::computeConcentrations(
         return false;
     }
     // Return residuals of comp1, comp2 and comp3
-    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
-    _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
-    _outResiduals[thirdCompartment] = concentrations3[m_nbPoints - 1];
+    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1] * m_V1;
+    _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1] * m_V2;
+    _outResiduals[thirdCompartment] = concentrations3[m_nbPoints - 1] * m_V1;
 
     // Return concentrations of comp1, comp2 and comp3
     _concentrations[firstCompartment].assign(concentrations1.cbegin(), concentrations1.cend());
@@ -157,9 +158,9 @@ bool TwoCompartmentExtraMicro::computeConcentration(
     }
 
     // Return final residual of comp1, comp2 and comp3 (computation with m_Int (interval))
-    _outResiduals[firstCompartment] = concentrations1[atEndInterval];
-    _outResiduals[secondCompartment] = concentrations2[atEndInterval];
-    _outResiduals[thirdCompartment] = concentrations3[atEndInterval];
+    _outResiduals[firstCompartment] = concentrations1[atEndInterval] * m_V1;
+    _outResiduals[secondCompartment] = concentrations2[atEndInterval] * m_V2;
+    _outResiduals[thirdCompartment] = concentrations3[atEndInterval] * m_V1;
 
     bOK &= checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
     bOK &= checkCondition(_outResiduals[secondCompartment] >= 0, "The concentration is negative.");
@@ -184,13 +185,13 @@ bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     m_D = _intakeEvent.getDose();
     Value cl = _parameters.getValue(ParameterId::CL);
     Value q = _parameters.getValue(ParameterId::Q);
-    Value v2 = _parameters.getValue(ParameterId::V2);
+    m_V2 = _parameters.getValue(ParameterId::V2);
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_F = _parameters.getValue(ParameterId::F);
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
-    m_K21 = q / v2;
+    m_K21 = q / m_V2;
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
     m_Alpha = (sumK + m_RootK) / 2;
@@ -205,7 +206,7 @@ bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkStrictlyPositiveValue(q, "Q");
     bOK &= checkStrictlyPositiveValue(m_V1, "V1");
-    bOK &= checkStrictlyPositiveValue(v2, "V2");
+    bOK &= checkStrictlyPositiveValue(m_V2, "V2");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
@@ -234,11 +235,11 @@ bool TwoCompartmentExtraMacroRatios::checkInputs(const IntakeEvent& _intakeEvent
     Value rV2V1 = _parameters.getValue(ParameterId::RV2V1);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_F = _parameters.getValue(ParameterId::F);
-    Value v2 = m_V1 * rV2V1;
+    m_V2 = m_V1 * rV2V1;
     Value q = cl * rQCL;
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
-    m_K21 = q / v2;
+    m_K21 = q / m_V2;
     Value sumK = m_Ke + m_K12 + m_K21;
     m_RootK = std::sqrt((sumK * sumK) - (4 * m_K21 * m_Ke));
     m_Alpha = (sumK + m_RootK) / 2;
@@ -252,7 +253,7 @@ bool TwoCompartmentExtraMacroRatios::checkInputs(const IntakeEvent& _intakeEvent
     bOK &= checkStrictlyPositiveValue(m_F, "F");
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkStrictlyPositiveValue(m_V1, "V1");
-    bOK &= checkStrictlyPositiveValue(v2, "V2");
+    bOK &= checkStrictlyPositiveValue(m_V2, "V2");
     bOK &= checkPositiveValue(m_Alpha, "Alpha");
     bOK &= checkPositiveValue(m_Beta, "Beta");
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");

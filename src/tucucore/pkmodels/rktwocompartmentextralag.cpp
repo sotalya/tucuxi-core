@@ -59,6 +59,8 @@ bool RK4TwoCompartmentExtraLagMicro::checkInputs(const IntakeEvent& _intakeEvent
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
+    m_V2 = m_V1 * m_K12 / m_K21;
+
     if (m_Tlag < 0.0) {
         m_Tlag = 0.0;
     }
@@ -96,14 +98,14 @@ bool RK4TwoCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent
     m_D = _intakeEvent.getDose();
     Value cl = _parameters.getValue(ParameterId::CL);
     Value q = _parameters.getValue(ParameterId::Q);
-    Value v2 = _parameters.getValue(ParameterId::V2);
+    m_V2 = _parameters.getValue(ParameterId::V2);
     m_V1 = _parameters.getValue(ParameterId::V1);
     m_Ka = _parameters.getValue(ParameterId::Ka);
     m_F = _parameters.getValue(ParameterId::F);
     m_Tlag = _parameters.getValue(ParameterId::Tlag);
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
-    m_K21 = q / v2;
+    m_K21 = q / m_V2;
     m_nbPoints = static_cast<Eigen::Index>(_intakeEvent.getNbPoints());
     m_Int = (_intakeEvent.getInterval()).toHours();
 
@@ -118,7 +120,7 @@ bool RK4TwoCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent
     bOK &= checkStrictlyPositiveValue(cl, "The clearance");
     bOK &= checkStrictlyPositiveValue(q, "Q");
     bOK &= checkStrictlyPositiveValue(m_V1, "V1");
-    bOK &= checkStrictlyPositiveValue(v2, "V2");
+    bOK &= checkStrictlyPositiveValue(m_V2, "V2");
     bOK &= checkCondition(m_nbPoints > 0, "The number of points is zero or negative.");
     bOK &= checkCondition(m_Int > 0, "The interval time is negative.");
 

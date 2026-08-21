@@ -116,7 +116,20 @@ public:
         return std::exp2(_x * log2e);
     }
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return {_residuals[0] / m_V, _residuals[1] / m_V, _residuals[2] / m_V};
+    }
+
 protected:
+    void computeOutputResiduals(
+            Residuals& _outResiduals, MultiCompConcentrations& _concentrations, size_t _index) override
+    {
+        _outResiduals[0] = _concentrations[0][_index] * m_V;
+        _outResiduals[1] = _concentrations[1][_index] * m_V;
+        _outResiduals[2] = _concentrations[2][_index] * m_V;
+    }
+
     Value m_D{NAN};  /// Quantity of drug
     Value m_F{NAN};  /// bioavailability
     Value m_Ka{NAN}; /// Absorption rate constant
@@ -165,8 +178,8 @@ protected:
 
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
-        _concentrations[0] = _inResiduals[0];
-        _concentrations[1] = _inResiduals[1];
+        _concentrations[0] = _inResiduals[0] / m_V;
+        _concentrations[1] = _inResiduals[1] / m_V;
         if (m_D > 0.0) {
             if (_inResiduals[2] == 0.0) {
                 // First dose, we need an induction value
@@ -175,11 +188,11 @@ protected:
             else {
                 // Following dose
                 //_concentrations[2] = 0.0;
-                _concentrations[2] = _inResiduals[2];
+                _concentrations[2] = _inResiduals[2] / m_V;
             }
         }
         else {
-            _concentrations[2] = _inResiduals[2];
+            _concentrations[2] = _inResiduals[2] / m_V;
         }
         // TODO : Check if this induction should be set to 1 everytime,
         //        or only for the first dose
@@ -205,13 +218,13 @@ protected:
 
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
-        _concentrations[0] = _inResiduals[0] + m_D * m_F / m_V;
-        _concentrations[1] = _inResiduals[1];
+        _concentrations[0] = (_inResiduals[0] + m_D * m_F) / m_V;
+        _concentrations[1] = _inResiduals[1] / m_V;
         if (m_D > 0.0) {
-            _concentrations[2] = _inResiduals[2] + 1.0;
+            _concentrations[2] = _inResiduals[2] / m_V + 1.0;
         }
         else {
-            _concentrations[2] = _inResiduals[2];
+            _concentrations[2] = _inResiduals[2] / m_V;
         }
     }
 };

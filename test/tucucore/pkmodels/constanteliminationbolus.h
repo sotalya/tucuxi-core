@@ -186,6 +186,11 @@ protected:
     Eigen::Index m_nbPoints{}; /// Number measure points during interval
     Value m_Int{};             /// Interval (hours)
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return _residuals;
+    }
+
 private:
     typedef ConstantEliminationBolusCompartments Compartments;
 };

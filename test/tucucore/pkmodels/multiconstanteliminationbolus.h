@@ -85,6 +85,11 @@ public:
         return {"TestS0", "TestA0", "TestR0", "TestM0", "TestS1", "TestA1", "TestR1", "TestM1"};
     }
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return _residuals;
+    }
+
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override
     {

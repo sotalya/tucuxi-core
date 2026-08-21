@@ -113,7 +113,7 @@ bool OneCompartmentInfusionMicro::computeConcentrations(
     compute(_inResiduals, forcesize, concentrations);
 
     // Return final Residual
-    _outResiduals[firstCompartment] = concentrations[m_nbPoints - 1];
+    _outResiduals[firstCompartment] = concentrations[m_nbPoints - 1] * m_V;
 
     // Return concentraions of first compartment
     _concentrations[firstCompartment].assign(concentrations.cbegin(), concentrations.cend());
@@ -161,7 +161,7 @@ bool OneCompartmentInfusionMicro::computeConcentration(
     }
 
     // Return final residual (computation with m_Int (interval))
-    _outResiduals[firstCompartment] = concentrations[atEndInterval];
+    _outResiduals[firstCompartment] = concentrations[atEndInterval] * m_V;
 
     return checkCondition(_outResiduals[firstCompartment] >= 0, "The concentration is negative.");
 }

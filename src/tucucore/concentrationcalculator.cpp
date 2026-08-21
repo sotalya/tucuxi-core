@@ -294,8 +294,10 @@ ComputingStatus ConcentrationCalculator::computeConcentrationsAtSteadyState(
             }
 
             reachedSteadyState = true;
+            const auto inResidualConcentrations = intake.getCalculator()->amountsToConcentrations(inResiduals);
+            const auto outResidualConcentrations = intake.getCalculator()->amountsToConcentrations(outResiduals);
             for (unsigned int i = 0; i < residualSize; i++) {
-                if (std::fabs(inResiduals[i] - outResiduals[i]) > 0.0001) {
+                if (std::fabs(inResidualConcentrations[i] - outResidualConcentrations[i]) > 0.0001) {
                     reachedSteadyState = false;
                 }
             }

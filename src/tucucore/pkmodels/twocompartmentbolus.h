@@ -56,6 +56,11 @@ public:
 
     typedef TwoCompartmentBolusExponentials Exponentials;
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return {_residuals[0] / m_V1, _residuals[1] / m_V2};
+    }
+
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
@@ -77,7 +82,8 @@ protected:
     void compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2);
 
     Value m_D{NAN};  /// Quantity of drug
-    Value m_V1{NAN}; /// Volume
+    Value m_V1{NAN}; /// Volume of the main compartment
+    Value m_V2{NAN}; /// Volume of the second compartment
     Value m_Ke{
             NAN}; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
     Value m_K12{NAN};           /// Q/V1
@@ -95,8 +101,8 @@ private:
 inline void TwoCompartmentBolusMicro::compute(
         const Residuals& _inResiduals, Eigen::VectorXd& _concentrations1, Eigen::VectorXd& _concentrations2)
 {
-    Concentration resid1 = _inResiduals[0] + (m_D / m_V1);
-    Concentration resid2 = _inResiduals[1];
+    Concentration resid1 = (_inResiduals[0] + m_D) / m_V1;
+    Concentration resid2 = _inResiduals[1] / m_V2;
 
     // NOLINTBEGIN(readability-identifier-naming)
     Value A = ((m_K12 - m_K21 + m_Ke + m_RootK) * resid1) - (2 * m_K21 * resid2);

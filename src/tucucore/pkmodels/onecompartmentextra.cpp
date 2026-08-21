@@ -92,8 +92,8 @@ bool OneCompartmentExtraMicro::computeConcentrations(
 
     // compute concenration1 and 2
     compute(_inResiduals, concentrations1, concentrations2);
-    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1];
-    _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1];
+    _outResiduals[firstCompartment] = concentrations1[m_nbPoints - 1] * m_V;
+    _outResiduals[secondCompartment] = concentrations2[m_nbPoints - 1] * m_V;
 
     // Return concentrations of first compartment
     _concentrations[firstCompartment].assign(concentrations1.cbegin(), concentrations1.cend());
@@ -139,8 +139,8 @@ bool OneCompartmentExtraMicro::computeConcentration(
     }
 
     // Return final residual (computation with m_Int (interval))
-    _outResiduals[firstCompartment] = concentrations1[atEndInterval];
-    _outResiduals[secondCompartment] = concentrations2[atEndInterval];
+    _outResiduals[firstCompartment] = concentrations1[atEndInterval] * m_V;
+    _outResiduals[secondCompartment] = concentrations2[atEndInterval] * m_V;
 
     bool bOK = checkCondition(_outResiduals[firstCompartment] >= 0, "The final residual1 is negative.");
     bOK &= checkCondition(_outResiduals[secondCompartment] >= 0, "The final residual2 is negative.");

@@ -55,6 +55,12 @@ public:
     /// \return The list of required PK parameters Ids
     static std::vector<std::string> getParametersId();
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return {_residuals[0] / m_V};
+    }
+
+
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
@@ -88,7 +94,7 @@ private:
 
 inline void OneCompartmentBolusMicro::compute(const Residuals& _inResiduals, Eigen::VectorXd& _concentrations)
 {
-    _concentrations = (m_D / m_V + _inResiduals[0]) * exponentials(Exponentials::Ke);
+    _concentrations = (m_D + _inResiduals[0]) / m_V * exponentials(Exponentials::Ke);
 }
 
 class OneCompartmentBolusMacro : public OneCompartmentBolusMicro

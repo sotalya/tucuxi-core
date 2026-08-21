@@ -90,11 +90,27 @@ public:
         }
     }
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return {_residuals[0] / m_V1, _residuals[1] / m_V2, _residuals[2] / m_V3, _residuals[3] / m_V1};
+    }
+
 protected:
+    void computeOutputResiduals(
+            Residuals& _outResiduals, MultiCompConcentrations& _concentrations, size_t _index) override
+    {
+        _outResiduals[0] = _concentrations[0][_index] * m_V1;
+        _outResiduals[1] = _concentrations[1][_index] * m_V2;
+        _outResiduals[2] = _concentrations[2][_index] * m_V3;
+        _outResiduals[3] = _concentrations[3][_index] * m_V1;
+    }
+
     Value m_D{NAN};  /// Quantity of drug
     Value m_F{1.0};  /// bioavailability
     Value m_Ka{0.0}; /// Absorption rate constant
     Value m_V1{NAN}; /// Volume of the compartment
+    Value m_V2{NAN}; /// Volume of the second compartment
+    Value m_V3{NAN}; /// Volume of the third compartment
     Value m_Ke{NAN};
     Value m_K12{NAN};
     Value m_K21{NAN};
@@ -134,10 +150,10 @@ protected:
 
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
-        _concentrations[0] = _inResiduals[0];
-        _concentrations[1] = _inResiduals[1];
-        _concentrations[2] = _inResiduals[2];
-        _concentrations[3] = _inResiduals[3] + m_D / m_V1 * m_F;
+        _concentrations[0] = _inResiduals[0] / m_V1;
+        _concentrations[1] = _inResiduals[1] / m_V2;
+        _concentrations[2] = _inResiduals[2] / m_V3;
+        _concentrations[3] = (_inResiduals[3] + m_D * m_F) / m_V1;
     }
 };
 
@@ -161,10 +177,10 @@ protected:
 
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
-        _concentrations[0] = _inResiduals[0];
-        _concentrations[1] = _inResiduals[1];
-        _concentrations[2] = _inResiduals[2];
-        _concentrations[3] = _inResiduals[3];
+        _concentrations[0] = _inResiduals[0] / m_V1;
+        _concentrations[1] = _inResiduals[1] / m_V2;
+        _concentrations[2] = _inResiduals[2] / m_V3;
+        _concentrations[3] = _inResiduals[3] / m_V1;
         // Do not forget to reinitialize the flag for delivery of the drug
         m_delivered = false;
     }
@@ -190,10 +206,10 @@ protected:
 
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
-        _concentrations[0] = _inResiduals[0] + m_D / m_V1;
-        _concentrations[1] = _inResiduals[1];
-        _concentrations[2] = _inResiduals[2];
-        _concentrations[3] = _inResiduals[3];
+        _concentrations[0] = (_inResiduals[0] + m_D) / m_V1;
+        _concentrations[1] = _inResiduals[1] / m_V2;
+        _concentrations[2] = _inResiduals[2] / m_V3;
+        _concentrations[3] = _inResiduals[3] / m_V1;
     }
 };
 
@@ -217,10 +233,10 @@ protected:
     void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) override
     {
         m_infusionRate = m_D / m_V1 / m_Tinf;
-        _concentrations[0] = _inResiduals[0];
-        _concentrations[1] = _inResiduals[1];
-        _concentrations[2] = _inResiduals[2];
-        _concentrations[3] = _inResiduals[3];
+        _concentrations[0] = _inResiduals[0] / m_V1;
+        _concentrations[1] = _inResiduals[1] / m_V2;
+        _concentrations[2] = _inResiduals[2] / m_V3;
+        _concentrations[3] = _inResiduals[3] / m_V1;
     }
 };
 

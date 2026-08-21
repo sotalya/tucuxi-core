@@ -59,6 +59,11 @@ public:
 
     typedef ThreeCompartmentExtraExponentials Exponentials;
 
+    Residuals amountsToConcentrations(const Residuals& _residuals) const override
+    {
+        return {_residuals[0] / m_V1, _residuals[1] / m_V2, _residuals[2] / m_V3, _residuals[3] / m_V1};
+    }
+
 protected:
     bool checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters) override;
 
@@ -86,6 +91,8 @@ protected:
     Value m_D{NAN};  /// Quantity of drug
     Value m_F{NAN};  /// ???
     Value m_V1{NAN}; /// Volume of the compartment 1
+    Value m_V2{NAN}; /// Volume of the compartment 2
+    Value m_V3{NAN}; /// Volume of the compartment 3
     Value m_Ka{NAN}; /// Absorption rate constant
     Value m_Ke{
             NAN}; /// Elimination constant rate = Cl/V1 where Cl is the clearance and V1 is the volume of the compartment 1
@@ -109,9 +116,9 @@ inline void ThreeCompartmentExtraMicro::compute(
         Value& _concentrations2,
         Value& _concentrations3)
 {
-    Concentration resid1 = _inResiduals[0] + m_F * m_D / m_V1;
-    Concentration resid2 = _inResiduals[1];
-    Concentration resid3 = _inResiduals[2];
+    Concentration resid1 = (_inResiduals[0] + m_F * m_D) / m_V1;
+    Concentration resid2 = _inResiduals[1] / m_V2;
+    Concentration resid3 = _inResiduals[2] / m_V3;
 
     // NOLINTBEGIN(readability-identifier-naming)
     Value A = 1 / m_V1 * (m_Ka / (m_Ka - m_Alpha)) * (m_K21 - m_Alpha) * (m_K31 - m_Alpha) / (m_Alpha - m_Beta)

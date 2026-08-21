@@ -126,7 +126,6 @@ protected:
     ///
     virtual void initConcentrations(const Residuals& _inResiduals, MultiCompConcentration& _concentrations) = 0;
 
-
     typedef IntakeCalculatorSingleConcentrations SingleConcentrations;
 
     std::thread::id m_lastThreadId;
@@ -154,6 +153,21 @@ public:
         return ResidualSize;
     }
 
+    ///
+    /// \brief Computes the output amount residuals
+    /// \param _outResiduals The output residuals (amounts)
+    /// \param _concentrations The complete set of computed concentrations
+    /// \param _index The index of the concentrations to be used
+    ///
+    /// This function computes the residual amounts from the computed concentrations.
+    /// It is abstract, as only the intake calculators have the knowledge of how to
+    /// compute amounts from concentrations.
+    /// We implemented that as a was of having variable volumes. Indeed, if a volume changes
+    /// from one intake to the next, the concentrations would have to change.
+    ///
+    virtual void computeOutputResiduals(
+            Residuals& _outResiduals, MultiCompConcentrations& _concentrations, size_t _index) = 0;
+
 protected:
     typedef std::array<Value, ResidualSize> Compartments_t;
 
@@ -180,9 +194,7 @@ protected:
         computeUnroll(_times, _inResiduals, concentrations);
 
         // Get the output residuals
-        for (unsigned int i = 0; i < ResidualSize; i++) {
-            _outResiduals[i] = concentrations[i][m_nbPoints - 1];
-        }
+        computeOutputResiduals(_outResiduals, concentrations, m_nbPoints - 1);
 
         // Return concentrations of first compartment
         _concentrations[0].assign(concentrations[0].cbegin(), concentrations[0].cend());
@@ -254,9 +266,7 @@ protected:
         }
 
         // Return final residual (computation with m_Int (interval))
-        for (size_t i = 0; i < ResidualSize; i++) {
-            _outResiduals[i] = concentrations[i][atEndInterval];
-        }
+        computeOutputResiduals(_outResiduals, concentrations, atEndInterval);
 
         // Checks that the output residuals are positive
         bool bOk = true;
