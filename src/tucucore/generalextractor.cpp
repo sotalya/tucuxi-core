@@ -564,7 +564,12 @@ ComputingStatus GeneralExtractor::generalExtractions(
         // Here we choose the Mix iterator or the single intake operator
         ParameterDefinitionIterator it = (formulationsAndRoutes.size() > 1) ? itMix : itSingle;
 */
-        ParametersExtractor parameterExtractor(_covariatesSeries, itMix, fantomStart, _traits->getEnd());
+        ParametersExtractor parameterExtractor(
+                _covariatesSeries,
+                itMix,
+                fantomStart,
+                _traits->getEnd(),
+                _traits->getComputingOption().retrieveCovariates() == RetrieveCovariatesOption::RetrieveCovariates);
 
         ComputingStatus parametersExtractionResult;
 

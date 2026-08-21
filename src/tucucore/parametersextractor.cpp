@@ -37,8 +37,9 @@ ParametersExtractor::ParametersExtractor(
         const CovariateSeries& _covariates,
         Tucuxi::Common::Iterator<const ParameterDefinition*>& _paramsIterator,
         DateTime _start,
-        DateTime _end)
-    : m_paramsIterator{_paramsIterator}, m_start{_start}, m_end{_end}
+        DateTime _end,
+        bool _retrieveCovariates)
+    : m_paramsIterator{_paramsIterator}, m_start{_start}, m_end{_end}, m_retrieveCovariates(_retrieveCovariates)
 {
     // Check that start time is past end time.
     if (m_start > m_end) {
@@ -260,16 +261,17 @@ ComputingStatus ParametersExtractor::extract(ParameterSetSeries& _series)
             }
         }
 
-        std::vector<SimpleCovariate> covariateValues;
+        if (m_retrieveCovariates) {
+            std::vector<SimpleCovariate> covariateValues;
 
-        // Get the covariate values used here:
-        for (const auto& cov : covariateIds) {
-            double value = 0.0;
-            m_ogm.getValue(cov, value);
-            covariateValues.push_back({cov, value});
+            // Get the covariate values used here:
+            for (const auto& cov : covariateIds) {
+                double value = 0.0;
+                m_ogm.getValue(cov, value);
+                covariateValues.push_back({cov, value});
+            }
+            pSetEvent.m_covariates = covariateValues;
         }
-        pSetEvent.m_covariates = covariateValues;
-
 
         // Add the parameter set event to the series of events.
         _series.addParameterSetEvent(pSetEvent);
@@ -298,7 +300,9 @@ ComputingStatus ParametersExtractor::buildFullSet(
             it++;
         }
 
-        current.m_covariates = _inputSeries.m_parameterSets[i].m_covariates;
+        if (m_retrieveCovariates) {
+            current.m_covariates = _inputSeries.m_parameterSets[i].m_covariates;
+        }
 
         // Add the new event to the output series
         _outputSeries.addParameterSetEvent(current);

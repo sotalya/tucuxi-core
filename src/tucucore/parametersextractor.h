@@ -49,6 +49,7 @@ public:
     /// \param _paramsIterator An iterator on the list of parameter definitions.
     /// \param _start Start time of the considered interval.
     /// \param _end End time of the considered interval.
+    /// \param _retrieveCovariates Indicates if it shall retrieve the covariates together with the parameters
     /// \pre _start <= _end
     /// \pre No duplicates in _covariates.
     /// \pre No duplicates in _drugParameters.
@@ -57,7 +58,8 @@ public:
             const CovariateSeries& _covariates,
             Tucuxi::Common::Iterator<const ParameterDefinition*>& _paramsIterator,
             DateTime _start,
-            DateTime _end);
+            DateTime _end,
+            bool _retrieveCovariates = false);
 
     /// \brief Extract parameter set events in a given interval from covariate events and parameter definitions.
     /// The events will contain only the modified parameters. Therefore, in order to get events where every parameter
@@ -106,6 +108,9 @@ private:
 
     /// \brief Operable Graph Manager, in charge of performing all the computations needed to derive parameter values.
     OperableGraphManager m_ogm;
+
+    /// \brief Indicates if covariates should be retrieved together with the parameters.
+    bool m_retrieveCovariates;
 };
 
 } // namespace Core
