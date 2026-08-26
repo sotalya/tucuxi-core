@@ -96,6 +96,11 @@ public:
         return m_definition.getId();
     }
 
+    ParameterId::Enum getParameterPureId() const
+    {
+        return m_definition.getParameterId();
+    }
+
     // Make the test class friend, as this will allow us to manually check the available events.
     friend TestParameterExtractor;
 

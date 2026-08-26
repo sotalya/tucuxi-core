@@ -34,6 +34,7 @@
 #include "tucucore/invariants.h"
 #include "tucucore/operablegraphmanager.h"
 #include "tucucore/operation.h"
+#include "tucucore/parameterids.h"
 
 
 namespace Tucuxi {
@@ -175,6 +176,11 @@ public:
         return m_unit;
     }
 
+    inline ParameterId::Enum getParameterId() const
+    {
+        return m_parameterId;
+    }
+
     INVARIANTS(INVARIANT(Invariants::INV_PARAMETERDEFINITION_0001, (!m_id.empty()), "A parameter has no Id"); INVARIANT(
                        Invariants::INV_PARAMETERDEFINITION_0002,
                        (m_variability != nullptr),
@@ -190,6 +196,8 @@ private:
 
     /// \brief Operation to validate the value of the covariate
     std::unique_ptr<Operation> m_validation;
+
+    ParameterId::Enum m_parameterId;
 };
 
 /// \brief A list of parameters

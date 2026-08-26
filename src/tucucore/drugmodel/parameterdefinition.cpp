@@ -27,18 +27,21 @@ namespace Core {
 
 ParameterDefinition::ParameterDefinition(
         const std::string& _id, Value _value, std::unique_ptr<ParameterVariability> _variabilityType)
-    : PopulationValue(_id, _value, nullptr), m_variability(std::move(_variabilityType))
+    : PopulationValue(_id, _value, nullptr), m_variability(std::move(_variabilityType)),
+      m_parameterId(ParameterId::fromString(_id))
 {
 }
 
-ParameterDefinition::ParameterDefinition(const std::string& _id, Value _value) : PopulationValue(_id, _value, nullptr)
+ParameterDefinition::ParameterDefinition(const std::string& _id, Value _value)
+    : PopulationValue(_id, _value, nullptr), m_parameterId(ParameterId::fromString(_id))
 {
 }
 
 
 ParameterDefinition::ParameterDefinition(
         const std::string& _id, Value _value, ParameterVariabilityType _variabilityType)
-    : PopulationValue(_id, _value, nullptr), m_variability(std::make_unique<ParameterVariability>(_variabilityType))
+    : PopulationValue(_id, _value, nullptr), m_variability(std::make_unique<ParameterVariability>(_variabilityType)),
+      m_parameterId(ParameterId::fromString(_id))
 {
 }
 
@@ -47,7 +50,8 @@ ParameterDefinition::ParameterDefinition(
         Value _value,
         std::unique_ptr<Operation> _operation,
         std::unique_ptr<ParameterVariability> _variabilityType)
-    : PopulationValue(_name, _value, std::move(_operation)), m_variability(std::move(_variabilityType))
+    : PopulationValue(_name, _value, std::move(_operation)), m_variability(std::move(_variabilityType)),
+      m_parameterId(ParameterId::fromString(_name))
 {
 }
 
@@ -57,7 +61,8 @@ ParameterDefinition::ParameterDefinition(
         std::unique_ptr<Operation> _operation,
         ParameterVariabilityType _variabilityType)
     : PopulationValue(_name, _value, std::move(_operation)),
-      m_variability(std::make_unique<ParameterVariability>(_variabilityType))
+      m_variability(std::make_unique<ParameterVariability>(_variabilityType)),
+      m_parameterId(ParameterId::fromString(_name))
 {
 }
 
