@@ -234,7 +234,7 @@ bool TwoCompartmentBolusMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
 
 std::vector<std::string> TwoCompartmentBolusMacroRatios::getParametersId()
 {
-    return {"CL", "V1", "V2"};
+    return {"CL", "V1", "RQCL", "RV2V1"};
 }
 
 bool TwoCompartmentBolusMacroRatios::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)

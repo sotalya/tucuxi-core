@@ -219,7 +219,7 @@ bool TwoCompartmentExtraMacro::checkInputs(const IntakeEvent& _intakeEvent, cons
 
 std::vector<std::string> TwoCompartmentExtraMacroRatios::getParametersId()
 {
-    return {"CL", "V1", "V2", "Ka", "F"};
+    return {"CL", "V1", "Ka", "F", "RQCL", "RV2V1"};
 }
 
 bool TwoCompartmentExtraMacroRatios::checkInputs(const IntakeEvent& _intakeEvent, const ParameterSetEvent& _parameters)

@@ -118,6 +118,16 @@ public:
         return m_compartmentInfos;
     }
 
+    ///
+    /// \brief Checks the lists of parameter IDs and throw an exception in case of error
+    ///
+    /// This function is called when adding a parameter ID list for a new absorption model.
+    /// It ensures the IDs are unique and throws an exception if not.
+    /// If an exception is thrown it means the C++ code should be modified, and it would never
+    /// occur because of user inputs.
+    ///
+    void checkParameterList() const;
+
 protected:
     /// \brief Identifier of the PkModel.
     std::string m_pkModelId;

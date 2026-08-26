@@ -80,11 +80,41 @@ bool PkModel::addIntakeIntervalCalculatorFactory(
     return rc.second;
 }
 
+void checkSingleParameterList(const std::vector<std::string>& _parameterList)
+{
+    auto size = _parameterList.size();
+    for (int i = 0; i < size; i++) {
+        //        std::cout << _parameterList[i] << ";";
+        for (int j = i + 1; j < size; j++) {
+            if (ParameterId::fromString(_parameterList[i]) == ParameterId::fromString(_parameterList[j])) {
+                throw std::runtime_error("Error with a PK model parameter list");
+            }
+        }
+    }
+    //    std::cout << '\n';
+}
+
+void PkModel::checkParameterList() const
+{
+    std::vector<std::string> pList;
+    for (const auto& paramList : m_parameters) {
+        const auto list = paramList.second;
+        for (int i = 0; i < list.size(); i++) {
+            if (std::find(pList.begin(), pList.end(), list[i]) == pList.end()) {
+                pList.push_back(list[i]);
+            }
+        }
+    }
+    checkSingleParameterList(pList);
+}
 
 bool PkModel::addParameterList(AbsorptionModel _route, std::vector<std::string> _parameterList)
 {
+    checkParameterList();
+    // generalCheckParameterList(_parameterList);
     std::pair<std::map<AbsorptionModel, std::vector<std::string>>::iterator, bool> rc;
     rc = m_parameters.insert(std::make_pair(_route, std::move(_parameterList)));
+    checkParameterList();
     return rc.second;
 }
 

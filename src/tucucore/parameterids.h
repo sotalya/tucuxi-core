@@ -32,21 +32,28 @@ namespace Core {
 class ParameterId
 {
 public:
+// Here we have an unoptimized version with a unique ID per parameter.
+// It ends up with a big array of indexes for parameters.
+// Therefore the optimized version reduces the size of the array.
+// It however ends up with non-unique IDs, which is not problematic.
+// We keep both options, just in case.
+#ifdef TUCU_UNOPTIMIZED_PARAMETERID
     static const int size = 48; // NOLINT(readability-identifier-naming)
+
     enum Enum
     {
-        V = 0,
+        CL = 0,
+        F,
+        Ka,
+        V,
         V1,
         V2,
         V3,
-        CL,
-        Ka,
         Ke,
         K12,
         K21,
         K13,
         K31,
-        F,
         Q,
         Q2,
         Q3,
@@ -84,6 +91,121 @@ public:
         Tfs,
         Unknown
     };
+
+#else
+    static const int size = 15; // NOLINT(readability-identifier-naming)
+    enum Enum
+    {
+        F = 0,
+        TestR = 0,
+        TestS0 = 0,
+        Ka = 1,
+        Ktr = 1,
+        TestA = 1,
+        TestT = 1,
+        TestA0 = 1,
+        RQCL = 2,
+        K13 = 2,
+        V3 = 2,
+        Km = 2,
+        TestS = 2,
+        TestR0 = 2,
+        RV2V1 = 3,
+        K31 = 3,
+        Q2 = 3,
+        Vmax = 3,
+        TestM = 3,
+        TestM0 = 3,
+        Tlag = 4,
+        Kenz = 4,
+        TestS1 = 4,
+        V = 5,
+        V1 = 5,
+        TestA1 = 5,
+        CL = 6,
+        Ke = 6,
+        Emax = 6,
+        TestR1 = 6,
+        V2 = 7,
+        K12 = 7,
+        T50 = 7,
+        ECmid = 7,
+        TestM1 = 7,
+        Q = 8,
+        K21 = 8,
+        Q3 = 8,
+        Tfs = 8,
+        EDmid = 8,
+        DoseMid = 9,
+        Fmax = 10,
+        NN = 11,
+        MTT = 12,
+        AllmCL = 13,
+        a = 7,
+        b = 8,
+        Unknown = 14
+        /*
+        F = 0,
+        RQCL = 0,
+        TestR = 0,
+        TestS0 = 0,
+
+        Ka = 1,
+        RV2V1 = 1,
+        Ktr = 1,
+        TestA = 1,
+        TestT = 1,
+        TestA0 = 1,
+
+        K13 = 2,
+        V3 = 2,
+        Km = 2,
+        TestS = 2,
+        TestR0 = 2,
+
+        K31 = 3,
+        Q2 = 3,
+        Vmax = 3,
+        TestM = 3,
+        TestM0 = 3,
+
+        Tlag = 4,
+        Kenz = 4,
+        TestS1 = 4,
+
+        V = 5,
+        V1 = 5,
+        TestA1 = 5,
+
+        CL = 6,
+        Ke = 6,
+        Emax = 6,
+        TestR1 = 6,
+
+        V2 = 7,
+        K12 = 7,
+        T50 = 7,
+        ECmid = 7,
+        TestM1 = 7,
+
+        Q = 8,
+        K21 = 8,
+        Q3 = 8,
+        Tfs = 8,
+        EDmid = 8,
+
+        DoseMid = 9,
+        Fmax = 10,
+        NN = 11,
+        MTT = 12,
+        AllmCL = 13,
+
+        a = 7,
+        b = 8,
+        Unknown = -1
+*/
+    };
+#endif // TUCU_UNOPTIMIZED_PARAMETERID
 
     static Enum fromString(const std::string& _id)
     {

@@ -606,7 +606,7 @@ bool TwoCompartmentExtraLagMacro::checkInputs(const IntakeEvent& _intakeEvent, c
 
 std::vector<std::string> TwoCompartmentExtraLagMacroRatios::getParametersId()
 {
-    return {"CL", "V1", "V2", "Ka", "F", "Tlag"};
+    return {"CL", "V1", "Ka", "F", "Tlag", "RQCL", "RV2V1"};
 }
 
 bool TwoCompartmentExtraLagMacroRatios::checkInputs(
