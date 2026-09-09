@@ -231,10 +231,9 @@ ComputingTraitPercentiles::ComputingTraitPercentiles(
         PercentileRanks _ranks,
         double _nbPointsPerHour,
         ComputingOption _computingOption,
-        ComputingAborter* _aborter,
-        size_t _nbPatients)
+        ComputingAborter* _aborter)
     : ComputingTraitStandard(std::move(_id), _start, _end, _nbPointsPerHour, _computingOption),
-      m_ranks(std::move(_ranks)), m_aborter(_aborter), m_nbPatients(_nbPatients)
+      m_ranks(std::move(_ranks)), m_aborter(_aborter)
 {
 }
 
