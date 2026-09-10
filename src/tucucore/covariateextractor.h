@@ -90,6 +90,10 @@ public:
     /// \param _start Start time of the considered interval.
     /// \param _end End time of the considered interval.
     /// \param _dosageHistory Dosage history (used to get the start of treatment date).
+    /// \param _intakes Intake series of the treatment. Interpolated covariates are
+    ///        sampled at the intake interval boundaries (the refresh period, if
+    ///        present in the drug file, is ignored). May be left empty, in which
+    ///        case interpolated covariates only get a value at the start.
     /// \pre FORALL(d : _defaults) { d != nullptr }
     /// \pre FORALL(p : _patientCovariates) { p != nullptr }
     /// \pre _start <= _end
@@ -99,7 +103,8 @@ public:
             const PatientVariates& _patientCovariates,
             const DateTime& _start,
             const DateTime& _end,
-            const DosageHistory& _dosageHistory = DosageHistory());
+            const DosageHistory& _dosageHistory = DosageHistory(),
+            IntakeSeries const& _intakes = IntakeSeries());
 
     /// \brief Default destructor for the Covariate Extractor.
     ~CovariateExtractor() override = default;
@@ -169,6 +174,19 @@ private:
     /// If the covariate is not interpolated, then its first observation is replaced by an observation at the beginning
     /// of the interval.
     void sortPatientVariates();
+
+    /// \brief Return the end of the dosing interval that contains the given time.
+    /// This is the first intake boundary strictly after _time (an interval start
+    /// or an interval end). Interpolated covariates are evaluated at this instant,
+    /// so the value used over an interval is the one at the interval's end.
+    /// \param _time Time whose containing interval end is requested.
+    /// \return The next intake boundary after _time, or m_end if there is none.
+    DateTime nextIntakeBoundary(DateTime const& _time) const;
+
+    /// \brief Sorted intake interval boundaries (starts and ends) of the treatment.
+    /// Used to sample interpolated covariates at the dosing intervals instead of
+    /// at a fixed refresh period.
+    std::vector<DateTime> m_intakeBoundaries;
 
     /// \brief Flag that marks that a birth date has been found.
     bool m_hasBirthDate;

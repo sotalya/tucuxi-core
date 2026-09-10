@@ -69,6 +69,27 @@ static void printCovariateSeries(const CovariateSeries& _series)
     std::cerr << "-----------------------------------------\n";
 }
 
+// Build a series of daily intakes starting at _start, used to drive the
+// interval-aligned covariate sampling.
+static IntakeSeries makeDailyIntakes(Tucuxi::Common::DateTime const& _start, int const _nbDays)
+{
+    IntakeSeries intakes;
+    for (int day = 0; day < _nbDays; ++day) {
+        Tucuxi::Common::DateTime intakeTime = _start;
+        intakeTime.addDays(day);
+        intakes.push_back(IntakeEvent(
+                intakeTime,
+                Tucuxi::Common::Duration(),
+                100.0,
+                Unit("mg"),
+                Tucuxi::Common::days(1),
+                FormulationAndRoute(),
+                Tucuxi::Common::Duration(),
+                1));
+    }
+    return intakes;
+}
+
 class TestCovariateExtractor
 {
 public:
@@ -1295,11 +1316,15 @@ TEST(Core_TestCovariateExtractor, CE_collectRefreshIntervals)
         ADD_CDEF_W_R(B2, 2.0, Standard, Double, Linear, Tucuxi::Common::days(2), cDefinitions);
         ADD_CDEF_W_R(C3, 3.0, Standard, Double, Linear, Tucuxi::Common::days(3), cDefinitions);
 
+        // Daily intakes over the window.
+        IntakeSeries intakes = makeDailyIntakes(DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), 6);
         CovariateExtractor extractor(
                 cDefinitions,
                 pVariates,
                 DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
-                DATE_TIME_NO_VAR(2017, 8, 23, 14, 0, 0));
+                DATE_TIME_NO_VAR(2017, 8, 23, 14, 0, 0),
+                DosageHistory(),
+                intakes);
 
         TestCovariateExtractor::test_sortPatientVariates(&extractor);
 
@@ -1330,11 +1355,15 @@ TEST(Core_TestCovariateExtractor, CE_collectRefreshIntervals)
         ADD_EXPR3_CDEF(op1, "A1 + B2 + C3", "A1", "B2", "C3", cDefinitions);
         ADD_EXPR3_CDEF(op2, "A1 + B2 * C3", "A1", "B2", "C3", cDefinitions);
 
+        // Daily intakes over the window.
+        IntakeSeries intakes = makeDailyIntakes(DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), 6);
         CovariateExtractor extractor(
                 cDefinitions,
                 pVariates,
                 DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
-                DATE_TIME_NO_VAR(2017, 8, 23, 14, 0, 0));
+                DATE_TIME_NO_VAR(2017, 8, 23, 14, 0, 0),
+                DosageHistory(),
+                intakes);
         TestCovariateExtractor::test_sortPatientVariates(&extractor);
 
         std::map<DateTime, std::vector<std::string>> refreshMap;
@@ -1365,11 +1394,15 @@ TEST(Core_TestCovariateExtractor, CE_collectRefreshIntervals)
         ADD_PV_NO_UNIT(A1, 1.2, Double, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), pVariates);
         ADD_PV_NO_UNIT(B2, 2.1, Double, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), pVariates);
 
+        // Daily intakes over the window.
+        IntakeSeries intakes = makeDailyIntakes(DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), 6);
         CovariateExtractor extractor(
                 cDefinitions,
                 pVariates,
                 DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
-                DATE_TIME_NO_VAR(2017, 8, 23, 14, 0, 0));
+                DATE_TIME_NO_VAR(2017, 8, 23, 14, 0, 0),
+                DosageHistory(),
+                intakes);
         TestCovariateExtractor::test_sortPatientVariates(&extractor);
 
         std::map<DateTime, std::vector<std::string>> refreshMap;
@@ -1419,18 +1452,22 @@ TEST(Core_TestCovariateExtractor, CE_collectRefreshIntervals)
         ADD_PV_NO_UNIT(H8, 8.1, Double, DATE_TIME_NO_VAR(2017, 8, 16, 14, 0, 0), pVariates);
         ADD_PV_NO_UNIT(H8, 8.2, Double, DATE_TIME_NO_VAR(2017, 8, 26, 14, 0, 0), pVariates);
 
+        // Daily intakes over the window.
+        IntakeSeries intakes = makeDailyIntakes(DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0), 6);
         CovariateExtractor extractor(
                 cDefinitions,
                 pVariates,
                 DATE_TIME_NO_VAR(2017, 8, 17, 14, 0, 0),
-                DATE_TIME_NO_VAR(2017, 8, 23, 14, 0, 0));
+                DATE_TIME_NO_VAR(2017, 8, 23, 14, 0, 0),
+                DosageHistory(),
+                intakes);
         TestCovariateExtractor::test_sortPatientVariates(&extractor);
 
         std::map<DateTime, std::vector<std::string>> refreshMap;
         TestCovariateExtractor::test_collectRefreshIntervals(refreshMap, &extractor);
 
-        ASSERT_EQ(refreshMap.size(), static_cast<size_t>(9));
-        // At each date we are supposed to have the three of them, since an update of one will have to trigger the
+        ASSERT_EQ(refreshMap.size(), static_cast<size_t>(7));
+        // At each date we are supposed to have the eight of them, since an update of one will have to trigger the
         // update of the others.
         for (unsigned int i = 17; i <= 23; ++i) {
             ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 8, i, 14, 0, 0)].size(), static_cast<size_t>(8));
@@ -1443,28 +1480,6 @@ TEST(Core_TestCovariateExtractor, CE_collectRefreshIntervals)
             CHECK_REFRESH(G7, DATE_TIME_NO_VAR(2017, 8, i, 14, 0, 0), refreshMap);
             CHECK_REFRESH(H8, DATE_TIME_NO_VAR(2017, 8, i, 14, 0, 0), refreshMap);
         }
-
-        // 21.08.2017 @ 12h32
-        ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0)].size(), static_cast<size_t>(8));
-        CHECK_REFRESH(A1, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), refreshMap);
-        CHECK_REFRESH(B2, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), refreshMap);
-        CHECK_REFRESH(C3, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), refreshMap);
-        CHECK_REFRESH(D4, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), refreshMap);
-        CHECK_REFRESH(E5, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), refreshMap);
-        CHECK_REFRESH(F6, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), refreshMap);
-        CHECK_REFRESH(G7, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), refreshMap);
-        CHECK_REFRESH(H8, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), refreshMap);
-
-        // 23.08.2017 @ 12h32
-        ASSERT_EQ(refreshMap[DATE_TIME_NO_VAR(2017, 8, 23, 12, 32, 0)].size(), static_cast<size_t>(8));
-        CHECK_REFRESH(A1, DATE_TIME_NO_VAR(2017, 8, 23, 12, 32, 0), refreshMap);
-        CHECK_REFRESH(B2, DATE_TIME_NO_VAR(2017, 8, 23, 12, 32, 0), refreshMap);
-        CHECK_REFRESH(C3, DATE_TIME_NO_VAR(2017, 8, 23, 12, 32, 0), refreshMap);
-        CHECK_REFRESH(D4, DATE_TIME_NO_VAR(2017, 8, 23, 12, 32, 0), refreshMap);
-        CHECK_REFRESH(E5, DATE_TIME_NO_VAR(2017, 8, 23, 12, 32, 0), refreshMap);
-        CHECK_REFRESH(F6, DATE_TIME_NO_VAR(2017, 8, 23, 12, 32, 0), refreshMap);
-        CHECK_REFRESH(G7, DATE_TIME_NO_VAR(2017, 8, 23, 12, 32, 0), refreshMap);
-        CHECK_REFRESH(H8, DATE_TIME_NO_VAR(2017, 8, 23, 12, 32, 0), refreshMap);
     }
 
     // Check the refresh times for ages -- without birth date.
@@ -2318,31 +2333,32 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test1_0)
     pVariates3.push_back(std::move(patientWeight2));
     pVariates3.push_back(std::move(patientWeight3));
 
-    CovariateExtractor extractor3(cDefinitions, pVariates3, startDate, endDate);
+    IntakeSeries intakes = makeDailyIntakes(startDate, 5);
+    CovariateExtractor extractor3(cDefinitions, pVariates3, startDate, endDate, DosageHistory(), intakes);
     series.clear();
     rc = extractor3.extract(series);
 
     //                printCovariateSeries(series);
 
+    // Weight is sampled at the daily intake boundaries.
     ASSERT_EQ(series.size(), static_cast<size_t>(12));
     ASSERT_EQ(rc, ComputingStatus::Ok);
 
     ASSERT_TRUE(covariateEventIsPresent("Gist", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 1, series));
     ASSERT_TRUE(covariateEventIsPresent("IsMale", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 1, series));
-    // Since the first measure is past the beginning of the interval, we expect a value
-    // at the beginning of the interval (the refresh period would have put this value one
-    // day before, but that could have been weird).
+    // First measure is past the start, so the start carries the value at the end
+    // of the first interval.
     ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 3.8, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 3.89583, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 3.99583, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 4.14167, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 4.25, series));
-    // Computed value at the beginning of the interval.
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 3.89583, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 3.99583, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 4.14167, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 4.25, series));
+    // Computed from IsMale and Weight, at the same instants.
     ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 16.9, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 16.9479, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 16.9979, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 17.0708, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 17.125, series));
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 16.9479, series));
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 16.9979, series));
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 17.0708, series));
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 17.125, series));
 }
 
 TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_0)
@@ -2421,36 +2437,37 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_1)
     const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
     const DATE_TIME_VAR(endDate, 2017, 8, 17, 21, 0, 0);
 
-    CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate);
+    IntakeSeries intakes = makeDailyIntakes(startDate, 5);
+    CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate, DosageHistory(), intakes);
     CovariateSeries series;
     ComputingStatus rc;
     rc = extractor.extract(series);
 
     //        printCovariateSeries(series);
 
-    ASSERT_EQ(series.size(), static_cast<size_t>(15));
+    ASSERT_EQ(series.size(), static_cast<size_t>(16));
     ASSERT_EQ(rc, ComputingStatus::Ok);
-    // First measure propagated back to the start of the interval.
+    // Gist: first measure back to the start, second at its own instant.
     ASSERT_TRUE(covariateEventIsPresent("Gist", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 1, series));
-    // Second measure at the moment it is performed.
     ASSERT_TRUE(covariateEventIsPresent("Gist", DATE_TIME_NO_VAR(2017, 8, 13, 6, 32, 0), 0, series));
-    // Weight, interpolated at the moment the gist changed.
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 6.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 6, 32, 0), 22.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0), 30.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 15, 14, 32, 0), 40.0, series));
     // This does not change.
     ASSERT_TRUE(covariateEventIsPresent("IsMale", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 1, series));
-    // This should be computed from IsMale and Weight.
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 18.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 13, 6, 32, 0), 26.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0), 30.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 15, 14, 32, 0), 35.0, series));
-    // This should be computed from IsMale, Weight, and Gist.
-    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 43.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 13, 6, 32, 0), 26.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0), 30.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 15, 14, 32, 0), 35.0, series));
+    // Weight at the interval boundaries, holding the value at the interval end.
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 23.4667, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 33.6389, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 38.6389, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 40.0, series));
+    // Computed from IsMale and Weight.
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 26.7333, series));
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 31.8194, series));
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 34.3194, series));
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 35.0, series));
+    // Computed from IsMale, Weight, and Gist (extra event when Gist changes).
+    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 51.7333, series));
+    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 13, 6, 32, 0), 26.7333, series));
+    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 31.8194, series));
+    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 34.3194, series));
+    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 35.0, series));
 }
 
 TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_2)
@@ -2478,42 +2495,37 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_2)
     const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
     const DATE_TIME_VAR(endDate, 2017, 8, 16, 21, 0, 0);
 
-    CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate);
+    IntakeSeries intakes = makeDailyIntakes(startDate, 4);
+    CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate, DosageHistory(), intakes);
     CovariateSeries series;
     ComputingStatus rc;
     rc = extractor.extract(series);
 
     //        printCovariateSeries(series);
 
-    ASSERT_EQ(series.size(), static_cast<size_t>(21));
+    ASSERT_EQ(series.size(), static_cast<size_t>(16));
     ASSERT_EQ(rc, ComputingStatus::Ok);
     // This does not change.
     ASSERT_TRUE(covariateEventIsPresent("IsMale", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 1, series));
-    // First measure propagated back to the start of the interval.
+    // Gist: first measure back to the start, second at its own instant.
     ASSERT_TRUE(covariateEventIsPresent("Gist", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 1, series));
-    // Second measure at the moment it is performed.
     ASSERT_TRUE(covariateEventIsPresent("Gist", DATE_TIME_NO_VAR(2017, 8, 13, 6, 0, 0), 0, series));
-    // Weight, interpolated at the moment the gist changed.
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 6.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 6, 0, 0), 22.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 24.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 48.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 72.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 78.0, series));
-    // This should be computed from IsMale and Weight.
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 18.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 13, 6, 0, 0), 26.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 27.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 39.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 51.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 54.0, series));
-    // This should be computed from IsMale, Weight, and Gist.
-    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 43.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 13, 6, 0, 0), 26.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 27.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 39.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 51.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 54.0, series));
+    // Weight at the interval boundaries, holding the value at the interval end.
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 24.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 48.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 72.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 78.0, series));
+    // Computed from IsMale and Weight.
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 27.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 39.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 51.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 54.0, series));
+    // Computed from IsMale, Weight, and Gist (extra event when Gist changes).
+    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 52.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 13, 6, 0, 0), 27.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 39.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 51.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("VerySpecial", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 54.0, series));
 }
 
 TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_3)
@@ -2550,46 +2562,32 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_3)
     const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
     const DATE_TIME_VAR(endDate, 2017, 8, 16, 21, 0, 0);
 
-    CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate);
+    IntakeSeries intakes = makeDailyIntakes(startDate, 4);
+    CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate, DosageHistory(), intakes);
     CovariateSeries series;
     ComputingStatus rc;
     rc = extractor.extract(series);
 
     //        printCovariateSeries(series);
 
-    ASSERT_EQ(series.size(), static_cast<size_t>(26));
+    ASSERT_EQ(series.size(), static_cast<size_t>(12));
     ASSERT_EQ(rc, ComputingStatus::Ok);
-    // First measure propagated back to the start of the interval.
+    // Gist: first measure back to the start, second at its own instant.
     ASSERT_TRUE(covariateEventIsPresent("Gist", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 1, series));
-    // Second measure at the moment it is performed.
     ASSERT_TRUE(covariateEventIsPresent("Gist", DATE_TIME_NO_VAR(2017, 8, 13, 6, 0, 0), 0, series));
-    // Weight.
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 6.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 12, 20, 0, 0), 12.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 12, 22, 0, 0), 14.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 6, 0, 0), 22.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 24.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 22, 0, 0), 38.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 48.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 72.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 78.0, series));
-    // Height.
-    ASSERT_TRUE(covariateEventIsPresent("Height", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 20.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Height", DATE_TIME_NO_VAR(2017, 8, 12, 22, 0, 0), 40.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Height", DATE_TIME_NO_VAR(2017, 8, 13, 6, 0, 0), 120.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Height", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 140.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Height", DATE_TIME_NO_VAR(2017, 8, 13, 22, 0, 0), 280.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Height", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 380.0, series));
-    // This should be computed from Height and Weight.
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 23.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 12, 20, 0, 0), 26.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 12, 22, 0, 0), 47.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 13, 6, 0, 0), 131.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 152.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 13, 22, 0, 0), 299.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 404.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 416.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 419.0, series));
+    // Height at the interval boundaries, holding the value at the interval end.
+    ASSERT_TRUE(covariateEventIsPresent("Height", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 140.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Height", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 380.0, series));
+    // Weight at the interval boundaries, holding the value at the interval end.
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 24.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 48.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 72.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 78.0, series));
+    // Computed from Height and Weight.
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 152.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 404.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 416.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Special", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 419.0, series));
 }
 
 TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_0)
@@ -2613,21 +2611,24 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_0)
     const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
     const DATE_TIME_VAR(endDate, 2017, 8, 18, 21, 0, 0);
 
-    CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate);
+    IntakeSeries intakes = makeDailyIntakes(startDate, 6);
+    CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate, DosageHistory(), intakes);
     CovariateSeries series;
     ComputingStatus rc;
     rc = extractor.extract(series);
 
     //        printCovariateSeries(series);
 
-    ASSERT_EQ(series.size(), static_cast<size_t>(23));
+    // The age cadence sits at 18h (from the birth date) while Weight is sampled
+    // at the 8h daily intake boundaries.
+    ASSERT_EQ(series.size(), static_cast<size_t>(27));
     ASSERT_EQ(rc, ComputingStatus::Ok);
     ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 4.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 18, 0, 0), 10.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 14, 18, 0, 0), 34.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 15, 18, 0, 0), 58.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 16, 18, 0, 0), 82.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 17, 12, 0, 0), 100.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 24.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 48.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 72.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 96.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 100.0, series));
 
     ASSERT_TRUE(covariateEventIsPresent("AgeDays", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 6.0, series));
     ASSERT_TRUE(covariateEventIsPresent("AgeDays", DATE_TIME_NO_VAR(2017, 8, 12, 18, 0, 0), 7.0, series));
@@ -2640,11 +2641,15 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_0)
 
     ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 14.0, series));
     ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 12, 18, 0, 0), 15.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 13, 18, 0, 0), 28.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 14, 18, 0, 0), 77.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 15, 18, 0, 0), 126.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 16, 18, 0, 0), 175.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 17, 12, 0, 0), 211.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 55.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 13, 18, 0, 0), 56.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 104.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 14, 18, 0, 0), 105.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 153.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 15, 18, 0, 0), 154.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 202.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 16, 18, 0, 0), 203.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 211.0, series));
     ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 17, 18, 0, 0), 212.0, series));
     ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 18, 18, 0, 0), 213.0, series));
 
@@ -2677,21 +2682,22 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_1)
     const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
     const DATE_TIME_VAR(endDate, 2017, 8, 18, 21, 0, 0);
 
-    CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate);
+    IntakeSeries intakes = makeDailyIntakes(startDate, 6);
+    CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate, DosageHistory(), intakes);
     CovariateSeries series;
     ComputingStatus rc;
     rc = extractor.extract(series);
 
     //        printCovariateSeries(series);
 
-    ASSERT_EQ(series.size(), static_cast<size_t>(32));
+    ASSERT_EQ(series.size(), static_cast<size_t>(40));
     ASSERT_EQ(rc, ComputingStatus::Ok);
     ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 4.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 18, 0, 0), 10.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 14, 18, 0, 0), 34.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 15, 18, 0, 0), 58.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 16, 18, 0, 0), 82.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 17, 12, 0, 0), 100.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 24.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 48.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 72.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 96.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 100.0, series));
 
     ASSERT_TRUE(covariateEventIsPresent("AgeDays", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 6.0, series));
     ASSERT_TRUE(covariateEventIsPresent("AgeDays", DATE_TIME_NO_VAR(2017, 8, 12, 18, 0, 0), 7.0, series));
@@ -2704,21 +2710,29 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_1)
 
     ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 14.0, series));
     ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 12, 18, 0, 0), 15.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 13, 18, 0, 0), 28.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 14, 18, 0, 0), 77.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 15, 18, 0, 0), 126.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 16, 18, 0, 0), 175.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 17, 12, 0, 0), 211.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 55.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 13, 18, 0, 0), 56.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 104.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 14, 18, 0, 0), 105.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 153.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 15, 18, 0, 0), 154.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 202.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 16, 18, 0, 0), 203.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 211.0, series));
     ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 17, 18, 0, 0), 212.0, series));
     ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 18, 18, 0, 0), 213.0, series));
 
     ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 62.0, series));
     ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 12, 18, 0, 0), 64.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 13, 18, 0, 0), 78.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 14, 18, 0, 0), 128.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 15, 18, 0, 0), 178.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 16, 18, 0, 0), 228.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 17, 12, 0, 0), 264.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 104.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 13, 18, 0, 0), 106.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 154.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 14, 18, 0, 0), 156.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 204.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 15, 18, 0, 0), 206.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 254.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 16, 18, 0, 0), 256.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 264.0, series));
     ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 17, 18, 0, 0), 266.0, series));
     ASSERT_TRUE(covariateEventIsPresent("DepDep", DATE_TIME_NO_VAR(2017, 8, 18, 18, 0, 0), 268.0, series));
 
@@ -2744,21 +2758,22 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_2)
     const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
     const DATE_TIME_VAR(endDate, 2017, 8, 18, 21, 0, 0);
 
-    CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate);
+    IntakeSeries intakes = makeDailyIntakes(startDate, 6);
+    CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate, DosageHistory(), intakes);
     CovariateSeries series;
     ComputingStatus rc;
     rc = extractor.extract(series);
 
-    //        printCovariateSeries(series);
+    //    printCovariateSeries(series);
 
-    ASSERT_EQ(series.size(), static_cast<size_t>(21));
+    ASSERT_EQ(series.size(), static_cast<size_t>(20));
     ASSERT_EQ(rc, ComputingStatus::Ok);
     ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 4.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 24.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 48.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 72.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 96.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 17, 12, 0, 0), 100.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 24.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 48.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 72.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 96.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 100.0, series));
 
     ASSERT_TRUE(covariateEventIsPresent("AgeDays", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 42.0, series));
     ASSERT_TRUE(covariateEventIsPresent("AgeDays", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 43.0, series));
@@ -2769,12 +2784,11 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_2)
     ASSERT_TRUE(covariateEventIsPresent("AgeDays", DATE_TIME_NO_VAR(2017, 8, 18, 8, 0, 0), 48.0, series));
 
     ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 50.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 51.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 92.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 141.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 190.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 239.0, series));
-    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 17, 12, 0, 0), 247.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 91.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 140.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 189.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), 238.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 17, 8, 0, 0), 247.0, series));
     ASSERT_TRUE(covariateEventIsPresent("DepOnAge", DATE_TIME_NO_VAR(2017, 8, 18, 8, 0, 0), 248.0, series));
 
     ASSERT_FALSE(TestCovariateExtractor::get_m_hasBirthDate(&extractor));
@@ -2970,4 +2984,54 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_4)
 
 
     //        ASSERT_DOUBLE_EQ(c.getValue(), 100);
+}
+
+
+TEST(Core_TestCovariateExtractor, CovariateExtraction_backwardIntakeAligned)
+{
+    CovariateDefinitions cDefinitions;
+    // The refresh period (3 days) set but must be ignored!
+    ADD_CDEF_W_R_UNIT(Weight, 10.0, Standard, Double, Linear, Tucuxi::Common::days(3), "kg", cDefinitions);
+
+    // Weight rises linearly by 10 kg/day, from 10 kg at 08-12 to 50 kg at 08-16.
+    PatientVariates pVariates;
+    ADD_PV_W_UNIT(Weight, 10.0, Double, "kg", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), pVariates);
+    ADD_PV_W_UNIT(Weight, 50.0, Double, "kg", DATE_TIME_NO_VAR(2017, 8, 16, 8, 0, 0), pVariates);
+
+    // Four daily intakes starting at the window start. Only the intake
+    // times and intervals shall matter to the covariate extractor.
+    IntakeSeries intakes;
+    for (int day = 0; day < 4; ++day) {
+        Tucuxi::Common::DateTime intakeTime = DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0);
+        intakeTime.addDays(day);
+        intakes.push_back(IntakeEvent(
+                intakeTime,
+                Tucuxi::Common::Duration(),
+                100.0,
+                Unit("mg"),
+                Tucuxi::Common::days(1),
+                FormulationAndRoute(),
+                Tucuxi::Common::Duration(),
+                1));
+    }
+
+    const DATE_TIME_VAR(startDate, 2017, 8, 12, 8, 0, 0);
+    const DATE_TIME_VAR(endDate, 2017, 8, 16, 8, 0, 0);
+
+    CovariateExtractor extractor(cDefinitions, pVariates, startDate, endDate, DosageHistory(), intakes);
+    CovariateSeries series;
+    ComputingStatus rc = extractor.extract(series);
+
+    //    printCovariateSeries(series);
+
+    ASSERT_EQ(rc, ComputingStatus::Ok);
+    // One event per interval start, each holding the value at the interval end:
+    //   [08-12, 08-13) -> f(08-13) = 20    [08-14, 08-15) -> f(08-15) = 40
+    //   [08-13, 08-14) -> f(08-14) = 30    [08-15, 08-16) -> f(08-16) = 50
+    // The value at 08-16 equals the previous one, so no further event is emitted.
+    ASSERT_EQ(series.size(), static_cast<size_t>(4));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 12, 8, 0, 0), 20.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 13, 8, 0, 0), 30.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 14, 8, 0, 0), 40.0, series));
+    ASSERT_TRUE(covariateEventIsPresent("Weight", DATE_TIME_NO_VAR(2017, 8, 15, 8, 0, 0), 50.0, series));
 }

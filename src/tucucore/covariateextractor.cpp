@@ -51,7 +51,8 @@ CovariateExtractor::CovariateExtractor(
         const PatientVariates& _patientCovariates,
         const DateTime& _start,
         const DateTime& _end,
-        const DosageHistory& _dosageHistory)
+        const DosageHistory& _dosageHistory,
+        IntakeSeries const& _intakes)
     : ICovariateExtractor(_defaults, _patientCovariates, _start, _end), m_hasBirthDate{false},
       m_birthDate(DateTime::undefinedDateTime()), m_initAgeInDays{-1.0}, m_initAgeInWeeks{-1.0},
       m_initAgeInMonths{-1.0}, m_initAgeInYears{-1.0}, m_hasStartOfTreatmentDate{false},
@@ -248,6 +249,17 @@ CovariateExtractor::CovariateExtractor(
     // If there was a dosage administered, then get the start of treatment date.
     m_hasStartOfTreatmentDate = _dosageHistory.getStartOfTreatment(m_startOfTreatmentDate);
 
+    // Collect the dosing-interval boundaries.
+    for (auto const& intake : _intakes) {
+        DateTime const intakeStart = intake.getEventTime();
+        DateTime const intakeEnd = intakeStart + intake.getInterval();
+        m_intakeBoundaries.push_back(intakeStart);
+        m_intakeBoundaries.push_back(intakeEnd);
+    }
+    std::sort(m_intakeBoundaries.begin(), m_intakeBoundaries.end());
+    m_intakeBoundaries.erase(
+            std::unique(m_intakeBoundaries.begin(), m_intakeBoundaries.end()), m_intakeBoundaries.end());
+
     /*
     // If a birth date is present, then set it.
     if (m_cdValued.find(sm_birthDateCName) != m_cdValued.end()) {
@@ -269,6 +281,21 @@ CovariateExtractor::CovariateExtractor(
 }
 
 
+DateTime CovariateExtractor::nextIntakeBoundary(DateTime const& _time) const
+{
+    // The boundaries are sorted, so the first one strictly after _time is the end
+    // of the interval that contains _time. If _time is at or after the last
+    // boundary, there is no further interval, so fall back to the end of the
+    // extraction window.
+    for (auto const& boundary : m_intakeBoundaries) {
+        if (boundary > _time) {
+            return boundary;
+        }
+    }
+    return m_end;
+}
+
+
 bool CovariateExtractor::computeEvents(
         const std::map<DateTime, std::vector<std::string>>& _refreshMap, CovariateSeries& _series)
 {
@@ -283,6 +310,17 @@ bool CovariateExtractor::computeEvents(
         // Look at every non-computed covariate we are supposed to refresh.
         for (const auto& cvName : refreshEvent.second) {
             Value newVal = 0.0;
+            // Only a standard measured covariate that is smoothly interpolated is
+            // sampled on the dosing grid, and its value over an interval is the one at
+            // the interval's end (backward interpolation), evaluated at the next
+            // intake boundary. Direct and Backward need no resampling; Sex and Dose are
+            // never a ramp.
+            CovariateType const cvType = (*m_cdValued.at(cvName))->getType();
+            InterpolationType const cvInterp = (*m_cdValued.at(cvName))->getInterpolationType();
+            bool const cvIntakeAligned =
+                    ((cvType == CovariateType::Standard) && (cvInterp != InterpolationType::Direct)
+                     && (cvInterp != InterpolationType::Backward));
+            DateTime const valueTime = cvIntakeAligned ? nextIntakeBoundary(refreshTime) : refreshTime;
             if (((*m_cdValued.at(cvName))->getType() == CovariateType::Standard)
                 || ((*m_cdValued.at(cvName))->getType() == CovariateType::Sex)
                 || ((*m_cdValued.at(cvName))->getType() == CovariateType::Dose)) {
@@ -304,7 +342,7 @@ bool CovariateExtractor::computeEvents(
                     // We have more Patient Variates, therefore we have to compute the good value.
                     std::vector<pvIterator_t>::const_iterator pvIt = pvCurrentC->second.begin();
 
-                    while (pvIt != pvCurrentC->second.end() && (**pvIt)->getEventTime() <= refreshTime) {
+                    while (pvIt != pvCurrentC->second.end() && (**pvIt)->getEventTime() <= valueTime) {
                         ++pvIt;
                     }
 
@@ -342,7 +380,7 @@ bool CovariateExtractor::computeEvents(
                                             (**(pvIt))->getUnit(),
                                             getFinalUnit(cvName)),                    // val2
                                     (**(pvIt))->getEventTime(),                       // date2
-                                    refreshTime,                                      // dateRes
+                                    valueTime,                                        // dateRes
                                     (*m_cdValued.at(cvName))->getInterpolationType(), // interpolationType
                                     newVal)) {                                        // valRes
                             return false;
@@ -518,17 +556,30 @@ ComputingStatus CovariateExtractor::extract(CovariateSeries& _series)
 void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<std::string>>& _refreshMap)
 {
     for (const auto& cdv : m_cdValued) {
-        Duration refreshInterval;
-        refreshInterval = (*(cdv.second))->getRefreshPeriod();
-        if (((*(cdv.second))->getInterpolationType() != InterpolationType::Direct
-             && (*(cdv.second))->getInterpolationType() != InterpolationType::Backward)
-            && (!refreshInterval.isEmpty())) {
-            // When we have a refresh interval set, use it and ignore the patient variates.
-            for (DateTime t = m_start; t <= m_end; t += refreshInterval) {
-                if (_refreshMap.find(t) == _refreshMap.end()) {
-                    _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(t, std::vector<std::string>()));
+        CovariateType const covType = (*(cdv.second))->getType();
+        InterpolationType const interpType = (*(cdv.second))->getInterpolationType();
+        // A standard measured covariate that is smoothly interpolated (not the
+        // Direct or Backward) is sampled at the dosing-interval
+        // boundaries. The refresh period, if any is still present in the drug
+        // file, is ignored (kept only for compatibility).
+        bool const intakeAligned =
+                ((covType == CovariateType::Standard) && (interpType != InterpolationType::Direct)
+                 && (interpType != InterpolationType::Backward));
+        if (intakeAligned) {
+            // Always add the start, so the operable graph is initialised there,
+            // then add every intake boundary within the extraction window.
+            if (_refreshMap.find(m_start) == _refreshMap.end()) {
+                _refreshMap.insert(std::pair<DateTime, std::vector<std::string>>(m_start, std::vector<std::string>()));
+            }
+            _refreshMap.at(m_start).push_back(cdv.first);
+            for (DateTime const& boundary : m_intakeBoundaries) {
+                if ((boundary > m_start) && (boundary <= m_end)) {
+                    if (_refreshMap.find(boundary) == _refreshMap.end()) {
+                        _refreshMap.insert(
+                                std::pair<DateTime, std::vector<std::string>>(boundary, std::vector<std::string>()));
+                    }
+                    _refreshMap.at(boundary).push_back(cdv.first);
                 }
-                _refreshMap.at(t).push_back(cdv.first);
             }
         }
         else {

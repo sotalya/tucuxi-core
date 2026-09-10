@@ -1339,10 +1339,17 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix)
         ASSERT_EQ(resp->getData().at(4).m_parameters.size(), static_cast<size_t>(8));
         ASSERT_EQ(resp->getData().at(8).m_parameters.size(), static_cast<size_t>(8));
 
+        // covF (Linear) is now sampled at the q6h intake boundaries, and each
+        // cycle uses the value at its end (backward interpolation). covF is
+        // measured 2.0@02.09, 3.0@03.09, 4.0@04.09 (all 08h), so cycles ending
+        // inside a daily ramp pick up the fraction 6h/24h = 0.25 that the old
+        // forward refresh grid did not: cycle 4 is 2.25 (was 2.0) and cycle 8 is
+        // 3.25 (was 3.0). Cycle 0 stays 2.0 (before the first measurement) and
+        // parameter 5 is not covF-derived, so it is unchanged.
         ASSERT_DOUBLE_EQ(resp->getData().at(0).m_parameters[5].m_value, 27.1);
         ASSERT_DOUBLE_EQ(resp->getData().at(0).m_parameters[0].m_value, 2.0);
-        ASSERT_DOUBLE_EQ(resp->getData().at(4).m_parameters[0].m_value, 2.0);
-        ASSERT_DOUBLE_EQ(resp->getData().at(8).m_parameters[0].m_value, 3.0);
+        ASSERT_DOUBLE_EQ(resp->getData().at(4).m_parameters[0].m_value, 2.25);
+        ASSERT_DOUBLE_EQ(resp->getData().at(8).m_parameters[0].m_value, 3.25);
 
         //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
@@ -1407,10 +1414,13 @@ TEST(Core_TestMichaelisMenten2compVmaxAmount, TwoCompMMVmaxAmountMix)
         ASSERT_EQ(resp->getData().at(4).m_parameters.size(), static_cast<size_t>(8));
         ASSERT_EQ(resp->getData().at(8).m_parameters.size(), static_cast<size_t>(8));
 
+        // Same covF trajectory as the first block (only the route order differs,
+        // which does not change the covariate sampling), so backward interpolation
+        // gives the same shifted values: cycle 4 = 2.25, cycle 8 = 3.25.
         ASSERT_DOUBLE_EQ(resp->getData().at(0).m_parameters[5].m_value, 27.1);
         ASSERT_DOUBLE_EQ(resp->getData().at(0).m_parameters[0].m_value, 2.0);
-        ASSERT_DOUBLE_EQ(resp->getData().at(4).m_parameters[0].m_value, 2.0);
-        ASSERT_DOUBLE_EQ(resp->getData().at(8).m_parameters[0].m_value, 3.0);
+        ASSERT_DOUBLE_EQ(resp->getData().at(4).m_parameters[0].m_value, 2.25);
+        ASSERT_DOUBLE_EQ(resp->getData().at(8).m_parameters[0].m_value, 3.25);
 
         //std::cout << "Population parameters : " << '\n';
         //for (auto parameter : resp->getData()[0].m_parameters) {
