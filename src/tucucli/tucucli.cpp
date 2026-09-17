@@ -26,6 +26,7 @@
 #include "tucucommon/utils.h"
 
 #include "tucucore/drugmodelrepository.h"
+#include "tucucore/montecarlopercentilecalculator.h"
 
 #include "tucuquery/querylogger.h"
 
@@ -59,7 +60,11 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
                 "o,output", "Output response file", cxxopts::value<std::string>())(
                 "q,querylogpath", "Query folder path", cxxopts::value<std::string>())(
                 "t,tqfoutput", "Path of a copy of the query file, for testing purpose", cxxopts::value<std::string>())(
-                "csv", "Data file (.dat) folder path", cxxopts::value<std::string>())
+                "csv", "Data file (.dat) folder path", cxxopts::value<std::string>())(
+                "nbpatients",
+                "Number of Monte Carlo patients for percentile computation "
+                "(0 or omitted keeps the engine default).",
+                cxxopts::value<unsigned int>())
 #ifdef CONFIG_SIGN
                 ("s,signature", "Signed drug file path", cxxopts::value<std::string>())
 #endif // CONFIG_SIGN
@@ -134,6 +139,12 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
         std::string tqfoutputfilepath;
         if (result.count("tqfoutput") > 0) {
             tqfoutputfilepath = result["tqfoutput"].as<std::string>();
+        }
+
+        if (result.count("nbpatients") > 0) {
+            unsigned int nbPatients = result["nbpatients"].as<unsigned int>();
+            Tucuxi::Core::MonteCarloPercentileCalculatorBase::setStaticNumberPatients(nbPatients);
+            logHelper.info("Percentiles MC patients : {}", nbPatients);
         }
 
         logHelper.info("Drugs directory : {}", drugPath);

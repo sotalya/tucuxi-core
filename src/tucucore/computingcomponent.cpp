@@ -633,9 +633,6 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
 
         std::unique_ptr<Tucuxi::Core::AposterioriMonteCarloPercentileCalculatorMulti> calculator(
                 new Tucuxi::Core::AposterioriMonteCarloPercentileCalculatorMulti());
-        if (_traits->getNbPatients() != 0) {
-            calculator->setNumberPatients(_traits->getNbPatients());
-        }
         computingResult = calculator->calculate(
                 percentiles,
                 _traits->getStart(),
@@ -659,9 +656,6 @@ ComputingStatus ComputingComponent::computePercentilesMulti(
 
         std::unique_ptr<Tucuxi::Core::AprioriPercentileCalculatorMulti> calculator =
                 std::make_unique<Tucuxi::Core::AprioriPercentileCalculatorMulti>();
-        if (_traits->getNbPatients() != 0) {
-            calculator->setNumberPatients(_traits->getNbPatients());
-        }
         computingResult = calculator->calculate(
                 percentiles,
                 _traits->getStart(),
@@ -829,9 +823,6 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
 
         std::unique_ptr<Tucuxi::Core::AposterioriMonteCarloPercentileCalculator> calculator =
                 std::make_unique<Tucuxi::Core::AposterioriMonteCarloPercentileCalculator>();
-        if (_traits->getNbPatients() != 0) {
-            calculator->setNumberPatients(_traits->getNbPatients());
-        }
         computingResult = calculator->calculate(
                 percentiles,
                 _traits->getStart(),
@@ -849,9 +840,6 @@ ComputingStatus ComputingComponent::computePercentilesSimple(
     else {
         std::unique_ptr<Tucuxi::Core::AprioriMonteCarloPercentileCalculator> calculator =
                 std::make_unique<Tucuxi::Core::AprioriMonteCarloPercentileCalculator>();
-        if (_traits->getNbPatients() != 0) {
-            calculator->setNumberPatients(_traits->getNbPatients());
-        }
         computingResult = calculator->calculate(
                 percentiles,
                 _traits->getStart(),
