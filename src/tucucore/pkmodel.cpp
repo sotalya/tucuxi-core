@@ -80,18 +80,32 @@ bool PkModel::addIntakeIntervalCalculatorFactory(
     return rc.second;
 }
 
-void checkSingleParameterList(const std::vector<std::string>& _parameterList)
+void PkModel::checkSingleParameterList(const std::vector<std::string>& _parameterList) const
 {
     auto size = _parameterList.size();
     for (int i = 0; i < size; i++) {
-        //        std::cout << _parameterList[i] << ";";
+// Displaying the PK parameters allows to rerun the coloring python script to find the best combination of parameter ID
+#ifdef TUCU_DISPLAY_PKPARAMETERS
+        std::cout << _parameterList[i] << ";";
+#endif // TUCU_DISPLAY_PKPARAMETERS
+        if (ParameterId::fromString(_parameterList[i]) == ParameterId::Unknown) {
+
+            throw std::runtime_error(
+                    std::string("Error with the PK model ") + getPkModelId()
+                    + " parameter list. Unknown parameter: " + _parameterList[i]);
+        }
         for (int j = i + 1; j < size; j++) {
             if (ParameterId::fromString(_parameterList[i]) == ParameterId::fromString(_parameterList[j])) {
-                throw std::runtime_error("Error with a PK model parameter list");
+                throw std::runtime_error(
+                        std::string("Error with the PK model ") + getPkModelId()
+                        + " parameter list. Identical parameter IDs for " + _parameterList[i] + " and "
+                        + _parameterList[j]);
             }
         }
     }
-    //    std::cout << '\n';
+#ifdef TUCU_DISPLAY_PKPARAMETERS
+    std::cout << '\n';
+#endif // TUCU_DISPLAY_PKPARAMETERS
 }
 
 void PkModel::checkParameterList() const
@@ -99,9 +113,9 @@ void PkModel::checkParameterList() const
     std::vector<std::string> pList;
     for (const auto& paramList : m_parameters) {
         const auto list = paramList.second;
-        for (int i = 0; i < list.size(); i++) {
-            if (std::find(pList.begin(), pList.end(), list[i]) == pList.end()) {
-                pList.push_back(list[i]);
+        for (const auto& param : list) {
+            if (std::find(pList.begin(), pList.end(), param) == pList.end()) {
+                pList.push_back(param);
             }
         }
     }
@@ -110,11 +124,10 @@ void PkModel::checkParameterList() const
 
 bool PkModel::addParameterList(AbsorptionModel _route, std::vector<std::string> _parameterList)
 {
-    checkParameterList();
-    // generalCheckParameterList(_parameterList);
     std::pair<std::map<AbsorptionModel, std::vector<std::string>>::iterator, bool> rc;
     rc = m_parameters.insert(std::make_pair(_route, std::move(_parameterList)));
-    checkParameterList();
+    // This check is performed by a unit test of PkModel
+    // checkParameterList();
     return rc.second;
 }
 

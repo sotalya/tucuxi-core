@@ -45,7 +45,11 @@ class IntakeIntervalCalculatorCreator;
 class PkModel
 {
 public:
-    enum class [[nodiscard]] AllowMultipleRoutes{No = 0, Yes};
+    enum class [[nodiscard]] AllowMultipleRoutes
+    {
+        No = 0,
+        Yes
+    };
 
     /// \brief Create a PkModel, setting its Id.
     /// \param _pkModelId the Id to set.
@@ -121,12 +125,22 @@ public:
     ///
     /// \brief Checks the lists of parameter IDs and throw an exception in case of error
     ///
-    /// This function is called when adding a parameter ID list for a new absorption model.
+    /// This function could be called when adding a parameter ID list for a new absorption model.
+    /// It is however currently used in a unit test to be sure all models are correct.
     /// It ensures the IDs are unique and throws an exception if not.
     /// If an exception is thrown it means the C++ code should be modified, and it would never
     /// occur because of user inputs.
     ///
     void checkParameterList() const;
+
+    ///
+    /// \brief Checks a list of parameter IDs and throw an exception in case of error
+    ///
+    /// It ensures the IDs are unique and throws an exception if not.
+    /// If an exception is thrown it means the C++ code should be modified, and it would never
+    /// occur because of user inputs.
+    ///
+    void checkSingleParameterList(const std::vector<std::string>& _parameterList) const;
 
 protected:
     /// \brief Identifier of the PkModel.

@@ -75,6 +75,17 @@ using namespace Tucuxi::Core;
         ASSERT_TRUE(typeid(*CInfusion) == typeid(_COMP_NO_LIT##CompartmentInfusion##_TYPE_NAME)); \
     } while (0);
 
+TEST(Core_TestPkModel, PkModelValidity)
+{
+    PkModelCollection collection;
+    bool ok = defaultPopulate(collection);
+    ASSERT_TRUE(ok);
+    for (const auto& pkModel : collection.getPkModelList()) {
+        // If a model has an issue, it will trigger an exception
+        ASSERT_NO_THROW(pkModel->checkParameterList());
+    }
+}
+
 TEST(Core_TestPkModel, PkModelFunctions)
 {
     std::shared_ptr<PkModel> l1CMicro =
