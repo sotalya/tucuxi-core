@@ -183,6 +183,14 @@ private:
     /// \return The next intake boundary after _time, or m_end if there is none.
     DateTime nextIntakeBoundary(DateTime const& _time) const;
 
+    /// \brief Return the start of the dosing interval that contains the given time.
+    /// This is the last intake boundary at or before _time. InterpolationDirect
+    /// covariates are evaluated at this instant, so the value used over an interval
+    /// is the one at the interval's start (the moment of the dose).
+    /// \param _time Time whose containing interval start is requested.
+    /// \return The last intake boundary at or before _time, or m_start if none.
+    DateTime currentIntakeBoundary(DateTime const& _time) const;
+
     /// \brief Sorted intake interval boundaries (starts and ends) of the treatment.
     /// Used to sample interpolated covariates at the dosing intervals instead of
     /// at a fixed refresh period.

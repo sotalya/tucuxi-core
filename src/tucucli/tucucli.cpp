@@ -142,7 +142,7 @@ int parse(int _argc, char* _argv[]) // NOLINT(cppcoreguidelines-avoid-c-arrays, 
         }
 
         if (result.count("nbpatients") > 0) {
-            unsigned int nbPatients = result["nbpatients"].as<unsigned int>();
+            unsigned int const nbPatients = result["nbpatients"].as<unsigned int>();
             Tucuxi::Core::MonteCarloPercentileCalculatorBase::setStaticNumberPatients(nbPatients);
             logHelper.info("Percentiles MC patients : {}", nbPatients);
         }

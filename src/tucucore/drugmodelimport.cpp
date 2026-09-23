@@ -333,7 +333,10 @@ InterpolationType DrugModelImport::extractInterpolationType(Tucuxi::Common::XmlN
             {"linear", InterpolationType::Linear},
             {"sigmoid", InterpolationType::Sigmoid},
             {"tanh", InterpolationType::Tanh},
-            {"backward", InterpolationType::Backward}};
+            {"backward", InterpolationType::Backward},
+            {"interpolationDirect", InterpolationType::InterpolationDirect},
+            {"interpolationBackward", InterpolationType::InterpolationBackward},
+            {"default", InterpolationType::Default}};
 
     auto it = m.find(_node->getValue());
     if (it != m.end()) {

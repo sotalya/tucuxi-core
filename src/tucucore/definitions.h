@@ -434,7 +434,21 @@ enum class InterpolationType
 
     /// Backward: at any point in time, apply the value of the *next* observed measurement
     /// (i.e. the step function looks forward rather than backward as Direct does).
-    Backward
+    Backward,
+
+    /// InterpolationDirect: interpolate between measurements and, per dosing
+    /// interval, apply the value computed at the moment of the dose (the interval
+    /// start).
+    InterpolationDirect,
+
+    /// InterpolationBackward: interpolate between measurements and, per dosing
+    /// interval, apply the value computed at the moment of the next dose (the
+    /// interval end). Legacy Linear is treated the same way.
+    InterpolationBackward,
+
+    /// Default: the drug file leaves the choice to the software. It is resolved to
+    /// InterpolationBackward.
+    Default
 };
 
 

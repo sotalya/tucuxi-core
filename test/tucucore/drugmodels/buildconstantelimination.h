@@ -36,6 +36,9 @@ public:
 
 
     // No targets are defined within the build, to let tests define various targets
+    // The four _interp* parameters set the interpolation type of the matching
+    // covariate (covA, covM, covR, covS). They default to Direct, so existing
+    // callers keep the previous behaviour.
     std::unique_ptr<Tucuxi::Core::DrugModel> buildDrugModel(
             Tucuxi::Core::ResidualErrorType _errorModelType = Tucuxi::Core::ResidualErrorType::NONE,
             std::vector<Tucuxi::Core::Value> _sigmas = {0.0},
@@ -46,7 +49,11 @@ public:
             Tucuxi::Core::Value _variabilityValueA = 0.0,
             Tucuxi::Core::Value _variabilityValueM = 1.0,
             Tucuxi::Core::Value _variabilityValueR = 0.0,
-            Tucuxi::Core::Value _variabilityValueS = 0.0);
+            Tucuxi::Core::Value _variabilityValueS = 0.0,
+            Tucuxi::Core::InterpolationType _interpA = Tucuxi::Core::InterpolationType::Direct,
+            Tucuxi::Core::InterpolationType _interpM = Tucuxi::Core::InterpolationType::Direct,
+            Tucuxi::Core::InterpolationType _interpR = Tucuxi::Core::InterpolationType::Direct,
+            Tucuxi::Core::InterpolationType _interpS = Tucuxi::Core::InterpolationType::Direct);
 };
 
 #endif // BUILDCONSTANTELIMINATION_H

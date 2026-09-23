@@ -72,6 +72,7 @@ file(GLOB TUCUTESTCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/buildimatinib.cpp
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/buildpkasymptotic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/gtest_constanteliminationbolus.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/drugmodels/gtest_covariateinterpolationmodes.cpp
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/gtest_drug_tobramycin.cpp
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/gtest_drug_vancomycin.cpp
     ${CMAKE_CURRENT_LIST_DIR}/drugmodels/gtest_michaelismenten1comp.cpp
