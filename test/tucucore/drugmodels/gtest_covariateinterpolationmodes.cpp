@@ -178,15 +178,15 @@ TEST(Core_TestCovariateInterpolationModes, PerCycleParameterValues)
         ASSERT_DOUBLE_EQ(cycleParameter(cycle, "TestM"), cycleCovariate(cycle, "covM"));
 
         // Interpolated modes: the covariate ramps by 0.25 per 6h cycle.
-        // InterpolationDirect uses the value at this dose (interval start).
+        // InterpolationForward uses the value at this dose (interval start).
         ASSERT_DOUBLE_EQ(cycleCovariate(cycle, "covR"), 1.0 + 0.25 * static_cast<double>(i));
         // InterpolationBackward uses the value at the next dose (interval end).
         ASSERT_DOUBLE_EQ(cycleCovariate(cycle, "covM"), 1.25 + 0.25 * static_cast<double>(i));
 
-        // Direct holds the previous measured value: 1 until 03.09 8h (cycle 8),
+        // Forward holds the previous measured value: 1 until 03.09 8h (cycle 8),
         // then 3.
-        double const expectedDirect = (i < 8) ? 1.0 : 3.0;
-        ASSERT_DOUBLE_EQ(cycleCovariate(cycle, "covS"), expectedDirect);
+        double const expectedForward = (i < 8) ? 1.0 : 3.0;
+        ASSERT_DOUBLE_EQ(cycleCovariate(cycle, "covS"), expectedForward);
 
         // Backward applies the future measured value per dose: for doses between
         // 01.09 and 03.09 (cycles 1-7) the next measurement is 3. Cycle 8 is on
