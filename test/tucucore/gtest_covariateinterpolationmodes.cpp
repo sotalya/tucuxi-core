@@ -33,10 +33,12 @@
 #include "tucucore/drugtreatment/patientcovariate.h"
 #include "tucucore/pkmodel.h"
 
-#include "../gtest_core.h"
-#include "../pkmodels/constanteliminationbolus.h"
-#include "../testutils.h"
-#include "buildconstantelimination.h"
+#include "drugmodels/buildconstantelimination.h"
+
+#include "pkmodels/constanteliminationbolus.h"
+
+#include "gtest_core.h"
+#include "testutils.h"
 #include "computingcomponentfactory.h"
 
 using namespace std::chrono_literals;
