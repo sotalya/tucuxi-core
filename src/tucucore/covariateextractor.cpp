@@ -331,14 +331,14 @@ bool CovariateExtractor::computeEvents(
             CovariateType const cvType = (*m_cdValued.at(cvName))->getType();
             InterpolationType const cvInterp = (*m_cdValued.at(cvName))->getInterpolationType();
             bool const cvIntakeAligned =
-                    ((cvType == CovariateType::Standard) && (cvInterp != InterpolationType::Direct));
-            // Backward and InterpolationDirect are evaluated at the current dose
+                    ((cvType == CovariateType::Standard) && (cvInterp != InterpolationType::Forward));
+            // Backward and InterpolationForward are evaluated at the current dose
             // (interval start): at that instant a Backward covariate returns the
-            // next measured value (its "future value"), while InterpolationDirect
+            // next measured value (its "future value"), while InterpolationForward
             // returns the interpolated value at the dose. The other interpolated
             // modes are evaluated at the next dose (interval end).
             bool const cvUsesIntervalStart =
-                    (cvInterp == InterpolationType::InterpolationDirect) || (cvInterp == InterpolationType::Backward);
+                    (cvInterp == InterpolationType::InterpolationForward) || (cvInterp == InterpolationType::Backward);
             DateTime const valueTime = !cvIntakeAligned      ? refreshTime
                                        : cvUsesIntervalStart ? currentIntakeBoundary(refreshTime)
                                                              : nextIntakeBoundary(refreshTime);
@@ -579,13 +579,13 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
     for (const auto& cdv : m_cdValued) {
         CovariateType const covType = (*(cdv.second))->getType();
         InterpolationType const interpType = (*(cdv.second))->getInterpolationType();
-        // Every standard covariate except Direct is sampled at the dosing-interval
+        // Every standard covariate except Forward is sampled at the dosing-interval
         // boundaries, so its value is evaluated per dose (Backward then applies the
         // future measured value, the interpolated modes the interpolated value).
-        // Direct keeps the previous measured value at its own measurement times.
+        // Forward keeps the previous measured value at its own measurement times.
         // The refresh period, if any is still present in the drug file, is ignored
         // (kept only for compatibility).
-        bool const intakeAligned = ((covType == CovariateType::Standard) && (interpType != InterpolationType::Direct));
+        bool const intakeAligned = ((covType == CovariateType::Standard) && (interpType != InterpolationType::Forward));
         if (intakeAligned) {
             // Always add the start, so the operable graph is initialised there,
             // then add every intake boundary within the extraction window.
@@ -754,7 +754,7 @@ void CovariateExtractor::collectRefreshIntervals(std::map<DateTime, std::vector<
     // values, and if the values is interpolated, so be it. This should have no impact on the computations performed,
     // since in any case we would have to redo the computations for the given time instant.
     for (const auto& cv : m_cdValued) {
-        if ((*(cv.second))->getInterpolationType() != InterpolationType::Direct
+        if ((*(cv.second))->getInterpolationType() != InterpolationType::Forward
             && (*(cv.second))->getInterpolationType() != InterpolationType::Backward) {
             for (auto& t : _refreshMap) {
                 if (std::find(t.second.begin(), t.second.end(), cv.first) == t.second.end()) {
@@ -801,7 +801,7 @@ bool CovariateExtractor::interpolateValues(
     }
 
     switch (_interpolationType) {
-    case InterpolationType::Direct:
+    case InterpolationType::Forward:
         if (_date2 > _dateRes) {
             // Extend _date1 to _dateRes.
             _valRes = _val1;
@@ -821,7 +821,7 @@ bool CovariateExtractor::interpolateValues(
         }
         break;
     case InterpolationType::Linear:
-    case InterpolationType::InterpolationDirect:
+    case InterpolationType::InterpolationForward:
     case InterpolationType::InterpolationBackward:
     case InterpolationType::Default: {
         // Linear interpolation. The choice of the evaluation instant (interval
@@ -876,9 +876,9 @@ void CovariateExtractor::sortPatientVariates()
             }
         }
 
-        // If InterpolationType == InterpolationType::Direct or a single value is present, then no interpolation is
+        // If InterpolationType == InterpolationType::Forward or a single value is present, then no interpolation is
         // performed and we can change the time of the first measurement with the initial interval time.
-        if ((*(m_cdValued.at(pvV.first)))->getInterpolationType() == InterpolationType::Direct
+        if ((*(m_cdValued.at(pvV.first)))->getInterpolationType() == InterpolationType::Forward
             || pvV.second.size() == 1) {
             (*(pvV.second[0]))->setEventTime(m_start);
         }

@@ -62,7 +62,7 @@ public:
     /// \brief Constructor
     ConstantEliminationBolus()
         : IntakeIntervalCalculatorBase<1, ConstantEliminationBolusExponentials>(
-                std::make_unique<PertinentTimesCalculatorStandard>())
+                  std::make_unique<PertinentTimesCalculatorStandard>())
     {
     }
 

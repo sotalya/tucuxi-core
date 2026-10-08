@@ -329,12 +329,13 @@ InterpolationType DrugModelImport::extractInterpolationType(Tucuxi::Common::XmlN
 {
 
     static std::map<std::string, InterpolationType> m = {
-            {"direct", InterpolationType::Direct},
+            {"forward", InterpolationType::Forward},
+            {"direct", InterpolationType::Forward},
             {"linear", InterpolationType::Linear},
             {"sigmoid", InterpolationType::Sigmoid},
             {"tanh", InterpolationType::Tanh},
             {"backward", InterpolationType::Backward},
-            {"interpolationDirect", InterpolationType::InterpolationDirect},
+            {"interpolationForward", InterpolationType::InterpolationForward},
             {"interpolationBackward", InterpolationType::InterpolationBackward},
             {"default", InterpolationType::Default}};
 
@@ -344,7 +345,7 @@ InterpolationType DrugModelImport::extractInterpolationType(Tucuxi::Common::XmlN
     }
 
     setNodeError(_node);
-    return InterpolationType::Direct;
+    return InterpolationType::Forward;
 }
 
 
@@ -967,7 +968,7 @@ std::unique_ptr<CovariateDefinition> DrugModelImport::extractCovariate(Tucuxi::C
     CovariateType type = CovariateType::Standard;
     DataType dataType = DataType::Int;
     TucuUnit unit;
-    InterpolationType interpolationType = InterpolationType::Direct;
+    InterpolationType interpolationType = InterpolationType::Forward;
     std::unique_ptr<LightPopulationValue> value = nullptr;
     std::unique_ptr<Operation> validation = nullptr;
     TranslatableString name;

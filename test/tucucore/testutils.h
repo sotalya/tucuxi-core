@@ -36,8 +36,9 @@
 #define DATE_TIME_NO_VAR(YY, MM, DD, hh, mm, ss)                                  \
     Tucuxi::Common::DateTime(                                                     \
             date::year_month_day(date::year(YY), date::month(MM), date::day(DD)), \
-            Tucuxi::Common::TimeOfDay(Tucuxi::Common::Duration(                   \
-                    std::chrono::hours(hh), std::chrono::minutes(mm), std::chrono::seconds(ss))))
+            Tucuxi::Common::TimeOfDay(                                            \
+                    Tucuxi::Common::Duration(                                     \
+                            std::chrono::hours(hh), std::chrono::minutes(mm), std::chrono::seconds(ss))))
 
 
 /// \brief Create a named DateTime variable.
@@ -50,8 +51,9 @@
 #define DATE_TIME_VAR(varName, YY, MM, DD, hh, mm, ss)                            \
     Tucuxi::Common::DateTime varName(                                             \
             date::year_month_day(date::year(YY), date::month(MM), date::day(DD)), \
-            Tucuxi::Common::TimeOfDay(Tucuxi::Common::Duration(                   \
-                    std::chrono::hours(hh), std::chrono::minutes(mm), std::chrono::seconds(ss))))
+            Tucuxi::Common::TimeOfDay(                                            \
+                    Tucuxi::Common::Duration(                                     \
+                            std::chrono::hours(hh), std::chrono::minutes(mm), std::chrono::seconds(ss))))
 
 
 /// \brief Add a covariate definition (without a refresh period or unit) to a given covariate definitions vector.

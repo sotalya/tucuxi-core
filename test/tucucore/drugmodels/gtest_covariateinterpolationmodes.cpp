@@ -164,8 +164,8 @@ TEST(Core_TestCovariateInterpolationModes, PerCycleParameterValues)
     std::vector<CycleData> data = computeConstantEliminationModes(
             InterpolationType::Backward,
             InterpolationType::InterpolationBackward,
-            InterpolationType::InterpolationDirect,
-            InterpolationType::Direct);
+            InterpolationType::InterpolationForward,
+            InterpolationType::Forward);
 
     ASSERT_EQ(data.size(), static_cast<size_t>(16));
 
@@ -204,10 +204,10 @@ TEST(Core_TestCovariateInterpolationModes, PerCycleParameterValues)
 TEST(Core_TestCovariateInterpolationModes, DefaultResolvesToInterpolationBackward)
 {
     std::vector<CycleData> data = computeConstantEliminationModes(
-            InterpolationType::Direct,
+            InterpolationType::Forward,
             InterpolationType::Default,
             InterpolationType::InterpolationBackward,
-            InterpolationType::Direct);
+            InterpolationType::Forward);
 
     ASSERT_EQ(data.size(), static_cast<size_t>(16));
 

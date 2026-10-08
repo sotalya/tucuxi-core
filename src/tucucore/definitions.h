@@ -420,8 +420,8 @@ enum class DataType
 /// \brief Available interpolation functions.
 enum class InterpolationType
 {
-    /// Direct: when value observed, set it as current value.
-    Direct = 0,
+    /// Forward: when value observed, set it as current value.
+    Forward = 0,
 
     /// Linear: between two occurrences of observed covariates, use linear interpolation.
     Linear,
@@ -436,10 +436,10 @@ enum class InterpolationType
     /// (i.e. the step function looks forward rather than backward as Direct does).
     Backward,
 
-    /// InterpolationDirect: interpolate between measurements and, per dosing
+    /// InterpolationForward: interpolate between measurements and, per dosing
     /// interval, apply the value computed at the moment of the dose (the interval
     /// start).
-    InterpolationDirect,
+    InterpolationForward,
 
     /// InterpolationBackward: interpolate between measurements and, per dosing
     /// interval, apply the value computed at the moment of the next dose (the

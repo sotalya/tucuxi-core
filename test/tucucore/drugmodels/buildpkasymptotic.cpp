@@ -63,21 +63,23 @@ std::unique_ptr<Tucuxi::Core::DrugModel> BuildPkAsymptotic::buildDrugModel(
 
 
 
-    model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-            "covT",
-            "2.0",
-            nullptr,
-            CovariateType::Standard,
-            DataType::Double,
-            Tucuxi::Common::TranslatableString("covT")));
+    model->addCovariate(
+            std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                    "covT",
+                    "2.0",
+                    nullptr,
+                    CovariateType::Standard,
+                    DataType::Double,
+                    Tucuxi::Common::TranslatableString("covT")));
 
-    model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
-            "covR",
-            "0.5",
-            nullptr,
-            CovariateType::Standard,
-            DataType::Double,
-            Tucuxi::Common::TranslatableString("covR")));
+    model->addCovariate(
+            std::make_unique<Tucuxi::Core::CovariateDefinition>(
+                    "covR",
+                    "0.5",
+                    nullptr,
+                    CovariateType::Standard,
+                    DataType::Double,
+                    Tucuxi::Common::TranslatableString("covR")));
 
     auto errorModel = std::make_unique<ErrorModel>();
 

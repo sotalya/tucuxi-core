@@ -253,9 +253,9 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
     {
         CovariateDefinitions cDefinitions;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
 
         ASSERT_NO_THROW(CovariateExtractor(
                 cDefinitions,
@@ -269,9 +269,9 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
     {
         CovariateDefinitions cDefinitions;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
 
         DosageHistory dosageHistory = TestCovariateExtractor::get_dosage_history(
                 DATE_TIME_NO_VAR(2017, 8, 11, 14, 32, 0), DATE_TIME_NO_VAR(2017, 8, 14, 14, 32, 0));
@@ -288,9 +288,9 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
     {
         CovariateDefinitions cDefinitions;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
 
         DosageHistory dosageHistory = TestCovariateExtractor::get_dosage_history(
                 DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0), DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0));
@@ -307,9 +307,9 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
     {
         CovariateDefinitions cDefinitions;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
 
         DosageHistory dosageHistory = TestCovariateExtractor::get_dosage_history(
                 DATE_TIME_NO_VAR(2017, 9, 18, 14, 32, 0), DATE_TIME_NO_VAR(2017, 9, 19, 14, 32, 0));
@@ -327,12 +327,12 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeMonths, 3, AgeInMonths, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeYears, 15, AgeInYears, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeMonths, 3, AgeInMonths, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeYears, 15, AgeInYears, Double, Forward, cDefinitions);
 
         ASSERT_NO_THROW(CovariateExtractor(
                 cDefinitions,
@@ -356,10 +356,10 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
 
         ASSERT_NO_THROW(CovariateExtractor(
                 cDefinitions,
@@ -389,10 +389,10 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, -20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, -20, AgeInDays, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -408,11 +408,11 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays2, 20, AgeInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays2, 20, AgeInDays, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -428,10 +428,10 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeMonths, 20, AgeInMonths, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeMonths, 20, AgeInMonths, Double, Forward, cDefinitions);
 
         ASSERT_NO_THROW(CovariateExtractor(
                 cDefinitions,
@@ -461,10 +461,10 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeMonths, -20, AgeInMonths, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeMonths, -20, AgeInMonths, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -480,11 +480,11 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeMonths, 20, AgeInMonths, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeMonths2, 20, AgeInMonths, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeMonths, 20, AgeInMonths, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeMonths2, 20, AgeInMonths, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -500,10 +500,10 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeYears, 20, AgeInYears, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeYears, 20, AgeInYears, Double, Forward, cDefinitions);
 
         ASSERT_NO_THROW(CovariateExtractor(
                 cDefinitions,
@@ -533,10 +533,10 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeYears, -20, AgeInYears, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeYears, -20, AgeInYears, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -552,11 +552,11 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeYears, 20, AgeInYears, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeYears2, 20, AgeInYears, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeYears, 20, AgeInYears, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeYears2, 20, AgeInYears, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -573,11 +573,11 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInHours, 18, TimeFromStartInHours, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInHours, 18, TimeFromStartInHours, Double, Forward, cDefinitions);
 
         ASSERT_NO_THROW(CovariateExtractor(
                 cDefinitions,
@@ -636,11 +636,11 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInHours, -18, TimeFromStartInHours, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInHours, -18, TimeFromStartInHours, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -657,12 +657,12 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInHours, 18, TimeFromStartInHours, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInHours2, 18, TimeFromStartInHours, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInHours, 18, TimeFromStartInHours, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInHours2, 18, TimeFromStartInHours, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -679,11 +679,11 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInDays, 18, TimeFromStartInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInDays, 18, TimeFromStartInDays, Double, Forward, cDefinitions);
 
         ASSERT_NO_THROW(CovariateExtractor(
                 cDefinitions,
@@ -742,11 +742,11 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInDays, -18, TimeFromStartInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInDays, -18, TimeFromStartInDays, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -763,12 +763,12 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInDays, 18, TimeFromStartInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInDays2, 18, TimeFromStartInDays, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInDays, 18, TimeFromStartInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInDays2, 18, TimeFromStartInDays, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -785,11 +785,11 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInWeeks, 18, TimeFromStartInWeeks, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInWeeks, 18, TimeFromStartInWeeks, Double, Forward, cDefinitions);
 
         ASSERT_NO_THROW(CovariateExtractor(
                 cDefinitions,
@@ -848,11 +848,11 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInWeeks, -18, TimeFromStartInWeeks, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInWeeks, -18, TimeFromStartInWeeks, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -869,12 +869,12 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInWeeks, 18, TimeFromStartInWeeks, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInWeeks2, 18, TimeFromStartInWeeks, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInWeeks, 18, TimeFromStartInWeeks, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInWeeks2, 18, TimeFromStartInWeeks, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -891,11 +891,11 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInMonths, 18, TimeFromStartInMonths, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInMonths, 18, TimeFromStartInMonths, Double, Forward, cDefinitions);
 
         ASSERT_NO_THROW(CovariateExtractor(
                 cDefinitions,
@@ -954,11 +954,11 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInMonths, -18, TimeFromStartInMonths, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInMonths, -18, TimeFromStartInMonths, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -975,12 +975,12 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInMonths, 18, TimeFromStartInMonths, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInMonths2, 18, TimeFromStartInMonths, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInMonths, 18, TimeFromStartInMonths, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInMonths2, 18, TimeFromStartInMonths, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -997,11 +997,11 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInYears, 18, TimeFromStartInYears, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInYears, 18, TimeFromStartInYears, Double, Forward, cDefinitions);
 
         ASSERT_NO_THROW(CovariateExtractor(
                 cDefinitions,
@@ -1060,11 +1060,11 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInYears, -18, TimeFromStartInYears, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInYears, -18, TimeFromStartInYears, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -1081,12 +1081,12 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInYears, 18, TimeFromStartInYears, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartInYears2, 18, TimeFromStartInYears, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInYears, 18, TimeFromStartInYears, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartInYears2, 18, TimeFromStartInYears, Double, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -1102,9 +1102,9 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
         ADD_PV_NO_UNIT(Gist, true, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
         ADD_PV_NO_UNIT(Gist, false, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
 
@@ -1121,11 +1121,11 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
     CovariateDefinitions cDefinitions;
     PatientVariates pVariates;
 
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-    ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0), Standard,
-    Date, Direct, cDefinitions);
+    Date, Forward, cDefinitions);
 
     ADD_PV_NO_UNIT(Gist, true, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
     ADD_PV_NO_UNIT(Gist, false, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
@@ -1148,11 +1148,11 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
     CovariateDefinitions cDefinitions;
     PatientVariates pVariates;
 
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-    ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0), Standard,
-    Date, Direct, cDefinitions);
+    Date, Forward, cDefinitions);
 
 
     ASSERT_THROW(CovariateExtractor(cDefinitions, PatientVariates(),
@@ -1166,9 +1166,9 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
     {
         CovariateDefinitions cDefinitions;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3500, Standard, Bool, Linear, Tucuxi::Common::days(2), "mg", cDefinitions);
 
         ASSERT_THROW(
@@ -1185,10 +1185,10 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
     // {
     // CovariateDefinitions cDefinitions;
     //
-    // ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, false, Standard, Bool, Direct, cDefinitions);
+    // ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, false, Standard, Bool, Forward, cDefinitions);
     //
     // ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-    // ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+    // ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
     //
     // ASSERT_THROW(CovariateExtractor(cDefinitions, PatientVariates(),
     // DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
@@ -1200,10 +1200,10 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
     {
         CovariateDefinitions cDefinitions;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
         cDefinitions.push_back(nullptr);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
 
         ASSERT_THROW(
                 CovariateExtractor(
@@ -1219,9 +1219,9 @@ TEST(Core_TestCovariateExtractor, CE_constructor)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
         ADD_PV_NO_UNIT(Gist, true, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
         pVariates.push_back(nullptr);
         ADD_PV_NO_UNIT(Gist, false, Bool, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
@@ -1487,9 +1487,9 @@ TEST(Core_TestCovariateExtractor, CE_collectRefreshIntervals)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeMonths, 3, AgeInMonths, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeYears, 4, AgeInYears, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeMonths, 3, AgeInMonths, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeYears, 4, AgeInYears, Double, Forward, cDefinitions);
 
         CovariateExtractor extractor(
                 cDefinitions,
@@ -1535,12 +1535,12 @@ TEST(Core_TestCovariateExtractor, CE_collectRefreshIntervals)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeMonths, 3, AgeInMonths, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(AgeYears, 4, AgeInYears, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(AgeDays, 20, AgeInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeMonths, 3, AgeInMonths, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(AgeYears, 4, AgeInYears, Double, Forward, cDefinitions);
 
         //ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, DATE_TIME_NO_VAR(1995, 12, 13, 14, 15, 0), Standard,
-        //                  Date, Direct, cDefinitions);
+        //                  Date, Forward, cDefinitions);
 
 
         ADD_PV_NO_UNIT(
@@ -1589,11 +1589,11 @@ TEST(Core_TestCovariateExtractor, CE_collectRefreshIntervals)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(TimeFromStartHours, 10, TimeFromStartInHours, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartDays, 15, TimeFromStartInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartWeeks, 20, TimeFromStartInWeeks, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartMonths, 4, TimeFromStartInMonths, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartYears, 1, TimeFromStartInYears, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartHours, 10, TimeFromStartInHours, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartDays, 15, TimeFromStartInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartWeeks, 20, TimeFromStartInWeeks, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartMonths, 4, TimeFromStartInMonths, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartYears, 1, TimeFromStartInYears, Double, Forward, cDefinitions);
 
         CovariateExtractor extractor(
                 cDefinitions,
@@ -1646,11 +1646,11 @@ TEST(Core_TestCovariateExtractor, CE_collectRefreshIntervals)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(TimeFromStartHours, 10, TimeFromStartInHours, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartDays, 15, TimeFromStartInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartWeeks, 20, TimeFromStartInWeeks, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartMonths, 4, TimeFromStartInMonths, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartYears, 1, TimeFromStartInYears, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartHours, 10, TimeFromStartInHours, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartDays, 15, TimeFromStartInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartWeeks, 20, TimeFromStartInWeeks, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartMonths, 4, TimeFromStartInMonths, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartYears, 1, TimeFromStartInYears, Double, Forward, cDefinitions);
 
         CovariateExtractor extractor(
                 cDefinitions,
@@ -1728,11 +1728,11 @@ TEST(Core_TestCovariateExtractor, CE_collectRefreshIntervals)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(TimeFromStartHours, 10, TimeFromStartInHours, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartDays, 15, TimeFromStartInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartWeeks, 20, TimeFromStartInWeeks, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartMonths, 4, TimeFromStartInMonths, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartYears, 1, TimeFromStartInYears, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartHours, 10, TimeFromStartInHours, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartDays, 15, TimeFromStartInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartWeeks, 20, TimeFromStartInWeeks, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartMonths, 4, TimeFromStartInMonths, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartYears, 1, TimeFromStartInYears, Double, Forward, cDefinitions);
 
         DosageHistory dosageHistory = TestCovariateExtractor::get_dosage_history(
                 DATE_TIME_NO_VAR(2017, 8, 11, 14, 0, 0), DATE_TIME_NO_VAR(2017, 8, 14, 14, 0, 0));
@@ -1788,11 +1788,11 @@ TEST(Core_TestCovariateExtractor, CE_collectRefreshIntervals)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(TimeFromStartHours, 10, TimeFromStartInHours, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartDays, 15, TimeFromStartInDays, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartWeeks, 20, TimeFromStartInWeeks, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartMonths, 4, TimeFromStartInMonths, Double, Direct, cDefinitions);
-        ADD_CDEF_NO_R(TimeFromStartYears, 1, TimeFromStartInYears, Double, Direct, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartHours, 10, TimeFromStartInHours, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartDays, 15, TimeFromStartInDays, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartWeeks, 20, TimeFromStartInWeeks, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartMonths, 4, TimeFromStartInMonths, Double, Forward, cDefinitions);
+        ADD_CDEF_NO_R(TimeFromStartYears, 1, TimeFromStartInYears, Double, Forward, cDefinitions);
 
         DosageHistory dosageHistory = TestCovariateExtractor::get_dosage_history(
                 DATE_TIME_NO_VAR(2017, 8, 11, 14, 33, 0), DATE_TIME_NO_VAR(2017, 8, 14, 14, 33, 0));
@@ -1918,46 +1918,46 @@ TEST(Core_TestCovariateExtractor, CE_interpolateValues)
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(valRes, 15.0);
 
-    // Test direct interpolation (before _date1).
+    // Test Forward interpolation (before _date1).
     rc = TestCovariateExtractor::test_interpolateValues(
             5,
             DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
             10,
             DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
             DATE_TIME_NO_VAR(2017, 8, 13, 14, 32, 0),
-            InterpolationType::Direct,
+            InterpolationType::Forward,
             valRes,
             &extractor);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(valRes, 5.0);
 
-    // Test direct interpolation (between _date1 and _date2).
+    // Test Forward interpolation (between _date1 and _date2).
     rc = TestCovariateExtractor::test_interpolateValues(
             5,
             DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
             10,
             DATE_TIME_NO_VAR(2017, 8, 29, 14, 32, 0),
             DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
-            InterpolationType::Direct,
+            InterpolationType::Forward,
             valRes,
             &extractor);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(valRes, 5.0);
 
-    // Test direct interpolation (after _date2).
+    // Test Forward interpolation (after _date2).
     rc = TestCovariateExtractor::test_interpolateValues(
             5,
             DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
             10,
             DATE_TIME_NO_VAR(2017, 8, 19, 14, 32, 0),
             DATE_TIME_NO_VAR(2017, 8, 23, 14, 32, 0),
-            InterpolationType::Direct,
+            InterpolationType::Forward,
             valRes,
             &extractor);
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(valRes, 10.0);
 
-    // Test direct backward interpolation (before _date1).
+    // Test Forward backward interpolation (before _date1).
     rc = TestCovariateExtractor::test_interpolateValues(
             5,
             DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
@@ -1970,7 +1970,7 @@ TEST(Core_TestCovariateExtractor, CE_interpolateValues)
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(valRes, 5.0);
 
-    // Test direct backward interpolation (on _date1).
+    // Test Forward backward interpolation (on _date1).
     rc = TestCovariateExtractor::test_interpolateValues(
             5,
             DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
@@ -1983,7 +1983,7 @@ TEST(Core_TestCovariateExtractor, CE_interpolateValues)
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(valRes, 5.0);
 
-    // Test direct backward interpolation (between _date1 and _date2).
+    // Test Forward backward interpolation (between _date1 and _date2).
     rc = TestCovariateExtractor::test_interpolateValues(
             5,
             DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
@@ -1996,7 +1996,7 @@ TEST(Core_TestCovariateExtractor, CE_interpolateValues)
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(valRes, 10.0);
 
-    // Test direct backward interpolation (on _date2).
+    // Test Forward backward interpolation (on _date2).
     rc = TestCovariateExtractor::test_interpolateValues(
             5,
             DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
@@ -2009,7 +2009,7 @@ TEST(Core_TestCovariateExtractor, CE_interpolateValues)
     ASSERT_TRUE(rc);
     ASSERT_DOUBLE_EQ(valRes, 10.0);
 
-    // Test direct backward interpolation (after _date2).
+    // Test Forward backward interpolation (after _date2).
     rc = TestCovariateExtractor::test_interpolateValues(
             5,
             DATE_TIME_NO_VAR(2017, 8, 18, 14, 32, 0),
@@ -2031,9 +2031,9 @@ TEST(Core_TestCovariateExtractor, CE_sortPatientVariates)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 6.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
         ADD_PV_NO_UNIT(Weight, 6.3, Double, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
         ADD_PV_NO_UNIT(Weight, 7.2, Double, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
         ADD_PV_NO_UNIT(Weight, 7.4, Double, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), pVariates);
@@ -2074,9 +2074,9 @@ TEST(Core_TestCovariateExtractor, CE_sortPatientVariates)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 6.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
 
         CovariateExtractor extractor(
                 cDefinitions,
@@ -2091,9 +2091,9 @@ TEST(Core_TestCovariateExtractor, CE_sortPatientVariates)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 6.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
         ADD_PV_NO_UNIT(Weight, 6.3, Double, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
         ADD_PV_NO_UNIT(Weight, 7.2, Double, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
         ADD_PV_NO_UNIT(Weight, 7.4, Double, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), pVariates);
@@ -2138,9 +2138,9 @@ TEST(Core_TestCovariateExtractor, CE_sortPatientVariates)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 6.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
         ADD_PV_NO_UNIT(Weight, 6.3, Double, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
         ADD_PV_NO_UNIT(Weight, 7.2, Double, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
         ADD_PV_NO_UNIT(Weight, 7.4, Double, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), pVariates);
@@ -2185,9 +2185,9 @@ TEST(Core_TestCovariateExtractor, CE_sortPatientVariates)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 6.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
         ADD_PV_NO_UNIT(Weight, 6.3, Double, DATE_TIME_NO_VAR(2017, 8, 9, 22, 32, 0), pVariates);
         ADD_PV_NO_UNIT(Weight, 7.2, Double, DATE_TIME_NO_VAR(2017, 8, 12, 12, 32, 0), pVariates);
 
@@ -2217,9 +2217,9 @@ TEST(Core_TestCovariateExtractor, CE_sortPatientVariates)
         CovariateDefinitions cDefinitions;
         PatientVariates pVariates;
 
-        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
         ADD_CDEF_W_R_UNIT(Weight, 6.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+        ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
         ADD_PV_NO_UNIT(Weight, 6.3, Double, DATE_TIME_NO_VAR(2017, 8, 19, 22, 32, 0), pVariates);
         ADD_PV_NO_UNIT(Weight, 7.2, Double, DATE_TIME_NO_VAR(2017, 8, 19, 12, 32, 0), pVariates);
         ADD_PV_NO_UNIT(Weight, 7.4, Double, DATE_TIME_NO_VAR(2017, 8, 21, 12, 32, 0), pVariates);
@@ -2254,9 +2254,9 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test1_0)
 {
     CovariateDefinitions cDefinitions;
 
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-    ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
 
     ADD_EXPR2_CDEF(Special, "Weight * 0.5 + IsMale * 15", "Weight", "IsMale", cDefinitions);
 
@@ -2364,11 +2364,11 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test1_0)
 TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_0)
 {
     CovariateDefinitions cDefinitions;
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-    ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
     // ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, DATE_TIME_NO_VAR(2017, 8, 5, 8, 0, 0), Standard,
-    //                 Date, Direct, cDefinitions);
+    //                 Date, Forward, cDefinitions);
 
     ADD_EXPR2_CDEF(Special, "Weight * 0.5 + IsMale * 15", "Weight", "IsMale", cDefinitions);
     ADD_EXPR3_CDEF(VerySpecial, "Weight * 0.5 + IsMale * 15 + Gist * 25", "Weight", "IsMale", "Gist", cDefinitions);
@@ -2415,9 +2415,9 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_0)
 TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_1)
 {
     CovariateDefinitions cDefinitions;
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_NO_R_UNIT(Weight, 3.5, Standard, Double, Linear, "kg", cDefinitions);
-    ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
 
     ADD_EXPR2_CDEF(Special, "Weight * 0.5 + IsMale * 15", "Weight", "IsMale", cDefinitions);
     ADD_EXPR3_CDEF(VerySpecial, "Weight * 0.5 + IsMale * 15 + Gist * 25", "Weight", "IsMale", "Gist", cDefinitions);
@@ -2473,9 +2473,9 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_1)
 TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_2)
 {
     CovariateDefinitions cDefinitions;
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-    ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(IsMale, true, Standard, Bool, Forward, cDefinitions);
 
     ADD_EXPR2_CDEF(Special, "Weight * 0.5 + IsMale * 15", "Weight", "IsMale", cDefinitions);
     ADD_EXPR3_CDEF(VerySpecial, "Weight * 0.5 + IsMale * 15 + Gist * 25", "Weight", "IsMale", "Gist", cDefinitions);
@@ -2531,7 +2531,7 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_2)
 TEST(Core_TestCovariateExtractor, CovariateExtraction_test2_3)
 {
     CovariateDefinitions cDefinitions;
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
@@ -2594,9 +2594,9 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_0)
 {
     CovariateDefinitions cDefinitions;
     ADD_CDEF_NO_R_UNIT(Weight, 3.5, Standard, Double, Linear, "kg", cDefinitions);
-    ADD_CDEF_NO_R(AgeDays, 35, AgeInDays, Double, Direct, cDefinitions);
+    ADD_CDEF_NO_R(AgeDays, 35, AgeInDays, Double, Forward, cDefinitions);
     //ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), Standard,
-    //                  Date, Direct, cDefinitions);
+    //                  Date, Forward, cDefinitions);
 
     ADD_EXPR2_CDEF(DepOnAge, "AgeDays + Weight * 2", "AgeDays", "Weight", cDefinitions);
 
@@ -2662,9 +2662,9 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_1)
 {
     CovariateDefinitions cDefinitions;
     ADD_CDEF_NO_R_UNIT(Weight, 3.5, Standard, Double, Linear, "kg", cDefinitions);
-    ADD_CDEF_NO_R(AgeDays, 35, AgeInDays, Double, Direct, cDefinitions);
+    ADD_CDEF_NO_R(AgeDays, 35, AgeInDays, Double, Forward, cDefinitions);
     //ADD_CDEF_NO_R_STR(CovariateExtractor::sm_birthDateCName, DATE_TIME_NO_VAR(2017, 8, 5, 18, 0, 0), Standard,
-    //                  Date, Direct, cDefinitions);
+    //                  Date, Forward, cDefinitions);
 
 
     ADD_EXPR2_CDEF(DepOnAge, "AgeDays + Weight * 2", "AgeDays", "Weight", cDefinitions);
@@ -2745,7 +2745,7 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_2)
 {
     CovariateDefinitions cDefinitions;
     ADD_CDEF_NO_R_UNIT(Weight, 3.5, Standard, Double, Linear, "kg", cDefinitions);
-    ADD_CDEF_NO_R(AgeDays, 42, AgeInDays, Double, Direct, cDefinitions);
+    ADD_CDEF_NO_R(AgeDays, 42, AgeInDays, Double, Forward, cDefinitions);
 
     ADD_EXPR2_CDEF(DepOnAge, "AgeDays + Weight * 2", "AgeDays", "Weight", cDefinitions);
 
@@ -2800,8 +2800,8 @@ TEST(Core_TestCovariateExtractor, CovariateExtraction_test3_3)
 
     ADD_CDEF_W_R_UNIT(Weight, 40, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_W_R_UNIT(Height, 195, Standard, Double, Linear, Tucuxi::Common::days(1), "cm", cDefinitions);
-    ADD_CDEF_W_R_UNIT(Sex, 0, Standard, Int, Direct, Tucuxi::Common::days(1), "-", cDefinitions);
-    ADD_CDEF_W_R_UNIT(Gist, false, Standard, Bool, Direct, Tucuxi::Common::days(1), "", cDefinitions);
+    ADD_CDEF_W_R_UNIT(Sex, 0, Standard, Int, Forward, Tucuxi::Common::days(1), "-", cDefinitions);
+    ADD_CDEF_W_R_UNIT(Gist, false, Standard, Bool, Forward, Tucuxi::Common::days(1), "", cDefinitions);
     ADD_CDEF_W_R_UNIT(Scr, 50, Standard, Double, Linear, Tucuxi::Common::days(1), "umol/l", cDefinitions);
     ADD_CDEF_W_R_UNIT(CT, 50, Standard, Double, Linear, Tucuxi::Common::days(1), "g*h/l", cDefinitions);
     ADD_CDEF_W_R_UNIT(T, 12, Standard, Double, Linear, Tucuxi::Common::days(1), "s", cDefinitions);
