@@ -40,7 +40,11 @@ std::unique_ptr<Tucuxi::Core::DrugModel> BuildConstantElimination::buildDrugMode
         Value _variabilityValueA,
         Value _variabilityValueM,
         Value _variabilityValueR,
-        Value _variabilityValueS)
+        Value _variabilityValueS,
+        InterpolationType _interpA,
+        InterpolationType _interpM,
+        InterpolationType _interpR,
+        InterpolationType _interpS)
 {
     auto model = std::make_unique<Tucuxi::Core::DrugModel>();
 
@@ -66,37 +70,45 @@ std::unique_ptr<Tucuxi::Core::DrugModel> BuildConstantElimination::buildDrugMode
 
 
 
-    model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+    auto covSDef = std::make_unique<Tucuxi::Core::CovariateDefinition>(
             "covS",
             "0.0",
             nullptr,
             CovariateType::Standard,
             DataType::Double,
-            Tucuxi::Common::TranslatableString("covS")));
+            Tucuxi::Common::TranslatableString("covS"));
+    covSDef->setInterpolationType(_interpS);
+    model->addCovariate(std::move(covSDef));
 
-    model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+    auto covADef = std::make_unique<Tucuxi::Core::CovariateDefinition>(
             "covA",
             "0.0",
             nullptr,
             CovariateType::Standard,
             DataType::Double,
-            Tucuxi::Common::TranslatableString("covA")));
+            Tucuxi::Common::TranslatableString("covA"));
+    covADef->setInterpolationType(_interpA);
+    model->addCovariate(std::move(covADef));
 
-    model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+    auto covRDef = std::make_unique<Tucuxi::Core::CovariateDefinition>(
             "covR",
             "0.0",
             nullptr,
             CovariateType::Standard,
             DataType::Double,
-            Tucuxi::Common::TranslatableString("covR")));
+            Tucuxi::Common::TranslatableString("covR"));
+    covRDef->setInterpolationType(_interpR);
+    model->addCovariate(std::move(covRDef));
 
-    model->addCovariate(std::make_unique<Tucuxi::Core::CovariateDefinition>(
+    auto covMDef = std::make_unique<Tucuxi::Core::CovariateDefinition>(
             "covM",
             "1.0",
             nullptr,
             CovariateType::Standard,
             DataType::Double,
-            Tucuxi::Common::TranslatableString("covM")));
+            Tucuxi::Common::TranslatableString("covM"));
+    covMDef->setInterpolationType(_interpM);
+    model->addCovariate(std::move(covMDef));
 
     auto errorModel = std::make_unique<ErrorModel>();
 

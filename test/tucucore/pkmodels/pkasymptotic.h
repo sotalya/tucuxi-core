@@ -152,7 +152,7 @@ public:
     /// \brief Constructor
     PkAsymptotic()
         : IntakeIntervalCalculatorBase<1, PkAsymptoticExponentials>(
-                std::make_unique<PertinentTimesCalculatorAsymptotic>())
+                  std::make_unique<PertinentTimesCalculatorAsymptotic>())
     {
     }
 

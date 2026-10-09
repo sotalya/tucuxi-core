@@ -112,20 +112,25 @@ TEST(Core_TestTwoCompartmentExtraLag, twoCompExtraLagSingleDose)
 {
     // parameter for macro class
     Tucuxi::Core::ParameterDefinitions macroParameterDefs;
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                    "CL", 15.106, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(
             std::make_unique<Tucuxi::Core::ParameterDefinition>("Q", 20, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "V2", 342, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                    "V2", 342, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                    "V1", 340, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                    "Ka", 0.609, Tucuxi::Core::ParameterVariabilityType::None));
     macroParameterDefs.push_back(
             std::make_unique<Tucuxi::Core::ParameterDefinition>("F", 1, Tucuxi::Core::ParameterVariabilityType::None));
-    macroParameterDefs.push_back(std::make_unique<Tucuxi::Core::ParameterDefinition>(
-            "Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None));
+    macroParameterDefs.push_back(
+            std::make_unique<Tucuxi::Core::ParameterDefinition>(
+                    "Tlag", 1, Tucuxi::Core::ParameterVariabilityType::None));
     Tucuxi::Core::ParameterSetEvent macroParameters(DateTime::now(), macroParameterDefs);
 
     testFirstDose(macroParameters, 400.0, 12h, 0s, CYCLE_SIZE);

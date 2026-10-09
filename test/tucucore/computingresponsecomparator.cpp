@@ -301,7 +301,7 @@ void ComputingResponseComparator::compare(ComputingResponse& _r1, ComputingRespo
 #ifdef TUCU_COMPARE_TIME
     auto t1 = _r1.getComputingTimeInSeconds().count();
     auto t2 = _r2.getComputingTimeInSeconds().count();
-    std::cout << "Time simple (ms) : " << ( t1 )*1000.0 << " . Time Multi (ms) : " << t2 * 1000.0 << '\n';
+    std::cout << "Time simple (ms) : " << (t1) * 1000.0 << " . Time Multi (ms) : " << t2 * 1000.0 << '\n';
     std::cout << "Time diff (ms) : " << (t2 - t1) * 1000.0 << '\n';
     std::cout << "Time rel diff (%) : " << (t2 - t1) / t1 * 100.0 << '\n';
 #endif // TUCU_COMPARE_TIME

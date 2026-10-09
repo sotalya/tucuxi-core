@@ -189,7 +189,7 @@ TEST_F(ParameterExtractorConstructorTest, InvalidStartEnd)
     auto itDefinitions = makeIterator();
 
     CovariateDefinitions cDefinitions;
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
@@ -219,10 +219,10 @@ TEST_F(ParameterExtractorConstructorTest, CovariateOutOfBlueSky)
     auto itDefinitions = makeIterator();
 
     CovariateDefinitions cDefinitions;
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
-    ADD_CDEF_NO_R(Ghost, true, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Ghost, true, Standard, Bool, Forward, cDefinitions);
 
     CovariateSeries cSeries;
     // These events are before _start -> should be pushed forward at the parameter's interval beginning.
@@ -252,7 +252,7 @@ TEST_F(ParameterExtractorConstructorTest, DuplicateEventSameValue)
     auto itDefinitions = makeIterator();
 
     CovariateDefinitions cDefinitions;
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
@@ -284,7 +284,7 @@ TEST_F(ParameterExtractorConstructorTest, DuplicateEventDifferentValue)
     auto itDefinitions = makeIterator();
 
     CovariateDefinitions cDefinitions;
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
@@ -316,7 +316,7 @@ TEST_F(ParameterExtractorConstructorTest, NoDuplicateWhenDifferentTime)
     auto itDefinitions = makeIterator();
 
     CovariateDefinitions cDefinitions;
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
@@ -368,7 +368,7 @@ TEST_F(ParameterExtractorConstructorTest, SomeCovariatesNoParameters)
     // Some covariates, no parameters. Weird, but should throw no error. The timed covariate values map should be
     // correctly filled nonetheless.
     CovariateDefinitions cDefinitions;
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
@@ -465,7 +465,7 @@ TEST_F(ParameterExtractorConstructorTest, CovariatesAndParameters)
     auto itDefinitions = makeIterator();
 
     CovariateDefinitions cDefinitions;
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
@@ -529,7 +529,7 @@ TEST_F(ParameterExtractorConstructorTest, AllEventsAfterStart)
     auto itDefinitions = makeIterator();
 
     CovariateDefinitions cDefinitions;
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
@@ -595,7 +595,7 @@ TEST_F(ParameterExtractorConstructorTest, OneEventBeforeStartFails)
     auto itDefinitions = makeIterator();
 
     CovariateDefinitions cDefinitions;
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
     ADD_CDEF_NO_R(Foobar, 123, Standard, Double, Linear, cDefinitions);
@@ -628,7 +628,7 @@ TEST_F(ParameterExtractorConstructorTest, OneEventSlightlyLateFails)
     auto itDefinitions = makeIterator();
 
     CovariateDefinitions cDefinitions;
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
     ADD_CDEF_NO_R(Foobar, 123, Standard, Double, Linear, cDefinitions);
@@ -661,7 +661,7 @@ TEST_F(ParameterExtractorConstructorTest, MultiplePreStartValues)
     auto itDefinitions = makeIterator();
 
     CovariateDefinitions cDefinitions;
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
@@ -737,7 +737,7 @@ TEST(Core_TestParameterExtractor, PE_extract1_0)
 {
     CovariateDefinitions cDefinitions;
     // Covariates of interest.
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
@@ -792,7 +792,7 @@ TEST(Core_TestParameterExtractor, PE_extract1_1)
 {
     CovariateDefinitions cDefinitions;
     // Covariates of interest.
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 
@@ -849,7 +849,7 @@ TEST(Core_TestParameterExtractor, extractParamFromParam)
 {
     CovariateDefinitions cDefinitions;
     // Covariates of interest.
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
 

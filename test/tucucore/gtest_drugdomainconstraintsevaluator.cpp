@@ -165,7 +165,7 @@ static DrugModel howManyCovariateDefinition(uint8_t _nbCovariateDefinition)
             break;
 
         case 1:
-            ADD_CDEF_NO_R(Gist, true, Standard, Bool, Direct, cDefinitions);
+            ADD_CDEF_NO_R(Gist, true, Standard, Bool, Forward, cDefinitions);
             break;
 
         case 2:
@@ -478,7 +478,7 @@ static void imatinibTest()
     CovariateDefinitions cDefinitions;
     // Covariates of interest.
     ADD_CDEF_W_R_UNIT(bodyweight, 70, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_NO_R_UNIT(sex, 0.5, Sex, Int, Linear, "y", cDefinitions);
     ADD_CDEF_NO_R_UNIT(age, 50, AgeInYears, Int, Linear, "y", cDefinitions);
 
@@ -519,7 +519,7 @@ TEST(Core_TestDrugDomainConstraintsEvaluator, SimpleTest1)
 {
     CovariateDefinitions cDefinitions;
     // Covariates of interest.
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Age, 50, AgeInYears, Int, Linear, "y", cDefinitions);
@@ -564,7 +564,7 @@ TEST(Core_TestDrugDomainConstraintsEvaluator, SimpleTest2)
 {
     CovariateDefinitions cDefinitions;
     // Covariates of interest.
-    ADD_CDEF_NO_R(Gist, true, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, true, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Age, 3, AgeInWeeks, Int, Linear, "w", cDefinitions);
@@ -612,7 +612,7 @@ TEST(Core_TestDrugDomainConstraintsEvaluator, SimpleTest3)
 {
     CovariateDefinitions cDefinitions;
     // Covariates of interest.
-    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(Gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_W_R_UNIT(Weight, 3.5, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Height, 100, Standard, Double, Linear, "cm", cDefinitions);
     ADD_CDEF_NO_R_UNIT(Age, 3, AgeInDays, Int, Linear, "w", cDefinitions);
@@ -695,7 +695,7 @@ TEST(Core_TestDrugDomainConstraintsEvaluator, SimpleTest5)
     CovariateDefinitions cDefinitions;
     // Covariates of interest.
     ADD_CDEF_W_R_UNIT(bodyweight, 70, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-    ADD_CDEF_NO_R(gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_NO_R_UNIT(age, 50, AgeInYears, Int, Linear, "y", cDefinitions);
 
     drugModel.addCovariate(std::move(cDefinitions[0]));
@@ -751,7 +751,7 @@ TEST(Core_TestDrugDomainConstraintsEvaluator, SimpleTest6)
     CovariateDefinitions cDefinitions;
     // Covariates of interest.
     ADD_CDEF_W_R_UNIT(bodyweight, 70, Standard, Double, Linear, Tucuxi::Common::days(1), "kg", cDefinitions);
-    ADD_CDEF_NO_R(gist, false, Standard, Bool, Direct, cDefinitions);
+    ADD_CDEF_NO_R(gist, false, Standard, Bool, Forward, cDefinitions);
     ADD_CDEF_NO_R_UNIT(age, 50, AgeInYears, Int, Linear, "y", cDefinitions);
 
     drugModel.addCovariate(std::move(cDefinitions[0]));

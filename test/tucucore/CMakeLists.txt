@@ -92,6 +92,7 @@ file(GLOB TUCUTESTCORE_SOURCE_FILES
     ${CMAKE_CURRENT_LIST_DIR}/gtest_computingutils.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_concentrationcalculator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_covariateextractor.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/gtest_covariateinterpolationmodes.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_cyclestatistics.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_dosage.cpp
     ${CMAKE_CURRENT_LIST_DIR}/gtest_drugdomainconstraintsevaluator.cpp
