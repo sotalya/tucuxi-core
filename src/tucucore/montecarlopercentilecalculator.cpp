@@ -522,7 +522,7 @@ foundFalse:
     // Be careful, here we multiply by realPatientNumber
     for (double percentileRank : _percentileRanks) {
         positions.push_back(
-                static_cast<int>(static_cast<double>(percentileRank) / 100.0 * static_cast<double>(realPatientNumber)));
+                std::min(static_cast<int>(realPatientNumber - 1), static_cast<int>(static_cast<double>(percentileRank) / 100.0 * static_cast<double>(realPatientNumber))));
     }
 
 #ifndef TUCU_SINGLETHREADEDPERCENTILESORT
