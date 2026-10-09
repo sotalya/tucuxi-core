@@ -573,6 +573,12 @@ ComputingStatus GeneralExtractor::generalExtractions(
 
         ComputingStatus parametersExtractionResult;
 
+        PkModel *pkModel = nullptr;
+
+        // Special trick for vancomycin.colin2019 model where CL and Q depend on V1 and V2
+        if (analyteSet->getPkModelId() == "linear.2comp.macro.colin2019") {
+            pkModel = _pkModel[analyteSet->getId()].get();
+        }
 
         if (_traits->getComputingOption().getParametersType() == PredictionParameterType::Population) {
 #ifdef TUCU_POPPARAMETERSFROMDEFAULTVALUES
@@ -582,7 +588,7 @@ ComputingStatus GeneralExtractor::generalExtractions(
 
             //parametersExtractionResult = parameterExtractor.extract(_parameterSeries);
 
-            ParameterSetSeries intermediateParameterSeries;
+            ParameterSetSeries intermediateParameterSeries(pkModel);
 
             parametersExtractionResult = parameterExtractor.extract(intermediateParameterSeries);
 
@@ -608,7 +614,7 @@ ComputingStatus GeneralExtractor::generalExtractions(
             }
         }
         else {
-            ParameterSetSeries intermediateParameterSeries;
+            ParameterSetSeries intermediateParameterSeries(pkModel);
 
             parametersExtractionResult = parameterExtractor.extract(intermediateParameterSeries);
 

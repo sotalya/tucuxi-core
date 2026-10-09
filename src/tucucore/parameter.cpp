@@ -23,6 +23,7 @@
 #include <memory>
 
 #include "tucucore/parameter.h"
+#include "tucucore/pkmodel.h"
 
 #include "tucucommon/loggerhelper.h"
 
@@ -52,6 +53,17 @@ ParameterSetEventPtr ParameterSetSeries::getAtTime(const DateTime& _date, const 
                 return nullptr;
             }
         }
+
+        // Special trick for vancomycin.colin2019 model where CL and Q depend on V1 and V2
+        if ((m_pkModel != nullptr) && (m_pkModel->getPkModelId() == "linear.2comp.macro.colin2019")) {
+            auto valueV1 = pParameters->getValue(ParameterId::V1);
+            auto valueV2 = pParameters->getValue(ParameterId::V2);
+            auto valueCL = pParameters->getValue(ParameterId::CL);
+            auto valueQ = pParameters->getValue(ParameterId::Q);
+            pParameters->setValue(ParameterId::CL, valueCL * std::pow(valueV1 / 42.9, 0.75));
+            pParameters->setValue(ParameterId::Q, valueQ * std::pow(valueV2 / 41.7, 0.75));
+        }
+
 
         return ParameterSetEventPtr(std::move(pParameters));
     }

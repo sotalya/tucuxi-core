@@ -49,6 +49,7 @@ public:
 };
 
 class ParametersExtractor;
+class PkModel;
 
 class Parameter : public IndividualValue<ParameterDefinition>
 {
@@ -86,6 +87,12 @@ public:
     {
         return m_value;
     }
+
+    void setValue(Value _value)
+    {
+        m_value = _value;
+    }
+
     bool isVariable() const
     {
         return m_definition.isVariable();
@@ -188,6 +195,24 @@ public:
     }
 
     ///
+    /// \brief Sets the value of a parameter
+    /// \param _id Id of the parameter
+    /// \param _value The value to set
+    ///
+    /// This function considers a missing parameter to be an error,
+    /// and in such case adds a message in the logs.
+    ///
+    void setValue(ParameterId::Enum _id, Value _value)
+    {
+        int index = m_IdToIndex.at(_id);
+        if (index >= 0) {
+            m_parameters[static_cast<size_t>(index)].setValue(_value);
+        }
+        static Tucuxi::Common::LoggerHelper logger;
+        logger.error("Parameter not existing in ParameterSet");
+    }
+
+    ///
     /// \brief Gets the value of a parameter if it exists
     /// \param _id Id of the parameter
     /// \return The value of the parameter if it exists, 0 else
@@ -260,6 +285,13 @@ typedef std::unique_ptr<const ParameterSetEvent> ParameterSetEventPtr;
 class ParameterSetSeries
 {
 public:
+    ParameterSetSeries(PkModel* _pkModel = nullptr) : m_pkModel(_pkModel) {}
+
+    void setPkModel(PkModel* _pkModel)
+    {
+        m_pkModel = _pkModel;
+    }
+
     ///
     /// \brief getAtTime
     /// \param _date
@@ -279,6 +311,9 @@ public:
 
     // private:
     std::vector<ParameterSetEvent> m_parameterSets;
+
+private:
+    PkModel* m_pkModel;
 };
 
 

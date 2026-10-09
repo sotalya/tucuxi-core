@@ -284,6 +284,7 @@ ComputingStatus ParametersExtractor::extract(ParameterSetSeries& _series)
 ComputingStatus ParametersExtractor::buildFullSet(
         const ParameterSetSeries& _inputSeries, ParameterSetSeries& _outputSeries) const
 {
+    _outputSeries.setPkModel(_inputSeries.m_pkModel);
     // Start with the first set of parameters (it should contain the full set)
     ParameterSetEvent current(_inputSeries.m_parameterSets[0]);
     _outputSeries.addParameterSetEvent(current);
