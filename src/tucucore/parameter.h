@@ -207,6 +207,7 @@ public:
         int index = m_IdToIndex.at(_id);
         if (index >= 0) {
             m_parameters[static_cast<size_t>(index)].setValue(_value);
+            return;
         }
         static Tucuxi::Common::LoggerHelper logger;
         logger.error("Parameter not existing in ParameterSet");
