@@ -1667,6 +1667,7 @@ std::unique_ptr<ParameterDefinition> DrugModelImport::extractParameter(Tucuxi::C
     TucuUnit unit;
     std::unique_ptr<LightPopulationValue> value = nullptr;
     std::unique_ptr<ParameterVariability> variability = nullptr;
+    std::unique_ptr<ParameterVariability> iovVariability = nullptr;
     std::unique_ptr<Operation> validation = nullptr;
 
     XmlNodeIterator it = _node->getChildren();
@@ -1684,6 +1685,9 @@ std::unique_ptr<ParameterDefinition> DrugModelImport::extractParameter(Tucuxi::C
         }
         else if (nodeName == "bsv") {
             variability = extractVariability(it);
+        }
+        else if (nodeName == "iov") {
+            iovVariability = extractVariability(it);
         }
         else if (nodeName == "validation") {
 
@@ -1716,10 +1720,36 @@ std::unique_ptr<ParameterDefinition> DrugModelImport::extractParameter(Tucuxi::C
         return nullptr;
     }
 
+    // An IOV reuses the BSV distribution law, so it needs a BSV element to
+    // read that law from.
+    if ((iovVariability != nullptr) && (variability == nullptr)) {
+        setStatus(Status::Error, "The PK parameter '" + id + "' has an IOV but no BSV");
+        return nullptr;
+    }
+
+    // An IOV carries exactly one standard deviation per parameter.
+    if (iovVariability != nullptr) {
+        std::size_t const nbIovStdDevs = iovVariability->getValues().size();
+        if (nbIovStdDevs > 1) {
+            setStatus(Status::Error, "The PK parameter '" + id + "' has more than one IOV standard deviation");
+            return nullptr;
+        }
+    }
+
+    ParameterVariabilityType const bsvType =
+            (variability != nullptr) ? variability->getType() : ParameterVariabilityType::None;
+
     auto parameter =
             std::make_unique<ParameterDefinition>(id, value->getValue(), value->getOperation(), std::move(variability));
     parameter->setUnit(unit);
     parameter->setValidation(std::move(validation));
+
+    if (iovVariability != nullptr) {
+        std::vector<Value> const iovStdDevs = iovVariability->getValues();
+        if (!iovStdDevs.empty()) {
+            parameter->setIov(bsvType, iovStdDevs[0]);
+        }
+    }
 
     return parameter;
 }

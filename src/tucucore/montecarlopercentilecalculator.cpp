@@ -521,8 +521,10 @@ foundFalse:
     // We create the vector of positions corresponding to the percentiles ranks.
     // Be careful, here we multiply by realPatientNumber
     for (double percentileRank : _percentileRanks) {
-        positions.push_back(
-                std::min(static_cast<int>(realPatientNumber - 1), static_cast<int>(static_cast<double>(percentileRank) / 100.0 * static_cast<double>(realPatientNumber))));
+        positions.push_back(std::min(
+                static_cast<int>(realPatientNumber - 1),
+                static_cast<int>(
+                        static_cast<double>(percentileRank) / 100.0 * static_cast<double>(realPatientNumber))));
     }
 
 #ifndef TUCU_SINGLETHREADEDPERCENTILESORT

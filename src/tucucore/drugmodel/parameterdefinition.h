@@ -160,6 +160,41 @@ public:
         return *m_variability;
     }
 
+    ///
+    /// \brief Indicate whether the parameter carries an Inter-Occasion
+    ///        Variability (IOV) on top of its between-subject variability.
+    /// \return True if an IOV is defined, false otherwise.
+    ///
+    /// An IOV is always optional and, when present, follows the same
+    /// distribution law as the BSV, adding only its own standard deviations.
+    ///
+    bool hasIov() const
+    {
+        return m_iov != nullptr;
+    }
+
+    ///
+    /// \brief Get the Inter-Occasion Variability of the parameter.
+    /// \return Reference to the IOV variability.
+    ///
+    /// The caller must ensure hasIov() returns true before calling this.
+    ///
+    ParameterVariability const& getIov() const
+    {
+        return *m_iov;
+    }
+
+    ///
+    /// \brief Set the Inter-Occasion Variability of the parameter.
+    /// \param[in] _type : IOV distribution law (same as the BSV law).
+    /// \param[in] _stdDev : Single IOV standard deviation.
+    ///
+    /// A parameter carries exactly one IOV standard deviation, which shares
+    /// the BSV law. An IOV always implies a BSV. A non-positive value is
+    /// dropped with a warning and the IOV is left unset, so hasIov() is false.
+    ///
+    void setIov(ParameterVariabilityType const _type, Value const _stdDev);
+
     /// \brief Set the validation operation
     /// \param _operation Operation used to validate the covariate value
     void setValidation(std::unique_ptr<Operation> _validation)
@@ -192,6 +227,15 @@ public:
 
 private:
     std::unique_ptr<ParameterVariability> m_variability;
+
+    /// \brief Optional Inter-Occasion Variability (IOV) of the parameter.
+    ///
+    /// Null when the parameter has no IOV, which is the common case and must
+    /// stay free of any overhead. When present, it shares the distribution
+    /// law of m_variability and only carries its own standard deviations. An
+    /// IOV always implies a defined BSV.
+    std::unique_ptr<ParameterVariability> m_iov;
+
     TucuUnit m_unit;
 
     /// \brief Operation to validate the value of the covariate

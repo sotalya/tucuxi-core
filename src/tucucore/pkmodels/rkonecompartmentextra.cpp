@@ -32,7 +32,7 @@ namespace Core {
 
 RK4OneCompartmentExtraMicro::RK4OneCompartmentExtraMicro()
     : IntakeIntervalCalculatorRK4Base<2, RK4OneCompartmentExtraMicro>(
-            std::make_unique<PertinentTimesCalculatorStandard>())
+              std::make_unique<PertinentTimesCalculatorStandard>())
 {
 }
 

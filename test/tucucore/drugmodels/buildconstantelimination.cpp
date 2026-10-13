@@ -44,7 +44,8 @@ std::unique_ptr<Tucuxi::Core::DrugModel> BuildConstantElimination::buildDrugMode
         InterpolationType _interpA,
         InterpolationType _interpM,
         InterpolationType _interpR,
-        InterpolationType _interpS)
+        InterpolationType _interpS,
+        Value _iovValueA)
 {
     auto model = std::make_unique<Tucuxi::Core::DrugModel>();
 
@@ -138,6 +139,10 @@ std::unique_ptr<Tucuxi::Core::DrugModel> BuildConstantElimination::buildDrugMode
             0.0,
             std::move(opA),
             std::make_unique<ParameterVariability>(_variabilityTypeA, _variabilityValueA));
+    if (_iovValueA > 0.0) {
+        // The IOV shares the BSV law and only adds its own standard deviation.
+        pa->setIov(_variabilityTypeA, _iovValueA);
+    }
     dispositionParameters->addParameter(std::move(pa));
     auto opR = std::make_unique<JSOperation>(
             "return covR;", OperationInputList{OperationInput("covR", InputType::DOUBLE)});

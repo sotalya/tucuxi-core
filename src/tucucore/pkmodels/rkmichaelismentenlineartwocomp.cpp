@@ -30,7 +30,7 @@ namespace Core {
 
 RkMichaelisMentenLinearTwoComp::RkMichaelisMentenLinearTwoComp()
     : IntakeIntervalCalculatorRK4Base<3, RkMichaelisMentenLinearTwoComp>(
-            std::make_unique<PertinentTimesCalculatorStandard>())
+              std::make_unique<PertinentTimesCalculatorStandard>())
 {
     m_Tinf = 0.0;
     m_Tlag = 0.0;

@@ -32,7 +32,7 @@ namespace Core {
 
 OneCompartmentExtraLagMicro::OneCompartmentExtraLagMicro()
     : IntakeIntervalCalculatorBase<2, OneCompartmentExtraLagExponentials>(
-            std::make_unique<PertinentTimesCalculatorStandard>())
+              std::make_unique<PertinentTimesCalculatorStandard>())
 {
 }
 

@@ -52,8 +52,8 @@ public:
     /// \param _unit Unit of measure of the value.
     /// \param _date Time when the change happened.
     PatientCovariate(std::string _id, std::string _value, const DataType _dataType, TucuUnit _unit, DateTime _date)
-        : TimedEvent(_date), m_id{std::move(_id)}, m_value{std::move(_value)}, m_dataType{_dataType}, m_unit{std::move(
-                                                                                                              _unit)}
+        : TimedEvent(_date), m_id{std::move(_id)}, m_value{std::move(_value)}, m_dataType{_dataType},
+          m_unit{std::move(_unit)}
     {
     }
 

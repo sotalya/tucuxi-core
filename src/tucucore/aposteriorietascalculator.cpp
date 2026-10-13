@@ -25,6 +25,7 @@
 #include "concentrationcalculator.h"
 #include "likelihood.h"
 #include "minimize.h"
+#include "occasioniovcontext.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -39,7 +40,8 @@ ComputingStatus APosterioriEtasCalculator::computeAposterioriEtas(
         const IResidualErrorModel& _residualErrorModel,
         const SampleSeries& _samples,
         Etas& _aPosterioriEtas,
-        Value& _negativeLogLikelihood)
+        Value& _negativeLogLikelihood,
+        std::shared_ptr<OccasionIovContext const> _iovContext)
 {
     // Verify we have a var-covar matrix
     if (isOmegaEmpty(_omega)) {
@@ -77,8 +79,21 @@ ComputingStatus APosterioriEtasCalculator::computeAposterioriEtas(
 
     // TODO : Use a factory for the calculator
     ConcentrationCalculator calculator;
+
+    // Attach the IOV occasion context (when present). We have to alter the
+    // constness of the parameters variable since we need to modify it to add
+    // the IOV context, but we do not want to modify its type throughout the
+    // code, so we have to duplicate it here.
+    std::unique_ptr<ParameterSetSeries> localParameters;
+    ParameterSetSeries const* parameters = &_parameters;
+    if (_iovContext != nullptr) {
+        localParameters = std::make_unique<ParameterSetSeries>(_parameters);
+        localParameters->setIovContext(_iovContext);
+        parameters = localParameters.get();
+    }
+
     // This is the object holding the state of minimization
-    Likelihood funcd(_omega, _residualErrorModel, _samples, _intakes, _parameters, calculator);
+    Likelihood funcd(_omega, _residualErrorModel, _samples, _intakes, *parameters, calculator);
 
     // This is the object responsible for minimization
     Frprmn<Likelihood> frprmn(funcd);

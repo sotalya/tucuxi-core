@@ -33,7 +33,7 @@ namespace Core {
 
 OneCompartmentBolusMicro::OneCompartmentBolusMicro()
     : IntakeIntervalCalculatorBase<1, OneCompartmentBolusExponentials>(
-            std::make_unique<PertinentTimesCalculatorStandard>())
+              std::make_unique<PertinentTimesCalculatorStandard>())
 {
 }
 
