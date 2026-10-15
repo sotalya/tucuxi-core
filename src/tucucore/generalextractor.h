@@ -34,6 +34,7 @@
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugtreatment/patientcovariate.h"
 #include "tucucore/drugtreatment/sample.h"
+#include "tucucore/sampleevent.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -47,6 +48,7 @@ class PkModel;
 class HalfLife;
 class PkModelCollection;
 class DrugTreatment;
+class OccasionIovContext;
 
 class GeneralExtractor
 {
@@ -73,6 +75,23 @@ public:
             const DrugModel& _drugModel,
             const AnalyteGroupId& _analyteGroupId,
             std::vector<const FullFormulationAndRoute*>& _formulationAndRoutes,
+            OmegaMatrix& _omega);
+
+    ///
+    /// \brief Add the IOV blocks to a BSV Omega for an a-posteriori fit.
+    ///
+    /// \param[in] _parameterSeries : Parameters carrying the IOV.
+    /// \param[in] _intakeSeries : Dosing intervals.
+    /// \param[in] _sampleSeries : Samples deciding which intervals are
+    ///            occasions.
+    /// \param[inout] _omega : BSV Omega on entry, extended with the IOV blocks
+    ///               on return when IOV applies.
+    /// \return Occasion IOV context when IOV applies, nullptr otherwise.
+    ///
+    std::shared_ptr<OccasionIovContext const> addIov(
+            const ParameterSetSeries& _parameterSeries,
+            const IntakeSeries& _intakeSeries,
+            const SampleSeries& _sampleSeries,
             OmegaMatrix& _omega);
 
     virtual ComputingStatus generalExtractions(

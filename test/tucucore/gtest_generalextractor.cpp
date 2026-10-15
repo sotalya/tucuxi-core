@@ -21,7 +21,9 @@
 
 #include <gtest/gtest.h>
 
+#include "tucucore/computingservice/computingrequest.h"
 #include "tucucore/computingservice/computingtrait.h"
+#include "tucucore/drugtreatment/sample.h"
 #include "tucucore/generalextractor.h"
 #include "tucucore/pkmodel.h"
 
@@ -135,4 +137,91 @@ TEST(GeneralExtractorTest, GeneralExtractionsWithDoseCovariateOk)
                     parameterSeries,
                     calculationStartTime),
             ComputingStatus::Ok);
+}
+
+// End-to-end test of the a-posteriori IOV path.
+TEST(GeneralExtractorTest, AposterioriEtasWithIov)
+{
+    BuildConstantElimination builder;
+    auto drugModel = builder.buildDrugModel(
+            ResidualErrorType::ADDITIVE,
+            std::vector<Value>({100.0}),
+            ParameterVariabilityType::Additive, // BSV on TestA
+            ParameterVariabilityType::None,
+            ParameterVariabilityType::None,
+            ParameterVariabilityType::None,
+            10.0, // BSV standard deviation on TestA
+            0.0,
+            0.0,
+            0.0,
+            InterpolationType::Forward,
+            InterpolationType::Forward,
+            InterpolationType::Forward,
+            InterpolationType::Forward,
+            5.0); // IOV standard deviation on TestA
+
+    const FormulationAndRoute route(Formulation::OralSolution, AdministrationRoute::Oral);
+    DateTime start = DATE_TIME_NO_VAR(2018, 9, 1, 8, 0, 0);
+    auto drugTreatment = buildDrugTreatment(route, start); // 16 doses, 6 h apart
+
+    // Two samples in two different intervals = two IOV occasions.
+    drugTreatment->addSample(std::make_unique<Sample>(
+            start + Duration(std::chrono::hours(3)), AnalyteId("analyte"), 1.0, TucuUnit("mg/l")));
+    drugTreatment->addSample(std::make_unique<Sample>(
+            start + Duration(std::chrono::hours(27)), AnalyteId("analyte"), 2.0, TucuUnit("mg/l")));
+
+    DateTime end = start + Duration(std::chrono::hours(96));
+    ComputingOption computingOption(PredictionParameterType::Aposteriori, CompartmentsOption::MainCompartment);
+    ComputingTraitStandard traits("request", start, end, 10.0, computingOption);
+
+    PkModelCollection collection;
+    defaultPopulate(collection);
+
+    GeneralExtractor extractor;
+    std::map<AnalyteGroupId, std::shared_ptr<PkModel> > pkModel;
+    GroupsIntakeSeries intakeSeries;
+    CovariateSeries covariateSeries;
+    GroupsParameterSetSeries parameterSeries;
+    DateTime calculationStartTime;
+
+    ASSERT_EQ(
+            extractor.generalExtractions(
+                    &traits,
+                    *drugModel,
+                    drugTreatment->getDosageHistory(),
+                    drugTreatment->getSamples(),
+                    drugTreatment->getCovariates(),
+                    &collection,
+                    pkModel,
+                    intakeSeries,
+                    covariateSeries,
+                    parameterSeries,
+                    calculationStartTime),
+            ComputingStatus::Ok);
+
+    ASSERT_FALSE(parameterSeries.empty());
+    AnalyteGroupId groupId = parameterSeries.begin()->first;
+
+    std::unique_ptr<ComputingTraitConcentration> requestTraits =
+            std::make_unique<ComputingTraitConcentration>("request", start, end, 10.0, computingOption);
+    ComputingRequest request("request", *drugModel, *drugTreatment, std::move(requestTraits));
+
+    Etas etas;
+    Value negativeLogLikelihood = 0.0;
+    ComputingStatus status = extractor.extractAposterioriEtas(
+            etas,
+            request,
+            PredictionParameterType::Aposteriori,
+            groupId,
+            intakeSeries[groupId],
+            parameterSeries[groupId],
+            covariateSeries,
+            calculationStartTime,
+            end,
+            negativeLogLikelihood);
+
+    EXPECT_EQ(status, ComputingStatus::Ok);
+    // One BSV eta for TestA. The IOV etas (one per sampled occasion) were used for
+    // the fit and dropped afterwards, so they must NOT appear in the result.
+    EXPECT_EQ(etas.size(), static_cast<size_t>(1));
 }

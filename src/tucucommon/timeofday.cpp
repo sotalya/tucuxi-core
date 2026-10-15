@@ -44,9 +44,8 @@ TimeOfDay::TimeOfDay(std::chrono::seconds& _time) : m_time(_time)
 
 
 TimeOfDay::TimeOfDay(const Duration& _time)
-    : m_time(
-            static_cast<double>(_time.toMilliseconds())
-            / 1000.0) // Initialization must be done in seconds but we use milliseconds for better precision
+    : m_time(static_cast<double>(_time.toMilliseconds())
+             / 1000.0) // Initialization must be done in seconds but we use milliseconds for better precision
 {
     normalize();
 }

@@ -219,9 +219,8 @@ static void testMultiConcentrationCalculator(
 #if GTEST_VERBOSE
             for (int testCycle = 0; testCycle < nbCycles; testCycle++) {
                 for (int testNbPoint = 0; testNbPoint < _nbPoints; testNbPoint++) {
-                    std::cout << "concentration[" << testCycle << "]"
-                              << "[" << testNbPoint << "]"
-                              << ": " << predictionPtr->getValues()[testCycle][testNbPoint] << '\n';
+                    std::cout << "concentration[" << testCycle << "]" << "[" << testNbPoint << "]" << ": "
+                              << predictionPtr->getValues()[testCycle][testNbPoint] << '\n';
                 }
             }
 #endif

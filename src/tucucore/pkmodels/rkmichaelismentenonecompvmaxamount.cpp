@@ -30,7 +30,7 @@ namespace Core {
 
 RkMichaelisMentenOneCompVmaxAmount::RkMichaelisMentenOneCompVmaxAmount()
     : IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenOneCompVmaxAmount>(
-            std::make_unique<PertinentTimesCalculatorStandard>())
+              std::make_unique<PertinentTimesCalculatorStandard>())
 {
 }
 

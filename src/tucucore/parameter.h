@@ -23,6 +23,7 @@
 #ifndef TUCUXI_CORE_PARAMETER_H
 #define TUCUXI_CORE_PARAMETER_H
 
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
@@ -50,6 +51,7 @@ public:
 
 class ParametersExtractor;
 class PkModel;
+class OccasionIovContext;
 
 class Parameter : public IndividualValue<ParameterDefinition>
 {
@@ -114,6 +116,10 @@ public:
     size_t m_omegaIndex{0};
     size_t m_nbEtas{0};
 
+    /// \brief Offset of this parameter's IOV eta within one occasion block.
+    ///        A parameter has at most one IOV eta (none when it has no IOV).
+    size_t m_iovIndex{0};
+
 private:
     Value m_value;
 };
@@ -166,6 +172,24 @@ public:
 
 
     bool applyEtas(const Etas& _etas);
+
+    ///
+    /// \brief Apply etas with inter-occasion variability for one occasion.
+    ///
+    /// For each variable parameter the BSV deviation and, when an occasion is
+    /// given, that occasion's IOV deviation are summed and applied together
+    /// through the parameter distribution law.
+    ///
+    /// \param[in] _etas : Full eta vector, BSV head then per-occasion IOV
+    ///            blocks.
+    /// \param[in] _iovContext : Eta-vector layout and occasions.
+    /// \param[in] _occasionIndex : Occasion block index for this event, or -1
+    ///            when the event lies in an interval with no sample (no IOV
+    ///            is then applied).
+    /// \return True if every resulting parameter value is a number.
+    ///
+    bool applyEtas(Etas const& _etas, OccasionIovContext const& _iovContext, int32_t _occasionIndex);
+
     Parameters::const_iterator begin() const
     {
         return m_parameters.begin();
@@ -207,7 +231,6 @@ public:
         int index = m_IdToIndex.at(_id);
         if (index >= 0) {
             m_parameters[static_cast<size_t>(index)].setValue(_value);
-            return;
         }
         static Tucuxi::Common::LoggerHelper logger;
         logger.error("Parameter not existing in ParameterSet");
@@ -304,6 +327,16 @@ public:
     ParameterSetEventPtr getAtTime(const DateTime& _date, const Etas& _etas = Etas(0)) const;
     void addParameterSetEvent(const ParameterSetEvent& _parameterSetEvent);
 
+    ///
+    /// \brief Attach an IOV occasion context used when applying etas.
+    ///
+    /// \param[in] _iovContext : Context, or nullptr to disable IOV.
+    ///
+    void setIovContext(std::shared_ptr<OccasionIovContext const> _iovContext)
+    {
+        m_iovContext = std::move(_iovContext);
+    }
+
     // Make the test class friend, as this will allow us to manually check the available events.
     friend TestParameterExtractor;
 
@@ -312,6 +345,9 @@ public:
 
     // private:
     std::vector<ParameterSetEvent> m_parameterSets;
+
+    /// \brief Optional IOV occasion context, set only on the IOV fitting path.
+    std::shared_ptr<OccasionIovContext const> m_iovContext;
 
 private:
     PkModel* m_pkModel;

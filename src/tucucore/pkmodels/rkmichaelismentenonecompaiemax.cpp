@@ -41,7 +41,7 @@ std::vector<std::string> RkMichaelisMentenOneCompAiEmaxLag::getParametersId()
 
 RkMichaelisMentenOneCompAiEmax::RkMichaelisMentenOneCompAiEmax()
     : IntakeIntervalCalculatorRK4Base<2, RkMichaelisMentenOneCompAiEmax>(
-            std::make_unique<PertinentTimesCalculatorStandard>())
+              std::make_unique<PertinentTimesCalculatorStandard>())
 {
 }
 

@@ -33,7 +33,7 @@ namespace Core {
 
 ThreeCompartmentBolusMicro::ThreeCompartmentBolusMicro()
     : IntakeIntervalCalculatorBase<3, ThreeCompartmentBolusExponentials>(
-            std::make_unique<PertinentTimesCalculatorStandard>())
+              std::make_unique<PertinentTimesCalculatorStandard>())
 {
 }
 

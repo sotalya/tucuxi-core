@@ -33,13 +33,11 @@
 #include "tucucore/drugtreatment/patientcovariate.h"
 #include "tucucore/pkmodel.h"
 
-#include "drugmodels/buildconstantelimination.h"
-
-#include "pkmodels/constanteliminationbolus.h"
-
-#include "gtest_core.h"
-#include "testutils.h"
 #include "computingcomponentfactory.h"
+#include "drugmodels/buildconstantelimination.h"
+#include "gtest_core.h"
+#include "pkmodels/constanteliminationbolus.h"
+#include "testutils.h"
 
 using namespace std::chrono_literals;
 using namespace date;
@@ -325,7 +323,7 @@ static std::vector<CycleData> computeMultiCovariate(
 }
 
 // A covariate measurement as an offset in hours from the treatment start (which
-// is also the first dose) plus its value. Offsets may be negative (before the 
+// is also the first dose) plus its value. Offsets may be negative (before the
 // start) or beyond the end.
 struct TimedMeasurement
 {

@@ -53,7 +53,10 @@ public:
             Tucuxi::Core::InterpolationType _interpA = Tucuxi::Core::InterpolationType::Forward,
             Tucuxi::Core::InterpolationType _interpM = Tucuxi::Core::InterpolationType::Forward,
             Tucuxi::Core::InterpolationType _interpR = Tucuxi::Core::InterpolationType::Forward,
-            Tucuxi::Core::InterpolationType _interpS = Tucuxi::Core::InterpolationType::Forward);
+            Tucuxi::Core::InterpolationType _interpS = Tucuxi::Core::InterpolationType::Forward,
+            // Optional IOV standard deviation on TestA (0 means no IOV). The IOV
+            // uses the same law as the TestA BSV, and an IOV always implies a BSV.
+            Tucuxi::Core::Value _iovValueA = 0.0);
 };
 
 #endif // BUILDCONSTANTELIMINATION_H

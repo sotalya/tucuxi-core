@@ -22,6 +22,8 @@
 
 #include "parameterdefinition.h"
 
+#include "tucucommon/loggerhelper.h"
+
 namespace Tucuxi {
 namespace Core {
 
@@ -67,6 +69,20 @@ ParameterDefinition::ParameterDefinition(
 }
 
 ParameterDefinition::~ParameterDefinition() = default;
+
+void ParameterDefinition::setIov(ParameterVariabilityType const _type, Value const _stdDev)
+{
+    // A non-positive standard deviation cannot define a variability (it would
+    // make the Omega singular), so drop it with a warning and keep no IOV.
+    if (_stdDev <= 0.0) {
+        Tucuxi::Common::LoggerHelper logger;
+        logger.warn("Ignoring non-positive IOV standard deviation for parameter {}", m_id);
+        m_iov = nullptr;
+        return;
+    }
+
+    m_iov = std::make_unique<ParameterVariability>(_type, _stdDev);
+}
 
 bool ParameterEvent::evaluate(const OperableGraphManager& _graphMgr)
 {

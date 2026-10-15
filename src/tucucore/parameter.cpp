@@ -20,12 +20,15 @@
  */
 
 
+#include <cassert>
 #include <memory>
 
 #include "tucucore/parameter.h"
-#include "tucucore/pkmodel.h"
 
 #include "tucucommon/loggerhelper.h"
+
+#include "tucucore/occasioniovcontext.h"
+#include "tucucore/pkmodel.h"
 
 namespace Tucuxi {
 namespace Core {
@@ -49,7 +52,16 @@ ParameterSetEventPtr ParameterSetSeries::getAtTime(const DateTime& _date, const 
 
         // Apply etas if available
         if (!_etas.empty()) {
-            if (!pParameters->applyEtas(_etas)) {
+            bool ok = true;
+            if (m_iovContext != nullptr) {
+                // IOV fitting path.
+                int32_t const occasionIndex = m_iovContext->occasionIndexAtTime(_date);
+                ok = pParameters->applyEtas(_etas, *m_iovContext, occasionIndex);
+            }
+            else {
+                ok = pParameters->applyEtas(_etas);
+            }
+            if (!ok) {
                 return nullptr;
             }
         }
@@ -142,12 +154,18 @@ void ParameterSetEvent::addParameterEvent(const ParameterDefinition& _definition
 
     int index = 0;
     size_t omegaIndex = 0;
+    size_t iovIndex = 0;
     for (it = m_parameters.begin(); it != m_parameters.end(); it++) {
 
         if (it->getDefinition().isVariable()) {
             it->m_omegaIndex = omegaIndex;
             it->m_nbEtas = it->getDefinition().getVariability().getValues().size();
             omegaIndex += it->m_nbEtas;
+
+            if (it->getDefinition().hasIov()) {
+                it->m_iovIndex = iovIndex;
+                ++iovIndex;
+            }
         }
 
         // Update our mapping between id (string) to index
@@ -182,6 +200,34 @@ bool ParameterSetEvent::applyEtas(const Etas& _etas)
     if (_etas.size() != k) {
         Tucuxi::Common::LoggerHelper logger;
         logger.error("The eta vector does not fit the variable parameters size.");
+    }
+    return ok;
+}
+
+bool ParameterSetEvent::applyEtas(Etas const& _etas, OccasionIovContext const& _iovContext, int32_t _occasionIndex)
+{
+    Parameters::iterator it;
+    bool ok = true;
+    for (it = m_parameters.begin(); it != m_parameters.end(); ++it) {
+        if (it->isVariable()) {
+            // BSV deviation: sum the parameter's BSV etas.
+            Value sum = 0.0;
+            for (size_t i = 0; i < it->m_nbEtas; ++i) {
+                assert(it->m_omegaIndex + i < _etas.size());
+                sum += _etas[it->m_omegaIndex + i];
+            }
+
+            // IOV deviation: when this event belongs to an occasion with a
+            // sample, add the parameter's IOV eta for that occasion.
+            if ((_occasionIndex >= 0) && it->getDefinition().hasIov()) {
+                size_t const occ = static_cast<size_t>(_occasionIndex);
+                size_t const idx = _iovContext.occasionBlockOffset(occ) + it->m_iovIndex;
+                assert(idx < _etas.size());
+                sum += _etas[idx];
+            }
+
+            ok &= it->applyEta(sum);
+        }
     }
     return ok;
 }

@@ -337,15 +337,24 @@ bool defaultPopulate(PkModelCollection& _collection)
         // A special PK model just for Vancomycin.colin2019.
         // It is a standard 2-compartment model, but the parameters computation is
         // handled differently in getAtTime() to compute CL from V1 and Q from V2
-        std::shared_ptr<PkModel> pkmodel = std::make_shared<PkModel>( "linear.2comp.macro.colin2019", PkModel::AllowMultipleRoutes::No);
-        (rc) |= pkmodel->addIntakeIntervalCalculatorFactory( AbsorptionModel::Extravascular, Tucuxi::Core::TwoCompartmentExtraMacro::getCreator());
-        (rc) |= pkmodel->addIntakeIntervalCalculatorFactory( AbsorptionModel::ExtravascularLag, Tucuxi::Core::TwoCompartmentExtraLagMacro::getCreator());
-        (rc) |= pkmodel->addIntakeIntervalCalculatorFactory( AbsorptionModel::Intravascular, Tucuxi::Core::TwoCompartmentBolusMacro::getCreator());
-        (rc) |= pkmodel->addIntakeIntervalCalculatorFactory( AbsorptionModel::Infusion, Tucuxi::Core::TwoCompartmentInfusionMacro::getCreator());
-        (rc) |= pkmodel->addParameterList( AbsorptionModel::Extravascular, Tucuxi::Core::TwoCompartmentExtraMacro::getParametersId());
-        (rc) |= pkmodel->addParameterList( AbsorptionModel::ExtravascularLag, Tucuxi::Core::TwoCompartmentExtraLagMacro::getParametersId());
-        (rc) |= pkmodel->addParameterList( AbsorptionModel::Intravascular, Tucuxi::Core::TwoCompartmentBolusMacro::getParametersId());
-        (rc) |= pkmodel->addParameterList( AbsorptionModel::Infusion, Tucuxi::Core::TwoCompartmentInfusionMacro::getParametersId());
+        std::shared_ptr<PkModel> pkmodel =
+                std::make_shared<PkModel>("linear.2comp.macro.colin2019", PkModel::AllowMultipleRoutes::No);
+        (rc) |= pkmodel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Extravascular, Tucuxi::Core::TwoCompartmentExtraMacro::getCreator());
+        (rc) |= pkmodel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::ExtravascularLag, Tucuxi::Core::TwoCompartmentExtraLagMacro::getCreator());
+        (rc) |= pkmodel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Intravascular, Tucuxi::Core::TwoCompartmentBolusMacro::getCreator());
+        (rc) |= pkmodel->addIntakeIntervalCalculatorFactory(
+                AbsorptionModel::Infusion, Tucuxi::Core::TwoCompartmentInfusionMacro::getCreator());
+        (rc) |= pkmodel->addParameterList(
+                AbsorptionModel::Extravascular, Tucuxi::Core::TwoCompartmentExtraMacro::getParametersId());
+        (rc) |= pkmodel->addParameterList(
+                AbsorptionModel::ExtravascularLag, Tucuxi::Core::TwoCompartmentExtraLagMacro::getParametersId());
+        (rc) |= pkmodel->addParameterList(
+                AbsorptionModel::Intravascular, Tucuxi::Core::TwoCompartmentBolusMacro::getParametersId());
+        (rc) |= pkmodel->addParameterList(
+                AbsorptionModel::Infusion, Tucuxi::Core::TwoCompartmentInfusionMacro::getParametersId());
         Tucuxi::Common::TranslatableString distribution;
         Tucuxi::Common::TranslatableString elimination;
         std::string comps = "compartments";
