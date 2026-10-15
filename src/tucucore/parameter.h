@@ -19,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
 #ifndef TUCUXI_CORE_PARAMETER_H
 #define TUCUXI_CORE_PARAMETER_H
 

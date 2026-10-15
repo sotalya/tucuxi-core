@@ -159,70 +159,10 @@ ComputingStatus GeneralExtractor::extractAposterioriEtas(
             return errorModelExtractionResult;
         }
 
-        // Inter-Occasion Variability (IOV). Build the IOV variance vector
-        // indexed by the per-parameter m_iovIndex, reading from the same
-        // parameter set that assigns those indices. applyEtas reads the IOV eta
-        // of a parameter through m_iovIndex too, so every variance placed on
-        // the Omega diagonal lines up with its own parameter by construction,
-        // with no second ordering that could drift out of sync.
-        std::vector<Value> iovVariances;
-        if (!_parameterSeries.m_parameterSets.empty()) {
-            auto const& parameterSet = _parameterSeries.m_parameterSets.front();
-            std::size_t iovCount = 0;
-            for (auto const& param : parameterSet) {
-                if (param.getDefinition().isVariable() && param.getDefinition().hasIov()) {
-                    ++iovCount;
-                }
-            }
-            iovVariances.assign(iovCount, 0.0);
-            for (auto const& param : parameterSet) {
-                if (param.getDefinition().isVariable() && param.getDefinition().hasIov()) {
-                    Value const iovStdDev = param.getDefinition().getIov().getValue();
-                    iovVariances[param.m_iovIndex] = iovStdDev * iovStdDev;
-                }
-            }
-        }
-
-        std::shared_ptr<OccasionIovContext const> iovContext = nullptr;
-        Eigen::Index const bsvRows = omega.rows();
-
-        if (!iovVariances.empty()) {
-            // Collect the dosing intervals, then keep those carrying a sample as
-            // the IOV occasions.
-            std::vector<IovOccasion> intervals;
-            for (const auto& intake : _intakeSeries) {
-                DateTime const start = intake.getEventTime();
-                intervals.push_back(IovOccasion{start, start + intake.getInterval()});
-            }
-            std::vector<DateTime> sampleTimes;
-            for (const auto& sample : sampleSeries) {
-                sampleTimes.push_back(sample.getEventTime());
-            }
-            std::vector<IovOccasion> occasions = computeSampledOccasions(intervals, sampleTimes);
-
-            if (!occasions.empty()) {
-                std::size_t const bsvCount = static_cast<std::size_t>(bsvRows);
-                std::size_t const iovPerOccasion = iovVariances.size();
-                auto context = std::make_shared<OccasionIovContext>(bsvCount, iovPerOccasion, std::move(occasions));
-
-                // Extend the BSV Omega with one diagonal block per occasion. The
-                // BSV block, including its correlations, is kept as is. The IOV
-                // blocks are diagonal variances with no correlation, placed via
-                // the context so the eta layout lives in a single place.
-                Eigen::Index const total = static_cast<Eigen::Index>(context->getTotalEtaCount());
-                OmegaMatrix extended = OmegaMatrix::Zero(total, total);
-                extended.topLeftCorner(bsvRows, bsvRows) = omega;
-                for (std::size_t occ = 0; occ < context->getOccasionCount(); ++occ) {
-                    std::size_t const blockOffset = context->occasionBlockOffset(occ);
-                    for (std::size_t k = 0; k < iovPerOccasion; ++k) {
-                        Eigen::Index const idx = static_cast<Eigen::Index>(blockOffset + k);
-                        extended(idx, idx) = iovVariances[k];
-                    }
-                }
-                omega = extended;
-                iovContext = context;
-            }
-        }
+        // Inter-Occasion Variability (IOV): extend the BSV Omega with the IOV
+        // blocks and get the eta layout context, or nullptr when no IOV applies.
+        std::shared_ptr<OccasionIovContext const> iovContext =
+                addIov(_parameterSeries, _intakeSeries, sampleSeries, omega);
 
         APosterioriEtasCalculator etasCalculator;
         if (iovContext != nullptr) {
@@ -241,6 +181,7 @@ ComputingStatus GeneralExtractor::extractAposterioriEtas(
             if (status != ComputingStatus::Ok) {
                 return status;
             }
+            Eigen::Index const bsvRows = static_cast<Eigen::Index>(iovContext->getBsvCount());
             _etas.assign(fullEtas.begin(), fullEtas.begin() + bsvRows);
         }
         else {
@@ -258,6 +199,78 @@ ComputingStatus GeneralExtractor::extractAposterioriEtas(
         }
     }
     return ComputingStatus::Ok;
+}
+
+std::shared_ptr<OccasionIovContext const> GeneralExtractor::addIov(
+        const ParameterSetSeries& _parameterSeries,
+        const IntakeSeries& _intakeSeries,
+        const SampleSeries& _sampleSeries,
+        OmegaMatrix& _omega)
+{
+    // Build the IOV variance vector indexed by the per-parameter m_iovIndex,
+    // reading from the same parameter set that assigns those indices. applyEtas
+    // reads the IOV eta of a parameter through m_iovIndex too, so every variance
+    // placed on the Omega diagonal lines up with its own parameter by
+    // construction, with no second ordering that could drift out of sync.
+    std::vector<Value> iovVariances;
+    if (!_parameterSeries.m_parameterSets.empty()) {
+        auto const& parameterSet = _parameterSeries.m_parameterSets.front();
+        std::size_t iovCount = 0;
+        for (auto const& param : parameterSet) {
+            if (param.getDefinition().isVariable() && param.getDefinition().hasIov()) {
+                ++iovCount;
+            }
+        }
+        iovVariances.assign(iovCount, 0.0);
+        for (auto const& param : parameterSet) {
+            if (param.getDefinition().isVariable() && param.getDefinition().hasIov()) {
+                Value const iovStdDev = param.getDefinition().getIov().getValue();
+                iovVariances[param.m_iovIndex] = iovStdDev * iovStdDev;
+            }
+        }
+    }
+
+    if (iovVariances.empty()) {
+        return nullptr;
+    }
+
+    // Collect the dosing intervals, then keep those carrying a sample as the
+    // IOV occasions.
+    std::vector<IovOccasion> intervals;
+    for (const auto& intake : _intakeSeries) {
+        DateTime const start = intake.getEventTime();
+        intervals.push_back(IovOccasion{start, start + intake.getInterval()});
+    }
+    std::vector<DateTime> sampleTimes;
+    for (const auto& sample : _sampleSeries) {
+        sampleTimes.push_back(sample.getEventTime());
+    }
+    std::vector<IovOccasion> occasions = computeSampledOccasions(intervals, sampleTimes);
+    if (occasions.empty()) {
+        return nullptr;
+    }
+
+    Eigen::Index const bsvRows = _omega.rows();
+    std::size_t const bsvCount = static_cast<std::size_t>(bsvRows);
+    std::size_t const iovPerOccasion = iovVariances.size();
+    auto context = std::make_shared<OccasionIovContext>(bsvCount, iovPerOccasion, std::move(occasions));
+
+    // Extend the BSV Omega with one diagonal block per occasion. The BSV block,
+    // including its correlations, is kept as is. The IOV blocks are diagonal
+    // variances with no correlation, placed via the context so the eta layout
+    // lives in a single place.
+    Eigen::Index const total = static_cast<Eigen::Index>(context->getTotalEtaCount());
+    OmegaMatrix extended = OmegaMatrix::Zero(total, total);
+    extended.topLeftCorner(bsvRows, bsvRows) = _omega;
+    for (std::size_t occ = 0; occ < context->getOccasionCount(); ++occ) {
+        std::size_t const blockOffset = context->occasionBlockOffset(occ);
+        for (std::size_t k = 0; k < iovPerOccasion; ++k) {
+            Eigen::Index const idx = static_cast<Eigen::Index>(blockOffset + k);
+            extended(idx, idx) = iovVariances[k];
+        }
+    }
+    _omega = extended;
+    return context;
 }
 
 ComputingStatus GeneralExtractor::extractOmega(
