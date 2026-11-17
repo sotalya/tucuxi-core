@@ -32,6 +32,7 @@
 #include "tucucore/computingservice/icomputingservice.h"
 #include "tucucore/drugmodel/drugmodel.h"
 #include "tucucore/drugtreatment/drugtreatment.h"
+#include "tucucore/intakeintervalcalculator.h"
 #include "tucucore/pkmodel.h"
 
 namespace Tucuxi {
@@ -75,6 +76,13 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkDrugModel(
     DrugModelChecker::CheckerResult_t parametersResult = checkParameters(_drugModel, _pkCollection);
     if (!parametersResult.m_ok) {
         return parametersResult;
+    }
+
+    // Checks that every analyte group declares exactly the analytes its PK model
+    // computes, so the active-moiety combination cannot index out of bounds.
+    DrugModelChecker::CheckerResult_t analyteCountResult = checkActiveMoietyAnalyteCounts(_drugModel, _pkCollection);
+    if (!analyteCountResult.m_ok) {
+        return analyteCountResult;
     }
 
 
@@ -163,6 +171,41 @@ DrugModelChecker::CheckerResult_t DrugModelChecker::checkAnalytes(const DrugMode
         }
     }
 
+    return {true, ""};
+}
+
+DrugModelChecker::CheckerResult_t DrugModelChecker::checkActiveMoietyAnalyteCounts(
+        const DrugModel* _drugModel, const PkModelCollection* _pkCollection)
+{
+    // Each analyte group's PK model must produce exactly as many analyte curves
+    // as the group declares (a group that lists more analytes than its PK model
+    // computes, for instance two analytes on a single-analyte PK model, makes
+    // that indexing read past the predictions).
+    for (const auto& analyteGroup : _drugModel->getAnalyteSets()) {
+        std::shared_ptr<PkModel> pkModel = _pkCollection->getPkModelFromId(analyteGroup->getPkModelId());
+        if (pkModel == nullptr) {
+            // Missing PK model is already reported by checkParameters.
+            continue;
+        }
+        std::vector<AbsorptionModel> const routes = pkModel->getAvailableRoutes();
+        if (routes.empty()) {
+            continue;
+        }
+        std::shared_ptr<IntakeIntervalCalculator> calculator = pkModel->getCalculatorForRoute(routes[0]);
+        if (calculator == nullptr) {
+            continue;
+        }
+        size_t const producedAnalytes = calculator->getNbAnalytes();
+        size_t const declaredAnalytes = analyteGroup->getAnalytes().size();
+        if (producedAnalytes != declaredAnalytes) {
+            return {false,
+                    "Analyte group " + analyteGroup->getId().toString() + " declares "
+                            + std::to_string(declaredAnalytes) + " analytes but its PK model "
+                            + analyteGroup->getPkModelId() + " computes " + std::to_string(producedAnalytes)
+                            + ". Each analyte group PK model must produce exactly its declared analytes "
+                            + "(a parent and a metabolite usually need separate analyte groups)."};
+        }
+    }
     return {true, ""};
 }
 
