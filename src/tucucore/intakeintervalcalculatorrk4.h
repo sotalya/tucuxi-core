@@ -190,8 +190,13 @@ protected:
             concentrations.push_back(Concentrations(m_nbPoints)); // NOLINT(google-readability-casting)
         }
 
-        // compute concentrations
-        computeUnroll(_times, _inResiduals, concentrations);
+        // compute concentrations.
+        try {
+            computeUnroll(_times, _inResiduals, concentrations);
+        }
+        catch (std::exception& e) {
+            return false;
+        }
 
         // Get the output residuals
         computeOutputResiduals(_outResiduals, concentrations, m_nbPoints - 1);
