@@ -248,7 +248,7 @@ bool TwoCompartmentBolusMacroRatios::checkInputs(const IntakeEvent& _intakeEvent
     m_V1 = _parameters.getValue(ParameterId::V1);
     Value rQCL = _parameters.getValue(ParameterId::RQCL);
     Value rV2V1 = _parameters.getValue(ParameterId::RV2V1);
-    Value m_V2 = m_V1 * rV2V1;
+    m_V2 = m_V1 * rV2V1;
     Value q = cl * rQCL;
     m_Ke = cl / m_V1;
     m_K12 = q / m_V1;
