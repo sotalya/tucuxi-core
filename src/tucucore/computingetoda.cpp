@@ -197,6 +197,9 @@ std::unique_ptr<AdjustmentData> ComputingEtoda::findAdjustement(
     auto adjResponse = std::make_unique<ComputingResponse>("adjustment");
 
     auto* component = dynamic_cast<IComputingService*>(ComputingComponent::createComponent());
+    if (component == nullptr) {
+        return nullptr;
+    }
 
     ComputingStatus adjStatus = component->compute(adjRequest, adjResponse);
     delete component;
