@@ -633,6 +633,15 @@ ComputingStatus TargetExtractor::extract(
     TMP_UNUSED_PARAMETER(_start);
     TMP_UNUSED_PARAMETER(_end);
 
+    // Reject targets whose bounds do not make sense before they reach scoring.
+    for (const auto& targetEvent : _series) {
+        if (!((targetEvent.getValueMin() > 0.0) && (targetEvent.getValueMin() <= targetEvent.getValueBest())
+              && (targetEvent.getValueBest() <= targetEvent.getValueMax())
+              && (targetEvent.getValueMin() < targetEvent.getValueMax()))) {
+            return ComputingStatus::TargetExtractionError;
+        }
+    }
+
     return ComputingStatus::Ok;
 }
 

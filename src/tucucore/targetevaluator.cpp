@@ -51,15 +51,9 @@ void TargetEvaluator::evaluateValue(
     _ok &= isWithinBoundaries(_value, _targetEvent.m_valueMin, _targetEvent.m_valueMax);
 
     if (_ok) {
-        double logSpan = log(_targetEvent.m_valueMax) - log(_targetEvent.m_valueMin);
-        if (logSpan == 0.0) {
-            // Score it as perfect instead of dividing by zero (would make the
-            // score NaN and corrupt candidate sorting).
-            _score = 1.0;
-        }
-        else {
-            _score = 1.0 - pow(log(_value) - log(_targetEvent.m_valueBest), 2) / pow(0.5 * logSpan, 2);
-        }
+        _score = 1.0
+                 - pow(log(_value) - log(_targetEvent.m_valueBest), 2)
+                           / pow(0.5 * (log(_targetEvent.m_valueMax) - log(_targetEvent.m_valueMin)), 2);
         // _outputValue = _value;
     }
     _outputValue = _value;
