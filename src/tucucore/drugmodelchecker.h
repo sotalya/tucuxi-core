@@ -73,6 +73,15 @@ protected:
 
     CheckerResult_t checkParameters(const DrugModel* _drugModel, const PkModelCollection* _pkCollection);
 
+    ///
+    /// \brief Check that each analyte group's PK model produces its declared analytes
+    /// \param[in] _drugModel : drug model to validate
+    /// \param[in] _pkCollection : available PK models
+    /// \return CheckerResult_t with m_ok false and a message when a group declares
+    ///         a different number of analytes than its PK model computes.
+    ///
+    CheckerResult_t checkActiveMoietyAnalyteCounts(const DrugModel* _drugModel, const PkModelCollection* _pkCollection);
+
     CheckerResult_t checkOperations(const DrugModel* _drugModel);
 
     ///
